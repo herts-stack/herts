@@ -1,0 +1,18 @@
+allprojects {
+    version = '1.0.0'
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    dependencies {
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}

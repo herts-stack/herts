@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.+'
+}
+apply plugin: 'application'
+
+group 'com.tomoyane.herts.hertsclient'
+version '1.0.0'
+sourceCompatibility = '17'
+
+application {
+    mainClassName = 'com.tomoyane.herts.hertsclient.Main'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':herts-shared')
+}
+
+test {
+    useJUnitPlatform()
+}
