@@ -2,3 +2,6 @@
 herts-core/build/
 herts-client/build/
 herts-shared/build/
+tool/build/
+.gradle/
+
