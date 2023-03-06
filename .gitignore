@@ -1,7 +1,8 @@
 .idea/
 herts-core/build/
 herts-client/build/
-herts-shared/build/
+herts-common/build/
 tool/build/
+example/build/
 .gradle/
 
