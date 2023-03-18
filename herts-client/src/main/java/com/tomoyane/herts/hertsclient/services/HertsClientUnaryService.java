@@ -1,6 +1,6 @@
 package com.tomoyane.herts.hertsclient.services;
 
-import com.tomoyane.herts.hertscommon.exceptions.HertsRpcNotFoundException;
+import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscore.core.UnaryServiceCore;
 import com.tomoyane.herts.hertscore.service.HertsService;
 import io.grpc.CallOptions;

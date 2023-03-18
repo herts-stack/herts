@@ -1,9 +1,9 @@
 package com.tomoyane.herts.hertscommon.mapping;
 
-import io.grpc.MethodDescriptor;
+import com.tomoyane.herts.hertscommon.enums.HertsCoreType;
 
 public class HertsMethod {
-    private MethodDescriptor.MethodType methodType;
+    private HertsCoreType hertsCoreType;
     private String coreServiceName;
     private String methodName;
     private Class<?> methodReturnType;
@@ -12,25 +12,25 @@ public class HertsMethod {
     public HertsMethod() {
     }
 
-    public HertsMethod(MethodDescriptor.MethodType methodType,
+    public HertsMethod(HertsCoreType methodType,
                        String coreServiceName,
                        String methodName,
                        Class<?> methodReturnType,
                        Class<?>[] parameters) {
 
-        this.methodType = methodType;
+        this.hertsCoreType = methodType;
         this.coreServiceName = coreServiceName;
         this.methodName = methodName;
         this.methodReturnType = methodReturnType;
         this.parameters = parameters;
     }
 
-    public MethodDescriptor.MethodType getMethodType() {
-        return methodType;
+    public HertsCoreType getHertsCoreType() {
+        return hertsCoreType;
     }
 
-    public void setMethodType(MethodDescriptor.MethodType methodType) {
-        this.methodType = methodType;
+    public void setHertsCoreType(HertsCoreType hertsCoreType) {
+        this.hertsCoreType = hertsCoreType;
     }
 
     public String getCoreServiceName() {
@@ -67,7 +67,7 @@ public class HertsMethod {
 
     @Override
     public String toString() {
-        return "MethodType=" + this.methodType + ", " +
+        return "HertsCoreType=" + this.hertsCoreType + ", " +
                 "CoreServiceName=" + this.coreServiceName  + ", " +
                 "MethodName=" + this.methodName  + ", " +
                 "MethodReturnType=" + this.methodReturnType;

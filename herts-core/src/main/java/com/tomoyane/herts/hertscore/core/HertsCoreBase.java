@@ -1,16 +1,15 @@
 package com.tomoyane.herts.hertscore.core;
 
-import com.tomoyane.herts.hertscommon.enums.RpcType;
+import com.tomoyane.herts.hertscommon.enums.HertsCoreType;
 
 public class HertsCoreBase {
-    private final RpcType rpcType;
+    private final HertsCoreType coreType;
 
-    public HertsCoreBase(RpcType rpcType) {
-        this.rpcType = rpcType;
+    public HertsCoreBase(HertsCoreType rpcType) {
+        this.coreType = rpcType;
     }
 
-    public RpcType getRpcType() {
-        return rpcType;
+    public HertsCoreType getCoreType() {
+        return coreType;
     }
-
 }

@@ -1,8 +1,8 @@
 package com.tomoyane.herts.hertscore.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tomoyane.herts.hertscommon.exceptions.HertsInstanceException;
-import com.tomoyane.herts.hertscommon.exceptions.HertsRpcNotFoundException;
+import com.tomoyane.herts.hertscommon.exception.HertsInstanceException;
+import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscommon.mapping.HertsMethod;
 import com.tomoyane.herts.hertscommon.mapping.HertsMsg;
 import io.grpc.stub.StreamObserver;

@@ -1,4 +1,4 @@
-package com.tomoyane.herts.hertscommon.exceptions;
+package com.tomoyane.herts.hertscommon.exception;
 
 public class HertsRpcNotFoundException extends RuntimeException {
     public HertsRpcNotFoundException() {
@@ -11,5 +11,9 @@ public class HertsRpcNotFoundException extends RuntimeException {
 
     public HertsRpcNotFoundException(Throwable cause) {
         super(cause);
+    }
+
+    public HertsRpcNotFoundException(String msg, Throwable cause) {
+        super(msg, cause);
     }
 }

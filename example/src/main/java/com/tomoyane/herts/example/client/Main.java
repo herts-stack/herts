@@ -3,7 +3,6 @@ package com.tomoyane.herts.example.client;
 import com.tomoyane.herts.example.UnaryRpcService;
 import com.tomoyane.herts.example.UnaryRpcServiceImpl;
 import com.tomoyane.herts.hertsclient.handlers.HertsClientBlockingMethodHandler;
-import com.tomoyane.herts.hertscommon.mapping.HertsMessage;
 
 import io.grpc.*;
 
@@ -13,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, InstantiationException, IllegalAccessException {
-        HertsMessage response;
         try {
             ManagedChannel channel = Grpc.newChannelBuilder("localhost:9000", InsecureChannelCredentials.create())
                     .build();

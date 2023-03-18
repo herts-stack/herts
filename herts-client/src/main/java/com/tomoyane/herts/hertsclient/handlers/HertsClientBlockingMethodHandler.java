@@ -1,8 +1,9 @@
 package com.tomoyane.herts.hertsclient.handlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tomoyane.herts.hertscommon.descriptors.HertsGrpcDescriptor;
-import com.tomoyane.herts.hertscommon.exceptions.HertsRpcNotFoundException;
+import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
+import com.tomoyane.herts.hertscommon.enums.HertsCoreType;
+import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
 import com.tomoyane.herts.hertscommon.mapping.HertsMsg;
 
@@ -53,7 +54,7 @@ public class HertsClientBlockingMethodHandler extends io.grpc.stub.AbstractBlock
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
         MethodDescriptor<byte[], byte[]> methodDescriptor = HertsGrpcDescriptor
-                .generateMethodDescriptor(MethodDescriptor.MethodType.UNARY, this.serviceName, methodName);
+                .generateMethodDescriptor(HertsCoreType.Unary, this.serviceName, methodName);
 
         byte[] bytes = new byte[]{};
         if (args != null) {

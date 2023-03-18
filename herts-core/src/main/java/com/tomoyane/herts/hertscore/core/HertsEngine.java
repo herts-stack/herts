@@ -1,10 +1,11 @@
 package com.tomoyane.herts.hertscore.core;
 
-import com.tomoyane.herts.hertscommon.exceptions.HertsRpcNotFoundException;
+import com.tomoyane.herts.hertscommon.enums.HertsCoreType;
+import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
 import com.tomoyane.herts.hertscommon.mapping.HertsDescriptor;
 import com.tomoyane.herts.hertscommon.mapping.HertsMethod;
-import com.tomoyane.herts.hertscommon.descriptors.HertsGrpcDescriptor;
+import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
 import com.tomoyane.herts.hertscore.handler.HertsCoreMethodHandler;
 
 import io.grpc.BindableService;
@@ -34,7 +35,7 @@ public class HertsEngine {
     }
 
     public void register(HertsCoreBase core) {
-        switch (core.getRpcType()) {
+        switch (core.getCoreType()) {
             case Unary:
                 registerUnaryService((UnaryServiceCore) core);
                 break;
@@ -86,7 +87,7 @@ public class HertsEngine {
                 List<HertsMethod> hertsMethods = new ArrayList<>();
                 for (Method method : methods) {
                     HertsMethod hertsMethod = new HertsMethod();
-                    hertsMethod.setMethodType(MethodDescriptor.MethodType.UNARY);
+                    hertsMethod.setHertsCoreType(HertsCoreType.Unary);
                     hertsMethod.setCoreServiceName(serviceName);
                     hertsMethod.setMethodName(method.getName());
                     hertsMethod.setMethodReturnType(method.getReturnType());
@@ -94,7 +95,7 @@ public class HertsEngine {
                     hertsMethods.add(hertsMethod);
                 }
 
-                HertsDescriptor descriptor = HertsGrpcDescriptor.getGrpcDescriptor(serviceName, hertsMethods);
+                HertsDescriptor descriptor = HertsGrpcDescriptor.generateGrpcDescriptor(serviceName, hertsMethods);
                 ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
 
                 int index = 0;
