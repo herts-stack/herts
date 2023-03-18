@@ -1,4 +1,4 @@
-package com.tomoyane.herts.hertscommon.utilities;
+package com.tomoyane.herts.hertscommon.logger;
 
 public class HertsLogger {
     static {

@@ -1,6 +1,6 @@
 package com.tomoyane.herts.hertscommon.enums;
 
-public enum HertsCoreEnum {
+public enum RpcType {
     Unary,
     ServerStreaming,
     ClientStreaming,

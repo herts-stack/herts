@@ -2,7 +2,8 @@
 herts-core/build/
 herts-client/build/
 herts-common/build/
-tool/build/
+tools/build/
 example/build/
+grpc-proto-example/build/
 .gradle/
-
+.java-version
