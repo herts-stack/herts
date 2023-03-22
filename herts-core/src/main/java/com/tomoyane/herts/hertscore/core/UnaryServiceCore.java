@@ -7,7 +7,4 @@ public abstract class UnaryServiceCore extends HertsCoreBase {
     public UnaryServiceCore() {
         super(HertsCoreType.Unary);
     }
-
-    public void coreBaseMethod01() {
-    }
 }

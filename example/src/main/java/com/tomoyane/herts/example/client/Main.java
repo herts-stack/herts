@@ -1,51 +1,76 @@
 package com.tomoyane.herts.example.client;
 
-import com.tomoyane.herts.example.UnaryRpcService;
-import com.tomoyane.herts.example.UnaryRpcServiceImpl;
-import com.tomoyane.herts.hertsclient.handlers.HertsClientBlockingMethodHandler;
+import com.tomoyane.herts.example.*;
+import com.tomoyane.herts.hertsclient.HertsClient;
+import com.tomoyane.herts.hertsclient.HertsClientImpl;
+import com.tomoyane.herts.hertscommon.enums.HertsCoreType;
+import com.tomoyane.herts.hertscommon.logger.HertsLogger;
+import io.grpc.stub.StreamObserver;
 
-import io.grpc.*;
-
-import java.io.*;
-import java.lang.reflect.Proxy;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class Main {
-    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, InstantiationException, IllegalAccessException {
+    private static final Logger logger = HertsLogger.getLogger(Main.class.getSimpleName());
+
+    private static void unary() throws InterruptedException {
+        HertsClient client = new HertsClientImpl.Builder("localhost", "9000", HertsCoreType.Unary)
+                .secure(false)
+                .hertsService(new UnaryRpcServiceImpl())
+                .build();
+
+        var service = (UnaryRpcService) client.createHertService(UnaryRpcService.class);
+        var res01 = service.test01("TEST01", "VALUE01");
+        var res02 = service.test02();
+        var res03 = service.test03();
+
+        logger.info(res01);
+        logger.info("" + res02);
+        logger.info(res03.get("Key"));
+
+        client.getChannel().shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
+    }
+
+    private static void streaming() {
+        HertsClient client = new HertsClientImpl.Builder("localhost", "9000", HertsCoreType.BidirectionalStreaming)
+                .secure(false)
+                .hertsService(new StreamingRpcServiceImpl())
+                .build();
+
+        var service = (StreamingRpcService) client.createHertService(StreamingRpcService.class);
+        var res = service.test04(new StreamObserver<>() {
+            @Override
+            public void onNext(HelloResponse req) {
+                logger.info(String.format("Got message at %d, %d", req.getCode(), req.getTimestamp()));
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                t.printStackTrace();
+                logger.info("ERRRR");
+            }
+
+            @Override
+            public void onCompleted() {
+                logger.info("onCompleted");
+            }
+        });
+
+        var r = new HelloResponse();
+        r.setCode(10000);
+        res.onNext(r);
+        res.onCompleted();
+    }
+
+    public static void main(String[] args) throws InterruptedException {
         try {
-            ManagedChannel channel = Grpc.newChannelBuilder("localhost:9000", InsecureChannelCredentials.create())
-                    .build();
-            System.out.println("Create client channel");
-
-            var stub = newHertsService(channel);
-            UnaryRpcService service = (UnaryRpcService) Proxy.newProxyInstance(
-                    UnaryRpcService.class.getClassLoader(),
-                    new Class<?>[]{ UnaryRpcService.class },
-                    stub);
-
-            var res01 = service.test01("TEST01", "VALUE01");
-            var res02 = service.test02();
-            var res03 = service.test03();
-
-            System.out.println(res01);
-            System.out.println(res02);
-            System.out.println(res03.get("Key"));
-
-            channel.shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
+            unary();
+//            streaming();
+            Thread.sleep(5000);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
     }
 
-    public static HertsClientBlockingMethodHandler newHertsService(Channel channel) {
-        io.grpc.stub.AbstractStub.StubFactory<HertsClientBlockingMethodHandler> factory =
-                new io.grpc.stub.AbstractStub.StubFactory<HertsClientBlockingMethodHandler>() {
-                    @java.lang.Override
-                    public HertsClientBlockingMethodHandler newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
-                        return new HertsClientBlockingMethodHandler(channel, callOptions, new UnaryRpcServiceImpl());
-                    }
-                };
-        return HertsClientBlockingMethodHandler.newStub(factory, channel);
-    }
 }

@@ -32,8 +32,4 @@ public class HertsClientUnaryService extends io.grpc.stub.AbstractBlockingStub<H
     protected HertsClientUnaryService build(Channel channel, CallOptions callOptions) {
         return new HertsClientUnaryService(channel, callOptions, this.hertsService);
     }
-
-    public void invoke() {
-
-    }
 }

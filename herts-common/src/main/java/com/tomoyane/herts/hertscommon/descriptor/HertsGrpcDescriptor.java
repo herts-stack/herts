@@ -19,6 +19,7 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
 public class HertsGrpcDescriptor {
     private static final MethodDescriptor.Marshaller<byte[]> reqMessageMarshaller = new HertsMarshaller();
     private static final MethodDescriptor.Marshaller<byte[]> resMessageMarshaller = new HertsMarshaller();
+    private static final MethodDescriptor.Marshaller<Object> resStreamingMessageMarshaller = new HertsStramingMarshaller();
 
     /**
      * Generate method descriptor.
@@ -43,6 +44,23 @@ public class HertsGrpcDescriptor {
         return builder.build();
     }
 
+
+    public static MethodDescriptor<Object, Object> generateStramingMethodDescriptor(
+            HertsCoreType coreType,
+            String serviceName,
+            String methodName) {
+
+        var methodType = coreType.convertToMethodType();
+        MethodDescriptor.Builder<Object, Object> builder = MethodDescriptor.<Object, Object>newBuilder()
+                .setType(methodType)
+                .setFullMethodName(generateFullMethodName(serviceName, methodName))
+                .setSampledToLocalTracing(true)
+                .setRequestMarshaller(resStreamingMessageMarshaller)
+                .setResponseMarshaller(resStreamingMessageMarshaller);
+
+        return builder.build();
+    }
+
     /**
      * Generate gRPC descriptor.
      * @param serviceName Interface service name
@@ -63,4 +81,20 @@ public class HertsGrpcDescriptor {
 
         return HertsDescriptor.createGrpcDescriptor(builder.build(), methodDescriptors);
     }
+
+    public static HertsStreamingDescriptor generateStreamingGrpcDescriptor(String serviceName, List<HertsMethod> hertsMethods) {
+        ServiceDescriptor.Builder builder = ServiceDescriptor.newBuilder(serviceName);
+        List<MethodDescriptor<Object, Object>> methodDescriptors = new ArrayList<>();
+
+        for (var hertsMethod : hertsMethods) {
+            MethodDescriptor<Object, Object> method = generateStramingMethodDescriptor(
+                    hertsMethod.getHertsCoreType(), serviceName, hertsMethod.getMethodName());
+
+            methodDescriptors.add(method);
+            builder.addMethod(method);
+        }
+
+        return HertsStreamingDescriptor.createGrpcDescriptor(builder.build(), methodDescriptors);
+    }
+
 }

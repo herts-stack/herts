@@ -1,10 +1,11 @@
 package com.tomoyane.herts.hertsclient;
 
-import io.grpc.Channel;
+import com.tomoyane.herts.hertscore.service.HertsService;
+import io.grpc.ManagedChannel;
 
-public class HertsClient {
-    private final Channel channel;
-    public HertsClient(Channel channel) {
-        this.channel = channel;
-    }
+public interface HertsClient {
+    String getConnectedHost();
+    boolean isSecureConnection();
+    ManagedChannel getChannel();
+    HertsService createHertService(Class<?> classType);
 }
