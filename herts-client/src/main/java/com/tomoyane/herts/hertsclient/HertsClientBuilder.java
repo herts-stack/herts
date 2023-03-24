@@ -1,46 +1,97 @@
 package com.tomoyane.herts.hertsclient;
 
-import com.tomoyane.herts.hertsclient.handlers.HertsClientCStreamingMethodHandler;
-import com.tomoyane.herts.hertsclient.handlers.HertsClientUMethodHandler;
-import com.tomoyane.herts.hertsclient.handlers.HertsClientBStreamingMethodHandler;
-import com.tomoyane.herts.hertsclient.handlers.HertsClientSStreamingMethodHandler;
+import com.tomoyane.herts.hertsclient.handler.HertsClientCStreamingMethodHandler;
+import com.tomoyane.herts.hertsclient.handler.HertsClientUMethodHandler;
+import com.tomoyane.herts.hertsclient.handler.HertsClientBStreamingMethodHandler;
+import com.tomoyane.herts.hertsclient.handler.HertsClientSStreamingMethodHandler;
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscommon.exception.HertsChannelIsNullException;
 import com.tomoyane.herts.hertscommon.exception.HertsCoreTypeInvalidException;
 import com.tomoyane.herts.hertscore.service.HertsService;
 
-import io.grpc.*;
+import io.grpc.Channel;
+import io.grpc.ClientInterceptor;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-public class HertsClientImpl implements HertsClient {
+public class HertsClientBuilder implements HertsClient {
     private final String connectedHost;
-    private final String serverPort;
+    private final int serverPort;
     private final HertsCoreType hertsCoreType;
     private final boolean isSecureConnection;
     private final HertsService hertsService;
+    private final ClientInterceptor interceptor;
+    private final List<ConnectionOption> connectionOptions;
 
-    private ManagedChannel channel;
+    private Channel channel;
 
-    private HertsClientImpl(Builder builder) {
+    private HertsClientBuilder(Builder builder) {
         this.connectedHost = builder.connectedHost;
         this.isSecureConnection = builder.isSecureConnection;
         this.hertsService = builder.hertsService;
         this.serverPort = builder.serverPort;
         this.hertsCoreType = builder.hertsCoreType;
+        this.interceptor = builder.interceptor;
+        this.channel = builder.channel;
+        this.connectionOptions = builder.connectionOptions;
+    }
+
+    public static class ConnectionOption {
+        private final GrpcConnectionOption grpcConnectionOption;
+        private final long value;
+        private final TimeUnit unit;
+
+        public ConnectionOption(GrpcConnectionOption grpcConnectionOption, long value, TimeUnit unit) {
+            this.grpcConnectionOption = grpcConnectionOption;
+            this.value = value;
+            this.unit = unit;
+        }
+
+        public static enum GrpcConnectionOption {
+            IdleTimeout,
+            KeepAliveTime,
+            KeepAliveTimeout,
+        }
+
+        public GrpcConnectionOption getGrpcConnectionOption() {
+            return grpcConnectionOption;
+        }
+
+        public long getValue() {
+            return value;
+        }
+
+        public TimeUnit getUnit() {
+            return unit;
+        }
     }
 
     public static class Builder {
+        // Required parameters
         private final String connectedHost;
-        private final String serverPort;
+        private final int serverPort;
         private final HertsCoreType hertsCoreType;
+
+        // Optional parameters
         private boolean isSecureConnection;
         private HertsService hertsService;
+        private Channel channel;
+        private ClientInterceptor interceptor;
+        private List<ConnectionOption> connectionOptions;
 
-        public Builder(String connectedHost, String serverPort, HertsCoreType hertsCoreType) {
+        private Builder(String connectedHost, int serverPort, HertsCoreType hertsCoreType) {
             this.connectedHost = connectedHost;
             this.serverPort = serverPort;
             this.hertsCoreType = hertsCoreType;
+        }
+
+        public static Builder create(String connectedHost, int serverPort, HertsCoreType hertsCoreType) {
+            return new Builder(connectedHost, serverPort, hertsCoreType);
         }
 
         public Builder secure(boolean isSecureConnection) {
@@ -53,75 +104,101 @@ public class HertsClientImpl implements HertsClient {
             return this;
         }
 
-        public HertsClientImpl build() {
-            if (this.hertsService == null || this.serverPort == null || this.serverPort.isEmpty() ||
-                    this.connectedHost == null || this.connectedHost.isEmpty()) {
+        public Builder channel(Channel channel) {
+            this.channel = channel;
+            return this;
+        }
+
+        public Builder interceptor(ClientInterceptor interceptor) {
+            this.interceptor = interceptor;
+            return this;
+        }
+
+        public Builder connectionOption(List<ConnectionOption> connectionOptions) {
+            this.connectionOptions = connectionOptions;
+            return this;
+        }
+
+        public HertsClient build() {
+            if (this.hertsService == null || this.connectedHost == null || this.connectedHost.isEmpty()) {
                 throw new NullPointerException();
             }
-            return new HertsClientImpl(this);
+            return new HertsClientBuilder(this);
         }
     }
 
+    @Override
     public String getConnectedHost() {
         return connectedHost;
     }
 
+    @Override
     public boolean isSecureConnection() {
         return isSecureConnection;
     }
 
+    @Override
     public HertsCoreType getHertsCoreType() {
         return hertsCoreType;
     }
 
+    @Override
     public ManagedChannel getChannel() {
         if (this.channel == null) {
             throw new HertsChannelIsNullException("Please create HertService instance.");
         }
-        return channel;
+        return (ManagedChannel) channel;
     }
 
+    @Override
     public HertsService createHertService(Class<?> classType) {
-        ChannelCredentials credentials;
-        // TODO: change it
-        if (this.isSecureConnection) {
-            credentials = InsecureChannelCredentials.create();
-        } else {
-            credentials = InsecureChannelCredentials.create();
-        }
+        // If not null, using custom channel
+        if (this.channel == null) {
+            ManagedChannelBuilder<?> managedChannelBuilder = ManagedChannelBuilder.forAddress(this.connectedHost, this.serverPort);
 
-        this.channel = Grpc
-                .newChannelBuilder(this.connectedHost + ":" + this.serverPort, credentials)
-                .build();
+            if (!this.isSecureConnection) {
+                managedChannelBuilder = managedChannelBuilder.usePlaintext();
+            }
+            if (this.interceptor != null) {
+                managedChannelBuilder = managedChannelBuilder.intercept(interceptor);
+            }
+            if (this.connectionOptions != null) {
+                for (ConnectionOption option : this.connectionOptions) {
+                    if (option.grpcConnectionOption == ConnectionOption.GrpcConnectionOption.IdleTimeout) {
+                        managedChannelBuilder = managedChannelBuilder.idleTimeout(option.getValue(), option.getUnit());
+                    } else if (option.grpcConnectionOption == ConnectionOption.GrpcConnectionOption.KeepAliveTime) {
+                        managedChannelBuilder = managedChannelBuilder.keepAliveTime(option.getValue(), option.getUnit());
+                    } else if (option.grpcConnectionOption == ConnectionOption.GrpcConnectionOption.KeepAliveTimeout) {
+                        managedChannelBuilder = managedChannelBuilder.keepAliveTimeout(option.getValue(), option.getUnit());
+                    }
+                }
+            }
+            this.channel = managedChannelBuilder.build();
+        }
 
         switch (this.hertsCoreType) {
             case Unary:
                 var unary = newHertsBlockingService(channel, this.hertsService);
-                return (HertsService) Proxy.newProxyInstance(
-                        classType.getClassLoader(),
-                        new Class<?>[]{ classType },
-                        unary);
+                return generateService(unary, classType);
             case BidirectionalStreaming:
                 var streaming = newHertsBidirectionalStreamingService(channel, this.hertsService);
-                return (HertsService) Proxy.newProxyInstance(
-                        classType.getClassLoader(),
-                        new Class<?>[]{ classType },
-                        streaming);
+                return generateService(streaming, classType);
             case ServerStreaming:
                 var serverStreaming = newHertsServerStreamingService(channel, this.hertsService);
-                return (HertsService) Proxy.newProxyInstance(
-                        classType.getClassLoader(),
-                        new Class<?>[]{ classType },
-                        serverStreaming);
+                return generateService(serverStreaming, classType);
             case ClientStreaming:
                 var clientStreaming = newHertsClientStreamingService(channel, this.hertsService);
-                return (HertsService) Proxy.newProxyInstance(
-                        classType.getClassLoader(),
-                        new Class<?>[]{ classType },
-                        clientStreaming);
+                return generateService(clientStreaming, classType);
+            default:
+                throw new HertsCoreTypeInvalidException("Undefined Hert core type. HertsCoreType" + this.hertsCoreType);
         }
+    }
 
-        throw new HertsCoreTypeInvalidException("Undefined Hert core type");
+    private HertsService generateService(InvocationHandler handler, Class<?> classType) {
+        return (HertsService) Proxy.newProxyInstance(
+                classType.getClassLoader(),
+                new Class<?>[]{ classType },
+                handler);
     }
 
     private static HertsClientUMethodHandler newHertsBlockingService(Channel channel, HertsService hertsService) {

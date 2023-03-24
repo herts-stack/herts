@@ -1,4 +1,4 @@
-package com.tomoyane.herts.hertsclient.handlers;
+package com.tomoyane.herts.hertsclient.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;

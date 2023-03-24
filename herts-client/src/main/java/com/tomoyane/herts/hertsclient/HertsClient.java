@@ -1,6 +1,8 @@
 package com.tomoyane.herts.hertsclient;
 
+import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscore.service.HertsService;
+import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 
 public interface HertsClient {
@@ -8,4 +10,5 @@ public interface HertsClient {
     boolean isSecureConnection();
     ManagedChannel getChannel();
     HertsService createHertService(Class<?> classType);
+    HertsCoreType getHertsCoreType();
 }

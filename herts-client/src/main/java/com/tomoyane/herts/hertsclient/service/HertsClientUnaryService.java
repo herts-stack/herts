@@ -1,4 +1,4 @@
-package com.tomoyane.herts.hertsclient.services;
+package com.tomoyane.herts.hertsclient.service;
 
 import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscore.core.UnaryServiceCore;
