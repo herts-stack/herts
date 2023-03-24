@@ -1,16 +1,11 @@
 plugins {
     id 'java'
-    id 'org.graalvm.buildtools.native' version '0.9.20'
 }
 apply plugin: 'application'
 
 group 'com.tomoyane.herts.hertscore'
 version '1.0.0'
 sourceCompatibility = '17'
-
-application {
-    mainClassName = 'com.tomoyane.herts.hertscore.Main'
-}
 
 repositories {
     mavenCentral()
