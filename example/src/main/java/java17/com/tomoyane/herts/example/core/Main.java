@@ -1,8 +1,6 @@
-package com.tomoyane.herts.example.core;
+package java17.com.tomoyane.herts.example.core;
 
-import com.tomoyane.herts.example.ClientStreamingRpcServiceImpl;
-import com.tomoyane.herts.example.ServerStreamingRpcServiceImpl;
-import com.tomoyane.herts.example.UnaryRpcServiceImpl;
+import com.tomoyane.herts.ClientStreamingRpcServiceImpl;
 import com.tomoyane.herts.hertscore.core.HertsEngine;
 
 public class Main {

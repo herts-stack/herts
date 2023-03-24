@@ -1,6 +1,5 @@
-package com.tomoyane.herts.example.client;
+package com.tomoyane.herts;
 
-import com.tomoyane.herts.example.*;
 import com.tomoyane.herts.hertsclient.HertsClient;
 import com.tomoyane.herts.hertsclient.HertsClientBuilder;
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
@@ -10,8 +9,8 @@ import io.grpc.stub.StreamObserver;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-public class ClientImplUtil {
-    private static final Logger logger = HertsLogger.getLogger(ClientImplUtil.class.getSimpleName());
+public class ClientServiceExample {
+    private static final Logger logger = HertsLogger.getLogger(ClientServiceExample.class.getSimpleName());
 
     public static void unary() throws InterruptedException {
         HertsClient client = HertsClientBuilder.Builder

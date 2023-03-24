@@ -1,4 +1,4 @@
-package com.tomoyane.herts.example;
+package com.tomoyane.herts;
 
 import com.tomoyane.herts.hertscore.service.HertsService;
 import io.grpc.stub.StreamObserver;
