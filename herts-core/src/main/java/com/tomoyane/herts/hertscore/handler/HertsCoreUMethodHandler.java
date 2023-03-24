@@ -4,13 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tomoyane.herts.hertscommon.exception.HertsInstanceException;
 import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscommon.marshaller.HertsMethod;
+import com.tomoyane.herts.hertscommon.marshaller.HertsMsg;
 import io.grpc.stub.StreamObserver;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class HertsCoreStreamingMethodHandler<Req, Resp> implements
+public class HertsCoreUMethodHandler<Req, Resp> implements
         io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
         io.grpc.stub.ServerCalls.ServerStreamingMethod<Req, Resp>,
         io.grpc.stub.ServerCalls.ClientStreamingMethod<Req, Resp>,
@@ -22,7 +24,7 @@ public class HertsCoreStreamingMethodHandler<Req, Resp> implements
     private final Method reflectMethod;
     private final HertsMethod hertsMethod;
 
-    public HertsCoreStreamingMethodHandler(HertsMethod hertsMethod) {
+    public HertsCoreUMethodHandler(HertsMethod hertsMethod) {
         this.hertsMethod = hertsMethod;
         this.requests = new Object[this.hertsMethod.getParameters().length];
 
@@ -53,19 +55,45 @@ public class HertsCoreStreamingMethodHandler<Req, Resp> implements
 
     @Override
     public StreamObserver<Req> invoke(StreamObserver<Resp> responseObserver) {
-        System.out.println("========= Call invoke");
-        try {
-            var response = this.reflectMethod.invoke(this.coreObject, responseObserver);
-            System.out.println("========= Response invoke");
-            return (StreamObserver<Req>) response;
-        } catch (IllegalAccessException | InvocationTargetException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
-        }
+        throw new AssertionError();
     }
 
     @Override
     public void invoke(Req request, StreamObserver<Resp> responseObserver) {
-        throw new AssertionError();
+        try {
+            Object response;
+            if (((byte[]) request).length > 0) {
+                HertsMsg deserialized = this.objectMapper.readValue((byte[]) request, HertsMsg.class);
+                var index = 0;
+                for (Object obj : deserialized.getMessageParameters()) {
+                    var castType = deserialized.getClassTypes()[index];
+                    this.requests[index] = this.objectMapper.convertValue(obj, castType);
+                    index++;
+                }
+
+                response = this.reflectMethod.invoke(this.coreObject, this.requests);
+            } else {
+                response = this.reflectMethod.invoke(this.coreObject);
+            }
+
+            if (response == null) {
+                System.out.println("Invoke response is null");
+                responseObserver.onNext(null);
+                responseObserver.onCompleted();
+            } else {
+                System.out.println("Invoke response is not null " + response);
+                var responseBytes = this.objectMapper.writeValueAsBytes(response);
+                responseObserver.onNext((Resp) responseBytes);
+                responseObserver.onCompleted();
+            }
+
+        } catch (IllegalAccessException | IOException ex) {
+            ex.printStackTrace();
+            responseObserver.onError(ex);
+        } catch (InvocationTargetException ex) {
+            ex.printStackTrace();
+            Throwable cause = ex.getCause();
+            responseObserver.onError(cause);
+        }
     }
 }

@@ -91,11 +91,45 @@ public class Main {
         });
     }
 
+    private static void clientStreaming() {
+        HertsClient client = new HertsClientImpl.Builder("localhost", "9000", HertsCoreType.BidirectionalStreaming)
+                .secure(false)
+                .hertsService(new ClientStreamingRpcServiceImpl())
+                .build();
+
+        var service = (ClientStreamingRpcService) client.createHertService(ClientStreamingRpcService.class);
+        var res = service.test10(new StreamObserver<>() {
+            @Override
+            public void onNext(HelloResponse req) {
+                logger.info(String.format("Got message at %d, %d", req.getCode(), req.getTimestamp()));
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                t.printStackTrace();
+                logger.info("ERRRR");
+            }
+
+            @Override
+            public void onCompleted() {
+                logger.info("onCompleted");
+            }
+        });
+
+        for (int i = 0; i < 10; i++) {
+            var r = new HelloRequest();
+            r.setNumber(10000);
+            res.onNext(r);
+        }
+        res.onCompleted();
+    }
+
     public static void main(String[] args) throws InterruptedException {
         try {
 //            unary();
 //            bidirectionalStreaming();
-            serverStreaming();
+//            serverStreaming();
+            clientStreaming();
             Thread.sleep(5000);
         } catch (Exception e) {
             e.printStackTrace();

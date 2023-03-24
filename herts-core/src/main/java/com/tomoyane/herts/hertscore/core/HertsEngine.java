@@ -7,9 +7,10 @@ import com.tomoyane.herts.hertscommon.descriptor.HertsUnaryDescriptor;
 import com.tomoyane.herts.hertscommon.marshaller.HertsMethod;
 import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
 import com.tomoyane.herts.hertscommon.descriptor.HertsStreamingDescriptor;
-import com.tomoyane.herts.hertscore.handler.HertsCoreServerStreamingMethodHandler;
-import com.tomoyane.herts.hertscore.handler.HertsCoreStreamingMethodHandler;
-import com.tomoyane.herts.hertscore.handler.HertsCoreUnaryMethodHandler;
+import com.tomoyane.herts.hertscore.handler.HertsCoreCStreamingMethodHandler;
+import com.tomoyane.herts.hertscore.handler.HertsCoreSStreamingMethodHandler;
+import com.tomoyane.herts.hertscore.handler.HertsCoreBMethodHandler;
+import com.tomoyane.herts.hertscore.handler.HertsCoreUMethodHandler;
 
 import io.grpc.BindableService;
 import io.grpc.Grpc;
@@ -44,11 +45,14 @@ public class HertsEngine {
             case Unary:
                 registerUnaryService((UnaryServiceCore) core);
                 break;
-            case ClientStreaming, BidirectionalStreaming:
+            case BidirectionalStreaming:
                 registerBidirectionalStreamingService((BidirectionalStreamingServiceCore) core);
                 break;
             case ServerStreaming:
                 registerServerStreamingService((ServerStreamingServiceCore) core);
+                break;
+            case ClientStreaming:
+                registerClientStreamingService((ClientStreamingServiceCore) core);
                 break;
         }
     }
@@ -104,8 +108,50 @@ public class HertsEngine {
 
                 int index = 0;
                 for (MethodDescriptor<Object, Object> methodDescriptor : descriptor.getMethodDescriptors()) {
-                    HertsCoreStreamingMethodHandler<Object, Object> handler = new HertsCoreStreamingMethodHandler<>(hertsMethods.get(index));
+                    HertsCoreBMethodHandler<Object, Object> handler = new HertsCoreBMethodHandler<>(hertsMethods.get(index));
                     builder = builder.addMethod(methodDescriptor, ServerCalls.asyncBidiStreamingCall(handler));
+                    index++;
+                }
+                return builder.build();
+            }
+        };
+    }
+
+    private void registerClientStreamingService(ClientStreamingServiceCore core) {
+        String serviceName = core.getClass().getName();
+        Class<?> thisClass;
+        try {
+            thisClass = Class.forName(serviceName);
+        } catch (ClassNotFoundException ignore) {
+            throw new HertsRpcNotFoundException("Unknown class name. Allowed class is " + UnaryServiceCore.class.getName());
+        }
+
+        Method[] methods = thisClass.getDeclaredMethods();
+        this.bindableService = new BindableService() {
+            private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
+
+            @Override
+            public ServerServiceDefinition bindService() {
+
+                List<HertsMethod> hertsMethods = new ArrayList<>();
+                for (Method method : methods) {
+                    HertsMethod hertsMethod = new HertsMethod();
+                    hertsMethod.setHertsCoreType(HertsCoreType.ServerStreaming);
+                    hertsMethod.setCoreServiceName(serviceName);
+                    hertsMethod.setMethodName(method.getName());
+                    hertsMethod.setMethodReturnType(method.getReturnType());
+                    hertsMethod.setParameters(method.getParameterTypes());
+                    hertsMethods.add(hertsMethod);
+                }
+                logger.info(hertsMethods.toString());
+
+                HertsStreamingDescriptor descriptor = HertsGrpcDescriptor.generateStreamingGrpcDescriptor(serviceName, hertsMethods);
+                ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
+
+                int index = 0;
+                for (MethodDescriptor<Object, Object> methodDescriptor : descriptor.getMethodDescriptors()) {
+                    HertsCoreCStreamingMethodHandler<Object, Object> handler = new HertsCoreCStreamingMethodHandler<>(hertsMethods.get(index));
+                    builder = builder.addMethod(methodDescriptor, ServerCalls.asyncClientStreamingCall(handler));
                     index++;
                 }
                 return builder.build();
@@ -146,7 +192,7 @@ public class HertsEngine {
 
                 int index = 0;
                 for (MethodDescriptor<Object, Object> methodDescriptor : descriptor.getMethodDescriptors()) {
-                    HertsCoreServerStreamingMethodHandler<Object, Object> handler = new HertsCoreServerStreamingMethodHandler<>(hertsMethods.get(index));
+                    HertsCoreSStreamingMethodHandler<Object, Object> handler = new HertsCoreSStreamingMethodHandler<>(hertsMethods.get(index));
                     builder = builder.addMethod(methodDescriptor, ServerCalls.asyncServerStreamingCall(handler));
                     index++;
                 }
@@ -187,7 +233,7 @@ public class HertsEngine {
 
                 int index = 0;
                 for (MethodDescriptor<byte[], byte[]> methodDescriptor : descriptor.getMethodDescriptors()) {
-                    HertsCoreUnaryMethodHandler<byte[], byte[]> handler = new HertsCoreUnaryMethodHandler<>(hertsMethods.get(index));
+                    HertsCoreUMethodHandler<byte[], byte[]> handler = new HertsCoreUMethodHandler<>(hertsMethods.get(index));
                     builder = builder.addMethod(methodDescriptor, ServerCalls.asyncUnaryCall(handler));
                     index++;
                 }

@@ -1,7 +1,6 @@
 package com.tomoyane.herts.hertscore.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.tomoyane.herts.hertscommon.exception.HertsInstanceException;
 import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscommon.marshaller.HertsMethod;
@@ -12,9 +11,8 @@ import org.msgpack.jackson.dataformat.MessagePackFactory;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
-public class HertsCoreServerStreamingMethodHandler<Req, Resp> implements
+public class HertsCoreSStreamingMethodHandler<Req, Resp> implements
         io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
         io.grpc.stub.ServerCalls.ServerStreamingMethod<Req, Resp>,
         io.grpc.stub.ServerCalls.ClientStreamingMethod<Req, Resp>,
@@ -26,7 +24,7 @@ public class HertsCoreServerStreamingMethodHandler<Req, Resp> implements
     private final Method reflectMethod;
     private final HertsMethod hertsMethod;
 
-    public HertsCoreServerStreamingMethodHandler(HertsMethod hertsMethod) {
+    public HertsCoreSStreamingMethodHandler(HertsMethod hertsMethod) {
         this.hertsMethod = hertsMethod;
         this.requests = new Object[this.hertsMethod.getParameters().length];
 //        this.objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);

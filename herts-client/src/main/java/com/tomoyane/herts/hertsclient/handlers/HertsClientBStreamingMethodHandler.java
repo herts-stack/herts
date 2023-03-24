@@ -1,39 +1,33 @@
 package com.tomoyane.herts.hertsclient.handlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
-import com.tomoyane.herts.hertscommon.marshaller.HertsMsg;
-
 import com.tomoyane.herts.hertscore.service.HertsService;
 import io.grpc.CallOptions;
 import io.grpc.Channel;
 import io.grpc.MethodDescriptor;
 import io.grpc.stub.ClientCalls;
-
+import io.grpc.stub.StreamObserver;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class HertsClientUnaryMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsClientUnaryMethodHandler> implements InvocationHandler {
-    private static final Logger logger = HertsLogger.getLogger(HertsClientUnaryMethodHandler.class.getSimpleName());
+public class HertsClientBStreamingMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsClientBStreamingMethodHandler> implements InvocationHandler {
+    private static final Logger logger = HertsLogger.getLogger(HertsClientBStreamingMethodHandler.class.getSimpleName());
 
     private final ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
     private final Map<String, Class<?>> methodTypes = new HashMap<>();
     private final HertsService hertsService;
     private final String serviceName;
 
-    public HertsClientUnaryMethodHandler(Channel channel, CallOptions callOptions, HertsService hertsService) {
+    public HertsClientBStreamingMethodHandler(Channel channel, CallOptions callOptions, HertsService hertsService) {
         super(channel, callOptions);
         this.hertsService = hertsService;
         this.serviceName = hertsService.getClass().getName();
@@ -54,33 +48,27 @@ public class HertsClientUnaryMethodHandler extends io.grpc.stub.AbstractBlocking
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
-        MethodDescriptor<byte[], byte[]> methodDescriptor = HertsGrpcDescriptor
-                .generateMethodDescriptor(HertsCoreType.Unary, this.serviceName, methodName);
+        MethodDescriptor<Object, Object> methodDescriptor = HertsGrpcDescriptor
+                .generateStramingMethodDescriptor(HertsCoreType.BidirectionalStreaming, this.serviceName, methodName);
 
-        byte[] bytes = new byte[]{};
+        StreamObserver<Object> bytes = null;
         if (args != null) {
-            int index = 0;
-            Class<?>[] classTypes = new Class<?>[args.length];
-            for (Object arg : args) {
-                classTypes[index] = arg.getClass();
-                index++;
-            }
-            bytes = this.objectMapper.writeValueAsBytes(new HertsMsg(args, classTypes));
+            bytes = (StreamObserver<Object>) args[0];
+        }
+        if (bytes == null) {
+            throw new RuntimeException("sasasasasasasaasasa");
         }
 
-        var res = ClientCalls.blockingUnaryCall(getChannel(), methodDescriptor, getCallOptions(), bytes);
-        return this.objectMapper.readValue(res, this.methodTypes.get(methodName));
-    }
+        System.out.println("===Client call===" + methodName);
 
-    private Object byteArrayToObject(byte[] bytes, Class<?> classType) throws IOException, ClassNotFoundException {
-        try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-             ObjectInputStream in = new ObjectInputStream(bis)) {
-            return in.readObject();
-        }
+        StreamObserver<Object> streamObserver = ClientCalls.asyncBidiStreamingCall(getChannel().newCall(methodDescriptor, getCallOptions()), bytes);
+
+        System.out.println("===Client called ===" + methodName);
+        return streamObserver;
     }
 
     @Override
-    protected HertsClientUnaryMethodHandler build(Channel channel, CallOptions callOptions) {
-        return new HertsClientUnaryMethodHandler(channel, callOptions, hertsService);
+    protected HertsClientBStreamingMethodHandler build(Channel channel, CallOptions callOptions) {
+        return new HertsClientBStreamingMethodHandler(channel, callOptions, hertsService);
     }
 }
