@@ -1,4 +1,4 @@
-package com.tomoyane.herts.hertscommon.mapping;
+package com.tomoyane.herts.hertscommon.descriptor;
 
 import io.grpc.MethodDescriptor;
 import io.grpc.ServiceDescriptor;

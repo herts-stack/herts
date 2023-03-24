@@ -1,12 +1,13 @@
 package com.tomoyane.herts.hertscore.core;
 
-import com.tomoyane.herts.hertscommon.enums.HertsCoreType;
+import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
-import com.tomoyane.herts.hertscommon.mapping.HertsDescriptor;
-import com.tomoyane.herts.hertscommon.mapping.HertsMethod;
+import com.tomoyane.herts.hertscommon.descriptor.HertsUnaryDescriptor;
+import com.tomoyane.herts.hertscommon.marshaller.HertsMethod;
 import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
-import com.tomoyane.herts.hertscommon.mapping.HertsStreamingDescriptor;
+import com.tomoyane.herts.hertscommon.descriptor.HertsStreamingDescriptor;
+import com.tomoyane.herts.hertscore.handler.HertsCoreServerStreamingMethodHandler;
 import com.tomoyane.herts.hertscore.handler.HertsCoreStreamingMethodHandler;
 import com.tomoyane.herts.hertscore.handler.HertsCoreUnaryMethodHandler;
 
@@ -43,8 +44,11 @@ public class HertsEngine {
             case Unary:
                 registerUnaryService((UnaryServiceCore) core);
                 break;
-            case ClientStreaming, ServerStreaming, BidirectionalStreaming:
-                registerStreamingService((StreamingServiceCore) core);
+            case ClientStreaming, BidirectionalStreaming:
+                registerBidirectionalStreamingService((BidirectionalStreamingServiceCore) core);
+                break;
+            case ServerStreaming:
+                registerServerStreamingService((ServerStreamingServiceCore) core);
                 break;
         }
     }
@@ -68,7 +72,7 @@ public class HertsEngine {
         }
     }
 
-    private void registerStreamingService(StreamingServiceCore core) {
+    private void registerBidirectionalStreamingService(BidirectionalStreamingServiceCore core) {
         String serviceName = core.getClass().getName();
         Class<?> thisClass;
         try {
@@ -109,6 +113,48 @@ public class HertsEngine {
         };
     }
 
+    private void registerServerStreamingService(ServerStreamingServiceCore core) {
+        String serviceName = core.getClass().getName();
+        Class<?> thisClass;
+        try {
+            thisClass = Class.forName(serviceName);
+        } catch (ClassNotFoundException ignore) {
+            throw new HertsRpcNotFoundException("Unknown class name. Allowed class is " + UnaryServiceCore.class.getName());
+        }
+
+        Method[] methods = thisClass.getDeclaredMethods();
+        this.bindableService = new BindableService() {
+            private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
+
+            @Override
+            public ServerServiceDefinition bindService() {
+
+                List<HertsMethod> hertsMethods = new ArrayList<>();
+                for (Method method : methods) {
+                    HertsMethod hertsMethod = new HertsMethod();
+                    hertsMethod.setHertsCoreType(HertsCoreType.ServerStreaming);
+                    hertsMethod.setCoreServiceName(serviceName);
+                    hertsMethod.setMethodName(method.getName());
+                    hertsMethod.setMethodReturnType(method.getReturnType());
+                    hertsMethod.setParameters(method.getParameterTypes());
+                    hertsMethods.add(hertsMethod);
+                }
+                logger.info(hertsMethods.toString());
+
+                HertsStreamingDescriptor descriptor = HertsGrpcDescriptor.generateStreamingGrpcDescriptor(serviceName, hertsMethods);
+                ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
+
+                int index = 0;
+                for (MethodDescriptor<Object, Object> methodDescriptor : descriptor.getMethodDescriptors()) {
+                    HertsCoreServerStreamingMethodHandler<Object, Object> handler = new HertsCoreServerStreamingMethodHandler<>(hertsMethods.get(index));
+                    builder = builder.addMethod(methodDescriptor, ServerCalls.asyncServerStreamingCall(handler));
+                    index++;
+                }
+                return builder.build();
+            }
+        };
+    }
+
     private void registerUnaryService(UnaryServiceCore core) {
         String serviceName = core.getClass().getName();
         Class<?> thisClass;
@@ -136,7 +182,7 @@ public class HertsEngine {
                     hertsMethods.add(hertsMethod);
                 }
 
-                HertsDescriptor descriptor = HertsGrpcDescriptor.generateGrpcDescriptor(serviceName, hertsMethods);
+                HertsUnaryDescriptor descriptor = HertsGrpcDescriptor.generateGrpcDescriptor(serviceName, hertsMethods);
                 ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
 
                 int index = 0;

@@ -1,24 +1,24 @@
-package com.tomoyane.herts.hertscommon.mapping;
+package com.tomoyane.herts.hertscommon.descriptor;
 
 import io.grpc.MethodDescriptor;
 import io.grpc.ServiceDescriptor;
 
 import java.util.List;
 
-public class HertsDescriptor {
+public class HertsUnaryDescriptor {
     private ServiceDescriptor serviceDescriptor;
     private List<MethodDescriptor<byte[], byte[]>> methodDescriptors;
 
-    public HertsDescriptor() {
+    public HertsUnaryDescriptor() {
     }
 
-    private HertsDescriptor(ServiceDescriptor serviceDescriptor, List<MethodDescriptor<byte[], byte[]>> methodDescriptors) {
+    private HertsUnaryDescriptor(ServiceDescriptor serviceDescriptor, List<MethodDescriptor<byte[], byte[]>> methodDescriptors) {
         this.serviceDescriptor = serviceDescriptor;
         this.methodDescriptors = methodDescriptors;
     }
 
-    public static HertsDescriptor createGrpcDescriptor(ServiceDescriptor serviceDescriptor, List<MethodDescriptor<byte[], byte[]>> methodDescriptors) {
-        return new HertsDescriptor(serviceDescriptor, methodDescriptors);
+    public static HertsUnaryDescriptor createGrpcDescriptor(ServiceDescriptor serviceDescriptor, List<MethodDescriptor<byte[], byte[]>> methodDescriptors) {
+        return new HertsUnaryDescriptor(serviceDescriptor, methodDescriptors);
     }
 
     public ServiceDescriptor getServiceDescriptor() {

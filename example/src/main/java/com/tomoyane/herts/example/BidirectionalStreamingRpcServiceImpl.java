@@ -1,14 +1,12 @@
 package com.tomoyane.herts.example;
 
-import com.tomoyane.herts.hertscommon.util.DateUtil;
-import com.tomoyane.herts.hertscore.core.StreamingServiceCore;
+import com.tomoyane.herts.hertscommon.util.DateTimeUtil;
+import com.tomoyane.herts.hertscore.core.BidirectionalStreamingServiceCore;
 import io.grpc.stub.StreamObserver;
 
-import java.util.concurrent.TimeUnit;
+public class BidirectionalStreamingRpcServiceImpl extends BidirectionalStreamingServiceCore implements BidirectionalStreamingRpcService {
 
-public class StreamingRpcServiceImpl extends StreamingServiceCore implements StreamingRpcService {
-
-    public StreamingRpcServiceImpl() {
+    public BidirectionalStreamingRpcServiceImpl() {
     }
 
     public StreamObserver<HelloResponse> test04(final StreamObserver<HelloResponse> responseObserver) {
@@ -18,7 +16,7 @@ public class StreamingRpcServiceImpl extends StreamingServiceCore implements Str
             public void onNext(HelloResponse response) {
                 var req = new HelloResponse();
                 req.setCode(99);
-                req.setTimestamp(DateUtil.getCurrentTimeMilliSec());
+                req.setTimestamp(DateTimeUtil.getCurrentTimeMilliSec());
                 responseObserver.onNext(req);
                 System.out.println(response.getCode());
             }

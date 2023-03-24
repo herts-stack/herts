@@ -1,4 +1,4 @@
-package com.tomoyane.herts.hertscommon.mapping;
+package com.tomoyane.herts.hertscommon.marshaller;
 
 import com.google.common.io.ByteStreams;
 

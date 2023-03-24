@@ -3,7 +3,7 @@ package com.tomoyane.herts.hertscore.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tomoyane.herts.hertscommon.exception.HertsInstanceException;
 import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
-import com.tomoyane.herts.hertscommon.mapping.HertsMethod;
+import com.tomoyane.herts.hertscommon.marshaller.HertsMethod;
 import io.grpc.stub.StreamObserver;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 
@@ -66,7 +66,6 @@ public class HertsCoreStreamingMethodHandler<Req, Resp> implements
 
     @Override
     public void invoke(Req request, StreamObserver<Resp> responseObserver) {
-        System.out.println("========= Call invoke");
         throw new AssertionError();
     }
 }

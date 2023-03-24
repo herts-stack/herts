@@ -1,6 +1,8 @@
 package com.tomoyane.herts.example;
 
-public class HelloRequest {
+import com.tomoyane.herts.hertscommon.marshaller.HertsMsg;
+
+public class HelloRequest extends HertsMsg {
     private String key;
     private boolean isOk;
     private int number;

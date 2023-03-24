@@ -2,10 +2,9 @@ package com.tomoyane.herts.hertsclient.handlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
-import com.tomoyane.herts.hertscommon.enums.HertsCoreType;
+import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
-import com.tomoyane.herts.hertscommon.mapping.HertsMsg;
 import com.tomoyane.herts.hertscore.service.HertsService;
 import io.grpc.CallOptions;
 import io.grpc.Channel;
@@ -14,24 +13,21 @@ import io.grpc.stub.ClientCalls;
 import io.grpc.stub.StreamObserver;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class HertsClientStreamingMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsClientStreamingMethodHandler> implements InvocationHandler {
-    private static final Logger logger = HertsLogger.getLogger(HertsClientStreamingMethodHandler.class.getSimpleName());
+public class HertsClientBidirectionalStreamingMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsClientBidirectionalStreamingMethodHandler> implements InvocationHandler {
+    private static final Logger logger = HertsLogger.getLogger(HertsClientBidirectionalStreamingMethodHandler.class.getSimpleName());
 
     private final ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
     private final Map<String, Class<?>> methodTypes = new HashMap<>();
     private final HertsService hertsService;
     private final String serviceName;
 
-    public HertsClientStreamingMethodHandler(Channel channel, CallOptions callOptions, HertsService hertsService) {
+    public HertsClientBidirectionalStreamingMethodHandler(Channel channel, CallOptions callOptions, HertsService hertsService) {
         super(channel, callOptions);
         this.hertsService = hertsService;
         this.serviceName = hertsService.getClass().getName();
@@ -72,7 +68,7 @@ public class HertsClientStreamingMethodHandler extends io.grpc.stub.AbstractBloc
     }
 
     @Override
-    protected HertsClientStreamingMethodHandler build(Channel channel, CallOptions callOptions) {
-        return new HertsClientStreamingMethodHandler(channel, callOptions, hertsService);
+    protected HertsClientBidirectionalStreamingMethodHandler build(Channel channel, CallOptions callOptions) {
+        return new HertsClientBidirectionalStreamingMethodHandler(channel, callOptions, hertsService);
     }
 }

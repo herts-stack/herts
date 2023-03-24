@@ -17,3 +17,11 @@ message HelloResponse {
 service StreamingService {
   rpc test04(stream HelloRequest) returns (stream HelloResponse);
 }
+
+service ServerStreamingService {
+  rpc test04(HelloRequest) returns (stream HelloResponse);
+}
+
+service ClientStreamingService {
+  rpc test04(stream HelloRequest) returns (HelloResponse);
+}

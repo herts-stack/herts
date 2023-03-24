@@ -25,4 +25,10 @@ public class UnaryRpcServiceImpl extends UnaryServiceCore implements UnaryRpcSer
         System.out.println("------------ test03 RPC ----------- ");
         return Collections.singletonMap("Key", "Value");
     }
+
+    @Override
+    public boolean test100(HelloRequest req) {
+        System.out.println("------------ test100 RPC ----------- ");
+        return false;
+    }
 }

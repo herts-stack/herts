@@ -1,4 +1,4 @@
-package com.tomoyane.herts.hertscommon.enums;
+package com.tomoyane.herts.hertscommon.context;
 
 public enum HertsType {
     HertsClient,

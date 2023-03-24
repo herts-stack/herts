@@ -1,4 +1,4 @@
-package com.tomoyane.herts.hertscommon.mapping;
+package com.tomoyane.herts.hertscommon.marshaller;
 
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
 import io.grpc.MethodDescriptor;

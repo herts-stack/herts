@@ -1,4 +1,4 @@
-package com.tomoyane.herts.hertscommon.enums;
+package com.tomoyane.herts.hertscommon.context;
 
 import com.tomoyane.herts.hertscommon.exception.HertsCoreTypeInvalidException;
 import io.grpc.MethodDescriptor;

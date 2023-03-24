@@ -1,7 +1,7 @@
 package com.tomoyane.herts.hertscommon.descriptor;
 
-import com.tomoyane.herts.hertscommon.enums.HertsCoreType;
-import com.tomoyane.herts.hertscommon.mapping.*;
+import com.tomoyane.herts.hertscommon.context.HertsCoreType;
+import com.tomoyane.herts.hertscommon.marshaller.*;
 
 import io.grpc.MethodDescriptor;
 import io.grpc.ServiceDescriptor;
@@ -67,7 +67,7 @@ public class HertsGrpcDescriptor {
      * @param hertsMethods HertMethod class list
      * @return HertsDescriptor
      */
-    public static HertsDescriptor generateGrpcDescriptor(String serviceName, List<HertsMethod> hertsMethods) {
+    public static HertsUnaryDescriptor generateGrpcDescriptor(String serviceName, List<HertsMethod> hertsMethods) {
         ServiceDescriptor.Builder builder = ServiceDescriptor.newBuilder(serviceName);
         List<MethodDescriptor<byte[], byte[]>> methodDescriptors = new ArrayList<>();
 
@@ -79,7 +79,7 @@ public class HertsGrpcDescriptor {
             builder.addMethod(method);
         }
 
-        return HertsDescriptor.createGrpcDescriptor(builder.build(), methodDescriptors);
+        return HertsUnaryDescriptor.createGrpcDescriptor(builder.build(), methodDescriptors);
     }
 
     public static HertsStreamingDescriptor generateStreamingGrpcDescriptor(String serviceName, List<HertsMethod> hertsMethods) {

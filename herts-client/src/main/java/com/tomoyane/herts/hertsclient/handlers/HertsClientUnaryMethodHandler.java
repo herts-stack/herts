@@ -1,11 +1,12 @@
 package com.tomoyane.herts.hertsclient.handlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
-import com.tomoyane.herts.hertscommon.enums.HertsCoreType;
+import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
-import com.tomoyane.herts.hertscommon.mapping.HertsMsg;
+import com.tomoyane.herts.hertscommon.marshaller.HertsMsg;
 
 import com.tomoyane.herts.hertscore.service.HertsService;
 import io.grpc.CallOptions;
@@ -24,15 +25,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class HertsClientBlockingMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsClientBlockingMethodHandler> implements InvocationHandler {
-    private static final Logger logger = HertsLogger.getLogger(HertsClientBlockingMethodHandler.class.getSimpleName());
+public class HertsClientUnaryMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsClientUnaryMethodHandler> implements InvocationHandler {
+    private static final Logger logger = HertsLogger.getLogger(HertsClientUnaryMethodHandler.class.getSimpleName());
 
     private final ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
     private final Map<String, Class<?>> methodTypes = new HashMap<>();
     private final HertsService hertsService;
     private final String serviceName;
 
-    public HertsClientBlockingMethodHandler(Channel channel, CallOptions callOptions, HertsService hertsService) {
+    public HertsClientUnaryMethodHandler(Channel channel, CallOptions callOptions, HertsService hertsService) {
         super(channel, callOptions);
         this.hertsService = hertsService;
         this.serviceName = hertsService.getClass().getName();
@@ -59,14 +60,12 @@ public class HertsClientBlockingMethodHandler extends io.grpc.stub.AbstractBlock
         byte[] bytes = new byte[]{};
         if (args != null) {
             int index = 0;
-            Map<String, Object> d = new HashMap<>();
+            Class<?>[] classTypes = new Class<?>[args.length];
             for (Object arg : args) {
-                d.put("key_" + index, arg);
+                classTypes[index] = arg.getClass();
                 index++;
             }
-
-            HertsMsg msg = new HertsMsg(d);
-            bytes = this.objectMapper.writeValueAsBytes(msg);
+            bytes = this.objectMapper.writeValueAsBytes(new HertsMsg(args, classTypes));
         }
 
         var res = ClientCalls.blockingUnaryCall(getChannel(), methodDescriptor, getCallOptions(), bytes);
@@ -81,7 +80,7 @@ public class HertsClientBlockingMethodHandler extends io.grpc.stub.AbstractBlock
     }
 
     @Override
-    protected HertsClientBlockingMethodHandler build(Channel channel, CallOptions callOptions) {
-        return new HertsClientBlockingMethodHandler(channel, callOptions, hertsService);
+    protected HertsClientUnaryMethodHandler build(Channel channel, CallOptions callOptions) {
+        return new HertsClientUnaryMethodHandler(channel, callOptions, hertsService);
     }
 }

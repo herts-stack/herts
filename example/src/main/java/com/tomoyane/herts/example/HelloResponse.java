@@ -1,8 +1,8 @@
 package com.tomoyane.herts.example;
 
-import java.io.Serializable;
+import com.tomoyane.herts.hertscommon.marshaller.HertsMsg;
 
-public class HelloResponse implements Serializable {
+public class HelloResponse extends HertsMsg {
     private int code;
     private long timestamp;
 

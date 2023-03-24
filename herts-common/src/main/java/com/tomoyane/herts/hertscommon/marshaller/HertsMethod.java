@@ -1,6 +1,6 @@
-package com.tomoyane.herts.hertscommon.mapping;
+package com.tomoyane.herts.hertscommon.marshaller;
 
-import com.tomoyane.herts.hertscommon.enums.HertsCoreType;
+import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 
 public class HertsMethod {
     private HertsCoreType hertsCoreType;
