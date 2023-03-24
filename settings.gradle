@@ -5,4 +5,5 @@ include 'herts-common'
 include 'tools'
 include 'example'
 include 'grpc-proto-example'
+include 'herts-metrics'
 

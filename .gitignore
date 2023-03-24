@@ -2,6 +2,7 @@
 herts-core/build/
 herts-client/build/
 herts-common/build/
+herts-metrics/build/
 tools/build/
 example/build/
 grpc-proto-example/build/
