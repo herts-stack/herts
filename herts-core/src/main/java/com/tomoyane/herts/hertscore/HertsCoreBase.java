@@ -1,4 +1,4 @@
-package com.tomoyane.herts.hertscore.core;
+package com.tomoyane.herts.hertscore;
 
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscommon.service.HertsService;

@@ -17,7 +17,7 @@ public class ClientServiceExample {
                 .create("localhost", 9000, HertsCoreType.Unary)
                 .secure(false)
                 .hertsImplementationService(new UnaryRpcServiceImpl())
-                .interceptor(new GrpcInterceptor())
+                .interceptor(new GrpcClientInterceptor())
                 .build();
 
         UnaryRpcService service = client.createHertService(UnaryRpcService.class);
@@ -99,7 +99,7 @@ public class ClientServiceExample {
                 .create("localhost", 9000, HertsCoreType.BidirectionalStreaming)
                 .secure(false)
                 .hertsImplementationService(new ClientStreamingRpcServiceImpl())
-                .interceptor(new GrpcInterceptor())
+                .interceptor(new GrpcClientInterceptor())
                 .build();
 
         ClientStreamingRpcService service = client.createHertService(ClientStreamingRpcService.class);

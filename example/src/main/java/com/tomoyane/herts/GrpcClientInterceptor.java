@@ -6,7 +6,7 @@ import io.grpc.ClientInterceptor;
 import io.grpc.MethodDescriptor;
 import io.grpc.Channel;
 
-public class GrpcInterceptor implements ClientInterceptor {
+public class GrpcClientInterceptor implements ClientInterceptor {
 
     @Override
     public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(

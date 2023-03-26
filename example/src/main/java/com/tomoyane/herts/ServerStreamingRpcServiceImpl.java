@@ -1,6 +1,6 @@
 package com.tomoyane.herts;
 
-import com.tomoyane.herts.hertscore.core.ServerStreamingServiceCore;
+import com.tomoyane.herts.hertscore.ServerStreamingServiceCore;
 import io.grpc.stub.StreamObserver;
 
 public class ServerStreamingRpcServiceImpl extends ServerStreamingServiceCore implements ServerStreamingRpcService {

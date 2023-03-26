@@ -1,9 +1,8 @@
 package java17.com.tomoyane.herts.example.server;
 
 import com.tomoyane.herts.BidirectionalStreamingRpcServiceImpl;
-import com.tomoyane.herts.ClientStreamingRpcServiceImpl;
-import com.tomoyane.herts.UnaryRpcServiceImpl;
-import com.tomoyane.herts.hertscore.core.HertsEngineBuilder;
+import com.tomoyane.herts.GrpcServerInterceptor;
+import com.tomoyane.herts.hertscore.engine.HertsEngineBuilder;
 
 public class Main {
     public static void main(String[] args) {
@@ -11,7 +10,11 @@ public class Main {
         var service = new BidirectionalStreamingRpcServiceImpl();
         //var service = new ServerStreamingRpcServiceImpl();
 //        var service = new ClientStreamingRpcServiceImpl();
-        var engine = HertsEngineBuilder.Builder.create().service(service).build();
+        var engine = HertsEngineBuilder.Builder
+                .create()
+                .service(service)
+                .interceptor(new GrpcServerInterceptor())
+                .build();
         engine.start();
     }
 }
