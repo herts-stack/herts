@@ -6,4 +6,5 @@ include 'tools'
 include 'example'
 include 'grpc-proto-example'
 include 'herts-metrics'
+include 'herts-codegen'
 
