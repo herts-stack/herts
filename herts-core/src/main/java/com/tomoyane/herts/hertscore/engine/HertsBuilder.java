@@ -27,4 +27,6 @@ public interface HertsBuilder {
     Map<BindableService, ServerInterceptor> getServices();
 
     List<HertsCoreType> getHertsCoreTypes();
+
+    List<HertsService> getHertsServices();
 }

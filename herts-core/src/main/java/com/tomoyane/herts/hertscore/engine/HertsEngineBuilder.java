@@ -46,6 +46,7 @@ public class HertsEngineBuilder implements HertsEngine {
 
     private final Map<BindableService, ServerInterceptor> services;
     private final List<HertsCoreType> hertsCoreTypes;
+    private final List<HertsService> hertsServices;
     private final int port;
     private final ServerCredentials credentials;
 
@@ -56,11 +57,13 @@ public class HertsEngineBuilder implements HertsEngine {
         this.credentials = builder.getCredentials();
         this.hertsCoreTypes = builder.getHertsCoreTypes();
         this.services = builder.getServices();
+        this.hertsServices = builder.getHertsServices();
     }
 
     public static class Builder implements HertsBuilder {
         private final Map<BindableService, ServerInterceptor> services = new HashMap<>();
         private final List<HertsCoreType> hertsCoreTypes = new ArrayList<>();
+        private final List<HertsService> hertsServices = new ArrayList<>();
         private int port = 9000;
         private ServerCredentials credentials;
 
@@ -77,6 +80,11 @@ public class HertsEngineBuilder implements HertsEngine {
 
         public static HertsBuilder create() {
             return new Builder();
+        }
+
+        @Override
+        public List<HertsService> getHertsServices() {
+            return hertsServices;
         }
 
         @Override
@@ -105,7 +113,9 @@ public class HertsEngineBuilder implements HertsEngine {
                 throw new HertsCoreBuildException("HertsService arg is null");
             }
 
+            this.hertsServices.add(hertsService);
             this.hertsCoreTypes.add(hertsService.getHertsCoreType());
+
             BindableService bindableService;
             switch (hertsService.getHertsCoreType()) {
                 case Unary:
@@ -154,8 +164,13 @@ public class HertsEngineBuilder implements HertsEngine {
             if (this.hertsCoreTypes.size() == 0 || this.services.size() == 0) {
                 throw new HertsCoreBuildException("Please register HertsCoreService");
             }
-            if (!HertsServiceValidator.isSameType(this.hertsCoreTypes)) {
+            if (!HertsServiceValidator.isSameHertsCoreType(this.hertsCoreTypes)) {
                 throw new HertsCoreBuildException("Please register same HertsCoreService. Not supported multiple different services");
+            }
+
+            var validateMsg = HertsServiceValidator.validateRegisteredServices(this.hertsServices);
+            if (!validateMsg.isEmpty()) {
+                throw new HertsCoreBuildException(validateMsg);
             }
             return new HertsEngineBuilder(this);
         }
