@@ -17,10 +17,13 @@ import com.tomoyane.herts.hertscore.handler.HertsCoreSStreamingMethodHandler;
 import com.tomoyane.herts.hertscore.handler.HertsCoreBMethodHandler;
 import com.tomoyane.herts.hertscore.handler.HertsCoreUMethodHandler;
 import com.tomoyane.herts.hertscommon.service.HertsService;
-
 import com.tomoyane.herts.hertscore.model.ReflectMethod;
+import com.tomoyane.herts.hertscore.validator.HertsServiceValidator;
+
 import io.grpc.Grpc;
 import io.grpc.InsecureServerCredentials;
+import io.grpc.ServerBuilder;
+import io.grpc.ServerCredentials;
 import io.grpc.ServerInterceptor;
 import io.grpc.ServerInterceptors;
 import io.grpc.stub.ServerCalls;
@@ -29,34 +32,37 @@ import io.grpc.Server;
 import io.grpc.ServerServiceDefinition;
 import io.grpc.MethodDescriptor;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class HertsEngineBuilder implements HertsEngine {
     private static final Logger logger = HertsLogger.getLogger(HertsEngineBuilder.class.getSimpleName());
 
-    private final BindableService bindableService;
-    private final HertsCoreType hertsCoreType;
-    private final ServerInterceptor interceptor;
+    private final Map<BindableService, ServerInterceptor> services;
+    private final List<HertsCoreType> hertsCoreTypes;
     private final int port;
+    private final ServerCredentials credentials;
 
     private Server server;
 
     private HertsEngineBuilder(Builder builder) {
-        this.port = builder.port;
-        this.bindableService = builder.bindableService;
-        this.hertsCoreType = builder.hertsCoreType;
-        this.interceptor = builder.interceptor;
+        this.port = builder.getPort();
+        this.credentials = builder.getCredentials();
+        this.hertsCoreTypes = builder.getHertsCoreTypes();
+        this.services = builder.getServices();
     }
 
-    public static class Builder {
+    public static class Builder implements HertsBuilder {
+        private final Map<BindableService, ServerInterceptor> services = new HashMap<>();
+        private final List<HertsCoreType> hertsCoreTypes = new ArrayList<>();
         private int port = 9000;
-        private HertsCoreType hertsCoreType;
-        private BindableService bindableService;
-        private ServerInterceptor interceptor;
+        private ServerCredentials credentials;
 
         private Builder() {
         }
@@ -65,47 +71,91 @@ public class HertsEngineBuilder implements HertsEngine {
             this.port = port;
         }
 
-        public static Builder create(int port) {
+        public static HertsBuilder create(int port) {
             return new Builder(port);
         }
 
-        public static Builder create() {
+        public static HertsBuilder create() {
             return new Builder();
         }
 
-        public Builder service(HertsService hertsService) {
-            this.hertsCoreType = hertsService.getHertsCoreType();
+        @Override
+        public Map<BindableService, ServerInterceptor> getServices() {
+            return services;
+        }
+
+        @Override
+        public List<HertsCoreType> getHertsCoreTypes() {
+            return hertsCoreTypes;
+        }
+
+        @Override
+        public int getPort() {
+            return port;
+        }
+
+        @Override
+        public ServerCredentials getCredentials() {
+            return credentials;
+        }
+
+        @Override
+        public HertsBuilder addService(HertsService hertsService, @Nullable ServerInterceptor interceptor) {
+            if (hertsService == null) {
+                throw new HertsCoreBuildException("HertsService arg is null");
+            }
+
+            this.hertsCoreTypes.add(hertsService.getHertsCoreType());
+            BindableService bindableService;
             switch (hertsService.getHertsCoreType()) {
                 case Unary:
-                    this.bindableService = registerUnaryService((UnaryServiceCore) hertsService);
+                    bindableService = registerUnaryService((UnaryServiceCore) hertsService);
                     break;
                 case BidirectionalStreaming:
-                    this.bindableService = registerBidirectionalStreamingService((BidirectionalStreamingServiceCore) hertsService);
+                    bindableService = registerBidirectionalStreamingService((BidirectionalStreamingServiceCore) hertsService);
                     break;
                 case ServerStreaming:
-                    this.bindableService = registerServerStreamingService((ServerStreamingServiceCore) hertsService);
+                    bindableService = registerServerStreamingService((ServerStreamingServiceCore) hertsService);
                     break;
                 case ClientStreaming:
-                    this.bindableService = registerClientStreamingService((ClientStreamingServiceCore) hertsService);
+                    bindableService = registerClientStreamingService((ClientStreamingServiceCore) hertsService);
                     break;
+                default:
+                    throw new HertsCoreBuildException("HertsCoreType is invalid");
+            }
+
+            if (interceptor == null) {
+                this.services.put(bindableService, null);
+            } else {
+                this.services.put(bindableService, interceptor);
             }
             return this;
         }
 
-        public Builder customService(BindableService grpcService, HertsCoreType hertsCoreType) {
-            this.hertsCoreType = hertsCoreType;
-            this.bindableService = grpcService;
+        @Override
+        public HertsBuilder secure(ServerCredentials credentials) {
+            this.credentials = credentials;
             return this;
         }
 
-        public Builder interceptor(ServerInterceptor interceptor) {
-            this.interceptor = interceptor;
+        @Override
+        public HertsBuilder addCustomService(BindableService grpcService, HertsCoreType hertsCoreType, @Nullable ServerInterceptor interceptor) {
+            if (grpcService == null) {
+                throw new HertsCoreBuildException("HertsService arg is null");
+            }
+
+            this.hertsCoreTypes.add(hertsCoreType);
+            this.services.put(grpcService, interceptor);
             return this;
         }
 
+        @Override
         public HertsEngine build() {
-            if (this.hertsCoreType == null || this.bindableService == null) {
+            if (this.hertsCoreTypes.size() == 0 || this.services.size() == 0) {
                 throw new HertsCoreBuildException("Please register HertsCoreService");
+            }
+            if (!HertsServiceValidator.isSameType(this.hertsCoreTypes)) {
+                throw new HertsCoreBuildException("Please register same HertsCoreService. Not supported multiple different services");
             }
             return new HertsEngineBuilder(this);
         }
@@ -114,17 +164,24 @@ public class HertsEngineBuilder implements HertsEngine {
     @Override
     public void start() {
         try {
-            var builder = Grpc
-                    .newServerBuilderForPort(this.port, InsecureServerCredentials.create())
-                    .addService(this.bindableService);
+            ServerBuilder<?> serverBuilder;
 
-            if (this.interceptor != null) {
-                builder = builder.addService(ServerInterceptors.intercept(this.bindableService, interceptor));
+            if (this.credentials != null) {
+                serverBuilder = Grpc.newServerBuilderForPort(this.port, this.credentials);
+            } else {
+                serverBuilder = Grpc.newServerBuilderForPort(this.port, InsecureServerCredentials.create());
             }
 
-            this.server = builder.build();
+            for (Map.Entry<BindableService, ServerInterceptor> service : this.services.entrySet()) {
+                serverBuilder = serverBuilder.addService(service.getKey());
+                if (service.getValue() != null) {
+                    serverBuilder = serverBuilder.addService(ServerInterceptors.intercept(service.getKey(), service.getValue()));
+                }
+            }
+
+            this.server = serverBuilder.build();
             this.server.start();
-            logger.info("Started Herts server " + hertsCoreType);
+            logger.info("Started Herts server. gRPC type " + this.hertsCoreTypes.get(0));
             server.awaitTermination();
         } catch (IOException | InterruptedException ex) {
             throw new HertsCoreBuildException(ex);
@@ -137,6 +194,14 @@ public class HertsEngineBuilder implements HertsEngine {
             return null;
         }
         return this.server;
+    }
+
+    @Override
+    public HertsCoreType getHertCoreType() {
+        if (this.hertsCoreTypes.size() == 0) {
+            return null;
+        }
+        return this.hertsCoreTypes.get(0);
     }
 
     private static ReflectMethod generateReflectMethod(String serviceName) {

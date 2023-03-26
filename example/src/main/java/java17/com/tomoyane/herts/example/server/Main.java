@@ -12,8 +12,7 @@ public class Main {
 //        var service = new ClientStreamingRpcServiceImpl();
         var engine = HertsEngineBuilder.Builder
                 .create()
-                .service(service)
-                .interceptor(new GrpcServerInterceptor())
+                .addService(service, new GrpcServerInterceptor())
                 .build();
         engine.start();
     }
