@@ -16,11 +16,11 @@ public class ClientServiceExample {
         HertsClient client = HertsClientBuilder.Builder
                 .create("localhost", 9000, HertsCoreType.Unary)
                 .secure(false)
-                .hertsService(new UnaryRpcServiceImpl())
+                .hertsImplementationService(new UnaryRpcServiceImpl())
                 .interceptor(new GrpcInterceptor())
                 .build();
 
-        var service = (UnaryRpcService) client.createHertService(UnaryRpcService.class);
+        UnaryRpcService service = client.createHertService(UnaryRpcService.class);
         var res01 = service.test01("TEST01", "VALUE01");
         var res02 = service.test02();
         var res03 = service.test03();
@@ -37,10 +37,10 @@ public class ClientServiceExample {
         HertsClient client = HertsClientBuilder.Builder
                 .create("localhost", 9000, HertsCoreType.BidirectionalStreaming)
                 .secure(false)
-                .hertsService(new BidirectionalStreamingRpcServiceImpl())
+                .hertsImplementationService(new BidirectionalStreamingRpcServiceImpl())
                 .build();
 
-        var service = (BidirectionalStreamingRpcService) client.createHertService(BidirectionalStreamingRpcService.class);
+        BidirectionalStreamingRpcService service = client.createHertService(BidirectionalStreamingRpcService.class);
         var res = service.test04(new StreamObserver<>() {
             @Override
             public void onNext(HelloResponse req) {
@@ -69,10 +69,10 @@ public class ClientServiceExample {
         HertsClient client = HertsClientBuilder.Builder
                 .create("localhost", 9000, HertsCoreType.ServerStreaming)
                 .secure(false)
-                .hertsService(new ServerStreamingRpcServiceImpl())
+                .hertsImplementationService(new ServerStreamingRpcServiceImpl())
                 .build();
 
-        var service = (ServerStreamingRpcService) client.createHertService(ServerStreamingRpcService.class);
+        ServerStreamingRpcService service = client.createHertService(ServerStreamingRpcService.class);
         var req = new HelloRequest();
         req.setNumber(7777);
         service.test05("ABC_id", req, new StreamObserver<HelloResponse>() {
@@ -98,11 +98,11 @@ public class ClientServiceExample {
         HertsClient client = HertsClientBuilder.Builder
                 .create("localhost", 9000, HertsCoreType.BidirectionalStreaming)
                 .secure(false)
-                .hertsService(new ClientStreamingRpcServiceImpl())
+                .hertsImplementationService(new ClientStreamingRpcServiceImpl())
                 .interceptor(new GrpcInterceptor())
                 .build();
 
-        var service = (ClientStreamingRpcService) client.createHertService(ClientStreamingRpcService.class);
+        ClientStreamingRpcService service = client.createHertService(ClientStreamingRpcService.class);
         var res = service.test10(new StreamObserver<>() {
             @Override
             public void onNext(HelloResponse req) {

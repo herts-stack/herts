@@ -9,6 +9,7 @@ public interface HertsClient {
     String getConnectedHost();
     boolean isSecureConnection();
     ManagedChannel getChannel();
-    HertsService createHertService(Class<?> classType);
+    <T extends HertsService> T createHertService(Class<T> classType);
+
     HertsCoreType getHertsCoreType();
 }

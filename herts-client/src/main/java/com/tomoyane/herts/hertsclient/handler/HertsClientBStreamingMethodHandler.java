@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class HertsClientBStreamingMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsClientBStreamingMethodHandler> implements InvocationHandler {
+public class HertsClientBStreamingMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsClientBStreamingMethodHandler> implements InvocationHandler, HertsService {
     private static final Logger logger = HertsLogger.getLogger(HertsClientBStreamingMethodHandler.class.getSimpleName());
 
     private final ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
@@ -70,5 +70,20 @@ public class HertsClientBStreamingMethodHandler extends io.grpc.stub.AbstractBlo
     @Override
     protected HertsClientBStreamingMethodHandler build(Channel channel, CallOptions callOptions) {
         return new HertsClientBStreamingMethodHandler(channel, callOptions, hertsService);
+    }
+
+    @Override
+    public HertsCoreType getHertsCoreType() {
+        return null;
+    }
+
+    @Override
+    public MethodDescriptor.MethodType getGrpcMethodType() {
+        return null;
+    }
+
+    @Override
+    public String[] getConnections() {
+        return new String[0];
     }
 }

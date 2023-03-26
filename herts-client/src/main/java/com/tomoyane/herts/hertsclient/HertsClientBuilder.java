@@ -6,6 +6,7 @@ import com.tomoyane.herts.hertsclient.handler.HertsClientBStreamingMethodHandler
 import com.tomoyane.herts.hertsclient.handler.HertsClientSStreamingMethodHandler;
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscommon.exception.HertsChannelIsNullException;
+import com.tomoyane.herts.hertscommon.exception.HertsClientBuildException;
 import com.tomoyane.herts.hertscommon.exception.HertsCoreTypeInvalidException;
 import com.tomoyane.herts.hertscore.service.HertsService;
 
@@ -99,7 +100,7 @@ public class HertsClientBuilder implements HertsClient {
             return this;
         }
 
-        public Builder hertsService(HertsService hertsService) {
+        public Builder hertsImplementationService(HertsService hertsService) {
             this.hertsService = hertsService;
             return this;
         }
@@ -121,7 +122,7 @@ public class HertsClientBuilder implements HertsClient {
 
         public HertsClient build() {
             if (this.hertsService == null || this.connectedHost == null || this.connectedHost.isEmpty()) {
-                throw new NullPointerException();
+                throw new HertsClientBuildException("Please register HertsService and host and ");
             }
             return new HertsClientBuilder(this);
         }
@@ -151,7 +152,7 @@ public class HertsClientBuilder implements HertsClient {
     }
 
     @Override
-    public HertsService createHertService(Class<?> classType) {
+    public <T extends HertsService> T createHertService(Class<T> classType) {
         // If not null, using custom channel
         if (this.channel == null) {
             ManagedChannelBuilder<?> managedChannelBuilder = ManagedChannelBuilder.forAddress(this.connectedHost, this.serverPort);
@@ -179,16 +180,16 @@ public class HertsClientBuilder implements HertsClient {
         switch (this.hertsCoreType) {
             case Unary:
                 var unary = newHertsBlockingService(channel, this.hertsService);
-                return generateService(unary, classType);
+                return (T) generateService(unary, classType);
             case BidirectionalStreaming:
                 var streaming = newHertsBidirectionalStreamingService(channel, this.hertsService);
-                return generateService(streaming, classType);
+                return (T) generateService(streaming, classType);
             case ServerStreaming:
                 var serverStreaming = newHertsServerStreamingService(channel, this.hertsService);
-                return generateService(serverStreaming, classType);
+                return (T) generateService(serverStreaming, classType);
             case ClientStreaming:
                 var clientStreaming = newHertsClientStreamingService(channel, this.hertsService);
-                return generateService(clientStreaming, classType);
+                return (T) generateService(clientStreaming, classType);
             default:
                 throw new HertsCoreTypeInvalidException("Undefined Hert core type. HertsCoreType" + this.hertsCoreType);
         }
