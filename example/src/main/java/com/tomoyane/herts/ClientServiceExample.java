@@ -1,7 +1,7 @@
 package com.tomoyane.herts;
 
 import com.tomoyane.herts.hertsclient.HertsClient;
-import com.tomoyane.herts.hertsclient.HertsClientBuilder;
+import com.tomoyane.herts.hertsclient.HertsClientBuilderImpl;
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
 import io.grpc.stub.StreamObserver;
@@ -13,28 +13,37 @@ public class ClientServiceExample {
     private static final Logger logger = HertsLogger.getLogger(ClientServiceExample.class.getSimpleName());
 
     public static void unary() throws InterruptedException {
-        HertsClient client = HertsClientBuilder.Builder
+        UnaryRpcService01 service01 = new UnaryRpcServiceImpl01();
+        UnaryRpcService02 service02 = new UnaryRpcServiceImpl02();
+
+        HertsClient client = HertsClientBuilderImpl.Builder
                 .create("localhost", 9000, HertsCoreType.Unary)
                 .secure(false)
-                .hertsImplementationService(new UnaryRpcServiceImpl())
+                .hertsImplementationService(service01)
+                .hertsImplementationService(service02)
                 .interceptor(new GrpcClientInterceptor())
                 .build();
 
-        UnaryRpcService service = client.createHertService(UnaryRpcService.class);
-        var res01 = service.test01("TEST01", "VALUE01");
-        var res02 = service.test02();
-        var res03 = service.test03();
-        var res100 = service.test100(new HelloRequest());
+        UnaryRpcService01 service_01 = client.createHertService(UnaryRpcService01.class);
+        var res01 = service_01.test01("TEST01", "VALUE01");
+        var res02 = service_01.test02();
+        var res03 = service_01.test03();
+        var res100 = service_01.test100(new HelloRequest());
+
+        UnaryRpcService02 service_02 = client.createHertService(UnaryRpcService02.class);
+        var res0201 = service_02.hello01("ID", "Hello!");
 
         logger.info(res01);
         logger.info("" + res02);
         logger.info(res03.get("Key"));
+        logger.info("=====================");
+        logger.info(res0201);
 
         client.getChannel().shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
     }
 
     public static void bidirectionalStreaming() {
-        HertsClient client = HertsClientBuilder.Builder
+        HertsClient client = HertsClientBuilderImpl.Builder
                 .create("localhost", 9000, HertsCoreType.BidirectionalStreaming)
                 .secure(false)
                 .hertsImplementationService(new BidirectionalStreamingRpcServiceImpl())
@@ -66,7 +75,7 @@ public class ClientServiceExample {
     }
 
     public static void serverStreaming() {
-        HertsClient client = HertsClientBuilder.Builder
+        HertsClient client = HertsClientBuilderImpl.Builder
                 .create("localhost", 9000, HertsCoreType.ServerStreaming)
                 .secure(false)
                 .hertsImplementationService(new ServerStreamingRpcServiceImpl())
@@ -95,7 +104,7 @@ public class ClientServiceExample {
     }
 
     public static void clientStreaming() {
-        HertsClient client = HertsClientBuilder.Builder
+        HertsClient client = HertsClientBuilderImpl.Builder
                 .create("localhost", 9000, HertsCoreType.BidirectionalStreaming)
                 .secure(false)
                 .hertsImplementationService(new ClientStreamingRpcServiceImpl())

@@ -5,9 +5,9 @@ import com.tomoyane.herts.hertscore.UnaryServiceCore;
 import java.util.Collections;
 import java.util.Map;
 
-public class UnaryRpcServiceImpl extends UnaryServiceCore implements UnaryRpcService {
+public class UnaryRpcServiceImpl01 extends UnaryServiceCore implements UnaryRpcService01 {
 
-    public UnaryRpcServiceImpl() {
+    public UnaryRpcServiceImpl01() {
     }
 
     public String test01(String id, String value) {

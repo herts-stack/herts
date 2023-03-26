@@ -4,7 +4,7 @@ import com.tomoyane.herts.hertscommon.service.HertsService;
 
 import java.util.Map;
 
-public interface UnaryRpcService extends HertsService {
+public interface UnaryRpcService01 extends HertsService {
     String test01(String id, String value);
     boolean test02();
     Map<String, String> test03();
