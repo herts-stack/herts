@@ -7,7 +7,7 @@ import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
 import com.tomoyane.herts.hertscommon.marshaller.HertsMsg;
 
-import com.tomoyane.herts.hertscore.service.HertsService;
+import com.tomoyane.herts.hertscommon.service.HertsService;
 import io.grpc.CallOptions;
 import io.grpc.Channel;
 import io.grpc.MethodDescriptor;

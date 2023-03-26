@@ -1,8 +1,7 @@
 package com.tomoyane.herts.hertscore.core;
 
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
-import com.tomoyane.herts.hertscommon.context.HertsType;
-import com.tomoyane.herts.hertscore.service.HertsService;
+import com.tomoyane.herts.hertscommon.service.HertsService;
 import io.grpc.MethodDescriptor;
 
 public class HertsCoreBase implements HertsService {

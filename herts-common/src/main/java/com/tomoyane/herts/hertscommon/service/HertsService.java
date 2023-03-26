@@ -1,4 +1,4 @@
-package com.tomoyane.herts.hertscore.service;
+package com.tomoyane.herts.hertscommon.service;
 
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import io.grpc.MethodDescriptor;

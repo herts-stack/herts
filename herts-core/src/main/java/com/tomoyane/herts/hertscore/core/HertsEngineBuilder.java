@@ -12,8 +12,9 @@ import com.tomoyane.herts.hertscore.handler.HertsCoreCStreamingMethodHandler;
 import com.tomoyane.herts.hertscore.handler.HertsCoreSStreamingMethodHandler;
 import com.tomoyane.herts.hertscore.handler.HertsCoreBMethodHandler;
 import com.tomoyane.herts.hertscore.handler.HertsCoreUMethodHandler;
-import com.tomoyane.herts.hertscore.service.HertsService;
+import com.tomoyane.herts.hertscommon.service.HertsService;
 
+import com.tomoyane.herts.hertscore.model.ReflectMethod;
 import io.grpc.Grpc;
 import io.grpc.InsecureServerCredentials;
 import io.grpc.ServerInterceptor;
@@ -134,34 +135,41 @@ public class HertsEngineBuilder implements HertsEngine {
         return this.server;
     }
 
-    private static BindableService registerBidirectionalStreamingService(BidirectionalStreamingServiceCore core) {
-        String serviceName = core.getClass().getName();
+    private static ReflectMethod generateReflectMethod(String serviceName) {
         Class<?> thisClass;
         try {
             thisClass = Class.forName(serviceName);
         } catch (ClassNotFoundException ignore) {
-            throw new HertsRpcNotFoundException("Unknown class name. Allowed class is " + UnaryServiceCore.class.getName());
+            throw new HertsRpcNotFoundException("Unknown class name. Allowed class is " + serviceName);
         }
 
         Method[] methods = thisClass.getDeclaredMethods();
+        return ReflectMethod.create(serviceName, methods);
+    }
+
+    private static List<HertsMethod> generateHertsMethod(HertsCoreType coreType, Method[] methods, String serviceName) {
+        List<HertsMethod> hertsMethods = new ArrayList<>();
+        for (Method method : methods) {
+            HertsMethod hertsMethod = new HertsMethod();
+            hertsMethod.setHertsCoreType(coreType);
+            hertsMethod.setCoreServiceName(serviceName);
+            hertsMethod.setMethodName(method.getName());
+            hertsMethod.setMethodReturnType(method.getReturnType());
+            hertsMethod.setParameters(method.getParameterTypes());
+            hertsMethods.add(hertsMethod);
+        }
+        return hertsMethods;
+    }
+
+    private static BindableService registerBidirectionalStreamingService(BidirectionalStreamingServiceCore core) {
+        ReflectMethod reflectMethod = generateReflectMethod(core.getClass().getName());
         return new BindableService() {
             private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
 
             @Override
             public ServerServiceDefinition bindService() {
-
-                List<HertsMethod> hertsMethods = new ArrayList<>();
-                for (Method method : methods) {
-                    HertsMethod hertsMethod = new HertsMethod();
-                    hertsMethod.setHertsCoreType(HertsCoreType.BidirectionalStreaming);
-                    hertsMethod.setCoreServiceName(serviceName);
-                    hertsMethod.setMethodName(method.getName());
-                    hertsMethod.setMethodReturnType(method.getReturnType());
-                    hertsMethod.setParameters(method.getParameterTypes());
-                    hertsMethods.add(hertsMethod);
-                }
-
-                HertsStreamingDescriptor descriptor = HertsGrpcDescriptor.generateStreamingGrpcDescriptor(serviceName, hertsMethods);
+                List<HertsMethod> hertsMethods = generateHertsMethod(HertsCoreType.BidirectionalStreaming, reflectMethod.getMethods(), reflectMethod.getClassName());
+                HertsStreamingDescriptor descriptor = HertsGrpcDescriptor.generateStreamingGrpcDescriptor(reflectMethod.getClassName(), hertsMethods);
                 ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
 
                 int index = 0;
@@ -176,34 +184,14 @@ public class HertsEngineBuilder implements HertsEngine {
     }
 
     private static BindableService registerClientStreamingService(ClientStreamingServiceCore core) {
-        String serviceName = core.getClass().getName();
-        Class<?> thisClass;
-        try {
-            thisClass = Class.forName(serviceName);
-        } catch (ClassNotFoundException ignore) {
-            throw new HertsRpcNotFoundException("Unknown class name. Allowed class is " + UnaryServiceCore.class.getName());
-        }
-
-        Method[] methods = thisClass.getDeclaredMethods();
+        ReflectMethod reflectMethod = generateReflectMethod(core.getClass().getName());
         return new BindableService() {
             private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
 
             @Override
             public ServerServiceDefinition bindService() {
-
-                List<HertsMethod> hertsMethods = new ArrayList<>();
-                for (Method method : methods) {
-                    HertsMethod hertsMethod = new HertsMethod();
-                    hertsMethod.setHertsCoreType(HertsCoreType.ServerStreaming);
-                    hertsMethod.setCoreServiceName(serviceName);
-                    hertsMethod.setMethodName(method.getName());
-                    hertsMethod.setMethodReturnType(method.getReturnType());
-                    hertsMethod.setParameters(method.getParameterTypes());
-                    hertsMethods.add(hertsMethod);
-                }
-                logger.info(hertsMethods.toString());
-
-                HertsStreamingDescriptor descriptor = HertsGrpcDescriptor.generateStreamingGrpcDescriptor(serviceName, hertsMethods);
+                List<HertsMethod> hertsMethods = generateHertsMethod(HertsCoreType.ClientStreaming, reflectMethod.getMethods(), reflectMethod.getClassName());
+                HertsStreamingDescriptor descriptor = HertsGrpcDescriptor.generateStreamingGrpcDescriptor(reflectMethod.getClassName(), hertsMethods);
                 ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
 
                 int index = 0;
@@ -218,34 +206,14 @@ public class HertsEngineBuilder implements HertsEngine {
     }
 
     private static BindableService registerServerStreamingService(ServerStreamingServiceCore core) {
-        String serviceName = core.getClass().getName();
-        Class<?> thisClass;
-        try {
-            thisClass = Class.forName(serviceName);
-        } catch (ClassNotFoundException ignore) {
-            throw new HertsRpcNotFoundException("Unknown class name. Allowed class is " + UnaryServiceCore.class.getName());
-        }
-
-        Method[] methods = thisClass.getDeclaredMethods();
+        ReflectMethod reflectMethod = generateReflectMethod(core.getClass().getName());
         return new BindableService() {
             private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
 
             @Override
             public ServerServiceDefinition bindService() {
-
-                List<HertsMethod> hertsMethods = new ArrayList<>();
-                for (Method method : methods) {
-                    HertsMethod hertsMethod = new HertsMethod();
-                    hertsMethod.setHertsCoreType(HertsCoreType.ServerStreaming);
-                    hertsMethod.setCoreServiceName(serviceName);
-                    hertsMethod.setMethodName(method.getName());
-                    hertsMethod.setMethodReturnType(method.getReturnType());
-                    hertsMethod.setParameters(method.getParameterTypes());
-                    hertsMethods.add(hertsMethod);
-                }
-                logger.info(hertsMethods.toString());
-
-                HertsStreamingDescriptor descriptor = HertsGrpcDescriptor.generateStreamingGrpcDescriptor(serviceName, hertsMethods);
+                List<HertsMethod> hertsMethods = generateHertsMethod(HertsCoreType.ServerStreaming, reflectMethod.getMethods(), reflectMethod.getClassName());
+                HertsStreamingDescriptor descriptor = HertsGrpcDescriptor.generateStreamingGrpcDescriptor(reflectMethod.getClassName(), hertsMethods);
                 ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
 
                 int index = 0;
@@ -260,33 +228,14 @@ public class HertsEngineBuilder implements HertsEngine {
     }
 
     private static BindableService registerUnaryService(UnaryServiceCore core) {
-        String serviceName = core.getClass().getName();
-        Class<?> thisClass;
-        try {
-            thisClass = Class.forName(serviceName);
-        } catch (ClassNotFoundException ignore) {
-            throw new HertsRpcNotFoundException("Unknown class name. Allowed class is " + UnaryServiceCore.class.getName());
-        }
-
-        Method[] methods = thisClass.getDeclaredMethods();
+        ReflectMethod reflectMethod = generateReflectMethod(core.getClass().getName());
         return new BindableService() {
             private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
 
             @Override
             public ServerServiceDefinition bindService() {
-
-                List<HertsMethod> hertsMethods = new ArrayList<>();
-                for (Method method : methods) {
-                    HertsMethod hertsMethod = new HertsMethod();
-                    hertsMethod.setHertsCoreType(HertsCoreType.Unary);
-                    hertsMethod.setCoreServiceName(serviceName);
-                    hertsMethod.setMethodName(method.getName());
-                    hertsMethod.setMethodReturnType(method.getReturnType());
-                    hertsMethod.setParameters(method.getParameterTypes());
-                    hertsMethods.add(hertsMethod);
-                }
-
-                HertsUnaryDescriptor descriptor = HertsGrpcDescriptor.generateGrpcDescriptor(serviceName, hertsMethods);
+                List<HertsMethod> hertsMethods = generateHertsMethod(HertsCoreType.Unary, reflectMethod.getMethods(), reflectMethod.getClassName());
+                HertsUnaryDescriptor descriptor = HertsGrpcDescriptor.generateGrpcDescriptor(reflectMethod.getClassName(), hertsMethods);
                 ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
 
                 int index = 0;

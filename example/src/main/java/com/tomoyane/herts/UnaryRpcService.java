@@ -1,6 +1,6 @@
 package com.tomoyane.herts;
 
-import com.tomoyane.herts.hertscore.service.HertsService;
+import com.tomoyane.herts.hertscommon.service.HertsService;
 
 import java.util.Map;
 

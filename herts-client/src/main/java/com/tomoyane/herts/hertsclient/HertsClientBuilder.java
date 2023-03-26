@@ -8,7 +8,7 @@ import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscommon.exception.HertsChannelIsNullException;
 import com.tomoyane.herts.hertscommon.exception.HertsClientBuildException;
 import com.tomoyane.herts.hertscommon.exception.HertsCoreTypeInvalidException;
-import com.tomoyane.herts.hertscore.service.HertsService;
+import com.tomoyane.herts.hertscommon.service.HertsService;
 
 import io.grpc.Channel;
 import io.grpc.ClientInterceptor;
