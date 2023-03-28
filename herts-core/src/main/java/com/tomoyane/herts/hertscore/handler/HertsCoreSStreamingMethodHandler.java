@@ -1,12 +1,11 @@
 package com.tomoyane.herts.hertscore.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tomoyane.herts.hertscommon.exception.HertsInstanceException;
 import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscommon.marshaller.HertsMethod;
 import com.tomoyane.herts.hertscommon.marshaller.HertsMsg;
+import com.tomoyane.herts.hertscommon.serializer.HertsSerializer;
 import io.grpc.stub.StreamObserver;
-import org.msgpack.jackson.dataformat.MessagePackFactory;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -18,7 +17,7 @@ public class HertsCoreSStreamingMethodHandler<Req, Resp> implements
         io.grpc.stub.ServerCalls.ClientStreamingMethod<Req, Resp>,
         io.grpc.stub.ServerCalls.BidiStreamingMethod<Req, Resp> {
 
-    private final ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
+    private final HertsSerializer serializer = new HertsSerializer();
     private final Object coreObject;
     private final Object[] requests;
     private final Method reflectMethod;
@@ -27,7 +26,6 @@ public class HertsCoreSStreamingMethodHandler<Req, Resp> implements
     public HertsCoreSStreamingMethodHandler(HertsMethod hertsMethod) {
         this.hertsMethod = hertsMethod;
         this.requests = new Object[this.hertsMethod.getParameters().length];
-//        this.objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
         String serviceName = hertsMethod.getCoreServiceName();
         Class<?> coreClass;
@@ -63,11 +61,11 @@ public class HertsCoreSStreamingMethodHandler<Req, Resp> implements
     public void invoke(Req request, StreamObserver<Resp> responseObserver) {
         try {
             if (((byte[]) request).length > 0) {
-                HertsMsg deserialized = this.objectMapper.readValue((byte[]) request, HertsMsg.class);
+                HertsMsg deserialized = this.serializer.deserialize((byte[]) request, HertsMsg.class);
                 var index = 0;
                 for (Object obj : deserialized.getMessageParameters()) {
                     var castType = deserialized.getClassTypes()[index];
-                    this.requests[index] = this.objectMapper.convertValue(obj, castType);
+                    this.requests[index] = this.serializer.convert(obj, castType);
                     index++;
                 }
                 this.requests[this.requests.length-1] =  (StreamObserver<Object>) responseObserver;

@@ -1,31 +1,28 @@
 package com.tomoyane.herts.hertscoreclient.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
 import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
-import com.tomoyane.herts.hertscommon.logger.HertsLogger;
+import com.tomoyane.herts.hertscommon.exception.HertsStreamingResBodyException;
 import com.tomoyane.herts.hertscommon.marshaller.HertsMsg;
+import com.tomoyane.herts.hertscommon.serializer.HertsSerializer;
 import com.tomoyane.herts.hertscommon.service.HertsService;
+
 import io.grpc.CallOptions;
 import io.grpc.Channel;
 import io.grpc.MethodDescriptor;
 import io.grpc.stub.ClientCalls;
 import io.grpc.stub.StreamObserver;
-import org.msgpack.jackson.dataformat.MessagePackFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class HertsCoreClientSStreamingMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsCoreClientSStreamingMethodHandler> implements InvocationHandler {
-    private static final Logger logger = HertsLogger.getLogger(HertsCoreClientSStreamingMethodHandler.class.getSimpleName());
-
-    private final ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
-
+    private final HertsSerializer serializer = new HertsSerializer();
     private final Map<String, Class<?>> methodTypes = new HashMap<>();
+    private final Map<String, MethodDescriptor<Object, Object>> descriptors = new HashMap<>();
     private final HertsService hertsService;
     private final String serviceName;
 
@@ -33,7 +30,6 @@ public class HertsCoreClientSStreamingMethodHandler extends io.grpc.stub.Abstrac
         super(channel, callOptions);
         this.hertsService = hertsService;
         this.serviceName = hertsService.getClass().getName();
-//        this.objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
         Class<?> hertsServiceClass;
         try {
@@ -51,18 +47,19 @@ public class HertsCoreClientSStreamingMethodHandler extends io.grpc.stub.Abstrac
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
-        MethodDescriptor<Object, Object> methodDescriptor = HertsGrpcDescriptor
-                .generateStramingMethodDescriptor(HertsCoreType.ServerStreaming, this.serviceName, methodName);
+        MethodDescriptor<Object, Object> methodDescriptor = this.descriptors.get(methodName);
+        if (methodDescriptor == null) {
+            methodDescriptor = HertsGrpcDescriptor
+                    .generateStramingMethodDescriptor(HertsCoreType.ServerStreaming, this.serviceName, methodName);
+            this.descriptors.put(methodName, methodDescriptor);
+        }
 
-        byte[] requestBytes = new byte[]{};
-
-        System.out.println(args.length);
+        byte[] requestBytes;
         var index = 0;
         Object[] req = new Object[args.length-1];
         Class<?>[] classTypes = new Class<?>[args.length];
         Object observer = null;
         for (Object obj : args) {
-            System.out.println(obj.getClass().getSimpleName());
             if (obj instanceof StreamObserver) {
                 observer = obj;
             } else {
@@ -72,16 +69,10 @@ public class HertsCoreClientSStreamingMethodHandler extends io.grpc.stub.Abstrac
             index++;
         }
 
-        if (args != null) {
-            requestBytes = this.objectMapper.writeValueAsBytes(new HertsMsg(req, classTypes));
-        }
-
-        StreamObserver<Object> responseObserver = null;
-        if (args != null) {
-            responseObserver = (StreamObserver<Object>) observer;
-        }
+        requestBytes = this.serializer.serialize(new HertsMsg(req, classTypes));
+        StreamObserver<Object> responseObserver = (StreamObserver<Object>) observer;
         if (responseObserver == null) {
-            throw new RuntimeException("sasasasasasasaasasa");
+            throw new HertsStreamingResBodyException("Streaming response observer body data is null");
         }
         ClientCalls.asyncServerStreamingCall(getChannel().newCall(methodDescriptor, getCallOptions()), requestBytes, responseObserver);
         return proxy;

@@ -108,7 +108,7 @@ public class ClientServiceExample {
 
     public static void clientStreaming() {
         HertsCoreClient client = HertsCoreClientBuilderImpl.Builder
-                .create("localhost", 9000, HertsCoreType.BidirectionalStreaming)
+                .create("localhost", 9000, HertsCoreType.ClientStreaming)
                 .secure(false)
                 .hertsImplementationService(new ClientStreamingRpcServiceImpl())
                 .interceptor(HertCoreClientInterceptorBuilderImpl.Builder.create(new GrpcClientInterceptor()).build())
@@ -139,6 +139,7 @@ public class ClientServiceExample {
             res.onNext(r);
         }
         res.onCompleted();
+        logger.info("DONE");
+        client.getChannel().shutdown();
     }
-
 }

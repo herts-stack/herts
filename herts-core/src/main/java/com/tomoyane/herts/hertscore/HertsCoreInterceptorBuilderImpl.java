@@ -45,7 +45,7 @@ public class HertsCoreInterceptorBuilderImpl implements ServerInterceptor {
             this.interceptor.beforeCallMethod(call, requestHeaders);
         }
 
-        return next.startCall(new ForwardingServerCall.SimpleForwardingServerCall<ReqT, RespT>(call) {
+        return next.startCall(new ForwardingServerCall.SimpleForwardingServerCall<>(call) {
             @Override
             public void sendHeaders(Metadata responseHeaders) {
                 if (interceptor != null) {

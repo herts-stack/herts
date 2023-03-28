@@ -6,6 +6,7 @@ import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscommon.service.HertsService;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,10 +61,11 @@ public class RpcValidateUtil {
 
             Method[] methods = thisClass.getDeclaredMethods();
             for (Method method : methods) {
-                if (method.getTypeParameters().length > 1) {
+                if (method.getParameterTypes().length != 1) {
                     return false;
                 }
-                if (!method.getTypeParameters()[0].getClass().getName().equals("StreamObserver")) {
+                System.out.println(method.getParameterTypes()[0].getName());
+                if (!method.getParameterTypes()[0].getName().equals("io.grpc.stub.StreamObserver")) {
                     return false;
                 }
             }

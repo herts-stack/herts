@@ -1,11 +1,10 @@
 package com.tomoyane.herts.hertscore.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tomoyane.herts.hertscommon.exception.HertsInstanceException;
 import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscommon.marshaller.HertsMethod;
+import com.tomoyane.herts.hertscommon.serializer.HertsSerializer;
 import io.grpc.stub.StreamObserver;
-import org.msgpack.jackson.dataformat.MessagePackFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -16,7 +15,6 @@ public class HertsCoreBMethodHandler<Req, Resp> implements
         io.grpc.stub.ServerCalls.ClientStreamingMethod<Req, Resp>,
         io.grpc.stub.ServerCalls.BidiStreamingMethod<Req, Resp> {
 
-    private final ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
     private final Object coreObject;
     private final Object[] requests;
     private final Method reflectMethod;
@@ -53,10 +51,8 @@ public class HertsCoreBMethodHandler<Req, Resp> implements
 
     @Override
     public StreamObserver<Req> invoke(StreamObserver<Resp> responseObserver) {
-        System.out.println("========= Call invoke");
         try {
             var response = this.reflectMethod.invoke(this.coreObject, responseObserver);
-            System.out.println("========= Response invoke");
             return (StreamObserver<Req>) response;
         } catch (IllegalAccessException | InvocationTargetException ex) {
             ex.printStackTrace();
