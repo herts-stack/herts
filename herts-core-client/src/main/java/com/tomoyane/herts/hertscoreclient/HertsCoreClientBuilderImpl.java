@@ -4,7 +4,7 @@ import com.tomoyane.herts.hertscoreclient.handler.HertsCoreClientCStreamingMetho
 import com.tomoyane.herts.hertscoreclient.handler.HertsCoreClientUMethodHandler;
 import com.tomoyane.herts.hertscoreclient.handler.HertsCoreClientBStreamingMethodHandler;
 import com.tomoyane.herts.hertscoreclient.handler.HertsCoreClientSStreamingMethodHandler;
-import com.tomoyane.herts.hertscoreclient.validator.HertsClientValidator;
+import com.tomoyane.herts.hertscoreclient.validator.HertsCoreClientValidator;
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscommon.exception.HertsChannelIsNullException;
 import com.tomoyane.herts.hertscommon.exception.HertsClientBuildException;
@@ -129,16 +129,16 @@ public class HertsCoreClientBuilderImpl implements HertsCoreClient {
                 throw new HertsClientBuildException("Please register HertsService and host");
             }
             List<HertsCoreType> hertsCoreTypes = this.hertsServices.stream().map(HertsService::getHertsCoreType).toList();
-            if (!HertsClientValidator.isSameHertsCoreType(hertsCoreTypes)) {
+            if (!HertsCoreClientValidator.isSameHertsCoreType(hertsCoreTypes)) {
                 throw new HertsClientBuildException("Please register same HertsCoreService. Not supported multiple different services");
             }
 
-            var validateMsg = HertsClientValidator.validateRegisteredServices(this.hertsServices);
+            var validateMsg = HertsCoreClientValidator.validateRegisteredServices(this.hertsServices);
             if (!validateMsg.isEmpty()) {
                 throw new HertsClientBuildException(validateMsg);
             }
 
-            if (!HertsClientValidator.isValidStreamingRpc(this.hertsServices)) {
+            if (!HertsCoreClientValidator.isValidStreamingRpc(this.hertsServices)) {
                 throw new HertsNotSupportParameterTypeException("Support StreamObserver<T> parameter only of BidirectionalStreaming and ClientStreaming. Please remove other method parameter.");
             }
             return new HertsCoreClientBuilderImpl(this);
