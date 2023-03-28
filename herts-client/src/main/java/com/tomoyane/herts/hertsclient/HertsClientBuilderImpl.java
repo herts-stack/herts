@@ -9,6 +9,7 @@ import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscommon.exception.HertsChannelIsNullException;
 import com.tomoyane.herts.hertscommon.exception.HertsClientBuildException;
 import com.tomoyane.herts.hertscommon.exception.HertsCoreTypeInvalidException;
+import com.tomoyane.herts.hertscommon.exception.HertsNotSupportParameterTypeException;
 import com.tomoyane.herts.hertscommon.service.HertsService;
 
 import io.grpc.Channel;
@@ -132,6 +133,10 @@ public class HertsClientBuilderImpl implements HertsClient {
             var validateMsg = HertsClientValidator.validateRegisteredServices(this.hertsServices);
             if (!validateMsg.isEmpty()) {
                 throw new HertsClientBuildException(validateMsg);
+            }
+
+            if (!HertsClientValidator.isValidStreamingRpc(this.hertsServices)) {
+                throw new HertsNotSupportParameterTypeException("Support StreamObserver<T> parameter only of BidirectionalStreaming and ClientStreaming. Please remove other method parameter.");
             }
             return new HertsClientBuilderImpl(this);
         }

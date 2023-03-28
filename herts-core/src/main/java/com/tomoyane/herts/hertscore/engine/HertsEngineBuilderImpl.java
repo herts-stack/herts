@@ -2,6 +2,7 @@ package com.tomoyane.herts.hertscore.engine;
 
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscommon.exception.HertsCoreBuildException;
+import com.tomoyane.herts.hertscommon.exception.HertsNotSupportParameterTypeException;
 import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
 import com.tomoyane.herts.hertscommon.descriptor.HertsUnaryDescriptor;
@@ -171,6 +172,10 @@ public class HertsEngineBuilderImpl implements HertsEngine {
             var validateMsg = HertsServiceValidator.validateRegisteredServices(this.hertsServices);
             if (!validateMsg.isEmpty()) {
                 throw new HertsCoreBuildException(validateMsg);
+            }
+
+            if (!HertsServiceValidator.isValidStreamingRpc(this.hertsServices)) {
+                throw new HertsNotSupportParameterTypeException("Support StreamObserver<T> parameter only of BidirectionalStreaming and ClientStreaming. Please remove other method parameter.");
             }
             return new HertsEngineBuilderImpl(this);
         }
