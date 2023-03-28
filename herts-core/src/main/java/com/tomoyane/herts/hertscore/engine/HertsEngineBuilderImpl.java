@@ -11,6 +11,8 @@ import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
 import com.tomoyane.herts.hertscommon.descriptor.HertsStreamingDescriptor;
 import com.tomoyane.herts.hertscore.BidirectionalStreamingServiceCore;
 import com.tomoyane.herts.hertscore.ClientStreamingServiceCore;
+import com.tomoyane.herts.hertscore.HertsCoreInterceptor;
+import com.tomoyane.herts.hertscore.HertsCoreInterceptorBuilderImpl;
 import com.tomoyane.herts.hertscore.ServerStreamingServiceCore;
 import com.tomoyane.herts.hertscore.UnaryServiceCore;
 import com.tomoyane.herts.hertscore.handler.HertsCoreCStreamingMethodHandler;
@@ -23,7 +25,9 @@ import com.tomoyane.herts.hertscore.validator.HertsServiceValidator;
 
 import io.grpc.Grpc;
 import io.grpc.InsecureServerCredentials;
+import io.grpc.Metadata;
 import io.grpc.ServerBuilder;
+import io.grpc.ServerCall;
 import io.grpc.ServerCredentials;
 import io.grpc.ServerInterceptor;
 import io.grpc.ServerInterceptors;
@@ -136,7 +140,16 @@ public class HertsEngineBuilderImpl implements HertsEngine {
             }
 
             if (interceptor == null) {
-                this.services.put(bindableService, null);
+                var defaultInterceptor = new HertsCoreInterceptor() {
+                    @Override
+                    public void setResponseMetadata(Metadata metadata) {
+                    }
+                    @Override
+                    public <ReqT, RespT> void beforeCallMethod(ServerCall<ReqT, RespT> call, Metadata requestHeaders) {
+
+                    }
+                };
+                this.services.put(bindableService, HertsCoreInterceptorBuilderImpl.Builder.create(defaultInterceptor).build());
             } else {
                 this.services.put(bindableService, interceptor);
             }

@@ -12,10 +12,13 @@ import com.tomoyane.herts.hertscommon.exception.HertsCoreTypeInvalidException;
 import com.tomoyane.herts.hertscommon.exception.HertsNotSupportParameterTypeException;
 import com.tomoyane.herts.hertscommon.service.HertsService;
 
+import io.grpc.CallOptions;
 import io.grpc.Channel;
 import io.grpc.ClientInterceptor;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.Metadata;
+import io.grpc.MethodDescriptor;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -176,6 +179,16 @@ public class HertsCoreClientBuilderImpl implements HertsCoreClient {
             }
             if (this.interceptor != null) {
                 managedChannelBuilder = managedChannelBuilder.intercept(interceptor);
+            } else {
+                var defaultInterceptor = new HertCoreClientInterceptor() {
+                    @Override
+                    public void setRequestMetadata(Metadata metadata) {
+                    }
+                    @Override
+                    public <ReqT, RespT> void beforeCallMethod(MethodDescriptor<ReqT, RespT> methodDescriptor, CallOptions callOptions, Channel channel) {
+                    }
+                };
+                managedChannelBuilder = managedChannelBuilder.intercept(HertCoreClientInterceptorBuilderImpl.Builder.create(defaultInterceptor).build());
             }
             if (this.connectionOptions != null) {
                 for (ConnectionOption option : this.connectionOptions) {
