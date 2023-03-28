@@ -1,10 +1,10 @@
-package com.tomoyane.herts.hertsclient;
+package com.tomoyane.herts.hertscoreclient;
 
-import com.tomoyane.herts.hertsclient.handler.HertsClientCStreamingMethodHandler;
-import com.tomoyane.herts.hertsclient.handler.HertsClientUMethodHandler;
-import com.tomoyane.herts.hertsclient.handler.HertsClientBStreamingMethodHandler;
-import com.tomoyane.herts.hertsclient.handler.HertsClientSStreamingMethodHandler;
-import com.tomoyane.herts.hertsclient.validator.HertsClientValidator;
+import com.tomoyane.herts.hertscoreclient.handler.HertsCoreClientCStreamingMethodHandler;
+import com.tomoyane.herts.hertscoreclient.handler.HertsCoreClientUMethodHandler;
+import com.tomoyane.herts.hertscoreclient.handler.HertsCoreClientBStreamingMethodHandler;
+import com.tomoyane.herts.hertscoreclient.handler.HertsCoreClientSStreamingMethodHandler;
+import com.tomoyane.herts.hertscoreclient.validator.HertsClientValidator;
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscommon.exception.HertsChannelIsNullException;
 import com.tomoyane.herts.hertscommon.exception.HertsClientBuildException;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class HertsClientBuilderImpl implements HertsClient {
+public class HertsCoreClientBuilderImpl implements HertsCoreClient {
     private final String connectedHost;
     private final int serverPort;
     private final HertsCoreType hertsCoreType;
@@ -34,7 +34,7 @@ public class HertsClientBuilderImpl implements HertsClient {
 
     private Channel channel;
 
-    private HertsClientBuilderImpl(Builder builder) {
+    private HertsCoreClientBuilderImpl(Builder builder) {
         this.connectedHost = builder.connectedHost;
         this.isSecureConnection = builder.isSecureConnection;
         this.serverPort = builder.serverPort;
@@ -75,7 +75,7 @@ public class HertsClientBuilderImpl implements HertsClient {
         }
     }
 
-    public static class Builder implements HertsClientBuilder {
+    public static class Builder implements HertsCoreClientBuilder {
         private final List<HertsService> hertsServices = new ArrayList<>();
         private final String connectedHost;
         private final int serverPort;
@@ -92,36 +92,36 @@ public class HertsClientBuilderImpl implements HertsClient {
             this.hertsCoreType = hertsCoreType;
         }
 
-        public static HertsClientBuilder create(String connectedHost, int serverPort, HertsCoreType hertsCoreType) {
+        public static HertsCoreClientBuilder create(String connectedHost, int serverPort, HertsCoreType hertsCoreType) {
             return new Builder(connectedHost, serverPort, hertsCoreType);
         }
 
-        public HertsClientBuilder secure(boolean isSecureConnection) {
+        public HertsCoreClientBuilder secure(boolean isSecureConnection) {
             this.isSecureConnection = isSecureConnection;
             return this;
         }
 
-        public HertsClientBuilder hertsImplementationService(HertsService hertsService) {
+        public HertsCoreClientBuilder hertsImplementationService(HertsService hertsService) {
             this.hertsServices.add(hertsService);
             return this;
         }
 
-        public HertsClientBuilder channel(Channel channel) {
+        public HertsCoreClientBuilder channel(Channel channel) {
             this.channel = channel;
             return this;
         }
 
-        public HertsClientBuilder interceptor(ClientInterceptor interceptor) {
+        public HertsCoreClientBuilder interceptor(ClientInterceptor interceptor) {
             this.interceptor = interceptor;
             return this;
         }
 
-        public HertsClientBuilder connectionOption(List<ConnectionOption> connectionOptions) {
+        public HertsCoreClientBuilder connectionOption(List<ConnectionOption> connectionOptions) {
             this.connectionOptions = connectionOptions;
             return this;
         }
 
-        public HertsClient build() {
+        public HertsCoreClient build() {
             if (this.hertsServices.size() == 0 || this.connectedHost == null || this.connectedHost.isEmpty()) {
                 throw new HertsClientBuildException("Please register HertsService and host");
             }
@@ -138,7 +138,7 @@ public class HertsClientBuilderImpl implements HertsClient {
             if (!HertsClientValidator.isValidStreamingRpc(this.hertsServices)) {
                 throw new HertsNotSupportParameterTypeException("Support StreamObserver<T> parameter only of BidirectionalStreaming and ClientStreaming. Please remove other method parameter.");
             }
-            return new HertsClientBuilderImpl(this);
+            return new HertsCoreClientBuilderImpl(this);
         }
     }
 
@@ -231,47 +231,47 @@ public class HertsClientBuilderImpl implements HertsClient {
                 handler);
     }
 
-    private static HertsClientUMethodHandler newHertsBlockingService(Channel channel, HertsService hertsService) {
-        io.grpc.stub.AbstractStub.StubFactory<HertsClientUMethodHandler> factory =
-                new io.grpc.stub.AbstractStub.StubFactory<HertsClientUMethodHandler>() {
+    private static HertsCoreClientUMethodHandler newHertsBlockingService(Channel channel, HertsService hertsService) {
+        io.grpc.stub.AbstractStub.StubFactory<HertsCoreClientUMethodHandler> factory =
+                new io.grpc.stub.AbstractStub.StubFactory<HertsCoreClientUMethodHandler>() {
                     @java.lang.Override
-                    public HertsClientUMethodHandler newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
-                        return new HertsClientUMethodHandler(channel, callOptions, hertsService);
+                    public HertsCoreClientUMethodHandler newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+                        return new HertsCoreClientUMethodHandler(channel, callOptions, hertsService);
                     }
                 };
-        return HertsClientUMethodHandler.newStub(factory, channel);
+        return HertsCoreClientUMethodHandler.newStub(factory, channel);
     }
 
-    private static HertsClientBStreamingMethodHandler newHertsBidirectionalStreamingService(Channel channel, HertsService hertsService) {
-        io.grpc.stub.AbstractStub.StubFactory<HertsClientBStreamingMethodHandler> factory =
-                new io.grpc.stub.AbstractStub.StubFactory<HertsClientBStreamingMethodHandler>() {
+    private static HertsCoreClientBStreamingMethodHandler newHertsBidirectionalStreamingService(Channel channel, HertsService hertsService) {
+        io.grpc.stub.AbstractStub.StubFactory<HertsCoreClientBStreamingMethodHandler> factory =
+                new io.grpc.stub.AbstractStub.StubFactory<HertsCoreClientBStreamingMethodHandler>() {
                     @java.lang.Override
-                    public HertsClientBStreamingMethodHandler newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
-                        return new HertsClientBStreamingMethodHandler(channel, callOptions, hertsService);
+                    public HertsCoreClientBStreamingMethodHandler newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+                        return new HertsCoreClientBStreamingMethodHandler(channel, callOptions, hertsService);
                     }
                 };
-        return HertsClientBStreamingMethodHandler.newStub(factory, channel);
+        return HertsCoreClientBStreamingMethodHandler.newStub(factory, channel);
     }
 
-    private static HertsClientSStreamingMethodHandler newHertsServerStreamingService(Channel channel, HertsService hertsService) {
-        io.grpc.stub.AbstractStub.StubFactory<HertsClientSStreamingMethodHandler> factory =
-                new io.grpc.stub.AbstractStub.StubFactory<HertsClientSStreamingMethodHandler>() {
+    private static HertsCoreClientSStreamingMethodHandler newHertsServerStreamingService(Channel channel, HertsService hertsService) {
+        io.grpc.stub.AbstractStub.StubFactory<HertsCoreClientSStreamingMethodHandler> factory =
+                new io.grpc.stub.AbstractStub.StubFactory<HertsCoreClientSStreamingMethodHandler>() {
                     @java.lang.Override
-                    public HertsClientSStreamingMethodHandler newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
-                        return new HertsClientSStreamingMethodHandler(channel, callOptions, hertsService);
+                    public HertsCoreClientSStreamingMethodHandler newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+                        return new HertsCoreClientSStreamingMethodHandler(channel, callOptions, hertsService);
                     }
                 };
-        return HertsClientSStreamingMethodHandler.newStub(factory, channel);
+        return HertsCoreClientSStreamingMethodHandler.newStub(factory, channel);
     }
 
-    private static HertsClientCStreamingMethodHandler newHertsClientStreamingService(Channel channel, HertsService hertsService) {
-        io.grpc.stub.AbstractStub.StubFactory<HertsClientCStreamingMethodHandler> factory =
-                new io.grpc.stub.AbstractStub.StubFactory<HertsClientCStreamingMethodHandler>() {
+    private static HertsCoreClientCStreamingMethodHandler newHertsClientStreamingService(Channel channel, HertsService hertsService) {
+        io.grpc.stub.AbstractStub.StubFactory<HertsCoreClientCStreamingMethodHandler> factory =
+                new io.grpc.stub.AbstractStub.StubFactory<HertsCoreClientCStreamingMethodHandler>() {
                     @java.lang.Override
-                    public HertsClientCStreamingMethodHandler newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
-                        return new HertsClientCStreamingMethodHandler(channel, callOptions, hertsService);
+                    public HertsCoreClientCStreamingMethodHandler newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+                        return new HertsCoreClientCStreamingMethodHandler(channel, callOptions, hertsService);
                     }
                 };
-        return HertsClientCStreamingMethodHandler.newStub(factory, channel);
+        return HertsCoreClientCStreamingMethodHandler.newStub(factory, channel);
     }
 }

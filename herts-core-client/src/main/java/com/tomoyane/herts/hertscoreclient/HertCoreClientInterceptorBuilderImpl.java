@@ -1,4 +1,4 @@
-package com.tomoyane.herts.hertsclient;
+package com.tomoyane.herts.hertscoreclient;
 
 import io.grpc.CallOptions;
 import io.grpc.Channel;
@@ -12,27 +12,27 @@ import io.grpc.ForwardingClientCall.SimpleForwardingClientCall;
 import static com.tomoyane.herts.hertscommon.context.HertsHeaderContext.CODE_VERSION;
 import static com.tomoyane.herts.hertscommon.context.HertsHeaderContext.HERTS_HEADER_KEY;
 
-public class HertClientInterceptorBuilderImpl implements ClientInterceptor {
-    private final HertClientInterceptor interceptor;
+public class HertCoreClientInterceptorBuilderImpl implements ClientInterceptor {
+    private final HertCoreClientInterceptor interceptor;
 
-    private HertClientInterceptorBuilderImpl(HertClientInterceptor interceptor) {
+    private HertCoreClientInterceptorBuilderImpl(HertCoreClientInterceptor interceptor) {
         this.interceptor = interceptor;
     }
 
-    public static class Builder implements HertClientInterceptorBuilder {
-        private final HertClientInterceptor interceptor;
+    public static class Builder implements HertCoreClientInterceptorBuilder {
+        private final HertCoreClientInterceptor interceptor;
 
-        private Builder(HertClientInterceptor interceptor) {
+        private Builder(HertCoreClientInterceptor interceptor) {
             this.interceptor = interceptor;
         }
 
-        public static Builder create(HertClientInterceptor interceptor) {
+        public static Builder create(HertCoreClientInterceptor interceptor) {
             return new Builder(interceptor);
         }
 
         @Override
         public ClientInterceptor build() {
-            return new HertClientInterceptorBuilderImpl(this.interceptor);
+            return new HertCoreClientInterceptorBuilderImpl(this.interceptor);
         }
     }
 

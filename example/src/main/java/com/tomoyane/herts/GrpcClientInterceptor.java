@@ -1,6 +1,6 @@
 package com.tomoyane.herts;
 
-import com.tomoyane.herts.hertsclient.HertClientInterceptor;
+import com.tomoyane.herts.hertscoreclient.HertCoreClientInterceptor;
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
 import io.grpc.CallOptions;
 import io.grpc.Metadata;
@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 import static com.tomoyane.herts.Constant.HEADER_TEST01;
 
-public class GrpcClientInterceptor implements HertClientInterceptor {
+public class GrpcClientInterceptor implements HertCoreClientInterceptor {
     private static final Logger logger = HertsLogger.getLogger(GrpcClientInterceptor.class.getSimpleName());
 
     @Override

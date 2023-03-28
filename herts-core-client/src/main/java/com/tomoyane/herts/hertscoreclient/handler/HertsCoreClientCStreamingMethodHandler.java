@@ -1,8 +1,8 @@
-package com.tomoyane.herts.hertsclient.handler;
+package com.tomoyane.herts.hertscoreclient.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
+import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
 import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
 import com.tomoyane.herts.hertscommon.service.HertsService;
@@ -19,15 +19,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class HertsClientBStreamingMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsClientBStreamingMethodHandler> implements InvocationHandler, HertsService {
-    private static final Logger logger = HertsLogger.getLogger(HertsClientBStreamingMethodHandler.class.getSimpleName());
+public class HertsCoreClientCStreamingMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsCoreClientCStreamingMethodHandler> implements InvocationHandler {
+    private static final Logger logger = HertsLogger.getLogger(HertsCoreClientCStreamingMethodHandler.class.getSimpleName());
 
     private final ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
     private final Map<String, Class<?>> methodTypes = new HashMap<>();
     private final HertsService hertsService;
     private final String serviceName;
 
-    public HertsClientBStreamingMethodHandler(Channel channel, CallOptions callOptions, HertsService hertsService) {
+    public HertsCoreClientCStreamingMethodHandler(Channel channel, CallOptions callOptions, HertsService hertsService) {
         super(channel, callOptions);
         this.hertsService = hertsService;
         this.serviceName = hertsService.getClass().getName();
@@ -49,7 +49,7 @@ public class HertsClientBStreamingMethodHandler extends io.grpc.stub.AbstractBlo
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
         MethodDescriptor<Object, Object> methodDescriptor = HertsGrpcDescriptor
-                .generateStramingMethodDescriptor(HertsCoreType.BidirectionalStreaming, this.serviceName, methodName);
+                .generateStramingMethodDescriptor(HertsCoreType.ClientStreaming, this.serviceName, methodName);
 
         StreamObserver<Object> bytes = null;
         if (args != null) {
@@ -61,29 +61,14 @@ public class HertsClientBStreamingMethodHandler extends io.grpc.stub.AbstractBlo
 
         System.out.println("===Client call===" + methodName);
 
-        StreamObserver<Object> streamObserver = ClientCalls.asyncBidiStreamingCall(getChannel().newCall(methodDescriptor, getCallOptions()), bytes);
+        StreamObserver<Object> streamObserver = ClientCalls.asyncClientStreamingCall(getChannel().newCall(methodDescriptor, getCallOptions()), bytes);
 
         System.out.println("===Client called ===" + methodName);
         return streamObserver;
     }
 
     @Override
-    protected HertsClientBStreamingMethodHandler build(Channel channel, CallOptions callOptions) {
-        return new HertsClientBStreamingMethodHandler(channel, callOptions, hertsService);
-    }
-
-    @Override
-    public HertsCoreType getHertsCoreType() {
-        return null;
-    }
-
-    @Override
-    public MethodDescriptor.MethodType getGrpcMethodType() {
-        return null;
-    }
-
-    @Override
-    public String[] getConnections() {
-        return new String[0];
+    protected HertsCoreClientCStreamingMethodHandler build(Channel channel, CallOptions callOptions) {
+        return new HertsCoreClientCStreamingMethodHandler(channel, callOptions, hertsService);
     }
 }

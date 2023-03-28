@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'com.tomoyane.herts.example'
+group 'com.tomoyane.herts.hertshttp'
 version '1.0.0'
 
 repositories {
@@ -10,10 +10,6 @@ repositories {
 }
 
 dependencies {
-    implementation project(':herts-common')
-    implementation project(':herts-core')
-    implementation project(':herts-core-client')
-
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }

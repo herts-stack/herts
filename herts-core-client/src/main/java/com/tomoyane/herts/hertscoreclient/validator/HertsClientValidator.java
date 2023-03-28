@@ -1,4 +1,4 @@
-package com.tomoyane.herts.hertsclient.validator;
+package com.tomoyane.herts.hertscoreclient.validator;
 
 import com.tomoyane.herts.hertscommon.util.RpcValidateUtil;
 

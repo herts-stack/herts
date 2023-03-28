@@ -1,9 +1,11 @@
 .idea/
 herts-core/build/
-herts-client/build/
+herts-core-client/build/
 herts-common/build/
 herts-metrics/build/
 herts-codegen/build/
+herts-http/build/
+herts-http-client/build/
 tools/build/
 example/build/
 grpc-proto-example/build/

@@ -1,4 +1,4 @@
-package com.tomoyane.herts.hertsclient.handler;
+package com.tomoyane.herts.hertscoreclient.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
@@ -24,15 +24,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class HertsClientUMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsClientUMethodHandler> implements InvocationHandler {
-    private static final Logger logger = HertsLogger.getLogger(HertsClientUMethodHandler.class.getSimpleName());
+public class HertsCoreClientUMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsCoreClientUMethodHandler> implements InvocationHandler {
+    private static final Logger logger = HertsLogger.getLogger(HertsCoreClientUMethodHandler.class.getSimpleName());
 
     private final ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
     private final Map<String, Class<?>> methodTypes = new HashMap<>();
     private final HertsService hertsService;
     private final String serviceName;
 
-    public HertsClientUMethodHandler(Channel channel, CallOptions callOptions, HertsService hertsService) {
+    public HertsCoreClientUMethodHandler(Channel channel, CallOptions callOptions, HertsService hertsService) {
         super(channel, callOptions);
         this.hertsService = hertsService;
         this.serviceName = hertsService.getClass().getName();
@@ -79,7 +79,7 @@ public class HertsClientUMethodHandler extends io.grpc.stub.AbstractBlockingStub
     }
 
     @Override
-    protected HertsClientUMethodHandler build(Channel channel, CallOptions callOptions) {
-        return new HertsClientUMethodHandler(channel, callOptions, hertsService);
+    protected HertsCoreClientUMethodHandler build(Channel channel, CallOptions callOptions) {
+        return new HertsCoreClientUMethodHandler(channel, callOptions, hertsService);
     }
 }
