@@ -25,4 +25,7 @@ public class HertsCoreBase implements HertsService {
     public String[] getConnections() {
         return new String[0];
     }
+
+    protected void setTest() {
+    }
 }

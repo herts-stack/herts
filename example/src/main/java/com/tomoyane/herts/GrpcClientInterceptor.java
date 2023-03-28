@@ -1,18 +1,26 @@
 package com.tomoyane.herts;
 
+import com.tomoyane.herts.hertsclient.HertClientInterceptor;
+import com.tomoyane.herts.hertscommon.logger.HertsLogger;
 import io.grpc.CallOptions;
-import io.grpc.ClientCall;
-import io.grpc.ClientInterceptor;
+import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import io.grpc.Channel;
 
-public class GrpcClientInterceptor implements ClientInterceptor {
+import java.util.logging.Logger;
+
+import static com.tomoyane.herts.Constant.HEADER_TEST01;
+
+public class GrpcClientInterceptor implements HertClientInterceptor {
+    private static final Logger logger = HertsLogger.getLogger(GrpcClientInterceptor.class.getSimpleName());
 
     @Override
-    public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(
-            MethodDescriptor<ReqT, RespT> methodDescriptor, CallOptions callOptions, Channel channel) {
+    public void setRequestMetadata(Metadata metadata) {
+        metadata.put(HEADER_TEST01, "TEST_VALUE");
+    }
 
-        System.out.println("======= Intercept =========");
-        return channel.newCall(methodDescriptor, callOptions);
+    @Override
+    public <ReqT, RespT> void beforeCallMethod(MethodDescriptor<ReqT, RespT> methodDescriptor, CallOptions callOptions, Channel channel) {
+        logger.info("====== Before call");
     }
 }

@@ -1,5 +1,6 @@
 package com.tomoyane.herts;
 
+import com.tomoyane.herts.hertsclient.HertClientInterceptorBuilderImpl;
 import com.tomoyane.herts.hertsclient.HertsClient;
 import com.tomoyane.herts.hertsclient.HertsClientBuilderImpl;
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
@@ -21,22 +22,24 @@ public class ClientServiceExample {
                 .secure(false)
                 .hertsImplementationService(service01)
                 .hertsImplementationService(service02)
-                .interceptor(new GrpcClientInterceptor())
+                .interceptor(HertClientInterceptorBuilderImpl.Builder.create(new GrpcClientInterceptor()).build())
                 .build();
 
         UnaryRpcService01 service_01 = client.createHertService(UnaryRpcService01.class);
         var res01 = service_01.test01("TEST01", "VALUE01");
+        logger.info(res01);
+
         var res02 = service_01.test02();
+        logger.info("" + res02);
+
         var res03 = service_01.test03();
+        logger.info(res03.get("Key"));
+
         var res100 = service_01.test100(new HelloRequest());
+        logger.info(""  + res100);
 
         UnaryRpcService02 service_02 = client.createHertService(UnaryRpcService02.class);
         var res0201 = service_02.hello01("ID", "Hello!");
-
-        logger.info(res01);
-        logger.info("" + res02);
-        logger.info(res03.get("Key"));
-        logger.info("=====================");
         logger.info(res0201);
 
         client.getChannel().shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
@@ -108,7 +111,7 @@ public class ClientServiceExample {
                 .create("localhost", 9000, HertsCoreType.BidirectionalStreaming)
                 .secure(false)
                 .hertsImplementationService(new ClientStreamingRpcServiceImpl())
-                .interceptor(new GrpcClientInterceptor())
+                .interceptor(HertClientInterceptorBuilderImpl.Builder.create(new GrpcClientInterceptor()).build())
                 .build();
 
         ClientStreamingRpcService service = client.createHertService(ClientStreamingRpcService.class);
