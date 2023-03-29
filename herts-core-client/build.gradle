@@ -1,16 +1,11 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '7.+'
 }
 apply plugin: 'application'
 
-group 'com.tomoyane.herts.tools'
+group 'com.tomoyane.herts.hertscoreclient'
 version '1.0.0'
 sourceCompatibility = '17'
-
-application {
-    mainClassName = 'com.tomoyane.herts.tools.Main'
-}
 
 repositories {
     mavenCentral()
@@ -18,6 +13,7 @@ repositories {
 
 dependencies {
     implementation project(':herts-common')
+    implementation project(':herts-core')
 }
 
 test {

@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'com.tomoyane.herts.example'
+version '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':herts-common')
+    implementation project(':herts-core')
+    implementation project(':herts-core-client')
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.register('runServer17', JavaExec) {
+    dependsOn 'classes'
+    main = 'java17.com.tomoyane.herts.example.server.Main'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+tasks.register('runClient17', JavaExec) {
+    dependsOn 'classes'
+    main = 'java17.com.tomoyane.herts.example.client.Main'
+    classpath = sourceSets.main.runtimeClasspath
+}

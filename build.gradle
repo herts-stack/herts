@@ -5,7 +5,16 @@ allprojects {
 subprojects {
     apply plugin: 'java'
 
+    def grpcVersion = '1.53.0'
     dependencies {
+        // gprc
+        implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+        implementation "io.grpc:grpc-stub:${grpcVersion}"
+        runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
+
+        // msg pack
+        implementation 'org.msgpack:jackson-dataformat-msgpack:0.7.1'
+        implementation 'org.msgpack:msgpack:0.6.12'
     }
 
     repositories {

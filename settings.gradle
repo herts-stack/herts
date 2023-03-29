@@ -1,6 +1,11 @@
 rootProject.name = 'herts'
 include 'herts-core'
-include 'herts-client'
-include 'herts-shared'
+include 'herts-core-client'
+include 'herts-common'
 include 'tools'
+include 'example'
+include 'herts-metrics'
+include 'herts-codegen'
+include 'herts-http'
+include 'herts-http-client'
 

@@ -3,17 +3,15 @@ plugins {
 }
 apply plugin: 'application'
 
-group 'com.tomoyane.herts.hertscore'
+group 'com.tomoyane.herts.hertscommon'
 version '1.0.0'
 sourceCompatibility = '17'
 
 repositories {
     mavenCentral()
-    gradlePluginPortal()
 }
 
 dependencies {
-    implementation project(':herts-common')
 }
 
 test {
