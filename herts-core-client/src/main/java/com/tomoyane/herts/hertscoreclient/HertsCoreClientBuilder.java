@@ -4,8 +4,6 @@ import com.tomoyane.herts.hertscommon.service.HertsService;
 import io.grpc.Channel;
 import io.grpc.ClientInterceptor;
 
-import java.util.List;
-
 public interface HertsCoreClientBuilder {
     HertsCoreClientBuilder secure(boolean isSecureConnection);
 

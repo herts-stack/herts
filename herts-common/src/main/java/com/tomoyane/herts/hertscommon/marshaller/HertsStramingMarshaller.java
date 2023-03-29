@@ -1,9 +1,16 @@
 package com.tomoyane.herts.hertscommon.marshaller;
 
+import com.tomoyane.herts.hertscommon.exception.HertsMessageException;
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
+
 import io.grpc.MethodDescriptor;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.logging.Logger;
 
 public class HertsStramingMarshaller implements MethodDescriptor.Marshaller<Object> {
@@ -27,8 +34,7 @@ public class HertsStramingMarshaller implements MethodDescriptor.Marshaller<Obje
             oos.close();
             return new ByteArrayInputStream(this.byteArrayOutputStream.toByteArray());
         } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException("ER=============", ex);
+            throw new HertsMessageException(ex);
         }
     }
 
@@ -40,11 +46,8 @@ public class HertsStramingMarshaller implements MethodDescriptor.Marshaller<Obje
         try {
             ObjectInputStream ois = new ObjectInputStream(stream);
             return ois.readObject();
-        } catch (ClassNotFoundException e) {
-            logger.warning("Failed to parse message. " + e.getMessage());
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (ClassNotFoundException | IOException ex) {
+            throw new HertsMessageException(ex);
         }
     }
 }

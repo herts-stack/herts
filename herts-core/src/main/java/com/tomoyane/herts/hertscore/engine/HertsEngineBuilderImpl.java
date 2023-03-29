@@ -234,7 +234,7 @@ public class HertsEngineBuilderImpl implements HertsEngine {
             }
             this.server = serverBuilder.build();
             this.server.start();
-            logger.info("Started Herts server. gRPC type " + this.hertsCoreTypes.get(0));
+            logger.info("Started Herts server. gRPC type " + this.hertsCoreTypes.get(0) + " Port " + this.option.getPort());
             server.awaitTermination();
         } catch (IOException | InterruptedException ex) {
             throw new HertsCoreBuildException(ex);

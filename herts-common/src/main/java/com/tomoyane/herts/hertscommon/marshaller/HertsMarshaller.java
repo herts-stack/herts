@@ -1,8 +1,9 @@
 package com.tomoyane.herts.hertscommon.marshaller;
 
 import com.google.common.io.ByteStreams;
-
+import com.tomoyane.herts.hertscommon.exception.HertsMessageException;
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
+
 import io.grpc.MethodDescriptor;
 
 import java.io.ByteArrayInputStream;
@@ -32,8 +33,7 @@ public class HertsMarshaller implements MethodDescriptor.Marshaller<byte[]> {
         try {
             return ByteStreams.toByteArray(stream);
         } catch (IOException ex) {
-            logger.warning("Failed to parse message. " + ex.getMessage());
-            throw new RuntimeException(ex);
+            throw new HertsMessageException(ex);
         }
     }
 }

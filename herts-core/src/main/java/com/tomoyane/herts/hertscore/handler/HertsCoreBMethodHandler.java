@@ -1,9 +1,9 @@
 package com.tomoyane.herts.hertscore.handler;
 
 import com.tomoyane.herts.hertscommon.exception.HertsInstanceException;
+import com.tomoyane.herts.hertscommon.exception.HertsMessageException;
 import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscommon.marshaller.HertsMethod;
-import com.tomoyane.herts.hertscommon.serializer.HertsSerializer;
 import io.grpc.stub.StreamObserver;
 
 import java.lang.reflect.InvocationTargetException;
@@ -42,8 +42,7 @@ public class HertsCoreBMethodHandler<Req, Resp> implements
         try {
             method = coreClass.getDeclaredMethod(hertsMethod.getMethodName(), hertsMethod.getParameters());
         } catch (NoSuchMethodException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
+            throw new HertsInstanceException(ex);
         }
 
         this.reflectMethod = method;
@@ -55,8 +54,7 @@ public class HertsCoreBMethodHandler<Req, Resp> implements
             var response = this.reflectMethod.invoke(this.coreObject, responseObserver);
             return (StreamObserver<Req>) response;
         } catch (IllegalAccessException | InvocationTargetException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
+            throw new HertsMessageException(ex);
         }
     }
 

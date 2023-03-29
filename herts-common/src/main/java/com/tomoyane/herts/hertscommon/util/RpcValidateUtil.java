@@ -1,12 +1,10 @@
 package com.tomoyane.herts.hertscommon.util;
 
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
-import com.tomoyane.herts.hertscommon.exception.HertsNotSupportParameterTypeException;
 import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscommon.service.HertsService;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +62,6 @@ public class RpcValidateUtil {
                 if (method.getParameterTypes().length != 1) {
                     return false;
                 }
-                System.out.println(method.getParameterTypes()[0].getName());
                 if (!method.getParameterTypes()[0].getName().equals("io.grpc.stub.StreamObserver")) {
                     return false;
                 }

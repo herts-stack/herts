@@ -1,7 +1,9 @@
 package com.tomoyane.herts.hertscommon.descriptor;
 
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
-import com.tomoyane.herts.hertscommon.marshaller.*;
+import com.tomoyane.herts.hertscommon.marshaller.HertsMarshaller;
+import com.tomoyane.herts.hertscommon.marshaller.HertsMethod;
+import com.tomoyane.herts.hertscommon.marshaller.HertsStramingMarshaller;
 
 import io.grpc.MethodDescriptor;
 import io.grpc.ServiceDescriptor;
@@ -62,7 +64,7 @@ public class HertsGrpcDescriptor {
     }
 
     /**
-     * Generate gRPC descriptor.
+     * Generate gRPC unary descriptor.
      * @param serviceName Interface service name
      * @param hertsMethods HertMethod class list
      * @return HertsDescriptor
@@ -82,6 +84,12 @@ public class HertsGrpcDescriptor {
         return HertsUnaryDescriptor.createGrpcDescriptor(builder.build(), methodDescriptors);
     }
 
+    /**
+     * Generate gRPC client, server, bidirectional streaming descriptor.
+     * @param serviceName Interface service name
+     * @param hertsMethods HertMethod class list
+     * @return HertsStreamingDescriptor
+     */
     public static HertsStreamingDescriptor generateStreamingGrpcDescriptor(String serviceName, List<HertsMethod> hertsMethods) {
         ServiceDescriptor.Builder builder = ServiceDescriptor.newBuilder(serviceName);
         List<MethodDescriptor<Object, Object>> methodDescriptors = new ArrayList<>();

@@ -5,6 +5,7 @@ import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscommon.marshaller.HertsMethod;
 import com.tomoyane.herts.hertscommon.marshaller.HertsMsg;
 import com.tomoyane.herts.hertscommon.serializer.HertsSerializer;
+
 import io.grpc.stub.StreamObserver;
 
 import java.io.IOException;
@@ -45,8 +46,7 @@ public class HertsCoreSStreamingMethodHandler<Req, Resp> implements
         try {
             method = coreClass.getDeclaredMethod(hertsMethod.getMethodName(), hertsMethod.getParameters());
         } catch (NoSuchMethodException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
+            throw new HertsInstanceException(ex);
         }
 
         this.reflectMethod = method;
@@ -69,22 +69,15 @@ public class HertsCoreSStreamingMethodHandler<Req, Resp> implements
                     index++;
                 }
                 this.requests[this.requests.length-1] =  (StreamObserver<Object>) responseObserver;
-                System.out.println(this.reflectMethod);
-                for (Object o : this.requests) {
-                    System.out.println(o.getClass().getSimpleName());
-                }
-                var a = this.reflectMethod.invoke(this.coreObject, this.requests);
+                this.reflectMethod.invoke(this.coreObject, this.requests);
             } else {
-                var b = this.reflectMethod.invoke(this.coreObject, responseObserver);
+                this.reflectMethod.invoke(this.coreObject, responseObserver);
             }
 
         } catch (IllegalAccessException | IOException ex) {
-            ex.printStackTrace();
             responseObserver.onError(ex);
         } catch (InvocationTargetException ex) {
-            ex.printStackTrace();
-            Throwable cause = ex.getCause();
-            responseObserver.onError(cause);
+            responseObserver.onError(ex.getCause());
         }
     }
 }

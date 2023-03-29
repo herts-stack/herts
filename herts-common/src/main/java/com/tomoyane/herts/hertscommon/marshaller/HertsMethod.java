@@ -71,4 +71,5 @@ public class HertsMethod {
                 "CoreServiceName=" + this.coreServiceName  + ", " +
                 "MethodName=" + this.methodName  + ", " +
                 "MethodReturnType=" + this.methodReturnType;
-    }}
+    }
+}

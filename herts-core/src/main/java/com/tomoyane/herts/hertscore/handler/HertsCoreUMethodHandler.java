@@ -5,6 +5,7 @@ import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscommon.marshaller.HertsMethod;
 import com.tomoyane.herts.hertscommon.marshaller.HertsMsg;
 import com.tomoyane.herts.hertscommon.serializer.HertsSerializer;
+
 import io.grpc.stub.StreamObserver;
 
 import java.io.IOException;
@@ -45,8 +46,7 @@ public class HertsCoreUMethodHandler<Req, Resp> implements
         try {
             method = coreClass.getDeclaredMethod(hertsMethod.getMethodName(), hertsMethod.getParameters());
         } catch (NoSuchMethodException ex) {
-            ex.printStackTrace();
-            throw new RuntimeException(ex);
+            throw new HertsInstanceException(ex);
         }
 
         this.reflectMethod = method;
@@ -76,23 +76,18 @@ public class HertsCoreUMethodHandler<Req, Resp> implements
             }
 
             if (response == null) {
-                System.out.println("Invoke response is null");
                 responseObserver.onNext(null);
                 responseObserver.onCompleted();
             } else {
-                System.out.println("Invoke response is not null " + response);
                 var responseBytes = this.serializer.serialize(response);
                 responseObserver.onNext((Resp) responseBytes);
                 responseObserver.onCompleted();
             }
 
         } catch (IllegalAccessException | IOException ex) {
-            ex.printStackTrace();
             responseObserver.onError(ex);
         } catch (InvocationTargetException ex) {
-            ex.printStackTrace();
-            Throwable cause = ex.getCause();
-            responseObserver.onError(cause);
+            responseObserver.onError(ex.getCause());
         }
     }
 }

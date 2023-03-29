@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group 'com.tomoyane.herts.example'
@@ -20,4 +21,16 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+tasks.register('runServer17', JavaExec) {
+    dependsOn 'classes'
+    main = 'java17.com.tomoyane.herts.example.server.Main'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+tasks.register('runClient17', JavaExec) {
+    dependsOn 'classes'
+    main = 'java17.com.tomoyane.herts.example.client.Main'
+    classpath = sourceSets.main.runtimeClasspath
 }
