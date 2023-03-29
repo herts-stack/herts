@@ -32,7 +32,7 @@ public class HertsCoreClientBuilderImpl implements HertsCoreClient {
     private final HertsCoreType hertsCoreType;
     private final boolean isSecureConnection;
     private final ClientInterceptor interceptor;
-    private final List<ConnectionOption> connectionOptions;
+    private final GrpcClientOption option;
     private final List<HertsService> hertsServices;
 
     private Channel channel;
@@ -44,38 +44,8 @@ public class HertsCoreClientBuilderImpl implements HertsCoreClient {
         this.hertsCoreType = builder.hertsCoreType;
         this.interceptor = builder.interceptor;
         this.channel = builder.channel;
-        this.connectionOptions = builder.connectionOptions;
+        this.option = builder.option;
         this.hertsServices = builder.hertsServices;
-    }
-
-    public static class ConnectionOption {
-        private final GrpcConnectionOption grpcConnectionOption;
-        private final long value;
-        private final TimeUnit unit;
-
-        public ConnectionOption(GrpcConnectionOption grpcConnectionOption, long value, TimeUnit unit) {
-            this.grpcConnectionOption = grpcConnectionOption;
-            this.value = value;
-            this.unit = unit;
-        }
-
-        public static enum GrpcConnectionOption {
-            IdleTimeout,
-            KeepAliveTime,
-            KeepAliveTimeout,
-        }
-
-        public GrpcConnectionOption getGrpcConnectionOption() {
-            return grpcConnectionOption;
-        }
-
-        public long getValue() {
-            return value;
-        }
-
-        public TimeUnit getUnit() {
-            return unit;
-        }
     }
 
     public static class Builder implements HertsCoreClientBuilder {
@@ -87,7 +57,7 @@ public class HertsCoreClientBuilderImpl implements HertsCoreClient {
         private boolean isSecureConnection;
         private Channel channel;
         private ClientInterceptor interceptor;
-        private List<ConnectionOption> connectionOptions;
+        private GrpcClientOption option;
 
         private Builder(String connectedHost, int serverPort, HertsCoreType hertsCoreType) {
             this.connectedHost = connectedHost;
@@ -99,31 +69,37 @@ public class HertsCoreClientBuilderImpl implements HertsCoreClient {
             return new Builder(connectedHost, serverPort, hertsCoreType);
         }
 
+        @Override
         public HertsCoreClientBuilder secure(boolean isSecureConnection) {
             this.isSecureConnection = isSecureConnection;
             return this;
         }
 
+        @Override
         public HertsCoreClientBuilder hertsImplementationService(HertsService hertsService) {
             this.hertsServices.add(hertsService);
             return this;
         }
 
+        @Override
         public HertsCoreClientBuilder channel(Channel channel) {
             this.channel = channel;
             return this;
         }
 
+        @Override
         public HertsCoreClientBuilder interceptor(ClientInterceptor interceptor) {
             this.interceptor = interceptor;
             return this;
         }
 
-        public HertsCoreClientBuilder connectionOption(List<ConnectionOption> connectionOptions) {
-            this.connectionOptions = connectionOptions;
+        @Override
+        public HertsCoreClientBuilder grpcOption(GrpcClientOption option) {
+            this.option = option;
             return this;
         }
 
+        @Override
         public HertsCoreClient build() {
             if (this.hertsServices.size() == 0 || this.connectedHost == null || this.connectedHost.isEmpty()) {
                 throw new HertsClientBuildException("Please register HertsService and host");
@@ -140,6 +116,9 @@ public class HertsCoreClientBuilderImpl implements HertsCoreClient {
 
             if (!HertsCoreClientValidator.isValidStreamingRpc(this.hertsServices)) {
                 throw new HertsNotSupportParameterTypeException("Support StreamObserver<T> parameter only of BidirectionalStreaming and ClientStreaming. Please remove other method parameter.");
+            }
+            if (this.option == null) {
+                this.option = new GrpcClientOption();
             }
             return new HertsCoreClientBuilderImpl(this);
         }
@@ -190,16 +169,14 @@ public class HertsCoreClientBuilderImpl implements HertsCoreClient {
                 };
                 managedChannelBuilder = managedChannelBuilder.intercept(HertCoreClientInterceptorBuilderImpl.Builder.create(defaultInterceptor).build());
             }
-            if (this.connectionOptions != null) {
-                for (ConnectionOption option : this.connectionOptions) {
-                    if (option.grpcConnectionOption == ConnectionOption.GrpcConnectionOption.IdleTimeout) {
-                        managedChannelBuilder = managedChannelBuilder.idleTimeout(option.getValue(), option.getUnit());
-                    } else if (option.grpcConnectionOption == ConnectionOption.GrpcConnectionOption.KeepAliveTime) {
-                        managedChannelBuilder = managedChannelBuilder.keepAliveTime(option.getValue(), option.getUnit());
-                    } else if (option.grpcConnectionOption == ConnectionOption.GrpcConnectionOption.KeepAliveTimeout) {
-                        managedChannelBuilder = managedChannelBuilder.keepAliveTimeout(option.getValue(), option.getUnit());
-                    }
-                }
+            if (this.option.getKeepaliveMilliSec() != null) {
+                managedChannelBuilder = managedChannelBuilder.keepAliveTime(this.option.getKeepaliveMilliSec(), TimeUnit.MILLISECONDS);
+            }
+            if (this.option.getKeepaliveTimeoutMilliSec() != null) {
+                managedChannelBuilder = managedChannelBuilder.keepAliveTimeout(this.option.getKeepaliveTimeoutMilliSec(), TimeUnit.MILLISECONDS);
+            }
+            if (this.option.getIdleTimeoutMilliSec() != null) {
+                managedChannelBuilder = managedChannelBuilder.idleTimeout(this.option.getIdleTimeoutMilliSec(), TimeUnit.MILLISECONDS);
             }
             this.channel = managedChannelBuilder.build();
         }

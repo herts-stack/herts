@@ -22,7 +22,7 @@ public interface HertsEngineBuilder {
 
     ServerCredentials getCredentials();
 
-    int getPort();
+    GrpcServerOption getOption();
 
     Map<BindableService, ServerInterceptor> getServices();
 

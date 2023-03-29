@@ -15,7 +15,7 @@ public interface HertsCoreClientBuilder {
 
     HertsCoreClientBuilder interceptor(ClientInterceptor interceptor);
 
-    HertsCoreClientBuilder connectionOption(List<HertsCoreClientBuilderImpl.ConnectionOption> connectionOptions);
+    HertsCoreClientBuilder grpcOption(GrpcClientOption option);
 
     HertsCoreClient build();
 }

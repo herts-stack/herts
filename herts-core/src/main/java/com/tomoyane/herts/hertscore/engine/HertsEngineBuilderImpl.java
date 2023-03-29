@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class HertsEngineBuilderImpl implements HertsEngine {
@@ -52,13 +53,13 @@ public class HertsEngineBuilderImpl implements HertsEngine {
     private final Map<BindableService, ServerInterceptor> services;
     private final List<HertsCoreType> hertsCoreTypes;
     private final List<HertsService> hertsServices;
-    private final int port;
+    private final GrpcServerOption option;
     private final ServerCredentials credentials;
 
     private Server server;
 
     private HertsEngineBuilderImpl(Builder builder) {
-        this.port = builder.getPort();
+        this.option = builder.getOption();
         this.credentials = builder.getCredentials();
         this.hertsCoreTypes = builder.getHertsCoreTypes();
         this.services = builder.getServices();
@@ -69,18 +70,19 @@ public class HertsEngineBuilderImpl implements HertsEngine {
         private final Map<BindableService, ServerInterceptor> services = new HashMap<>();
         private final List<HertsCoreType> hertsCoreTypes = new ArrayList<>();
         private final List<HertsService> hertsServices = new ArrayList<>();
-        private int port = 9000;
+        private GrpcServerOption option;
         private ServerCredentials credentials;
 
         private Builder() {
+            this.option = new GrpcServerOption();
         }
 
-        private Builder(int port) {
-            this.port = port;
+        private Builder(GrpcServerOption option) {
+            this.option = option;
         }
 
-        public static HertsEngineBuilder create(int port) {
-            return new Builder(port);
+        public static HertsEngineBuilder create(GrpcServerOption option) {
+            return new Builder(option);
         }
 
         public static HertsEngineBuilder create() {
@@ -103,8 +105,8 @@ public class HertsEngineBuilderImpl implements HertsEngine {
         }
 
         @Override
-        public int getPort() {
-            return port;
+        public GrpcServerOption getOption() {
+            return option;
         }
 
         @Override
@@ -200,9 +202,9 @@ public class HertsEngineBuilderImpl implements HertsEngine {
             ServerBuilder<?> serverBuilder;
 
             if (this.credentials != null) {
-                serverBuilder = Grpc.newServerBuilderForPort(this.port, this.credentials);
+                serverBuilder = Grpc.newServerBuilderForPort(this.option.getPort(), this.credentials);
             } else {
-                serverBuilder = Grpc.newServerBuilderForPort(this.port, InsecureServerCredentials.create());
+                serverBuilder = Grpc.newServerBuilderForPort(this.option.getPort(), InsecureServerCredentials.create());
             }
 
             for (Map.Entry<BindableService, ServerInterceptor> service : this.services.entrySet()) {
@@ -212,6 +214,24 @@ public class HertsEngineBuilderImpl implements HertsEngine {
                 }
             }
 
+            if (this.option.getMaxInboundMessageSize() > 0) {
+                serverBuilder = serverBuilder.maxInboundMessageSize(this.option.getMaxInboundMessageSize());
+            }
+            if (this.option.getKeepaliveTimeMilliSec() != null) {
+                serverBuilder = serverBuilder.keepAliveTime(this.option.getKeepaliveTimeMilliSec(), TimeUnit.MILLISECONDS);
+            }
+            if (this.option.getKeepaliveTimeoutMilliSec() != null) {
+                serverBuilder = serverBuilder.keepAliveTimeout(this.option.getKeepaliveTimeoutMilliSec(), TimeUnit.MILLISECONDS);
+            }
+            if (this.option.getHandshakeTimeoutMilliSec() != null) {
+                serverBuilder = serverBuilder.handshakeTimeout(this.option.getHandshakeTimeoutMilliSec(), TimeUnit.MILLISECONDS);
+            }
+            if (this.option.getMaxConnectionAgeMilliSec() != null) {
+                serverBuilder = serverBuilder.maxConnectionAge(this.option.getMaxConnectionAgeMilliSec(), TimeUnit.MILLISECONDS);
+            }
+            if (this.option.getMaxConnectionIdleMilliSec() != null) {
+                serverBuilder = serverBuilder.maxConnectionIdle(this.option.getMaxConnectionIdleMilliSec(), TimeUnit.MILLISECONDS);
+            }
             this.server = serverBuilder.build();
             this.server.start();
             logger.info("Started Herts server. gRPC type " + this.hertsCoreTypes.get(0));
