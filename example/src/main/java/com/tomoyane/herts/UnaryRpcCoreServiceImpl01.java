@@ -1,13 +1,13 @@
 package com.tomoyane.herts;
 
-import com.tomoyane.herts.hertscore.UnaryServiceCore;
+import com.tomoyane.herts.hertscore.UnaryCoreServiceCore;
 
 import java.util.Collections;
 import java.util.Map;
 
-public class UnaryRpcServiceImpl01 extends UnaryServiceCore implements UnaryRpcService01 {
+public class UnaryRpcCoreServiceImpl01 extends UnaryCoreServiceCore implements UnaryRpcCoreService01 {
 
-    public UnaryRpcServiceImpl01() {
+    public UnaryRpcCoreServiceImpl01() {
     }
 
     public String test01(String id, String value) {

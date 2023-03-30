@@ -1,13 +1,13 @@
 package com.tomoyane.herts.hertscoreclient;
 
-import com.tomoyane.herts.hertscommon.service.HertsService;
+import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 import io.grpc.Channel;
 import io.grpc.ClientInterceptor;
 
 public interface HertsCoreClientBuilder {
     HertsCoreClientBuilder secure(boolean isSecureConnection);
 
-    HertsCoreClientBuilder hertsImplementationService(HertsService hertsService);
+    HertsCoreClientBuilder hertsImplementationService(HertsCoreService hertsCoreService);
 
     HertsCoreClientBuilder channel(Channel channel);
 

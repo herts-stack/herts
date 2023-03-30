@@ -1,12 +1,12 @@
 package java17.com.tomoyane.herts.example.server;
 
 import com.tomoyane.herts.ArgCollector;
-import com.tomoyane.herts.BidirectionalStreamingRpcServiceImpl;
-import com.tomoyane.herts.ClientStreamingRpcServiceImpl;
+import com.tomoyane.herts.BidirectionalStreamingRpcCoreServiceImpl;
+import com.tomoyane.herts.ClientStreamingRpcCoreServiceImpl;
 import com.tomoyane.herts.GrpcServerInterceptor;
-import com.tomoyane.herts.ServerStreamingRpcServiceImpl;
-import com.tomoyane.herts.UnaryRpcServiceImpl01;
-import com.tomoyane.herts.UnaryRpcServiceImpl02;
+import com.tomoyane.herts.ServerStreamingRpcCoreServiceImpl;
+import com.tomoyane.herts.UnaryRpcCoreServiceImpl01;
+import com.tomoyane.herts.UnaryRpcCoreServiceImpl02;
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscore.HertsCoreInterceptorBuilderImpl;
 import com.tomoyane.herts.hertscore.engine.HertsEngineBuilder;
@@ -24,21 +24,21 @@ public class Main {
         var interceptor = HertsCoreInterceptorBuilderImpl.Builder.create(new GrpcServerInterceptor()).build();
         switch (coreType) {
             case Unary -> {
-                var service01 = new UnaryRpcServiceImpl01();
-                var service02 = new UnaryRpcServiceImpl02();
+                var service01 = new UnaryRpcCoreServiceImpl01();
+                var service02 = new UnaryRpcCoreServiceImpl02();
 
                 engineBuilder.addService(service01, interceptor).addService(service02, interceptor);
             }
             case ClientStreaming -> {
-                var service = new ClientStreamingRpcServiceImpl();
+                var service = new ClientStreamingRpcCoreServiceImpl();
                 engineBuilder.addService(service, interceptor);
             }
             case ServerStreaming -> {
-                var service = new ServerStreamingRpcServiceImpl();
+                var service = new ServerStreamingRpcCoreServiceImpl();
                 engineBuilder.addService(service, interceptor);
             }
             case BidirectionalStreaming -> {
-                var service = new BidirectionalStreamingRpcServiceImpl();
+                var service = new BidirectionalStreamingRpcCoreServiceImpl();
                 engineBuilder.addService(service, interceptor);
             }
         }

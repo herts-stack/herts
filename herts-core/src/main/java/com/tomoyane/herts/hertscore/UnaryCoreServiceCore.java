@@ -2,9 +2,9 @@ package com.tomoyane.herts.hertscore;
 
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 
-public abstract class UnaryServiceCore extends HertsCoreBase {
+public abstract class UnaryCoreServiceCore extends HertsCoreCoreBase {
 
-    public UnaryServiceCore() {
+    public UnaryCoreServiceCore() {
         super(HertsCoreType.Unary);
     }
 }

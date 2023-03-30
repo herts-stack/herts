@@ -2,9 +2,9 @@ package com.tomoyane.herts.hertscore;
 
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 
-public abstract class ClientStreamingServiceCore extends HertsCoreBase {
+public abstract class ClientStreamingCoreServiceCore extends HertsCoreCoreBase {
 
-    public ClientStreamingServiceCore() {
+    public ClientStreamingCoreServiceCore() {
         super(HertsCoreType.ClientStreaming);
     }
 }

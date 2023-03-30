@@ -1,14 +1,16 @@
 package com.tomoyane.herts.hertscore;
 
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
-import com.tomoyane.herts.hertscommon.service.HertsService;
+import com.tomoyane.herts.hertscommon.service.HertsClientService;
+import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 
 import io.grpc.MethodDescriptor;
+import io.grpc.stub.StreamObserver;
 
-public class HertsCoreBase implements HertsService {
+public class HertsCoreCoreBase implements HertsCoreService {
     private final HertsCoreType coreType;
 
-    public HertsCoreBase(HertsCoreType rpcType) {
+    public HertsCoreCoreBase(HertsCoreType rpcType) {
         this.coreType = rpcType;
     }
 
@@ -27,6 +29,7 @@ public class HertsCoreBase implements HertsService {
         return new String[0];
     }
 
-    protected void setTest() {
-    }
+//    public <T> HertsClientService Broadcast(String connectionId) {
+//        return
+//    }
 }

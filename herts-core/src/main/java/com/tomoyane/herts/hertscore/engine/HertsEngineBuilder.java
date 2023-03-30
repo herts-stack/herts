@@ -1,7 +1,7 @@
 package com.tomoyane.herts.hertscore.engine;
 
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
-import com.tomoyane.herts.hertscommon.service.HertsService;
+import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 
 import io.grpc.BindableService;
 import io.grpc.ServerCredentials;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface HertsEngineBuilder {
-    HertsEngineBuilder addService(HertsService hertsService, @Nullable ServerInterceptor interceptor);
+    HertsEngineBuilder addService(HertsCoreService hertsCoreService, @Nullable ServerInterceptor interceptor);
 
     HertsEngineBuilder secure(ServerCredentials credentials);
 
@@ -28,5 +28,5 @@ public interface HertsEngineBuilder {
 
     List<HertsCoreType> getHertsCoreTypes();
 
-    List<HertsService> getHertsServices();
+    List<HertsCoreService> getHertsServices();
 }

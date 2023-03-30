@@ -1,15 +1,15 @@
 package com.tomoyane.herts;
 
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
-import com.tomoyane.herts.hertscore.ClientStreamingServiceCore;
+import com.tomoyane.herts.hertscore.ClientStreamingCoreServiceCore;
 import io.grpc.stub.StreamObserver;
 
 import java.util.logging.Logger;
 
-public class ClientStreamingRpcServiceImpl extends ClientStreamingServiceCore implements ClientStreamingRpcService {
-    private static final Logger logger = HertsLogger.getLogger(ClientStreamingRpcServiceImpl.class.getSimpleName());
+public class ClientStreamingRpcCoreServiceImpl extends ClientStreamingCoreServiceCore implements ClientStreamingRpcCoreService {
+    private static final Logger logger = HertsLogger.getLogger(ClientStreamingRpcCoreServiceImpl.class.getSimpleName());
 
-    public ClientStreamingRpcServiceImpl() {
+    public ClientStreamingRpcCoreServiceImpl() {
     }
 
     @Override

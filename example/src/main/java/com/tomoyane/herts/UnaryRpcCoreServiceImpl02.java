@@ -1,10 +1,10 @@
 package com.tomoyane.herts;
 
-import com.tomoyane.herts.hertscore.UnaryServiceCore;
+import com.tomoyane.herts.hertscore.UnaryCoreServiceCore;
 
-public class UnaryRpcServiceImpl02 extends UnaryServiceCore implements UnaryRpcService02 {
+public class UnaryRpcCoreServiceImpl02 extends UnaryCoreServiceCore implements UnaryRpcCoreService02 {
 
-    public UnaryRpcServiceImpl02() {
+    public UnaryRpcCoreServiceImpl02() {
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.tomoyane.herts.hertscommon.util;
 
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
-import com.tomoyane.herts.hertscommon.service.HertsService;
+import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -14,10 +14,10 @@ public class RpcValidateUtil {
                 coreTypes.stream().allMatch(coreTypes.get(0)::equals);
     }
 
-    public static String validateRegisteredServices(List<HertsService> services) {
+    public static String validateRegisteredServices(List<HertsCoreService> services) {
         List<String> serviceNames = new ArrayList<>();
-        for (HertsService hertsService : services) {
-            var serviceName = hertsService.getClass().getName();
+        for (HertsCoreService hertsCoreService : services) {
+            var serviceName = hertsCoreService.getClass().getName();
             serviceNames.add(serviceName);
 
             Class<?> thisClass;
@@ -45,8 +45,8 @@ public class RpcValidateUtil {
         return "";
     }
 
-    public static boolean isValidStreamingRpc(List<HertsService> services) {
-        for (HertsService service : services) {
+    public static boolean isValidStreamingRpc(List<HertsCoreService> services) {
+        for (HertsCoreService service : services) {
             if (service.getHertsCoreType() != HertsCoreType.BidirectionalStreaming && service.getHertsCoreType() != HertsCoreType.ClientStreaming) {
                 continue;
             }
