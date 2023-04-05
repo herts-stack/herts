@@ -1,6 +1,6 @@
 package com.tomoyane.herts;
 
-import com.tomoyane.herts.hertscore.UnaryCoreServiceCore;
+import com.tomoyane.herts.hertscommon.service.UnaryCoreServiceCore;
 
 import java.util.Collections;
 import java.util.Map;

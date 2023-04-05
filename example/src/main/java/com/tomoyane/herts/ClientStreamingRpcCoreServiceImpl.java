@@ -1,7 +1,7 @@
 package com.tomoyane.herts;
 
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
-import com.tomoyane.herts.hertscore.ClientStreamingCoreServiceCore;
+import com.tomoyane.herts.hertscommon.service.ClientStreamingCoreServiceCore;
 import io.grpc.stub.StreamObserver;
 
 import java.util.logging.Logger;

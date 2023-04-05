@@ -1,7 +1,7 @@
 package com.tomoyane.herts;
 
 import com.tomoyane.herts.hertscommon.util.DateTimeUtil;
-import com.tomoyane.herts.hertscore.BidirectionalStreamingCoreServiceCore;
+import com.tomoyane.herts.hertscommon.service.BidirectionalStreamingCoreServiceCore;
 import io.grpc.stub.StreamObserver;
 
 public class BidirectionalStreamingRpcCoreServiceImpl extends BidirectionalStreamingCoreServiceCore implements BidirectionalStreamingRpcCoreService {
