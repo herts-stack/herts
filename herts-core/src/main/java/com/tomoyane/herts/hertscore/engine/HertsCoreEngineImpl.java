@@ -6,7 +6,7 @@ import com.tomoyane.herts.hertscommon.exception.HertsNotSupportParameterTypeExce
 import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
 import com.tomoyane.herts.hertscommon.descriptor.HertsUnaryDescriptor;
-import com.tomoyane.herts.hertscommon.marshaller.HertsMethod;
+import com.tomoyane.herts.hertscommon.context.HertsMethod;
 import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
 import com.tomoyane.herts.hertscommon.descriptor.HertsStreamingDescriptor;
 import com.tomoyane.herts.hertscommon.service.BidirectionalStreamingCoreServiceCore;
@@ -47,8 +47,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-public class HertsEngineBuilderImpl implements HertsEngine {
-    private static final Logger logger = HertsLogger.getLogger(HertsEngineBuilderImpl.class.getSimpleName());
+public class HertsCoreEngineImpl implements HertsCoreEngine {
+    private static final Logger logger = HertsLogger.getLogger(HertsCoreEngineImpl.class.getSimpleName());
 
     private final Map<BindableService, ServerInterceptor> services;
     private final List<HertsCoreType> hertsCoreTypes;
@@ -58,7 +58,7 @@ public class HertsEngineBuilderImpl implements HertsEngine {
 
     private Server server;
 
-    private HertsEngineBuilderImpl(Builder builder) {
+    private HertsCoreEngineImpl(Builder builder) {
         this.option = builder.getOption();
         this.credentials = builder.getCredentials();
         this.hertsCoreTypes = builder.getHertsCoreTypes();
@@ -66,7 +66,7 @@ public class HertsEngineBuilderImpl implements HertsEngine {
         this.hertsCoreServices = builder.getHertsServices();
     }
 
-    public static class Builder implements HertsEngineBuilder {
+    public static class Builder implements HertsCoreEngineBuilder {
         private final Map<BindableService, ServerInterceptor> services = new HashMap<>();
         private final List<HertsCoreType> hertsCoreTypes = new ArrayList<>();
         private final List<HertsCoreService> hertsCoreServices = new ArrayList<>();
@@ -81,11 +81,11 @@ public class HertsEngineBuilderImpl implements HertsEngine {
             this.option = option;
         }
 
-        public static HertsEngineBuilder create(GrpcServerOption option) {
+        public static HertsCoreEngineBuilder create(GrpcServerOption option) {
             return new Builder(option);
         }
 
-        public static HertsEngineBuilder create() {
+        public static HertsCoreEngineBuilder create() {
             return new Builder();
         }
 
@@ -115,7 +115,7 @@ public class HertsEngineBuilderImpl implements HertsEngine {
         }
 
         @Override
-        public HertsEngineBuilder addService(HertsCoreService hertsCoreService, @Nullable ServerInterceptor interceptor) {
+        public HertsCoreEngineBuilder addService(HertsCoreService hertsCoreService, @Nullable ServerInterceptor interceptor) {
             if (hertsCoreService == null) {
                 throw new HertsCoreBuildException("HertsService arg is null");
             }
@@ -159,13 +159,13 @@ public class HertsEngineBuilderImpl implements HertsEngine {
         }
 
         @Override
-        public HertsEngineBuilder secure(ServerCredentials credentials) {
+        public HertsCoreEngineBuilder secure(ServerCredentials credentials) {
             this.credentials = credentials;
             return this;
         }
 
         @Override
-        public HertsEngineBuilder addCustomService(BindableService grpcService, HertsCoreType hertsCoreType, @Nullable ServerInterceptor interceptor) {
+        public HertsCoreEngineBuilder addCustomService(BindableService grpcService, HertsCoreType hertsCoreType, @Nullable ServerInterceptor interceptor) {
             if (grpcService == null) {
                 throw new HertsCoreBuildException("HertsService arg is null");
             }
@@ -176,7 +176,7 @@ public class HertsEngineBuilderImpl implements HertsEngine {
         }
 
         @Override
-        public HertsEngine build() {
+        public HertsCoreEngine build() {
             if (this.hertsCoreTypes.size() == 0 || this.services.size() == 0) {
                 throw new HertsCoreBuildException("Please register HertsCoreService");
             }
@@ -192,7 +192,7 @@ public class HertsEngineBuilderImpl implements HertsEngine {
             if (!HertsServiceValidator.isValidStreamingRpc(this.hertsCoreServices)) {
                 throw new HertsNotSupportParameterTypeException("Support StreamObserver<T> parameter only of BidirectionalStreaming and ClientStreaming. Please remove other method parameter.");
             }
-            return new HertsEngineBuilderImpl(this);
+            return new HertsCoreEngineImpl(this);
         }
     }
 

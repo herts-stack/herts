@@ -3,7 +3,7 @@ package com.tomoyane.herts.hertscoreclient.handler;
 import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
-import com.tomoyane.herts.hertscommon.marshaller.HertsMsg;
+import com.tomoyane.herts.hertscommon.context.HertsMsg;
 import com.tomoyane.herts.hertscommon.serializer.HertsSerializer;
 import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 

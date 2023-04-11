@@ -11,14 +11,14 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
-public interface HertsEngineBuilder {
-    HertsEngineBuilder addService(HertsCoreService hertsCoreService, @Nullable ServerInterceptor interceptor);
+public interface HertsCoreEngineBuilder {
+    HertsCoreEngineBuilder addService(HertsCoreService hertsCoreService, @Nullable ServerInterceptor interceptor);
 
-    HertsEngineBuilder secure(ServerCredentials credentials);
+    HertsCoreEngineBuilder secure(ServerCredentials credentials);
 
-    HertsEngineBuilder addCustomService(BindableService grpcService, HertsCoreType hertsCoreType, @Nullable ServerInterceptor interceptor);
+    HertsCoreEngineBuilder addCustomService(BindableService grpcService, HertsCoreType hertsCoreType, @Nullable ServerInterceptor interceptor);
 
-    HertsEngine build();
+    HertsCoreEngine build();
 
     ServerCredentials getCredentials();
 

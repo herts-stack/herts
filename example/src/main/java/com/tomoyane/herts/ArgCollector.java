@@ -3,7 +3,7 @@ package com.tomoyane.herts;
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 
 public class ArgCollector {
-    public static char[] allowedArgs = new char[] {'U', 'u', 'C', 'c', 'S', 's', 'B', 'b'};
+    public static char[] allowedArgs = new char[] {'U', 'u', 'C', 'c', 'S', 's', 'B', 'b', 'h', 'H'};
     public static boolean isOk(String arg) {
         if (arg == null || arg.isEmpty()) {
             return false;
@@ -30,6 +30,9 @@ public class ArgCollector {
         }
         if (argChar == allowedArgs[6] || argChar == allowedArgs[7]) {
             return HertsCoreType.BidirectionalStreaming;
+        }
+        if (argChar == allowedArgs[8] || argChar == allowedArgs[9]) {
+            return HertsCoreType.Http;
         }
         return HertsCoreType.Unary;
     }

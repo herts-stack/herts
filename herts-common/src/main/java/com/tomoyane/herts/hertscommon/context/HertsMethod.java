@@ -1,6 +1,4 @@
-package com.tomoyane.herts.hertscommon.marshaller;
-
-import com.tomoyane.herts.hertscommon.context.HertsCoreType;
+package com.tomoyane.herts.hertscommon.context;
 
 public class HertsMethod {
     private HertsCoreType hertsCoreType;

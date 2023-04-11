@@ -3,7 +3,7 @@ package com.tomoyane.herts.hertscore.handler;
 import com.tomoyane.herts.hertscommon.exception.HertsInstanceException;
 import com.tomoyane.herts.hertscommon.exception.HertsMessageException;
 import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
-import com.tomoyane.herts.hertscommon.marshaller.HertsMethod;
+import com.tomoyane.herts.hertscommon.context.HertsMethod;
 import io.grpc.stub.StreamObserver;
 
 import java.lang.reflect.InvocationTargetException;

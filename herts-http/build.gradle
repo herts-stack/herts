@@ -1,15 +1,23 @@
 plugins {
     id 'java'
 }
+apply plugin: 'application'
 
 group 'com.tomoyane.herts.hertshttp'
 version '1.0.0'
+sourceCompatibility = '17'
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
+    implementation project(':herts-common')
+    implementation 'javax.servlet:servlet-api:3.0-alpha-1'
+    implementation 'org.eclipse.jetty:jetty-server:11.0.10'
+    implementation 'org.eclipse.jetty:jetty-webapp:11.0.14'
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }

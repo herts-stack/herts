@@ -1,4 +1,4 @@
-package com.tomoyane.herts.hertscommon.marshaller;
+package com.tomoyane.herts.hertscommon.context;
 
 import org.msgpack.annotation.Message;
 

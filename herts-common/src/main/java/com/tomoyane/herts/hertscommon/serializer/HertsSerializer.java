@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 
 import java.io.IOException;
+import java.io.Reader;
 
 public class HertsSerializer {
     private static final ObjectMapper msgPackMapper = new ObjectMapper(new MessagePackFactory());
@@ -27,11 +28,27 @@ public class HertsSerializer {
         }
     }
 
+    public String serializeAsStr(Object value) throws JsonProcessingException {
+        if (this.serializeType == HertsSerializeType.Json) {
+            return objectMapper.writeValueAsString(value);
+        } else {
+            return msgPackMapper.writeValueAsString(value);
+        }
+    }
+
     public <T> T deserialize(byte[] message, Class<T> classType) throws IOException {
         if (this.serializeType == HertsSerializeType.Json) {
             return objectMapper.readValue(message, classType);
         } else {
             return msgPackMapper.readValue(message, classType);
+        }
+    }
+
+    public <T> T deserialize(Reader src, Class<T> classType) throws IOException {
+        if (this.serializeType == HertsSerializeType.Json) {
+            return objectMapper.readValue(src, classType);
+        } else {
+            return msgPackMapper.readValue(src, classType);
         }
     }
 

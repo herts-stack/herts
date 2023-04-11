@@ -2,7 +2,7 @@ package com.tomoyane.herts.hertscommon.descriptor;
 
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscommon.marshaller.HertsMarshaller;
-import com.tomoyane.herts.hertscommon.marshaller.HertsMethod;
+import com.tomoyane.herts.hertscommon.context.HertsMethod;
 import com.tomoyane.herts.hertscommon.marshaller.HertsStramingMarshaller;
 
 import io.grpc.MethodDescriptor;
