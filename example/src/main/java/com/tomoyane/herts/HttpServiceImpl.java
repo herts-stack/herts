@@ -1,8 +1,8 @@
 package com.tomoyane.herts;
 
-import com.tomoyane.herts.hertscommon.service.UnaryCoreServiceCore;
+import com.tomoyane.herts.hertscommon.service.HttpCoreServiceCore;
 
-public class HttpServiceImpl extends UnaryCoreServiceCore implements HttpService {
+public class HttpServiceImpl extends HttpCoreServiceCore implements HttpService {
 
     public HttpServiceImpl() {
     }

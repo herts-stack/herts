@@ -21,7 +21,7 @@ import com.tomoyane.herts.hertscore.handler.HertsCoreBMethodHandler;
 import com.tomoyane.herts.hertscore.handler.HertsCoreUMethodHandler;
 import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 import com.tomoyane.herts.hertscore.model.ReflectMethod;
-import com.tomoyane.herts.hertscore.validator.HertsServiceValidator;
+import com.tomoyane.herts.hertscore.validator.HertsRpcValidator;
 
 import io.grpc.Grpc;
 import io.grpc.InsecureServerCredentials;
@@ -180,16 +180,16 @@ public class HertsCoreEngineImpl implements HertsCoreEngine {
             if (this.hertsCoreTypes.size() == 0 || this.services.size() == 0) {
                 throw new HertsCoreBuildException("Please register HertsCoreService");
             }
-            if (!HertsServiceValidator.isSameHertsCoreType(this.hertsCoreTypes)) {
+            if (!HertsRpcValidator.isSameHertsCoreType(this.hertsCoreTypes)) {
                 throw new HertsCoreBuildException("Please register same HertsCoreService. Not supported multiple different services");
             }
 
-            var validateMsg = HertsServiceValidator.validateRegisteredServices(this.hertsCoreServices);
+            var validateMsg = HertsRpcValidator.validateRegisteredServices(this.hertsCoreServices);
             if (!validateMsg.isEmpty()) {
                 throw new HertsCoreBuildException(validateMsg);
             }
 
-            if (!HertsServiceValidator.isValidStreamingRpc(this.hertsCoreServices)) {
+            if (!HertsRpcValidator.isValidStreamingRpc(this.hertsCoreServices)) {
                 throw new HertsNotSupportParameterTypeException("Support StreamObserver<T> parameter only of BidirectionalStreaming and ClientStreaming. Please remove other method parameter.");
             }
             return new HertsCoreEngineImpl(this);
