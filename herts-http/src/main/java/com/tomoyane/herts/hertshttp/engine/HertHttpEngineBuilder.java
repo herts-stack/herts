@@ -6,7 +6,7 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 public interface HertHttpEngineBuilder {
     HertHttpEngineBuilder setInterceptor(HertsHttpInterceptor interceptor);
-    HertHttpEngineBuilder addService(HertsCoreService hertsCoreService);
+    HertHttpEngineBuilder addServiceImplementation(HertsCoreService hertsCoreService);
     HertHttpEngineBuilder setPort(int port);
     HertHttpEngineBuilder setSsl(SslContextFactory sslContextFactory, int port);
     HertsHttpEngine build();

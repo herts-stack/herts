@@ -1,6 +1,7 @@
 package java17.com.tomoyane.herts.example.client;
 
 import com.tomoyane.herts.ArgCollector;
+import com.tomoyane.herts.ClientHttpServiceExample;
 import com.tomoyane.herts.ClientServiceExample;
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 
@@ -18,6 +19,7 @@ public class Main {
                 case ClientStreaming -> ClientServiceExample.clientStreaming();
                 case ServerStreaming -> ClientServiceExample.serverStreaming();
                 case BidirectionalStreaming -> ClientServiceExample.bidirectionalStreaming();
+                case Http -> ClientHttpServiceExample.client();
             }
             Thread.sleep(5000);
         } catch (Exception e) {

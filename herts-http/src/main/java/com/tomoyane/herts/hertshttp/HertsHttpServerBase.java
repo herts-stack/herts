@@ -5,6 +5,7 @@ import com.tomoyane.herts.hertscommon.context.HertsHttpRequest;
 import com.tomoyane.herts.hertscommon.context.HertsHttpResponse;
 import com.tomoyane.herts.hertscommon.exception.HertsInstanceException;
 import com.tomoyane.herts.hertscommon.exception.HertsInvalidBodyException;
+import com.tomoyane.herts.hertscommon.logger.HertsLogger;
 import com.tomoyane.herts.hertscommon.serializer.HertsSerializeType;
 import com.tomoyane.herts.hertscommon.serializer.HertsSerializer;
 import com.tomoyane.herts.hertscommon.service.HertsCoreService;
@@ -23,8 +24,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Logger;
 
 public class HertsHttpServerBase extends HttpServlet implements HertsHttpServer {
+    private static final Logger logger = HertsLogger.getLogger(HertsHttpServerBase.class.getSimpleName());
+
     private final Object coreObject;
     private final String serviceName;
     private final HertsSerializer hertsSerializer = new HertsSerializer(HertsSerializeType.Json);
@@ -32,11 +36,10 @@ public class HertsHttpServerBase extends HttpServlet implements HertsHttpServer 
     private final ConcurrentMap<String, List<Parameter>> parameters = new ConcurrentHashMap<>();
 
     public void init() {
-        System.out.println("Initialize server");
     }
 
     public HertsHttpServerBase(HertsCoreService hertsCoreService) throws ClassNotFoundException, NoSuchMethodException {
-        this.serviceName = hertsCoreService.getClass().getSimpleName();
+        this.serviceName = hertsCoreService.getClass().getInterfaces()[0].getSimpleName();
 
         String serviceName = hertsCoreService.getClass().getName();
         Class<?> thisClass;
@@ -108,7 +111,7 @@ public class HertsHttpServerBase extends HttpServlet implements HertsHttpServer 
 
     @Override
     public String[] getEndpoints() {
-        return new String[0];
+        return this.methods.keySet().toArray(new String[0]);
     }
 
     private void setWriter(PrintWriter out, String msg) {

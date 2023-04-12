@@ -2,7 +2,7 @@ package com.tomoyane.herts.hertscoreclient.handler;
 
 import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
-import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
+import com.tomoyane.herts.hertscommon.exception.HertsServiceNotFoundException;
 import com.tomoyane.herts.hertscommon.exception.HertsStreamingReqBodyException;
 import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 
@@ -32,7 +32,7 @@ public class HertsCoreClientBStreamingMethodHandler extends io.grpc.stub.Abstrac
         try {
             hertsServiceClass = Class.forName(this.serviceName);
         } catch (ClassNotFoundException ignore) {
-            throw new HertsRpcNotFoundException("Unknown class name. Allowed class is " + HertsCoreService.class.getName());
+            throw new HertsServiceNotFoundException("Unknown class name. Allowed class is " + HertsCoreService.class.getName());
         }
 
         Method[] methods = hertsServiceClass.getDeclaredMethods();

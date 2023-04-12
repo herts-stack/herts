@@ -1,5 +1,9 @@
 package com.tomoyane.herts;
 
-public interface HttpService {
-    String test01(String id, String value);
+import com.tomoyane.herts.hertscommon.service.HertsCoreService;
+
+import java.util.Map;
+
+public interface HttpService extends HertsCoreService {
+    Map<String, String> test01(String id, String value);
 }

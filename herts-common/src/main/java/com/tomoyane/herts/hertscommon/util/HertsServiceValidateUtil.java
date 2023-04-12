@@ -1,14 +1,14 @@
 package com.tomoyane.herts.hertscommon.util;
 
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
-import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
+import com.tomoyane.herts.hertscommon.exception.HertsServiceNotFoundException;
 import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RpcValidateUtil {
+public class HertsServiceValidateUtil {
     public static boolean isSameHertsCoreType(List<HertsCoreType> coreTypes) {
         return coreTypes.isEmpty() ||
                 coreTypes.stream().allMatch(coreTypes.get(0)::equals);
@@ -24,7 +24,7 @@ public class RpcValidateUtil {
             try {
                 thisClass = Class.forName(serviceName);
             } catch (ClassNotFoundException ignore) {
-                throw new HertsRpcNotFoundException("Unknown class name. Allowed class is " + serviceName);
+                throw new HertsServiceNotFoundException("Unknown class name. Allowed class is " + serviceName);
             }
 
             Method[] methods = thisClass.getDeclaredMethods();
@@ -65,6 +65,15 @@ public class RpcValidateUtil {
                 if (!method.getParameterTypes()[0].getName().equals("io.grpc.stub.StreamObserver")) {
                     return false;
                 }
+            }
+        }
+        return true;
+    }
+
+    public static boolean isAllHttpType(List<HertsCoreService> coreServices) {
+        for (HertsCoreService coreService : coreServices) {
+            if (coreService.getHertsCoreType() != HertsCoreType.Http) {
+                return false;
             }
         }
         return true;

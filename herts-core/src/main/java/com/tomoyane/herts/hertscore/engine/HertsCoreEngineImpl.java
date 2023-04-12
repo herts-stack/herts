@@ -3,7 +3,7 @@ package com.tomoyane.herts.hertscore.engine;
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscommon.exception.HertsCoreBuildException;
 import com.tomoyane.herts.hertscommon.exception.HertsNotSupportParameterTypeException;
-import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
+import com.tomoyane.herts.hertscommon.exception.HertsServiceNotFoundException;
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
 import com.tomoyane.herts.hertscommon.descriptor.HertsUnaryDescriptor;
 import com.tomoyane.herts.hertscommon.context.HertsMethod;
@@ -262,7 +262,7 @@ public class HertsCoreEngineImpl implements HertsCoreEngine {
         try {
             thisClass = Class.forName(serviceName);
         } catch (ClassNotFoundException ignore) {
-            throw new HertsRpcNotFoundException("Unknown class name. Allowed class is " + serviceName);
+            throw new HertsServiceNotFoundException("Unknown class name. Allowed class is " + serviceName);
         }
 
         Method[] methods = thisClass.getDeclaredMethods();

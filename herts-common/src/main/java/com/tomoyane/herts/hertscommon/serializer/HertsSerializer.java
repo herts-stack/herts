@@ -1,6 +1,7 @@
 package com.tomoyane.herts.hertscommon.serializer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.msgpack.jackson.dataformat.MessagePackFactory;
@@ -41,6 +42,14 @@ public class HertsSerializer {
             return objectMapper.readValue(message, classType);
         } else {
             return msgPackMapper.readValue(message, classType);
+        }
+    }
+
+    public <T> T deserialize(byte[] message, TypeReference typeReference) throws IOException {
+        if (this.serializeType == HertsSerializeType.Json) {
+            return objectMapper.readValue(message, typeReference);
+        } else {
+            return msgPackMapper.readValue(message, typeReference);
         }
     }
 

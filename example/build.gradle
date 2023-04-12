@@ -15,6 +15,7 @@ dependencies {
     implementation project(':herts-core')
     implementation project(':herts-core-client')
     implementation project(':herts-http')
+    implementation project(':herts-http-client')
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'

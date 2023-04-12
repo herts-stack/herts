@@ -47,7 +47,7 @@ public class Main {
             }
             case Http -> {
                 HertsHttpEngine engine = HertsHttpEngineImpl.Builder.create()
-                        .addService(new HttpServiceImpl())
+                        .addServiceImplementation(new HttpServiceImpl())
                         .setInterceptor(new HttpServerInterceptor())
                         .build();
                 engine.start();

@@ -1,12 +1,13 @@
 package com.tomoyane.herts.hertshttp.engine;
 
 import com.tomoyane.herts.hertscommon.exception.HertsHttpBuildException;
+import com.tomoyane.herts.hertscommon.logger.HertsLogger;
 import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 import com.tomoyane.herts.hertshttp.HertsHttpInterceptor;
 import com.tomoyane.herts.hertshttp.HertsHttpInterceptorImpl;
 import com.tomoyane.herts.hertshttp.HertsHttpServerBase;
-
 import com.tomoyane.herts.hertshttp.validator.HertsHttpValidator;
+
 import jakarta.servlet.DispatcherType;
 
 import org.eclipse.jetty.server.Connector;
@@ -20,8 +21,11 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class HertsHttpEngineImpl implements HertsHttpEngine {
+    private static final Logger logger = HertsLogger.getLogger(HertsHttpEngine.class.getSimpleName());
+    private static final String[] HETRS_HTTP_METHODS = new String[] { "POST", "OPTIONS" };
 
     private final List<HertsCoreService> hertsCoreServices;
     private final HertsHttpInterceptor interceptor;
@@ -55,7 +59,7 @@ public class HertsHttpEngineImpl implements HertsHttpEngine {
         }
 
         @Override
-        public HertHttpEngineBuilder addService(HertsCoreService hertsCoreService) {
+        public HertHttpEngineBuilder addServiceImplementation(HertsCoreService hertsCoreService) {
             this.hertsCoreServices.add(hertsCoreService);
             return this;
         }
@@ -98,10 +102,17 @@ public class HertsHttpEngineImpl implements HertsHttpEngine {
             ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
             context.setContextPath("/");
 
+            List<String> endpointLogs = new ArrayList<>();
             for (HertsCoreService coreService : this.hertsCoreServices) {
-                System.out.println(coreService.getClass().getSimpleName());
-                context.addServlet(new ServletHolder(
-                        new HertsHttpServerBase(coreService)),"/*");
+                var hertsServer = new HertsHttpServerBase(coreService);
+                endpointLogs.add(coreService.getClass().getSimpleName() + " endpoint.");
+                for (String endpoint : hertsServer.getEndpoints()) {
+                    for (String m : HETRS_HTTP_METHODS) {
+                        var logM = m.equals(HETRS_HTTP_METHODS[0]) ? "[" + m + "]    " : "[" + m + "] ";
+                        endpointLogs.add(logM + endpoint);
+                    }
+                }
+                context.addServlet(new ServletHolder(hertsServer),"/*");
             }
 
             if (this.interceptor != null) {
@@ -115,6 +126,9 @@ public class HertsHttpEngineImpl implements HertsHttpEngine {
                 server.setConnectors(new Connector[] { httpsConnector });
             }
 
+            for (String log : endpointLogs) {
+                logger.info(log);
+            }
             server.setHandler(context);
             server.start();
             server.join();

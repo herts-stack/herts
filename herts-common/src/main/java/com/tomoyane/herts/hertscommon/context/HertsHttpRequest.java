@@ -1,5 +1,6 @@
 package com.tomoyane.herts.hertscommon.context;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
@@ -17,6 +18,7 @@ public class HertsHttpRequest implements Serializable {
         this.data = data;
     }
 
+    @JsonIgnore
     public Object[] getDataValues() {
         return this.data.values().toArray();
     }
