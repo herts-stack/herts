@@ -26,8 +26,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Logger;
 
-public class HertsHttpServerBase extends HttpServlet implements HertsHttpServer {
-    private static final Logger logger = HertsLogger.getLogger(HertsHttpServerBase.class.getSimpleName());
+/**
+ * Herts http server core
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
+public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer {
+    private static final Logger logger = HertsLogger.getLogger(HertsHttpServerCore.class.getSimpleName());
 
     private final Object coreObject;
     private final String serviceName;
@@ -38,7 +43,7 @@ public class HertsHttpServerBase extends HttpServlet implements HertsHttpServer 
     public void init() {
     }
 
-    public HertsHttpServerBase(HertsCoreService hertsCoreService) throws ClassNotFoundException, NoSuchMethodException {
+    public HertsHttpServerCore(HertsCoreService hertsCoreService) throws ClassNotFoundException, NoSuchMethodException {
         this.serviceName = hertsCoreService.getClass().getInterfaces()[0].getSimpleName();
 
         String serviceName = hertsCoreService.getClass().getName();
@@ -90,15 +95,13 @@ public class HertsHttpServerBase extends HttpServlet implements HertsHttpServer 
                 }
             }
 
-            // TODO: test void method
             var res = hertsMethod.invoke(this.coreObject, hertsRequest.getDataValues());
             response.setStatus(HttpServletResponse.SC_OK);
             if (res == null) {
                 return;
             }
 
-            var hertsResponse = new HertsHttpResponse();
-            hertsResponse.setData(res);
+            var hertsResponse = new HertsHttpResponse(res);
             setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(hertsResponse));
         } catch (HertsInvalidBodyException ex) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

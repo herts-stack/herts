@@ -13,6 +13,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.logging.Logger;
 
+/**
+ * Herts grpc steaming marshaller
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsStramingMarshaller implements MethodDescriptor.Marshaller<Object> {
     private static final Logger logger = HertsLogger.getLogger(HertsStramingMarshaller.class.getSimpleName());
     private final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -26,15 +31,21 @@ public class HertsStramingMarshaller implements MethodDescriptor.Marshaller<Obje
             return null;
         }
 
-        ObjectOutputStream oos;
+        ObjectOutputStream oos = null;
         try {
             oos = new ObjectOutputStream(this.byteArrayOutputStream);
             oos.writeObject(value);
-            oos.flush();
-            oos.close();
             return new ByteArrayInputStream(this.byteArrayOutputStream.toByteArray());
         } catch (Exception ex) {
             throw new HertsMessageException(ex);
+        } finally {
+            if (oos != null) {
+                try {
+                    oos.flush();
+                    oos.close();
+                } catch (IOException ignore) {
+                }
+            }
         }
     }
 

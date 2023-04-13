@@ -11,12 +11,12 @@ import java.util.logging.Logger;
 import static com.tomoyane.herts.hertscommon.context.HertsHeaderContext.CODE_VERSION;
 import static com.tomoyane.herts.hertscommon.context.HertsHeaderContext.HERTS_HEADER_KEY;
 
-public class HertsCoreInterceptorBuilderImpl implements ServerInterceptor {
-    private static final Logger logger = Logger.getLogger(HertsCoreInterceptorBuilderImpl.class.getName());
+public class HertsCoreInterceptBuilder implements ServerInterceptor {
+    private static final Logger logger = Logger.getLogger(HertsCoreInterceptBuilder.class.getName());
 
     private final HertsCoreInterceptor interceptor;
 
-    private HertsCoreInterceptorBuilderImpl(HertsCoreInterceptor interceptor) {
+    private HertsCoreInterceptBuilder(HertsCoreInterceptor interceptor) {
         this.interceptor = interceptor;
     }
 
@@ -33,7 +33,7 @@ public class HertsCoreInterceptorBuilderImpl implements ServerInterceptor {
 
         @Override
         public ServerInterceptor build() {
-            return new HertsCoreInterceptorBuilderImpl(this.interceptor);
+            return new HertsCoreInterceptBuilder(this.interceptor);
         }
     }
 

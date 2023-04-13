@@ -1,6 +1,6 @@
 package com.tomoyane.herts.hertscore.engine;
 
-import com.tomoyane.herts.hertscommon.context.HertsCoreType;
+import com.tomoyane.herts.hertscommon.context.HertsType;
 import com.tomoyane.herts.hertscommon.exception.HertsCoreBuildException;
 import com.tomoyane.herts.hertscommon.exception.HertsNotSupportParameterTypeException;
 import com.tomoyane.herts.hertscommon.exception.HertsServiceNotFoundException;
@@ -12,7 +12,7 @@ import com.tomoyane.herts.hertscommon.descriptor.HertsStreamingDescriptor;
 import com.tomoyane.herts.hertscommon.service.BidirectionalStreamingCoreServiceCore;
 import com.tomoyane.herts.hertscommon.service.ClientStreamingCoreServiceCore;
 import com.tomoyane.herts.hertscore.HertsCoreInterceptor;
-import com.tomoyane.herts.hertscore.HertsCoreInterceptorBuilderImpl;
+import com.tomoyane.herts.hertscore.HertsCoreInterceptBuilder;
 import com.tomoyane.herts.hertscommon.service.ServerStreamingCoreServiceCore;
 import com.tomoyane.herts.hertscommon.service.UnaryCoreServiceCore;
 import com.tomoyane.herts.hertscore.handler.HertsCoreCStreamingMethodHandler;
@@ -47,28 +47,28 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-public class HertsCoreEngineImpl implements HertsCoreEngine {
-    private static final Logger logger = HertsLogger.getLogger(HertsCoreEngineImpl.class.getSimpleName());
+public class HertsCoreBuilder implements HertsCoreEngine {
+    private static final Logger logger = HertsLogger.getLogger(HertsCoreBuilder.class.getSimpleName());
 
     private final Map<BindableService, ServerInterceptor> services;
-    private final List<HertsCoreType> hertsCoreTypes;
+    private final List<HertsType> hertsTypes;
     private final List<HertsCoreService> hertsCoreServices;
     private final GrpcServerOption option;
     private final ServerCredentials credentials;
 
     private Server server;
 
-    private HertsCoreEngineImpl(Builder builder) {
+    private HertsCoreBuilder(Builder builder) {
         this.option = builder.getOption();
         this.credentials = builder.getCredentials();
-        this.hertsCoreTypes = builder.getHertsCoreTypes();
+        this.hertsTypes = builder.getHertsCoreTypes();
         this.services = builder.getServices();
         this.hertsCoreServices = builder.getHertsServices();
     }
 
     public static class Builder implements HertsCoreEngineBuilder {
         private final Map<BindableService, ServerInterceptor> services = new HashMap<>();
-        private final List<HertsCoreType> hertsCoreTypes = new ArrayList<>();
+        private final List<HertsType> hertsTypes = new ArrayList<>();
         private final List<HertsCoreService> hertsCoreServices = new ArrayList<>();
         private GrpcServerOption option;
         private ServerCredentials credentials;
@@ -100,8 +100,8 @@ public class HertsCoreEngineImpl implements HertsCoreEngine {
         }
 
         @Override
-        public List<HertsCoreType> getHertsCoreTypes() {
-            return hertsCoreTypes;
+        public List<HertsType> getHertsCoreTypes() {
+            return hertsTypes;
         }
 
         @Override
@@ -121,10 +121,10 @@ public class HertsCoreEngineImpl implements HertsCoreEngine {
             }
 
             this.hertsCoreServices.add(hertsCoreService);
-            this.hertsCoreTypes.add(hertsCoreService.getHertsCoreType());
+            this.hertsTypes.add(hertsCoreService.getHertsType());
 
             BindableService bindableService;
-            switch (hertsCoreService.getHertsCoreType()) {
+            switch (hertsCoreService.getHertsType()) {
                 case Unary:
                     bindableService = registerUnaryService((UnaryCoreServiceCore) hertsCoreService);
                     break;
@@ -151,7 +151,7 @@ public class HertsCoreEngineImpl implements HertsCoreEngine {
 
                     }
                 };
-                this.services.put(bindableService, HertsCoreInterceptorBuilderImpl.Builder.create(defaultInterceptor).build());
+                this.services.put(bindableService, HertsCoreInterceptBuilder.Builder.create(defaultInterceptor).build());
             } else {
                 this.services.put(bindableService, interceptor);
             }
@@ -165,22 +165,22 @@ public class HertsCoreEngineImpl implements HertsCoreEngine {
         }
 
         @Override
-        public HertsCoreEngineBuilder addCustomService(BindableService grpcService, HertsCoreType hertsCoreType, @Nullable ServerInterceptor interceptor) {
+        public HertsCoreEngineBuilder addCustomService(BindableService grpcService, HertsType hertsType, @Nullable ServerInterceptor interceptor) {
             if (grpcService == null) {
                 throw new HertsCoreBuildException("HertsService arg is null");
             }
 
-            this.hertsCoreTypes.add(hertsCoreType);
+            this.hertsTypes.add(hertsType);
             this.services.put(grpcService, interceptor);
             return this;
         }
 
         @Override
         public HertsCoreEngine build() {
-            if (this.hertsCoreTypes.size() == 0 || this.services.size() == 0) {
+            if (this.hertsTypes.size() == 0 || this.services.size() == 0) {
                 throw new HertsCoreBuildException("Please register HertsCoreService");
             }
-            if (!HertsRpcValidator.isSameHertsCoreType(this.hertsCoreTypes)) {
+            if (!HertsRpcValidator.isSameHertsCoreType(this.hertsTypes)) {
                 throw new HertsCoreBuildException("Please register same HertsCoreService. Not supported multiple different services");
             }
 
@@ -192,7 +192,7 @@ public class HertsCoreEngineImpl implements HertsCoreEngine {
             if (!HertsRpcValidator.isValidStreamingRpc(this.hertsCoreServices)) {
                 throw new HertsNotSupportParameterTypeException("Support StreamObserver<T> parameter only of BidirectionalStreaming and ClientStreaming. Please remove other method parameter.");
             }
-            return new HertsCoreEngineImpl(this);
+            return new HertsCoreBuilder(this);
         }
     }
 
@@ -234,7 +234,7 @@ public class HertsCoreEngineImpl implements HertsCoreEngine {
             }
             this.server = serverBuilder.build();
             this.server.start();
-            logger.info("Started Herts server. gRPC type " + this.hertsCoreTypes.get(0) + " Port " + this.option.getPort());
+            logger.info("Started Herts server. gRPC type " + this.hertsTypes.get(0) + " Port " + this.option.getPort());
             server.awaitTermination();
         } catch (IOException | InterruptedException ex) {
             throw new HertsCoreBuildException(ex);
@@ -250,11 +250,11 @@ public class HertsCoreEngineImpl implements HertsCoreEngine {
     }
 
     @Override
-    public HertsCoreType getHertCoreType() {
-        if (this.hertsCoreTypes.size() == 0) {
+    public HertsType getHertCoreType() {
+        if (this.hertsTypes.size() == 0) {
             return null;
         }
-        return this.hertsCoreTypes.get(0);
+        return this.hertsTypes.get(0);
     }
 
     private static ReflectMethod generateReflectMethod(String serviceName) {
@@ -269,7 +269,7 @@ public class HertsCoreEngineImpl implements HertsCoreEngine {
         return ReflectMethod.create(serviceName, methods);
     }
 
-    private static List<HertsMethod> generateHertsMethod(HertsCoreType coreType, Method[] methods, String serviceName) {
+    private static List<HertsMethod> generateHertsMethod(HertsType coreType, Method[] methods, String serviceName) {
         List<HertsMethod> hertsMethods = new ArrayList<>();
         for (Method method : methods) {
             HertsMethod hertsMethod = new HertsMethod();
@@ -290,7 +290,7 @@ public class HertsCoreEngineImpl implements HertsCoreEngine {
 
             @Override
             public ServerServiceDefinition bindService() {
-                List<HertsMethod> hertsMethods = generateHertsMethod(HertsCoreType.BidirectionalStreaming, reflectMethod.getMethods(), reflectMethod.getClassName());
+                List<HertsMethod> hertsMethods = generateHertsMethod(HertsType.BidirectionalStreaming, reflectMethod.getMethods(), reflectMethod.getClassName());
                 HertsStreamingDescriptor descriptor = HertsGrpcDescriptor.generateStreamingGrpcDescriptor(reflectMethod.getClassName(), hertsMethods);
                 ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
 
@@ -312,7 +312,7 @@ public class HertsCoreEngineImpl implements HertsCoreEngine {
 
             @Override
             public ServerServiceDefinition bindService() {
-                List<HertsMethod> hertsMethods = generateHertsMethod(HertsCoreType.ClientStreaming, reflectMethod.getMethods(), reflectMethod.getClassName());
+                List<HertsMethod> hertsMethods = generateHertsMethod(HertsType.ClientStreaming, reflectMethod.getMethods(), reflectMethod.getClassName());
                 HertsStreamingDescriptor descriptor = HertsGrpcDescriptor.generateStreamingGrpcDescriptor(reflectMethod.getClassName(), hertsMethods);
                 ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
 
@@ -334,7 +334,7 @@ public class HertsCoreEngineImpl implements HertsCoreEngine {
 
             @Override
             public ServerServiceDefinition bindService() {
-                List<HertsMethod> hertsMethods = generateHertsMethod(HertsCoreType.ServerStreaming, reflectMethod.getMethods(), reflectMethod.getClassName());
+                List<HertsMethod> hertsMethods = generateHertsMethod(HertsType.ServerStreaming, reflectMethod.getMethods(), reflectMethod.getClassName());
                 HertsStreamingDescriptor descriptor = HertsGrpcDescriptor.generateStreamingGrpcDescriptor(reflectMethod.getClassName(), hertsMethods);
                 ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
 
@@ -356,7 +356,7 @@ public class HertsCoreEngineImpl implements HertsCoreEngine {
 
             @Override
             public ServerServiceDefinition bindService() {
-                List<HertsMethod> hertsMethods = generateHertsMethod(HertsCoreType.Unary, reflectMethod.getMethods(), reflectMethod.getClassName());
+                List<HertsMethod> hertsMethods = generateHertsMethod(HertsType.Unary, reflectMethod.getMethods(), reflectMethod.getClassName());
                 HertsUnaryDescriptor descriptor = HertsGrpcDescriptor.generateGrpcDescriptor(reflectMethod.getClassName(), hertsMethods);
                 ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
 

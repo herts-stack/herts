@@ -9,10 +9,15 @@ import jakarta.servlet.ServletResponse;
 
 import java.io.IOException;
 
-public class HertsHttpInterceptorImpl implements Filter {
+/**
+ * Herts http intercept
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
+public class HertsHttpInterceptHandler implements Filter {
     private final HertsHttpInterceptor hertsHttpInterceptor;
 
-    public HertsHttpInterceptorImpl(HertsHttpInterceptor hertsHttpInterceptor) {
+    public HertsHttpInterceptHandler(HertsHttpInterceptor hertsHttpInterceptor) {
         this.hertsHttpInterceptor = hertsHttpInterceptor;
     }
 

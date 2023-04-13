@@ -1,9 +1,9 @@
 package com.tomoyane.herts;
 
-import com.tomoyane.herts.hertscoreclient.HertCoreClientInterceptorBuilderImpl;
+import com.tomoyane.herts.hertscoreclient.HertCoreClientInterceptBuilder;
 import com.tomoyane.herts.hertscoreclient.HertsCoreClient;
-import com.tomoyane.herts.hertscoreclient.HertsCoreClientBuilderImpl;
-import com.tomoyane.herts.hertscommon.context.HertsCoreType;
+import com.tomoyane.herts.hertscoreclient.HertsCoreClientBuilder;
+import com.tomoyane.herts.hertscommon.context.HertsType;
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
 
 import io.grpc.stub.StreamObserver;
@@ -18,12 +18,12 @@ public class ClientServiceExample {
         UnaryRpcCoreService01 service01 = new UnaryRpcCoreServiceImpl01();
         UnaryRpcCoreService02 service02 = new UnaryRpcCoreServiceImpl02();
 
-        HertsCoreClient client = HertsCoreClientBuilderImpl.Builder
-                .create("localhost", 9000, HertsCoreType.Unary)
+        HertsCoreClient client = HertsCoreClientBuilder.Builder
+                .create("localhost", 9000, HertsType.Unary)
                 .secure(false)
                 .hertsImplementationService(service01)
                 .hertsImplementationService(service02)
-                .interceptor(HertCoreClientInterceptorBuilderImpl.Builder.create(new GrpcClientInterceptor()).build())
+                .interceptor(HertCoreClientInterceptBuilder.Builder.create(new GrpcClientInterceptor()).build())
                 .build();
 
         UnaryRpcCoreService01 service_01 = client.createHertCoreInterface(UnaryRpcCoreService01.class);
@@ -47,8 +47,8 @@ public class ClientServiceExample {
     }
 
     public static void bidirectionalStreaming() {
-        HertsCoreClient client = HertsCoreClientBuilderImpl.Builder
-                .create("localhost", 9000, HertsCoreType.BidirectionalStreaming)
+        HertsCoreClient client = HertsCoreClientBuilder.Builder
+                .create("localhost", 9000, HertsType.BidirectionalStreaming)
                 .secure(false)
                 .hertsImplementationService(new BidirectionalStreamingRpcCoreServiceImpl())
                 .build();
@@ -79,8 +79,8 @@ public class ClientServiceExample {
     }
 
     public static void serverStreaming() {
-        HertsCoreClient client = HertsCoreClientBuilderImpl.Builder
-                .create("localhost", 9000, HertsCoreType.ServerStreaming)
+        HertsCoreClient client = HertsCoreClientBuilder.Builder
+                .create("localhost", 9000, HertsType.ServerStreaming)
                 .secure(false)
                 .hertsImplementationService(new ServerStreamingRpcCoreServiceImpl())
                 .build();
@@ -108,11 +108,11 @@ public class ClientServiceExample {
     }
 
     public static void clientStreaming() {
-        HertsCoreClient client = HertsCoreClientBuilderImpl.Builder
-                .create("localhost", 9000, HertsCoreType.ClientStreaming)
+        HertsCoreClient client = HertsCoreClientBuilder.Builder
+                .create("localhost", 9000, HertsType.ClientStreaming)
                 .secure(false)
                 .hertsImplementationService(new ClientStreamingRpcCoreServiceImpl())
-                .interceptor(HertCoreClientInterceptorBuilderImpl.Builder.create(new GrpcClientInterceptor()).build())
+                .interceptor(HertCoreClientInterceptBuilder.Builder.create(new GrpcClientInterceptor()).build())
                 .build();
 
         ClientStreamingRpcCoreService service = client.createHertCoreInterface(ClientStreamingRpcCoreService.class);

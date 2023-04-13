@@ -1,21 +1,18 @@
 package com.tomoyane.herts.hertscommon.service;
 
-import com.tomoyane.herts.hertscommon.context.HertsCoreType;
-import com.tomoyane.herts.hertscommon.service.HertsClientService;
-import com.tomoyane.herts.hertscommon.service.HertsCoreService;
+import com.tomoyane.herts.hertscommon.context.HertsType;
 
 import io.grpc.MethodDescriptor;
-import io.grpc.stub.StreamObserver;
 
 public class HertsCoreCoreBase implements HertsCoreService {
-    private final HertsCoreType coreType;
+    private final HertsType coreType;
 
-    public HertsCoreCoreBase(HertsCoreType rpcType) {
+    public HertsCoreCoreBase(HertsType rpcType) {
         this.coreType = rpcType;
     }
 
     @Override
-    public HertsCoreType getHertsCoreType() {
+    public HertsType getHertsType() {
         return coreType;
     }
 
@@ -28,8 +25,4 @@ public class HertsCoreCoreBase implements HertsCoreService {
     public String[] getConnections() {
         return new String[0];
     }
-
-//    public <T> HertsClientService Broadcast(String connectionId) {
-//        return
-//    }
 }

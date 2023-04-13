@@ -1,6 +1,6 @@
 package com.tomoyane.herts;
 
-import com.tomoyane.herts.hertscommon.context.HertsCoreType;
+import com.tomoyane.herts.hertscommon.context.HertsType;
 
 public class ArgCollector {
     public static char[] allowedArgs = new char[] {'U', 'u', 'C', 'c', 'S', 's', 'B', 'b', 'h', 'H'};
@@ -17,23 +17,23 @@ public class ArgCollector {
         return false;
     }
 
-    public static HertsCoreType convert(String arg) {
+    public static HertsType convert(String arg) {
         char argChar = arg.charAt(0);
         if (argChar == allowedArgs[0] || argChar == allowedArgs[1]) {
-            return HertsCoreType.Unary;
+            return HertsType.Unary;
         }
         if (argChar == allowedArgs[2] || argChar == allowedArgs[3]) {
-            return HertsCoreType.ClientStreaming;
+            return HertsType.ClientStreaming;
         }
         if (argChar == allowedArgs[4] || argChar == allowedArgs[5]) {
-            return HertsCoreType.ServerStreaming;
+            return HertsType.ServerStreaming;
         }
         if (argChar == allowedArgs[6] || argChar == allowedArgs[7]) {
-            return HertsCoreType.BidirectionalStreaming;
+            return HertsType.BidirectionalStreaming;
         }
         if (argChar == allowedArgs[8] || argChar == allowedArgs[9]) {
-            return HertsCoreType.Http;
+            return HertsType.Http;
         }
-        return HertsCoreType.Unary;
+        return HertsType.Unary;
     }
 }

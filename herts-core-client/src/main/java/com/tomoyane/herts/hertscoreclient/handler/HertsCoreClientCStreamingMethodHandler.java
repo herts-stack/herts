@@ -1,6 +1,6 @@
 package com.tomoyane.herts.hertscoreclient.handler;
 
-import com.tomoyane.herts.hertscommon.context.HertsCoreType;
+import com.tomoyane.herts.hertscommon.context.HertsType;
 import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
 import com.tomoyane.herts.hertscommon.exception.HertsServiceNotFoundException;
 import com.tomoyane.herts.hertscommon.exception.HertsStreamingReqBodyException;
@@ -47,7 +47,7 @@ public class HertsCoreClientCStreamingMethodHandler extends io.grpc.stub.Abstrac
         MethodDescriptor<Object, Object> methodDescriptor = this.descriptors.get(methodName);
         if (methodDescriptor == null) {
             methodDescriptor = HertsGrpcDescriptor
-                    .generateStramingMethodDescriptor(HertsCoreType.ClientStreaming, this.serviceName, methodName);
+                    .generateStramingMethodDescriptor(HertsType.ClientStreaming, this.serviceName, methodName);
             this.descriptors.put(methodName, methodDescriptor);
         }
 

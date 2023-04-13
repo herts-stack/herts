@@ -1,5 +1,10 @@
 package com.tomoyane.herts.hertscommon.exception;
 
+/**
+ * Herts core server build failure exception class.
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsCoreBuildException extends RuntimeException {
     public HertsCoreBuildException() {
         super();

@@ -1,5 +1,10 @@
 package com.tomoyane.herts.hertscommon.exception;
 
+/**
+ * Herts grpc streaming invalid message failure exception class.
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsStreamingResBodyException extends RuntimeException {
     public HertsStreamingResBodyException() {
         super();

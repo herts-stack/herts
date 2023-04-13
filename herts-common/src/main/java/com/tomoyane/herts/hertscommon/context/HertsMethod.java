@@ -1,7 +1,12 @@
 package com.tomoyane.herts.hertscommon.context;
 
+/**
+ * Herts rpc method for internal registration
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsMethod {
-    private HertsCoreType hertsCoreType;
+    private HertsType hertsType;
     private String coreServiceName;
     private String methodName;
     private Class<?> methodReturnType;
@@ -10,25 +15,25 @@ public class HertsMethod {
     public HertsMethod() {
     }
 
-    public HertsMethod(HertsCoreType methodType,
+    public HertsMethod(HertsType methodType,
                        String coreServiceName,
                        String methodName,
                        Class<?> methodReturnType,
                        Class<?>[] parameters) {
 
-        this.hertsCoreType = methodType;
+        this.hertsType = methodType;
         this.coreServiceName = coreServiceName;
         this.methodName = methodName;
         this.methodReturnType = methodReturnType;
         this.parameters = parameters;
     }
 
-    public HertsCoreType getHertsCoreType() {
-        return hertsCoreType;
+    public HertsType getHertsCoreType() {
+        return hertsType;
     }
 
-    public void setHertsCoreType(HertsCoreType hertsCoreType) {
-        this.hertsCoreType = hertsCoreType;
+    public void setHertsCoreType(HertsType hertsType) {
+        this.hertsType = hertsType;
     }
 
     public String getCoreServiceName() {
@@ -65,7 +70,7 @@ public class HertsMethod {
 
     @Override
     public String toString() {
-        return "HertsCoreType=" + this.hertsCoreType + ", " +
+        return "HertsCoreType=" + this.hertsType + ", " +
                 "CoreServiceName=" + this.coreServiceName  + ", " +
                 "MethodName=" + this.methodName  + ", " +
                 "MethodReturnType=" + this.methodReturnType;

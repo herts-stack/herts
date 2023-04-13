@@ -1,5 +1,10 @@
 package com.tomoyane.herts.hertscommon.exception;
 
+/**
+ * Herts component not support parameter type exception class.
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsNotSupportParameterTypeException extends RuntimeException {
     public HertsNotSupportParameterTypeException() {
         super();

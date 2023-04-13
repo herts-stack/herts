@@ -11,6 +11,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
+/**
+ * Herts grpc marshaller
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsMarshaller implements MethodDescriptor.Marshaller<byte[]> {
     private static final Logger logger = HertsLogger.getLogger(HertsMarshaller.class.getSimpleName());
 

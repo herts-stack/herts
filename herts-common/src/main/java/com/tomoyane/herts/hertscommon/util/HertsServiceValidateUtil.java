@@ -1,6 +1,6 @@
 package com.tomoyane.herts.hertscommon.util;
 
-import com.tomoyane.herts.hertscommon.context.HertsCoreType;
+import com.tomoyane.herts.hertscommon.context.HertsType;
 import com.tomoyane.herts.hertscommon.exception.HertsServiceNotFoundException;
 import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 
@@ -8,12 +8,28 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Herts service validation utility
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsServiceValidateUtil {
-    public static boolean isSameHertsCoreType(List<HertsCoreType> coreTypes) {
+
+    /**
+     * Check registered hert type
+     * @param coreTypes herts types
+     * @return Result
+     */
+    public static boolean isSameHertsCoreType(List<HertsType> coreTypes) {
         return coreTypes.isEmpty() ||
                 coreTypes.stream().allMatch(coreTypes.get(0)::equals);
     }
 
+    /**
+     * Check registered service
+     * @param services HertsService list
+     * @return Result
+     */
     public static String validateRegisteredServices(List<HertsCoreService> services) {
         List<String> serviceNames = new ArrayList<>();
         for (HertsCoreService hertsCoreService : services) {
@@ -45,9 +61,14 @@ public class HertsServiceValidateUtil {
         return "";
     }
 
+    /**
+     * Check streaming rpc precondition
+     * @param services Herts service list
+     * @return Result
+     */
     public static boolean isValidStreamingRpc(List<HertsCoreService> services) {
         for (HertsCoreService service : services) {
-            if (service.getHertsCoreType() != HertsCoreType.BidirectionalStreaming && service.getHertsCoreType() != HertsCoreType.ClientStreaming) {
+            if (service.getHertsType() != HertsType.BidirectionalStreaming && service.getHertsType() != HertsType.ClientStreaming) {
                 continue;
             }
             Class<?> thisClass;
@@ -70,9 +91,14 @@ public class HertsServiceValidateUtil {
         return true;
     }
 
+    /**
+     * Check http type
+     * @param coreServices Herts service list
+     * @return Result
+     */
     public static boolean isAllHttpType(List<HertsCoreService> coreServices) {
         for (HertsCoreService coreService : coreServices) {
-            if (coreService.getHertsCoreType() != HertsCoreType.Http) {
+            if (coreService.getHertsType() != HertsType.Http) {
                 return false;
             }
         }

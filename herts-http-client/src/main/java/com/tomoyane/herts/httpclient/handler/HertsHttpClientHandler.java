@@ -19,6 +19,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Herts http client handler
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsHttpClientHandler implements InvocationHandler {
     private final HertsSerializer serializer = new HertsSerializer(HertsSerializeType.Json);
     private final Map<String, List<String>> methodTypes = new HashMap<>();
@@ -51,15 +56,13 @@ public class HertsHttpClientHandler implements InvocationHandler {
             throw new HertsMessageException("Invalid herts method.");
         }
 
-        var hertRequest = new HertsHttpRequest();
         var data = new HashMap<String, Object>();
         int index = 0;
         for (Object arg : args) {
             data.put(parameterNames.get(index), arg);
             index++;
         }
-        hertRequest.setData(data);
-
+        var hertRequest = new HertsHttpRequest(data);
         HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(url + "/api/" + this.serviceName + "/" + method.getName()))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(this.serializer.serializeAsStr(hertRequest)))

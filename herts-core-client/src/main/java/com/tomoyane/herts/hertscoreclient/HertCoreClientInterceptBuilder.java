@@ -12,10 +12,10 @@ import io.grpc.ForwardingClientCall.SimpleForwardingClientCall;
 import static com.tomoyane.herts.hertscommon.context.HertsHeaderContext.CODE_VERSION;
 import static com.tomoyane.herts.hertscommon.context.HertsHeaderContext.HERTS_HEADER_KEY;
 
-public class HertCoreClientInterceptorBuilderImpl implements ClientInterceptor {
+public class HertCoreClientInterceptBuilder implements ClientInterceptor {
     private final HertCoreClientInterceptor interceptor;
 
-    private HertCoreClientInterceptorBuilderImpl(HertCoreClientInterceptor interceptor) {
+    private HertCoreClientInterceptBuilder(HertCoreClientInterceptor interceptor) {
         this.interceptor = interceptor;
     }
 
@@ -32,7 +32,7 @@ public class HertCoreClientInterceptorBuilderImpl implements ClientInterceptor {
 
         @Override
         public ClientInterceptor build() {
-            return new HertCoreClientInterceptorBuilderImpl(this.interceptor);
+            return new HertCoreClientInterceptBuilder(this.interceptor);
         }
     }
 

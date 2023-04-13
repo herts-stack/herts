@@ -1,5 +1,10 @@
 package com.tomoyane.herts.hertscommon.exception;
 
+/**
+ * Herts message failure exception class.
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsMessageException extends RuntimeException {
     public HertsMessageException() {
         super();

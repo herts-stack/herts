@@ -2,6 +2,11 @@ package com.tomoyane.herts.hertshttp.engine;
 
 import java.lang.reflect.Method;
 
+/**
+ * Herts http method
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsHttpMethod {
     private Method method;
     private Class<?>[] parameterTypes;

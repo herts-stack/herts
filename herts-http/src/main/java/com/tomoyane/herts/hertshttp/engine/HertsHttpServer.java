@@ -4,8 +4,8 @@ import com.tomoyane.herts.hertscommon.exception.HertsHttpBuildException;
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
 import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 import com.tomoyane.herts.hertshttp.HertsHttpInterceptor;
-import com.tomoyane.herts.hertshttp.HertsHttpInterceptorImpl;
-import com.tomoyane.herts.hertshttp.HertsHttpServerBase;
+import com.tomoyane.herts.hertshttp.HertsHttpInterceptHandler;
+import com.tomoyane.herts.hertshttp.HertsHttpServerCore;
 import com.tomoyane.herts.hertshttp.validator.HertsHttpValidator;
 
 import jakarta.servlet.DispatcherType;
@@ -23,7 +23,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class HertsHttpEngineImpl implements HertsHttpEngine {
+public class HertsHttpServer implements HertsHttpEngine {
     private static final Logger logger = HertsLogger.getLogger(HertsHttpEngine.class.getSimpleName());
     private static final String[] HETRS_HTTP_METHODS = new String[] { "POST", "OPTIONS" };
 
@@ -32,7 +32,7 @@ public class HertsHttpEngineImpl implements HertsHttpEngine {
     private final SslContextFactory sslContextFactory;
     private final int port;
 
-    public HertsHttpEngineImpl(Builder builder) {
+    public HertsHttpServer(Builder builder) {
         this.hertsCoreServices = builder.hertsCoreServices;
         this.interceptor = builder.interceptor;
         this.sslContextFactory = builder.sslContextFactory;
@@ -59,7 +59,7 @@ public class HertsHttpEngineImpl implements HertsHttpEngine {
         }
 
         @Override
-        public HertHttpEngineBuilder addServiceImplementation(HertsCoreService hertsCoreService) {
+        public HertHttpEngineBuilder addImplementationService(HertsCoreService hertsCoreService) {
             this.hertsCoreServices.add(hertsCoreService);
             return this;
         }
@@ -90,7 +90,7 @@ public class HertsHttpEngineImpl implements HertsHttpEngine {
             if (!validateMsg.isEmpty()) {
                 throw new HertsHttpBuildException(validateMsg);
             }
-            return new HertsHttpEngineImpl(this);
+            return new HertsHttpServer(this);
         }
     }
 
@@ -104,7 +104,7 @@ public class HertsHttpEngineImpl implements HertsHttpEngine {
 
             List<String> endpointLogs = new ArrayList<>();
             for (HertsCoreService coreService : this.hertsCoreServices) {
-                var hertsServer = new HertsHttpServerBase(coreService);
+                var hertsServer = new HertsHttpServerCore(coreService);
                 endpointLogs.add(coreService.getClass().getSimpleName() + " endpoint.");
                 for (String endpoint : hertsServer.getEndpoints()) {
                     for (String m : HETRS_HTTP_METHODS) {
@@ -117,7 +117,7 @@ public class HertsHttpEngineImpl implements HertsHttpEngine {
 
             if (this.interceptor != null) {
                 context.addFilter(new FilterHolder(
-                        new HertsHttpInterceptorImpl(this.interceptor)), "/*", EnumSet.of(DispatcherType.REQUEST));
+                        new HertsHttpInterceptHandler(this.interceptor)), "/*", EnumSet.of(DispatcherType.REQUEST));
             }
 
             if (this.sslContextFactory != null) {
