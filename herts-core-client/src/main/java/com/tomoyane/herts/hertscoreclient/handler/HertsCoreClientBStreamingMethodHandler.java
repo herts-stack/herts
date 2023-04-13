@@ -2,9 +2,9 @@ package com.tomoyane.herts.hertscoreclient.handler;
 
 import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
-import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
+import com.tomoyane.herts.hertscommon.exception.HertsServiceNotFoundException;
 import com.tomoyane.herts.hertscommon.exception.HertsStreamingReqBodyException;
-import com.tomoyane.herts.hertscommon.service.HertsService;
+import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 
 import io.grpc.CallOptions;
 import io.grpc.Channel;
@@ -20,19 +20,19 @@ import java.util.Map;
 public class HertsCoreClientBStreamingMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsCoreClientBStreamingMethodHandler> implements InvocationHandler {
     private final Map<String, Class<?>> methodTypes = new HashMap<>();
     private final Map<String, MethodDescriptor<Object, Object>> descriptors = new HashMap<>();
-    private final HertsService hertsService;
+    private final HertsCoreService hertsCoreService;
     private final String serviceName;
 
-    public HertsCoreClientBStreamingMethodHandler(Channel channel, CallOptions callOptions, HertsService hertsService) {
+    public HertsCoreClientBStreamingMethodHandler(Channel channel, CallOptions callOptions, HertsCoreService hertsCoreService) {
         super(channel, callOptions);
-        this.hertsService = hertsService;
-        this.serviceName = hertsService.getClass().getName();
+        this.hertsCoreService = hertsCoreService;
+        this.serviceName = hertsCoreService.getClass().getName();
 
         Class<?> hertsServiceClass;
         try {
             hertsServiceClass = Class.forName(this.serviceName);
         } catch (ClassNotFoundException ignore) {
-            throw new HertsRpcNotFoundException("Unknown class name. Allowed class is " + HertsService.class.getName());
+            throw new HertsServiceNotFoundException("Unknown class name. Allowed class is " + HertsCoreService.class.getName());
         }
 
         Method[] methods = hertsServiceClass.getDeclaredMethods();
@@ -63,6 +63,6 @@ public class HertsCoreClientBStreamingMethodHandler extends io.grpc.stub.Abstrac
 
     @Override
     protected HertsCoreClientBStreamingMethodHandler build(Channel channel, CallOptions callOptions) {
-        return new HertsCoreClientBStreamingMethodHandler(channel, callOptions, hertsService);
+        return new HertsCoreClientBStreamingMethodHandler(channel, callOptions, hertsCoreService);
     }
 }

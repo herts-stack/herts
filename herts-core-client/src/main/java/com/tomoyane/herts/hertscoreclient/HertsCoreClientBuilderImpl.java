@@ -10,7 +10,7 @@ import com.tomoyane.herts.hertscommon.exception.HertsChannelIsNullException;
 import com.tomoyane.herts.hertscommon.exception.HertsClientBuildException;
 import com.tomoyane.herts.hertscommon.exception.HertsCoreTypeInvalidException;
 import com.tomoyane.herts.hertscommon.exception.HertsNotSupportParameterTypeException;
-import com.tomoyane.herts.hertscommon.service.HertsService;
+import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 
 import io.grpc.CallOptions;
 import io.grpc.Channel;
@@ -33,7 +33,7 @@ public class HertsCoreClientBuilderImpl implements HertsCoreClient {
     private final boolean isSecureConnection;
     private final ClientInterceptor interceptor;
     private final GrpcClientOption option;
-    private final List<HertsService> hertsServices;
+    private final List<HertsCoreService> hertsCoreServices;
 
     private Channel channel;
 
@@ -45,11 +45,11 @@ public class HertsCoreClientBuilderImpl implements HertsCoreClient {
         this.interceptor = builder.interceptor;
         this.channel = builder.channel;
         this.option = builder.option;
-        this.hertsServices = builder.hertsServices;
+        this.hertsCoreServices = builder.hertsCoreServices;
     }
 
     public static class Builder implements HertsCoreClientBuilder {
-        private final List<HertsService> hertsServices = new ArrayList<>();
+        private final List<HertsCoreService> hertsCoreServices = new ArrayList<>();
         private final String connectedHost;
         private final int serverPort;
         private final HertsCoreType hertsCoreType;
@@ -76,8 +76,8 @@ public class HertsCoreClientBuilderImpl implements HertsCoreClient {
         }
 
         @Override
-        public HertsCoreClientBuilder hertsImplementationService(HertsService hertsService) {
-            this.hertsServices.add(hertsService);
+        public HertsCoreClientBuilder hertsImplementationService(HertsCoreService hertsCoreService) {
+            this.hertsCoreServices.add(hertsCoreService);
             return this;
         }
 
@@ -101,20 +101,20 @@ public class HertsCoreClientBuilderImpl implements HertsCoreClient {
 
         @Override
         public HertsCoreClient build() {
-            if (this.hertsServices.size() == 0 || this.connectedHost == null || this.connectedHost.isEmpty()) {
+            if (this.hertsCoreServices.size() == 0 || this.connectedHost == null || this.connectedHost.isEmpty()) {
                 throw new HertsClientBuildException("Please register HertsService and host");
             }
-            List<HertsCoreType> hertsCoreTypes = this.hertsServices.stream().map(HertsService::getHertsCoreType).toList();
+            List<HertsCoreType> hertsCoreTypes = this.hertsCoreServices.stream().map(HertsCoreService::getHertsCoreType).toList();
             if (!HertsCoreClientValidator.isSameHertsCoreType(hertsCoreTypes)) {
                 throw new HertsClientBuildException("Please register same HertsCoreService. Not supported multiple different services");
             }
 
-            var validateMsg = HertsCoreClientValidator.validateRegisteredServices(this.hertsServices);
+            var validateMsg = HertsCoreClientValidator.validateRegisteredServices(this.hertsCoreServices);
             if (!validateMsg.isEmpty()) {
                 throw new HertsClientBuildException(validateMsg);
             }
 
-            if (!HertsCoreClientValidator.isValidStreamingRpc(this.hertsServices)) {
+            if (!HertsCoreClientValidator.isValidStreamingRpc(this.hertsCoreServices)) {
                 throw new HertsNotSupportParameterTypeException("Support StreamObserver<T> parameter only of BidirectionalStreaming and ClientStreaming. Please remove other method parameter.");
             }
             if (this.option == null) {
@@ -148,7 +148,7 @@ public class HertsCoreClientBuilderImpl implements HertsCoreClient {
     }
 
     @Override
-    public <T extends HertsService> T createHertService(Class<T> classType) {
+    public <T extends HertsCoreService> T createHertCoreInterface(Class<T> interfaceType) {
         // If not null, using custom channel
         if (this.channel == null) {
             ManagedChannelBuilder<?> managedChannelBuilder = ManagedChannelBuilder.forAddress(this.connectedHost, this.serverPort);
@@ -181,85 +181,90 @@ public class HertsCoreClientBuilderImpl implements HertsCoreClient {
             this.channel = managedChannelBuilder.build();
         }
 
-        var serviceName = classType.getName();
-        HertsService targetHertsService = null;
-        for (HertsService service : this.hertsServices) {
-            for (Class<?> interfaceName : service.getClass().getInterfaces()) {
-                if (!interfaceName.getName().equals(serviceName)) {
+        var serviceName = interfaceType.getName();
+        HertsCoreService targetHertsCoreService = null;
+        for (HertsCoreService registeredService : this.hertsCoreServices) {
+            for (Class<?> registeredInterfaceName : registeredService.getClass().getInterfaces()) {
+                if (!registeredInterfaceName.getName().equals(serviceName)) {
                     continue;
                 }
-                targetHertsService = service;
+                targetHertsCoreService = registeredService;
                 break;
             }
         }
-        if (targetHertsService == null) {
+
+        if (targetHertsCoreService == null) {
             throw new HertsClientBuildException("Not found " + serviceName + " in registration services");
         }
 
         switch (this.hertsCoreType) {
-            case Unary:
-                var unary = newHertsBlockingService(channel, targetHertsService);
-                return (T) generateService(unary, classType);
-            case BidirectionalStreaming:
-                var streaming = newHertsBidirectionalStreamingService(channel, targetHertsService);
-                return (T) generateService(streaming, classType);
-            case ServerStreaming:
-                var serverStreaming = newHertsServerStreamingService(channel, targetHertsService);
-                return (T) generateService(serverStreaming, classType);
-            case ClientStreaming:
-                var clientStreaming = newHertsClientStreamingService(channel, targetHertsService);
-                return (T) generateService(clientStreaming, classType);
-            default:
-                throw new HertsCoreTypeInvalidException("Undefined Hert core type. HertsCoreType" + this.hertsCoreType);
+            case Unary -> {
+                var unary = newHertsBlockingService(channel, targetHertsCoreService);
+                return (T) generateService(unary, interfaceType);
+            }
+            case BidirectionalStreaming -> {
+                var streaming = newHertsBidirectionalStreamingService(channel, targetHertsCoreService);
+                return (T) generateService(streaming, interfaceType);
+            }
+            case ServerStreaming -> {
+                var serverStreaming = newHertsServerStreamingService(channel, targetHertsCoreService);
+                return (T) generateService(serverStreaming, interfaceType);
+            }
+            case ClientStreaming -> {
+                var clientStreaming = newHertsClientStreamingService(channel, targetHertsCoreService);
+                return (T) generateService(clientStreaming, interfaceType);
+            }
+            default ->
+                    throw new HertsCoreTypeInvalidException("Undefined Hert core type. HertsCoreType" + this.hertsCoreType);
         }
     }
 
-    private HertsService generateService(InvocationHandler handler, Class<?> classType) {
-        return (HertsService) Proxy.newProxyInstance(
+    private HertsCoreService generateService(InvocationHandler handler, Class<?> classType) {
+        return (HertsCoreService) Proxy.newProxyInstance(
                 classType.getClassLoader(),
                 new Class<?>[]{ classType },
                 handler);
     }
 
-    private static HertsCoreClientUMethodHandler newHertsBlockingService(Channel channel, HertsService hertsService) {
+    private static HertsCoreClientUMethodHandler newHertsBlockingService(Channel channel, HertsCoreService hertsCoreService) {
         io.grpc.stub.AbstractStub.StubFactory<HertsCoreClientUMethodHandler> factory =
                 new io.grpc.stub.AbstractStub.StubFactory<HertsCoreClientUMethodHandler>() {
                     @java.lang.Override
                     public HertsCoreClientUMethodHandler newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
-                        return new HertsCoreClientUMethodHandler(channel, callOptions, hertsService);
+                        return new HertsCoreClientUMethodHandler(channel, callOptions, hertsCoreService);
                     }
                 };
         return HertsCoreClientUMethodHandler.newStub(factory, channel);
     }
 
-    private static HertsCoreClientBStreamingMethodHandler newHertsBidirectionalStreamingService(Channel channel, HertsService hertsService) {
+    private static HertsCoreClientBStreamingMethodHandler newHertsBidirectionalStreamingService(Channel channel, HertsCoreService hertsCoreService) {
         io.grpc.stub.AbstractStub.StubFactory<HertsCoreClientBStreamingMethodHandler> factory =
                 new io.grpc.stub.AbstractStub.StubFactory<HertsCoreClientBStreamingMethodHandler>() {
                     @java.lang.Override
                     public HertsCoreClientBStreamingMethodHandler newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
-                        return new HertsCoreClientBStreamingMethodHandler(channel, callOptions, hertsService);
+                        return new HertsCoreClientBStreamingMethodHandler(channel, callOptions, hertsCoreService);
                     }
                 };
         return HertsCoreClientBStreamingMethodHandler.newStub(factory, channel);
     }
 
-    private static HertsCoreClientSStreamingMethodHandler newHertsServerStreamingService(Channel channel, HertsService hertsService) {
+    private static HertsCoreClientSStreamingMethodHandler newHertsServerStreamingService(Channel channel, HertsCoreService hertsCoreService) {
         io.grpc.stub.AbstractStub.StubFactory<HertsCoreClientSStreamingMethodHandler> factory =
                 new io.grpc.stub.AbstractStub.StubFactory<HertsCoreClientSStreamingMethodHandler>() {
                     @java.lang.Override
                     public HertsCoreClientSStreamingMethodHandler newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
-                        return new HertsCoreClientSStreamingMethodHandler(channel, callOptions, hertsService);
+                        return new HertsCoreClientSStreamingMethodHandler(channel, callOptions, hertsCoreService);
                     }
                 };
         return HertsCoreClientSStreamingMethodHandler.newStub(factory, channel);
     }
 
-    private static HertsCoreClientCStreamingMethodHandler newHertsClientStreamingService(Channel channel, HertsService hertsService) {
+    private static HertsCoreClientCStreamingMethodHandler newHertsClientStreamingService(Channel channel, HertsCoreService hertsCoreService) {
         io.grpc.stub.AbstractStub.StubFactory<HertsCoreClientCStreamingMethodHandler> factory =
                 new io.grpc.stub.AbstractStub.StubFactory<HertsCoreClientCStreamingMethodHandler>() {
                     @java.lang.Override
                     public HertsCoreClientCStreamingMethodHandler newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
-                        return new HertsCoreClientCStreamingMethodHandler(channel, callOptions, hertsService);
+                        return new HertsCoreClientCStreamingMethodHandler(channel, callOptions, hertsCoreService);
                     }
                 };
         return HertsCoreClientCStreamingMethodHandler.newStub(factory, channel);

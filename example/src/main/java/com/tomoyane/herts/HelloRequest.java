@@ -1,6 +1,6 @@
 package com.tomoyane.herts;
 
-import com.tomoyane.herts.hertscommon.marshaller.HertsMsg;
+import com.tomoyane.herts.hertscommon.context.HertsMsg;
 
 public class HelloRequest extends HertsMsg {
     private String key;

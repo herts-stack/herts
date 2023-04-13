@@ -2,11 +2,11 @@ package com.tomoyane.herts.hertscoreclient.handler;
 
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
 import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
-import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
+import com.tomoyane.herts.hertscommon.exception.HertsServiceNotFoundException;
 import com.tomoyane.herts.hertscommon.exception.HertsStreamingResBodyException;
-import com.tomoyane.herts.hertscommon.marshaller.HertsMsg;
+import com.tomoyane.herts.hertscommon.context.HertsMsg;
 import com.tomoyane.herts.hertscommon.serializer.HertsSerializer;
-import com.tomoyane.herts.hertscommon.service.HertsService;
+import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 
 import io.grpc.CallOptions;
 import io.grpc.Channel;
@@ -23,19 +23,19 @@ public class HertsCoreClientSStreamingMethodHandler extends io.grpc.stub.Abstrac
     private final HertsSerializer serializer = new HertsSerializer();
     private final Map<String, Class<?>> methodTypes = new HashMap<>();
     private final Map<String, MethodDescriptor<Object, Object>> descriptors = new HashMap<>();
-    private final HertsService hertsService;
+    private final HertsCoreService hertsCoreService;
     private final String serviceName;
 
-    public HertsCoreClientSStreamingMethodHandler(Channel channel, CallOptions callOptions, HertsService hertsService) {
+    public HertsCoreClientSStreamingMethodHandler(Channel channel, CallOptions callOptions, HertsCoreService hertsCoreService) {
         super(channel, callOptions);
-        this.hertsService = hertsService;
-        this.serviceName = hertsService.getClass().getName();
+        this.hertsCoreService = hertsCoreService;
+        this.serviceName = hertsCoreService.getClass().getName();
 
         Class<?> hertsServiceClass;
         try {
             hertsServiceClass = Class.forName(this.serviceName);
         } catch (ClassNotFoundException ignore) {
-            throw new HertsRpcNotFoundException("Unknown class name. Allowed class is " + HertsService.class.getName());
+            throw new HertsServiceNotFoundException("Unknown class name. Allowed class is " + HertsCoreService.class.getName());
         }
 
         Method[] methods = hertsServiceClass.getDeclaredMethods();
@@ -80,6 +80,6 @@ public class HertsCoreClientSStreamingMethodHandler extends io.grpc.stub.Abstrac
 
     @Override
     protected HertsCoreClientSStreamingMethodHandler build(Channel channel, CallOptions callOptions) {
-        return new HertsCoreClientSStreamingMethodHandler(channel, callOptions, hertsService);
+        return new HertsCoreClientSStreamingMethodHandler(channel, callOptions, hertsCoreService);
     }
 }

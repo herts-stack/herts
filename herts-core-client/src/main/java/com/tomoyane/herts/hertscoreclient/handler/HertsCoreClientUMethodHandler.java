@@ -2,10 +2,10 @@ package com.tomoyane.herts.hertscoreclient.handler;
 
 import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
 import com.tomoyane.herts.hertscommon.context.HertsCoreType;
-import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
-import com.tomoyane.herts.hertscommon.marshaller.HertsMsg;
+import com.tomoyane.herts.hertscommon.exception.HertsServiceNotFoundException;
+import com.tomoyane.herts.hertscommon.context.HertsMsg;
 import com.tomoyane.herts.hertscommon.serializer.HertsSerializer;
-import com.tomoyane.herts.hertscommon.service.HertsService;
+import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 
 import io.grpc.CallOptions;
 import io.grpc.Channel;
@@ -21,19 +21,19 @@ public class HertsCoreClientUMethodHandler extends io.grpc.stub.AbstractBlocking
     private final HertsSerializer serializer = new HertsSerializer();
     private final Map<String, Class<?>> methodTypes = new HashMap<>();
     private final Map<String, MethodDescriptor<byte[], byte[]>> descriptors = new HashMap<>();
-    private final HertsService hertsService;
+    private final HertsCoreService hertsCoreService;
     private final String serviceName;
 
-    public HertsCoreClientUMethodHandler(Channel channel, CallOptions callOptions, HertsService hertsService) {
+    public HertsCoreClientUMethodHandler(Channel channel, CallOptions callOptions, HertsCoreService hertsCoreService) {
         super(channel, callOptions);
-        this.hertsService = hertsService;
-        this.serviceName = hertsService.getClass().getName();
+        this.hertsCoreService = hertsCoreService;
+        this.serviceName = hertsCoreService.getClass().getName();
 
         Class<?> hertsServiceClass;
         try {
             hertsServiceClass = Class.forName(this.serviceName);
         } catch (ClassNotFoundException ignore) {
-            throw new HertsRpcNotFoundException("Unknown class name. Allowed class is " + HertsService.class.getName());
+            throw new HertsServiceNotFoundException("Unknown class name. Allowed class is " + HertsCoreService.class.getName());
         }
 
         Method[] methods = hertsServiceClass.getDeclaredMethods();
@@ -69,6 +69,6 @@ public class HertsCoreClientUMethodHandler extends io.grpc.stub.AbstractBlocking
 
     @Override
     protected HertsCoreClientUMethodHandler build(Channel channel, CallOptions callOptions) {
-        return new HertsCoreClientUMethodHandler(channel, callOptions, hertsService);
+        return new HertsCoreClientUMethodHandler(channel, callOptions, hertsCoreService);
     }
 }

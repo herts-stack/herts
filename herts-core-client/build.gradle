@@ -13,7 +13,6 @@ repositories {
 
 dependencies {
     implementation project(':herts-common')
-    implementation project(':herts-core')
 }
 
 test {

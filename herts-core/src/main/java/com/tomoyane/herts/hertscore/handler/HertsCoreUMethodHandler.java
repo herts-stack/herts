@@ -1,9 +1,9 @@
 package com.tomoyane.herts.hertscore.handler;
 
 import com.tomoyane.herts.hertscommon.exception.HertsInstanceException;
-import com.tomoyane.herts.hertscommon.exception.HertsRpcNotFoundException;
-import com.tomoyane.herts.hertscommon.marshaller.HertsMethod;
-import com.tomoyane.herts.hertscommon.marshaller.HertsMsg;
+import com.tomoyane.herts.hertscommon.exception.HertsServiceNotFoundException;
+import com.tomoyane.herts.hertscommon.context.HertsMethod;
+import com.tomoyane.herts.hertscommon.context.HertsMsg;
 import com.tomoyane.herts.hertscommon.serializer.HertsSerializer;
 
 import io.grpc.stub.StreamObserver;
@@ -33,7 +33,7 @@ public class HertsCoreUMethodHandler<Req, Resp> implements
         try {
             coreClass = Class.forName(serviceName);
         } catch (ClassNotFoundException ex) {
-            throw new HertsRpcNotFoundException("Unknown Herts core class. " + ex.getMessage());
+            throw new HertsServiceNotFoundException("Unknown Herts core class. " + ex.getMessage());
         }
 
         try {
