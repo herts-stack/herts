@@ -1,5 +1,18 @@
 package com.tomoyane.herts.hertscore.engine;
 
+/**
+ * GrpcServerOption for server
+ * Supported options
+ * - handshakeTimeoutMilliSec
+ * - keepaliveTimeoutMilliSec
+ * - keepaliveTimeMilliSec
+ * - maxConnectionIdleMilliSec
+ * - maxConnectionAgeMilliSec
+ * - maxInboundMessageSize
+ *
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class GrpcServerOption {
     private int port = 9000;
     public void setPort(int port) {

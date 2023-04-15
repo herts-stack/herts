@@ -1,5 +1,10 @@
 package com.tomoyane.herts.hertscommon.exception;
 
+/**
+ * Herts core type invalid exception class.
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsCoreTypeInvalidException extends RuntimeException {
     public HertsCoreTypeInvalidException() {
         super();

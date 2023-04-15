@@ -1,7 +1,7 @@
 package com.tomoyane.herts.hertscoreclient.handler;
 
 import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
-import com.tomoyane.herts.hertscommon.context.HertsCoreType;
+import com.tomoyane.herts.hertscommon.context.HertsType;
 import com.tomoyane.herts.hertscommon.exception.HertsServiceNotFoundException;
 import com.tomoyane.herts.hertscommon.context.HertsMsg;
 import com.tomoyane.herts.hertscommon.serializer.HertsSerializer;
@@ -48,7 +48,7 @@ public class HertsCoreClientUMethodHandler extends io.grpc.stub.AbstractBlocking
         MethodDescriptor<byte[], byte[]> methodDescriptor = this.descriptors.get(methodName);
         if (methodDescriptor == null) {
             methodDescriptor = HertsGrpcDescriptor
-                    .generateMethodDescriptor(HertsCoreType.Unary, this.serviceName, methodName);
+                    .generateMethodDescriptor(HertsType.Unary, this.serviceName, methodName);
             this.descriptors.put(methodName, methodDescriptor);
         }
 

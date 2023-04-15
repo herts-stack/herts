@@ -1,5 +1,15 @@
 package com.tomoyane.herts.hertscoreclient;
 
+/**
+ * Herts core client gRPC option
+ * Supported options.
+ * - idleTimeoutMilliSec
+ * - keepaliveMilliSec
+ * - keepaliveTimeoutMilliSec
+ *
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class GrpcClientOption {
     private Long idleTimeoutMilliSec;
     public void setIdleTimeoutMilliSec(long idleTimeoutMilliSec) {

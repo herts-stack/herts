@@ -3,7 +3,7 @@ package java17.com.tomoyane.herts.example.client;
 import com.tomoyane.herts.ArgCollector;
 import com.tomoyane.herts.ClientHttpServiceExample;
 import com.tomoyane.herts.ClientServiceExample;
-import com.tomoyane.herts.hertscommon.context.HertsCoreType;
+import com.tomoyane.herts.hertscommon.context.HertsType;
 
 public class Main {
     public static void main(String[] args) {
@@ -12,7 +12,7 @@ public class Main {
             return;
         }
 
-        HertsCoreType coreType = ArgCollector.convert(args[0]);
+        HertsType coreType = ArgCollector.convert(args[0]);
         try {
             switch (coreType) {
                 case Unary -> ClientServiceExample.unary();

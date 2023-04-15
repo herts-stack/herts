@@ -5,6 +5,11 @@ import io.grpc.ServiceDescriptor;
 
 import java.util.List;
 
+/**
+ * Herts gRPC streaming descriptor.
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsStreamingDescriptor {
     private ServiceDescriptor serviceDescriptor;
     private List<MethodDescriptor<Object, Object>> methodDescriptors;
@@ -17,6 +22,12 @@ public class HertsStreamingDescriptor {
         this.methodDescriptors = methodDescriptors;
     }
 
+    /**
+     * Factory method.
+     * @param serviceDescriptor HertsService descriptor
+     * @param methodDescriptors HertsService method descriptor
+     * @return HertsStreamingDescriptor
+     */
     public static HertsStreamingDescriptor createGrpcDescriptor(ServiceDescriptor serviceDescriptor, List<MethodDescriptor<Object, Object>> methodDescriptors) {
         return new HertsStreamingDescriptor(serviceDescriptor, methodDescriptors);
     }

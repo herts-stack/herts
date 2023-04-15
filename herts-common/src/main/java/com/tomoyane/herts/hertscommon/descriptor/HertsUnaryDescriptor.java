@@ -5,6 +5,11 @@ import io.grpc.ServiceDescriptor;
 
 import java.util.List;
 
+/**
+ * Herts gRPC unary descriptor.
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsUnaryDescriptor {
     private ServiceDescriptor serviceDescriptor;
     private List<MethodDescriptor<byte[], byte[]>> methodDescriptors;
@@ -17,6 +22,12 @@ public class HertsUnaryDescriptor {
         this.methodDescriptors = methodDescriptors;
     }
 
+    /**
+     * Factory method.
+     * @param serviceDescriptor HertsService descriptor
+     * @param methodDescriptors HertsService method descriptor
+     * @return HertsUnaryDescriptor
+     */
     public static HertsUnaryDescriptor createGrpcDescriptor(ServiceDescriptor serviceDescriptor, List<MethodDescriptor<byte[], byte[]>> methodDescriptors) {
         return new HertsUnaryDescriptor(serviceDescriptor, methodDescriptors);
     }

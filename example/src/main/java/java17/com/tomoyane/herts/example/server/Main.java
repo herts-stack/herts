@@ -9,12 +9,12 @@ import com.tomoyane.herts.HttpServiceImpl;
 import com.tomoyane.herts.ServerStreamingRpcCoreServiceImpl;
 import com.tomoyane.herts.UnaryRpcCoreServiceImpl01;
 import com.tomoyane.herts.UnaryRpcCoreServiceImpl02;
-import com.tomoyane.herts.hertscommon.context.HertsCoreType;
-import com.tomoyane.herts.hertscore.HertsCoreInterceptorBuilderImpl;
+import com.tomoyane.herts.hertscommon.context.HertsType;
+import com.tomoyane.herts.hertscore.HertsCoreInterceptBuilder;
 import com.tomoyane.herts.hertscore.engine.HertsCoreEngineBuilder;
-import com.tomoyane.herts.hertscore.engine.HertsCoreEngineImpl;
+import com.tomoyane.herts.hertscore.engine.HertsCoreBuilder;
 import com.tomoyane.herts.hertshttp.engine.HertsHttpEngine;
-import com.tomoyane.herts.hertshttp.engine.HertsHttpEngineImpl;
+import com.tomoyane.herts.hertshttp.engine.HertsHttpServer;
 
 public class Main {
     public static void main(String[] args) {
@@ -23,9 +23,9 @@ public class Main {
             return;
         }
 
-        HertsCoreEngineBuilder engineBuilder = HertsCoreEngineImpl.Builder.create();
-        HertsCoreType coreType = ArgCollector.convert(args[0]);
-        var interceptor = HertsCoreInterceptorBuilderImpl.Builder.create(new GrpcServerInterceptor()).build();
+        HertsCoreEngineBuilder engineBuilder = HertsCoreBuilder.Builder.create();
+        HertsType coreType = ArgCollector.convert(args[0]);
+        var interceptor = HertsCoreInterceptBuilder.Builder.create(new GrpcServerInterceptor()).build();
         switch (coreType) {
             case Unary -> {
                 var service01 = new UnaryRpcCoreServiceImpl01();
@@ -46,8 +46,8 @@ public class Main {
                 engineBuilder.addService(service, interceptor);
             }
             case Http -> {
-                HertsHttpEngine engine = HertsHttpEngineImpl.Builder.create()
-                        .addServiceImplementation(new HttpServiceImpl())
+                HertsHttpEngine engine = HertsHttpServer.Builder.create()
+                        .addImplementationService(new HttpServiceImpl())
                         .setInterceptor(new HttpServerInterceptor())
                         .build();
                 engine.start();

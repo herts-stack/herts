@@ -1,6 +1,6 @@
 package com.tomoyane.herts.hertscommon.descriptor;
 
-import com.tomoyane.herts.hertscommon.context.HertsCoreType;
+import com.tomoyane.herts.hertscommon.context.HertsType;
 import com.tomoyane.herts.hertscommon.marshaller.HertsMarshaller;
 import com.tomoyane.herts.hertscommon.context.HertsMethod;
 import com.tomoyane.herts.hertscommon.marshaller.HertsStramingMarshaller;
@@ -15,7 +15,7 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
 
 /**
  * Herts gRPC custom static descriptor.
- * @author tomoyane
+ * @author Herts Contributer
  * @version 1.0.0
  */
 public class HertsGrpcDescriptor {
@@ -31,7 +31,7 @@ public class HertsGrpcDescriptor {
      * @return MethodDescriptor
      */
     public static MethodDescriptor<byte[], byte[]> generateMethodDescriptor(
-            HertsCoreType coreType,
+            HertsType coreType,
             String serviceName,
             String methodName) {
 
@@ -48,7 +48,7 @@ public class HertsGrpcDescriptor {
 
 
     public static MethodDescriptor<Object, Object> generateStramingMethodDescriptor(
-            HertsCoreType coreType,
+            HertsType coreType,
             String serviceName,
             String methodName) {
 
