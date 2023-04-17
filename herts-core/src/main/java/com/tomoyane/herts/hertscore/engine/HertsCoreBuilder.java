@@ -66,6 +66,14 @@ public class HertsCoreBuilder implements HertsCoreEngine {
         this.hertsCoreServices = builder.getHertsServices();
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static Builder builder(GrpcServerOption option) {
+        return new Builder(option);
+    }
+
     public static class Builder implements HertsCoreEngineBuilder {
         private final Map<BindableService, ServerInterceptor> services = new HashMap<>();
         private final List<HertsType> hertsTypes = new ArrayList<>();
@@ -79,14 +87,6 @@ public class HertsCoreBuilder implements HertsCoreEngine {
 
         private Builder(GrpcServerOption option) {
             this.option = option;
-        }
-
-        public static HertsCoreEngineBuilder create(GrpcServerOption option) {
-            return new Builder(option);
-        }
-
-        public static HertsCoreEngineBuilder create() {
-            return new Builder();
         }
 
         @Override
@@ -151,7 +151,7 @@ public class HertsCoreBuilder implements HertsCoreEngine {
 
                     }
                 };
-                this.services.put(bindableService, HertsCoreInterceptBuilder.Builder.create(defaultInterceptor).build());
+                this.services.put(bindableService, HertsCoreInterceptBuilder.builder(defaultInterceptor).build());
             } else {
                 this.services.put(bindableService, interceptor);
             }

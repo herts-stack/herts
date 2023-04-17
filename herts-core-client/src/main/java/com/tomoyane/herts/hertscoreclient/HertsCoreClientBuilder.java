@@ -48,6 +48,10 @@ public class HertsCoreClientBuilder implements HertsCoreClient {
         this.hertsCoreServices = builder.hertsCoreServices;
     }
 
+    public static Builder builder(String connectedHost, int serverPort, HertsType hertsType) {
+        return new Builder(connectedHost, serverPort, hertsType);
+    }
+
     public static class Builder implements HertsCoreRpcClientBuilder {
         private final List<HertsCoreService> hertsCoreServices = new ArrayList<>();
         private final String connectedHost;
@@ -63,10 +67,6 @@ public class HertsCoreClientBuilder implements HertsCoreClient {
             this.connectedHost = connectedHost;
             this.serverPort = serverPort;
             this.hertsType = hertsType;
-        }
-
-        public static HertsCoreRpcClientBuilder create(String connectedHost, int serverPort, HertsType hertsType) {
-            return new Builder(connectedHost, serverPort, hertsType);
         }
 
         @Override
@@ -167,7 +167,7 @@ public class HertsCoreClientBuilder implements HertsCoreClient {
                     public <ReqT, RespT> void beforeCallMethod(MethodDescriptor<ReqT, RespT> methodDescriptor, CallOptions callOptions, Channel channel) {
                     }
                 };
-                managedChannelBuilder = managedChannelBuilder.intercept(HertCoreClientInterceptBuilder.Builder.create(defaultInterceptor).build());
+                managedChannelBuilder = managedChannelBuilder.intercept(HertCoreClientInterceptBuilder.builder(defaultInterceptor).build());
             }
             if (this.option.getKeepaliveMilliSec() != null) {
                 managedChannelBuilder = managedChannelBuilder.keepAliveTime(this.option.getKeepaliveMilliSec(), TimeUnit.MILLISECONDS);

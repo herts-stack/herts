@@ -29,6 +29,10 @@ public class HertsHttpClient implements HertsHttpClientBase {
         this.isSecureConnection = builder.isSecureConnection;
     }
 
+    public static Builder builder(String host) {
+        return new Builder(host);
+    }
+
     public static class Builder implements HertsHttpClientBuilder {
         private final List<HertsCoreService> hertsCoreServices = new ArrayList<>();
         private final String host;

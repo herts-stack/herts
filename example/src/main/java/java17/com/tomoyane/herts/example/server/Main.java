@@ -24,9 +24,9 @@ public class Main {
             return;
         }
 
-        HertsCoreEngineBuilder engineBuilder = HertsCoreBuilder.Builder.create();
+        HertsCoreEngineBuilder engineBuilder = HertsCoreBuilder.builder();
         HertsType coreType = ArgCollector.convert(args[0]);
-        var interceptor = HertsCoreInterceptBuilder.Builder.create(new GrpcServerInterceptor()).build();
+        var interceptor = HertsCoreInterceptBuilder.builder(new GrpcServerInterceptor()).build();
         switch (coreType) {
             case Unary -> {
                 var service01 = new UnaryRpcCoreServiceImpl01();
@@ -47,10 +47,10 @@ public class Main {
                 engineBuilder.addService(service, interceptor);
             }
             case Http -> {
-                HertsHttpEngine engine = HertsHttpServer.Builder.create()
+                HertsHttpEngine engine = HertsHttpServer.builder()
                         .addImplementationService(new HttpServiceImpl())
                         .setInterceptor(new HttpServerInterceptor())
-                        .setMetricsSetting(new HertsHttpMetricsSetting(true, true, false, false, false))
+                        .setMetricsSetting(HertsHttpMetricsSetting.builder().isRpsEnabled(true).isLatencyEnabled(true).build())
                         .build();
                 engine.start();
                 return;

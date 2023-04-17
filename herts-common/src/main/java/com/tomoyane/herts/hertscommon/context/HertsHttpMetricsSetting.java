@@ -1,11 +1,11 @@
 package com.tomoyane.herts.hertscommon.context;
 
 public class HertsHttpMetricsSetting {
-    private boolean isRpsEnabled = false;
-    private boolean isLatencyEnabled = false;
-    private boolean isErrRateEnabled = false;
-    private boolean isServerResourceEnabled = false;
-    private boolean isJvmEnabled = false;
+    private boolean isRpsEnabled;
+    private boolean isLatencyEnabled;
+    private boolean isErrRateEnabled;
+    private boolean isServerResourceEnabled;
+    private boolean isJvmEnabled;
 
     public HertsHttpMetricsSetting(boolean isRpsEnabled, boolean isLatencyEnabled,
                                    boolean isErrRateEnabled, boolean isServerResourceEnabled, boolean isJvmEnabled) {
@@ -14,6 +14,49 @@ public class HertsHttpMetricsSetting {
         this.isErrRateEnabled = isErrRateEnabled;
         this.isServerResourceEnabled = isServerResourceEnabled;
         this.isJvmEnabled = isJvmEnabled;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private boolean isRpsEnabled = false;
+        private boolean isLatencyEnabled = false;
+        private boolean isErrRateEnabled = false;
+        private boolean isServerResourceEnabled = false;
+        private boolean isJvmEnabled = false;
+
+        public Builder() {}
+
+        public Builder isRpsEnabled(boolean isRpsEnabled) {
+            this.isRpsEnabled = isRpsEnabled;
+            return this;
+        }
+
+        public Builder isLatencyEnabled(boolean isLatencyEnabled) {
+            this.isLatencyEnabled = isLatencyEnabled;
+            return this;
+        }
+
+        public Builder isErrRateEnabled(boolean isErrRateEnabled) {
+            this.isErrRateEnabled = isErrRateEnabled;
+            return this;
+        }
+
+        public Builder isServerResourceEnabled(boolean isServerResourceEnabled) {
+            this.isServerResourceEnabled = isServerResourceEnabled;
+            return this;
+        }
+
+        public Builder isJvmEnabled(boolean isJvmEnabled) {
+            this.isJvmEnabled = isJvmEnabled;
+            return this;
+        }
+
+        public HertsHttpMetricsSetting build() {
+            return new HertsHttpMetricsSetting(this.isRpsEnabled, this.isLatencyEnabled, this.isErrRateEnabled, this.isServerResourceEnabled, this.isJvmEnabled);
+        }
     }
 
     public boolean isRpsEnabled() {

@@ -14,8 +14,8 @@ public class ClientHttpServiceExample {
     private static final HertsSerializer serializer = new HertsSerializer(HertsSerializeType.Json);
 
     public static void client() throws JsonProcessingException {
-        HertsHttpClientBase client = HertsHttpClient.Builder
-                .create("localhost")
+        HertsHttpClientBase client = HertsHttpClient
+                .builder("localhost")
                 .hertsImplementationService(new HttpServiceImpl())
                 .secure(false)
                 .port(8080)

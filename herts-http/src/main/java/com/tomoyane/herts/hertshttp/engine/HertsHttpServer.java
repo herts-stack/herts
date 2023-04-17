@@ -26,6 +26,11 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Herts http server implementation
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsHttpServer implements HertsHttpEngine {
     private static final Logger logger = HertsLogger.getLogger(HertsHttpEngine.class.getSimpleName());
     private static final String[] HETRS_HTTP_METHODS = new String[] { "POST", "OPTIONS" };
@@ -44,6 +49,10 @@ public class HertsHttpServer implements HertsHttpEngine {
         this.port = builder.port;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static class Builder implements HertHttpEngineBuilder {
         private final List<HertsCoreService> hertsCoreServices = new ArrayList<>();
         private HertsHttpInterceptor interceptor;
@@ -52,10 +61,6 @@ public class HertsHttpServer implements HertsHttpEngine {
         private int port = 8080;
 
         private Builder() {
-        }
-
-        public static HertHttpEngineBuilder create() {
-            return new Builder();
         }
 
         @Override

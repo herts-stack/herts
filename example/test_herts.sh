@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 function run_test {
     herts_type=$1
     ./gradlew :example:runServer17 --args="${herts_type}" &

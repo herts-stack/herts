@@ -20,15 +20,15 @@ public class HertsCoreInterceptBuilder implements ServerInterceptor {
         this.interceptor = interceptor;
     }
 
+    public static Builder builder(HertsCoreInterceptor interceptor) {
+        return new Builder(interceptor);
+    }
+
     public static class Builder implements HertsCoreInterceptorBuilder {
         private final HertsCoreInterceptor interceptor;
 
         private Builder(HertsCoreInterceptor interceptor) {
             this.interceptor = interceptor;
-        }
-
-        public static Builder create(HertsCoreInterceptor interceptor) {
-            return new Builder(interceptor);
         }
 
         @Override

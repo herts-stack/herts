@@ -19,6 +19,10 @@ public class HertCoreClientInterceptBuilder implements ClientInterceptor {
         this.interceptor = interceptor;
     }
 
+    public static Builder builder(HertCoreClientInterceptor interceptor) {
+        return new Builder(interceptor);
+    }
+
     public static class Builder implements HertCoreClientInterceptorBuilder {
         private final HertCoreClientInterceptor interceptor;
 
