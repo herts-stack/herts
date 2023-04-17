@@ -62,7 +62,8 @@ public class HertsHttpClientHandler implements InvocationHandler {
             data.put(parameterNames.get(index), arg);
             index++;
         }
-        var hertRequest = new HertsHttpRequest(data);
+        var hertRequest = new HertsHttpRequest();
+        hertRequest.setData(data);
         HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(url + "/api/" + this.serviceName + "/" + method.getName()))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(this.serializer.serializeAsStr(hertRequest)))

@@ -9,6 +9,7 @@ import com.tomoyane.herts.HttpServiceImpl;
 import com.tomoyane.herts.ServerStreamingRpcCoreServiceImpl;
 import com.tomoyane.herts.UnaryRpcCoreServiceImpl01;
 import com.tomoyane.herts.UnaryRpcCoreServiceImpl02;
+import com.tomoyane.herts.hertscommon.context.HertsHttpMetricsSetting;
 import com.tomoyane.herts.hertscommon.context.HertsType;
 import com.tomoyane.herts.hertscore.HertsCoreInterceptBuilder;
 import com.tomoyane.herts.hertscore.engine.HertsCoreEngineBuilder;
@@ -49,6 +50,7 @@ public class Main {
                 HertsHttpEngine engine = HertsHttpServer.Builder.create()
                         .addImplementationService(new HttpServiceImpl())
                         .setInterceptor(new HttpServerInterceptor())
+                        .setMetricsSetting(new HertsHttpMetricsSetting(true, true, false, false, false))
                         .build();
                 engine.start();
                 return;

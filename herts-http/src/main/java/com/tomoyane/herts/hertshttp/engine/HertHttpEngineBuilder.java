@@ -1,5 +1,6 @@
 package com.tomoyane.herts.hertshttp.engine;
 
+import com.tomoyane.herts.hertscommon.context.HertsHttpMetricsSetting;
 import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 import com.tomoyane.herts.hertshttp.HertsHttpInterceptor;
 
@@ -41,6 +42,13 @@ public interface HertHttpEngineBuilder {
      * @return HertHttpEngineBuilder
      */
     HertHttpEngineBuilder setSsl(SslContextFactory sslContextFactory, int port);
+
+    /**
+     * Set metrics setting information
+     * @param metricsSetting HertsHttpMetricsSetting
+     * @return HertHttpEngineBuilder
+     */
+    HertHttpEngineBuilder setMetricsSetting(HertsHttpMetricsSetting metricsSetting);
 
     /**
      * Build

@@ -21,6 +21,6 @@ public class GrpcClientInterceptor implements HertCoreClientInterceptor {
 
     @Override
     public <ReqT, RespT> void beforeCallMethod(MethodDescriptor<ReqT, RespT> methodDescriptor, CallOptions callOptions, Channel channel) {
-        logger.info("====== Before call");
+//        logger.info("====== Before call");
     }
 }

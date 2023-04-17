@@ -19,8 +19,8 @@ public class GrpcServerInterceptor implements HertsCoreInterceptor {
 
     @Override
     public <ReqT, RespT> void beforeCallMethod(ServerCall<ReqT, RespT> call, Metadata requestHeaders) {
-        logger.info("====== Before call ");
-        logger.info("====== Header "
-                + requestHeaders.get(HEADER_TEST01) + " " + requestHeaders.get(HERTS_HEADER_KEY));
+//        logger.info("====== Before call ");
+//        logger.info("====== Header "
+//                + requestHeaders.get(HEADER_TEST01) + " " + requestHeaders.get(HERTS_HEADER_KEY));
     }
 }

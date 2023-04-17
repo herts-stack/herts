@@ -16,11 +16,11 @@ public class HttpServerInterceptor implements HertsHttpInterceptor {
 
     @Override
     public void beforeHandle() {
-        logger.info("Before trigger");
+        // logger.info("Before trigger");
     }
 
     @Override
     public void afterHandle() {
-        logger.info("After trigger");
+        // logger.info("After trigger");
     }
 }

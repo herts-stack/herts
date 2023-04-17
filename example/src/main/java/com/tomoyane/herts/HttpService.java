@@ -5,5 +5,8 @@ import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 import java.util.Map;
 
 public interface HttpService extends HertsCoreService {
-    Map<String, String> test01(String id, String value);
+    Map<String, String> httpTest01(String id, String value);
+    boolean httpTest02();
+
+    void httpTest03();
 }
