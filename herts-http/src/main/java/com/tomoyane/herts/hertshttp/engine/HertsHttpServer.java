@@ -8,8 +8,8 @@ import com.tomoyane.herts.hertshttp.HertsHttpInterceptor;
 import com.tomoyane.herts.hertshttp.HertsHttpInterceptHandler;
 import com.tomoyane.herts.hertshttp.HertsHttpServerCore;
 import com.tomoyane.herts.hertshttp.validator.HertsHttpValidator;
-import com.tomoyane.herts.hertsmetrics.HertsCoreMetrics;
-import com.tomoyane.herts.hertsmetrics.HertsHttpMetrics;
+import com.tomoyane.herts.hertsmetrics.HertsMetrics;
+import com.tomoyane.herts.hertsmetrics.handler.HertsMetricsHandler;
 
 import jakarta.servlet.DispatcherType;
 
@@ -122,9 +122,9 @@ public class HertsHttpServer implements HertsHttpEngine {
             List<String> endpointLogs = new ArrayList<>();
 
             for (HertsCoreService coreService : this.hertsCoreServices) {
-                HertsCoreMetrics metrics;
+                HertsMetrics metrics;
                 if (this.metricsSetting != null) {
-                    metrics = HertsHttpMetrics.builder()
+                    metrics = HertsMetricsHandler.builder()
                             .hertsCoreServiceInterface(coreService)
                             .isErrRateEnabled(this.metricsSetting.isErrRateEnabled())
                             .isJvmEnabled(this.metricsSetting.isJvmEnabled())
@@ -133,7 +133,7 @@ public class HertsHttpServer implements HertsHttpEngine {
                             .isRpsEnabled(this.metricsSetting.isRpsEnabled())
                             .build();
                 } else {
-                    metrics = HertsHttpMetrics.builder().hertsCoreServiceInterface(coreService).build();
+                    metrics = HertsMetricsHandler.builder().hertsCoreServiceInterface(coreService).build();
                 }
                 var hertsServer = new HertsHttpServerCore(coreService, metrics);
 

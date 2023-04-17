@@ -1,8 +1,10 @@
-package com.tomoyane.herts.hertsmetrics;
+package com.tomoyane.herts.hertsmetrics.handler;
 
 import com.tomoyane.herts.hertscommon.context.HertsType;
 import com.tomoyane.herts.hertscommon.exception.HertsCoreTypeInvalidException;
 import com.tomoyane.herts.hertscommon.service.HertsCoreService;
+import com.tomoyane.herts.hertsmetrics.HertsMetrics;
+import com.tomoyane.herts.hertsmetrics.HertsMetricsBuilder;
 import com.tomoyane.herts.hertsmetrics.context.HertsMetricsContext;
 import com.tomoyane.herts.hertsmetrics.context.HertsTimer;
 import com.tomoyane.herts.hertsmetrics.context.MetricsType;
@@ -12,6 +14,8 @@ import io.micrometer.core.instrument.ImmutableTag;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
+import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.prometheus.client.exporter.common.TextFormat;
@@ -26,7 +30,7 @@ import java.util.concurrent.ConcurrentMap;
  * @author Herts Contributer
  * @version 1.0.0
  */
-public class HertsHttpMetrics implements HertsCoreMetrics {
+public class HertsMetricsHandler implements HertsMetrics {
     private final ConcurrentMap<String, Tag> tagNames = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Timer> latencyTimer = new ConcurrentHashMap<>();
     private final MetricsType metricsType;
@@ -41,7 +45,7 @@ public class HertsHttpMetrics implements HertsCoreMetrics {
 
     private Boolean isMetricsEnabled = null;
 
-     private HertsHttpMetrics(Builder builder) {
+     private HertsMetricsHandler(Builder builder) {
         this.hertsCoreService = builder.hertsCoreService;
         this.hertsType = builder.hertsCoreService.getHertsType();
         this.metricsType = MetricsType.Prometheus;
@@ -108,11 +112,11 @@ public class HertsHttpMetrics implements HertsCoreMetrics {
         }
 
         @Override
-        public HertsCoreMetrics build() {
+        public HertsMetrics build() {
             if (this.hertsCoreService == null) {
                 throw new HertsCoreTypeInvalidException("Required HertsCoreService");
             }
-            return new HertsHttpMetrics(this);
+            return new HertsMetricsHandler(this);
         }
     }
 
@@ -159,6 +163,13 @@ public class HertsHttpMetrics implements HertsCoreMetrics {
         }
 
         Metrics.globalRegistry.add(this.prometheusMeterRegistry);
+
+        if (this.isJvmEnabled) {
+            new JvmMemoryMetrics().bindTo(prometheusMeterRegistry);
+        }
+        if (this.isServerResourceEnabled) {
+            new ProcessorMetrics().bindTo(prometheusMeterRegistry);
+        }
     }
 
     @Override

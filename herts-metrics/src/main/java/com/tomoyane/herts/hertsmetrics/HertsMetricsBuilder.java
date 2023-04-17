@@ -50,5 +50,5 @@ public interface HertsMetricsBuilder {
      * Build
      * @return HertsCoreMetrics
      */
-    HertsCoreMetrics build();
+    HertsMetrics build();
 }

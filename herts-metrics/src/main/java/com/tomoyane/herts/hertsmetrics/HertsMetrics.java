@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentMap;
  * @author Herts Contributer
  * @version 1.0.0
  */
-public interface HertsCoreMetrics {
+public interface HertsMetrics {
 
     /**
      * Registration metrics settings
