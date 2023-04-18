@@ -1,6 +1,6 @@
 package com.tomoyane.herts.hertshttp.engine;
 
-import com.tomoyane.herts.hertscommon.context.HertsHttpMetricsSetting;
+import com.tomoyane.herts.hertscommon.context.HertsMetricsSetting;
 import com.tomoyane.herts.hertscommon.exception.HertsHttpBuildException;
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
 import com.tomoyane.herts.hertscommon.service.HertsCoreService;
@@ -38,7 +38,7 @@ public class HertsHttpServer implements HertsHttpEngine {
     private final List<HertsCoreService> hertsCoreServices;
     private final HertsHttpInterceptor interceptor;
     private final SslContextFactory sslContextFactory;
-    private final HertsHttpMetricsSetting metricsSetting;
+    private final HertsMetricsSetting metricsSetting;
     private final int port;
 
     public HertsHttpServer(Builder builder) {
@@ -56,7 +56,7 @@ public class HertsHttpServer implements HertsHttpEngine {
     public static class Builder implements HertHttpEngineBuilder {
         private final List<HertsCoreService> hertsCoreServices = new ArrayList<>();
         private HertsHttpInterceptor interceptor;
-        private HertsHttpMetricsSetting metricsSetting;
+        private HertsMetricsSetting metricsSetting;
         private SslContextFactory sslContextFactory;
         private int port = 8080;
 
@@ -76,7 +76,7 @@ public class HertsHttpServer implements HertsHttpEngine {
         }
 
         @Override
-        public HertHttpEngineBuilder setMetricsSetting(HertsHttpMetricsSetting metricsSetting) {
+        public HertHttpEngineBuilder setMetricsSetting(HertsMetricsSetting metricsSetting) {
             this.metricsSetting = metricsSetting;
             return this;
         }

@@ -48,6 +48,7 @@ public class HertsMetricsHandler implements HertsMetrics {
      private HertsMetricsHandler(Builder builder) {
         this.hertsCoreService = builder.hertsCoreService;
         this.hertsType = builder.hertsCoreService.getHertsType();
+        System.out.println(this.hertsType);
         this.metricsType = MetricsType.Prometheus;
         this.isRpsEnabled = builder.isRpsEnabled;
         this.isLatencyEnabled = builder.isLatencyEnabled;
@@ -136,7 +137,6 @@ public class HertsMetricsHandler implements HertsMetrics {
             throw new HertsCoreTypeInvalidException("Herts service is invalid", ex);
         }
 
-
         for (Method method : methods) {
             var tag = new ImmutableTag(HertsMetricsContext.METRICS_KEY, method.getName());
             this.tagNames.put(method.getName(), tag);
@@ -179,10 +179,14 @@ public class HertsMetricsHandler implements HertsMetrics {
 
     @Override
     public void counter(HertsMetricsContext.Metric metric, String method) {
-        if (metric == HertsMetricsContext.Metric.Rps) {
+        if (metric == HertsMetricsContext.Metric.Rps && this.hertsType == HertsType.Http) {
             this.prometheusMeterRegistry.counter(HertsMetricsContext.HTTP_REQ_COUNT, Collections.singleton(this.tagNames.get(method))).increment();
-        } else if (metric == HertsMetricsContext.Metric.ErrRate) {
+        } else if (metric == HertsMetricsContext.Metric.ErrRate && this.hertsType == HertsType.Http) {
             this.prometheusMeterRegistry.counter(HertsMetricsContext.HTTP_REQ_ERR_RATE, Collections.singleton(this.tagNames.get(method))).increment();
+        } else if (metric == HertsMetricsContext.Metric.Rps) {
+            this.prometheusMeterRegistry.counter(HertsMetricsContext.RPC_CMD_COUNT, Collections.singleton(this.tagNames.get(method))).increment();
+        } else if (metric == HertsMetricsContext.Metric.ErrRate) {
+            this.prometheusMeterRegistry.counter(HertsMetricsContext.RPC_CMD_ERR_RATE, Collections.singleton(this.tagNames.get(method))).increment();
         }
     }
 

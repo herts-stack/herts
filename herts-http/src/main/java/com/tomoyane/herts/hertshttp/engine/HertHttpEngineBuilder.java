@@ -1,6 +1,6 @@
 package com.tomoyane.herts.hertshttp.engine;
 
-import com.tomoyane.herts.hertscommon.context.HertsHttpMetricsSetting;
+import com.tomoyane.herts.hertscommon.context.HertsMetricsSetting;
 import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 import com.tomoyane.herts.hertshttp.HertsHttpInterceptor;
 
@@ -48,7 +48,7 @@ public interface HertHttpEngineBuilder {
      * @param metricsSetting HertsHttpMetricsSetting
      * @return HertHttpEngineBuilder
      */
-    HertHttpEngineBuilder setMetricsSetting(HertsHttpMetricsSetting metricsSetting);
+    HertHttpEngineBuilder setMetricsSetting(HertsMetricsSetting metricsSetting);
 
     /**
      * Build

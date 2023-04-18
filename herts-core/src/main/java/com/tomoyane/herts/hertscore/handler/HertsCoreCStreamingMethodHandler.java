@@ -5,8 +5,11 @@ import com.tomoyane.herts.hertscommon.exception.HertsMessageException;
 import com.tomoyane.herts.hertscommon.exception.HertsServiceNotFoundException;
 import com.tomoyane.herts.hertscommon.context.HertsMethod;
 
+import com.tomoyane.herts.hertscommon.serializer.HertsSerializer;
+import com.tomoyane.herts.hertsmetrics.HertsMetrics;
 import io.grpc.stub.StreamObserver;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -20,8 +23,9 @@ public class HertsCoreCStreamingMethodHandler<Req, Resp> implements
     private final Object[] requests;
     private final Method reflectMethod;
     private final HertsMethod hertsMethod;
+    private final HertsCoreCaller hertsCoreCaller;
 
-    public HertsCoreCStreamingMethodHandler(HertsMethod hertsMethod) {
+    public HertsCoreCStreamingMethodHandler(HertsMethod hertsMethod, HertsMetrics hertsMetrics) {
         this.hertsMethod = hertsMethod;
         this.requests = new Object[this.hertsMethod.getParameters().length];
 
@@ -47,12 +51,18 @@ public class HertsCoreCStreamingMethodHandler<Req, Resp> implements
         }
 
         this.reflectMethod = method;
+        HertsSerializer serializer = new HertsSerializer();
+        if (hertsMetrics.isMetricsEnabled()) {
+            this.hertsCoreCaller = new HertsCoreMetricsCaller(this.reflectMethod, hertsMetrics, serializer, coreObject, requests);
+        } else {
+            this.hertsCoreCaller = new HertsCoreSimpleCaller(this.reflectMethod, serializer, coreObject, requests);
+        }
     }
 
     @Override
     public StreamObserver<Req> invoke(StreamObserver<Resp> responseObserver) {
         try {
-            var response = this.reflectMethod.invoke(this.coreObject, responseObserver);
+            var response = this.hertsCoreCaller.invokeStreaming(this.coreObject, responseObserver);
             return (StreamObserver<Req>) response;
         } catch (IllegalAccessException | InvocationTargetException ex) {
             throw new HertsMessageException(ex);

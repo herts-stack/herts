@@ -9,7 +9,7 @@ import com.tomoyane.herts.HttpServiceImpl;
 import com.tomoyane.herts.ServerStreamingRpcCoreServiceImpl;
 import com.tomoyane.herts.UnaryRpcCoreServiceImpl01;
 import com.tomoyane.herts.UnaryRpcCoreServiceImpl02;
-import com.tomoyane.herts.hertscommon.context.HertsHttpMetricsSetting;
+import com.tomoyane.herts.hertscommon.context.HertsMetricsSetting;
 import com.tomoyane.herts.hertscommon.context.HertsType;
 import com.tomoyane.herts.hertscore.HertsCoreInterceptBuilder;
 import com.tomoyane.herts.hertscore.engine.HertsCoreEngineBuilder;
@@ -24,6 +24,8 @@ public class Main {
             return;
         }
 
+        var metrics = HertsMetricsSetting.builder().isRpsEnabled(true).isLatencyEnabled(true).build();
+
         HertsCoreEngineBuilder engineBuilder = HertsCoreBuilder.builder();
         HertsType coreType = ArgCollector.convert(args[0]);
         var interceptor = HertsCoreInterceptBuilder.builder(new GrpcServerInterceptor()).build();
@@ -32,25 +34,25 @@ public class Main {
                 var service01 = new UnaryRpcCoreServiceImpl01();
                 var service02 = new UnaryRpcCoreServiceImpl02();
 
-                engineBuilder.addService(service01, interceptor).addService(service02, interceptor);
+                engineBuilder.addService(service01, interceptor).addService(service02, interceptor).metricsSetting(metrics);
             }
             case ClientStreaming -> {
                 var service = new ClientStreamingRpcCoreServiceImpl();
-                engineBuilder.addService(service, interceptor);
+                engineBuilder.addService(service, interceptor).metricsSetting(metrics);
             }
             case ServerStreaming -> {
                 var service = new ServerStreamingRpcCoreServiceImpl();
-                engineBuilder.addService(service, interceptor);
+                engineBuilder.addService(service, interceptor).metricsSetting(metrics);
             }
             case BidirectionalStreaming -> {
                 var service = new BidirectionalStreamingRpcCoreServiceImpl();
-                engineBuilder.addService(service, interceptor);
+                engineBuilder.addService(service, interceptor).metricsSetting(metrics);
             }
             case Http -> {
                 HertsHttpEngine engine = HertsHttpServer.builder()
                         .addImplementationService(new HttpServiceImpl())
                         .setInterceptor(new HttpServerInterceptor())
-                        .setMetricsSetting(HertsHttpMetricsSetting.builder().isRpsEnabled(true).isLatencyEnabled(true).build())
+                        .setMetricsSetting(metrics)
                         .build();
                 engine.start();
                 return;

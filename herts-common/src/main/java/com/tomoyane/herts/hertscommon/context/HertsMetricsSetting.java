@@ -1,14 +1,14 @@
 package com.tomoyane.herts.hertscommon.context;
 
-public class HertsHttpMetricsSetting {
+public class HertsMetricsSetting {
     private boolean isRpsEnabled;
     private boolean isLatencyEnabled;
     private boolean isErrRateEnabled;
     private boolean isServerResourceEnabled;
     private boolean isJvmEnabled;
 
-    public HertsHttpMetricsSetting(boolean isRpsEnabled, boolean isLatencyEnabled,
-                                   boolean isErrRateEnabled, boolean isServerResourceEnabled, boolean isJvmEnabled) {
+    public HertsMetricsSetting(boolean isRpsEnabled, boolean isLatencyEnabled,
+                               boolean isErrRateEnabled, boolean isServerResourceEnabled, boolean isJvmEnabled) {
         this.isRpsEnabled = isRpsEnabled;
         this.isLatencyEnabled = isLatencyEnabled;
         this.isErrRateEnabled = isErrRateEnabled;
@@ -54,8 +54,8 @@ public class HertsHttpMetricsSetting {
             return this;
         }
 
-        public HertsHttpMetricsSetting build() {
-            return new HertsHttpMetricsSetting(this.isRpsEnabled, this.isLatencyEnabled, this.isErrRateEnabled, this.isServerResourceEnabled, this.isJvmEnabled);
+        public HertsMetricsSetting build() {
+            return new HertsMetricsSetting(this.isRpsEnabled, this.isLatencyEnabled, this.isErrRateEnabled, this.isServerResourceEnabled, this.isJvmEnabled);
         }
     }
 

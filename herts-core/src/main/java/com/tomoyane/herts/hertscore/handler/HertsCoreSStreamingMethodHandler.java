@@ -6,6 +6,7 @@ import com.tomoyane.herts.hertscommon.context.HertsMethod;
 import com.tomoyane.herts.hertscommon.context.HertsMsg;
 import com.tomoyane.herts.hertscommon.serializer.HertsSerializer;
 
+import com.tomoyane.herts.hertsmetrics.HertsMetrics;
 import io.grpc.stub.StreamObserver;
 
 import java.io.IOException;
@@ -23,8 +24,9 @@ public class HertsCoreSStreamingMethodHandler<Req, Resp> implements
     private final Object[] requests;
     private final Method reflectMethod;
     private final HertsMethod hertsMethod;
+    private final HertsCoreCaller hertsCoreCaller;
 
-    public HertsCoreSStreamingMethodHandler(HertsMethod hertsMethod) {
+    public HertsCoreSStreamingMethodHandler(HertsMethod hertsMethod, HertsMetrics hertsMetrics) {
         this.hertsMethod = hertsMethod;
         this.requests = new Object[this.hertsMethod.getParameters().length];
 
@@ -50,6 +52,11 @@ public class HertsCoreSStreamingMethodHandler<Req, Resp> implements
         }
 
         this.reflectMethod = method;
+        if (hertsMetrics.isMetricsEnabled()) {
+            this.hertsCoreCaller = new HertsCoreMetricsCaller(this.reflectMethod, hertsMetrics, serializer, coreObject, requests);
+        } else {
+            this.hertsCoreCaller = new HertsCoreSimpleCaller(this.reflectMethod, serializer, coreObject, requests);
+        }
     }
 
     @Override
@@ -60,20 +67,7 @@ public class HertsCoreSStreamingMethodHandler<Req, Resp> implements
     @Override
     public void invoke(Req request, StreamObserver<Resp> responseObserver) {
         try {
-            if (((byte[]) request).length > 0) {
-                HertsMsg deserialized = this.serializer.deserialize((byte[]) request, HertsMsg.class);
-                var index = 0;
-                for (Object obj : deserialized.getMessageParameters()) {
-                    var castType = deserialized.getClassTypes()[index];
-                    this.requests[index] = this.serializer.convert(obj, castType);
-                    index++;
-                }
-                this.requests[this.requests.length-1] =  (StreamObserver<Object>) responseObserver;
-                this.reflectMethod.invoke(this.coreObject, this.requests);
-            } else {
-                this.reflectMethod.invoke(this.coreObject, responseObserver);
-            }
-
+            this.hertsCoreCaller.invokeServerStreaming(request, responseObserver);
         } catch (IllegalAccessException | IOException ex) {
             responseObserver.onError(ex);
         } catch (InvocationTargetException ex) {

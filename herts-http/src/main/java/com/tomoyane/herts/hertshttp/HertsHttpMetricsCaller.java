@@ -41,7 +41,6 @@ public class HertsHttpMetricsCaller extends HertsHttpCallerBase implements Herts
         try {
             if (this.hertsMetrics.isLatencyEnabled()) {
                 timer = this.hertsMetrics.startLatencyTimer(hertsMethod.getName());
-                this.hertsMetrics.stopLatencyTimer(timer);
             }
             if (this.hertsMetrics.isRpsEnabled()) {
                 this.hertsMetrics.counter(HertsMetricsContext.Metric.Rps, hertsMethod.getName());

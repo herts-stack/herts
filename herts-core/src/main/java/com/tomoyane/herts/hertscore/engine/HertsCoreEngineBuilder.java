@@ -1,5 +1,6 @@
 package com.tomoyane.herts.hertscore.engine;
 
+import com.tomoyane.herts.hertscommon.context.HertsMetricsSetting;
 import com.tomoyane.herts.hertscommon.context.HertsType;
 import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 
@@ -32,6 +33,13 @@ public interface HertsCoreEngineBuilder {
      * @return HertsCoreEngineBuilder
      */
     HertsCoreEngineBuilder secure(ServerCredentials credentials);
+
+    /**
+     * Metrics setting
+     * @param metricsSetting HertsMetricsSetting
+     * @return HertsCoreEngineBuilder
+     */
+    HertsCoreEngineBuilder metricsSetting(HertsMetricsSetting metricsSetting);
 
     /**
      * Add custom gRPC service

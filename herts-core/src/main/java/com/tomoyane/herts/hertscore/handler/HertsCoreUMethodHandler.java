@@ -6,6 +6,7 @@ import com.tomoyane.herts.hertscommon.context.HertsMethod;
 import com.tomoyane.herts.hertscommon.context.HertsMsg;
 import com.tomoyane.herts.hertscommon.serializer.HertsSerializer;
 
+import com.tomoyane.herts.hertsmetrics.HertsMetrics;
 import io.grpc.stub.StreamObserver;
 
 import java.io.IOException;
@@ -23,8 +24,9 @@ public class HertsCoreUMethodHandler<Req, Resp> implements
     private final Object[] requests;
     private final Method reflectMethod;
     private final HertsMethod hertsMethod;
+    private final HertsCoreCaller hertsCoreCaller;
 
-    public HertsCoreUMethodHandler(HertsMethod hertsMethod) {
+    public HertsCoreUMethodHandler(HertsMethod hertsMethod, HertsMetrics hertsMetrics) {
         this.hertsMethod = hertsMethod;
         this.requests = new Object[this.hertsMethod.getParameters().length];
 
@@ -50,6 +52,11 @@ public class HertsCoreUMethodHandler<Req, Resp> implements
         }
 
         this.reflectMethod = method;
+        if (hertsMetrics.isMetricsEnabled()) {
+            this.hertsCoreCaller = new HertsCoreMetricsCaller(this.reflectMethod, hertsMetrics, serializer, coreObject, requests);
+        } else {
+            this.hertsCoreCaller = new HertsCoreSimpleCaller(this.reflectMethod, serializer, coreObject, requests);
+        }
     }
 
     @Override
@@ -60,21 +67,7 @@ public class HertsCoreUMethodHandler<Req, Resp> implements
     @Override
     public void invoke(Req request, StreamObserver<Resp> responseObserver) {
         try {
-            Object response;
-            if (((byte[]) request).length > 0) {
-                HertsMsg deserialized = this.serializer.deserialize((byte[]) request, HertsMsg.class);
-                var index = 0;
-                for (Object obj : deserialized.getMessageParameters()) {
-                    var castType = deserialized.getClassTypes()[index];
-                    this.requests[index] = this.serializer.convert(obj, castType);
-                    index++;
-                }
-
-                response = this.reflectMethod.invoke(this.coreObject, this.requests);
-            } else {
-                response = this.reflectMethod.invoke(this.coreObject);
-            }
-
+            Object response = this.hertsCoreCaller.invokeUnary(request, responseObserver);
             if (response == null) {
                 responseObserver.onNext(null);
                 responseObserver.onCompleted();
@@ -83,7 +76,6 @@ public class HertsCoreUMethodHandler<Req, Resp> implements
                 responseObserver.onNext((Resp) responseBytes);
                 responseObserver.onCompleted();
             }
-
         } catch (IllegalAccessException | IOException ex) {
             responseObserver.onError(ex);
         } catch (InvocationTargetException ex) {
