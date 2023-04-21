@@ -12,19 +12,20 @@ import com.tomoyane.herts.hertscommon.descriptor.HertsGrpcDescriptor;
 import com.tomoyane.herts.hertscommon.descriptor.HertsStreamingDescriptor;
 import com.tomoyane.herts.hertscommon.service.BidirectionalStreamingCoreServiceCore;
 import com.tomoyane.herts.hertscommon.service.ClientStreamingCoreServiceCore;
-import com.tomoyane.herts.hertscore.HertsCoreInterceptor;
-import com.tomoyane.herts.hertscore.HertsCoreInterceptBuilder;
 import com.tomoyane.herts.hertscommon.service.ServerStreamingCoreServiceCore;
 import com.tomoyane.herts.hertscommon.service.UnaryCoreServiceCore;
+import com.tomoyane.herts.hertscommon.service.HertsCoreService;
+import com.tomoyane.herts.hertscore.HertsCoreInterceptor;
+import com.tomoyane.herts.hertscore.HertsCoreInterceptBuilder;
 import com.tomoyane.herts.hertscore.handler.HertsCoreCStreamingMethodHandler;
 import com.tomoyane.herts.hertscore.handler.HertsCoreSStreamingMethodHandler;
 import com.tomoyane.herts.hertscore.handler.HertsCoreBMethodHandler;
 import com.tomoyane.herts.hertscore.handler.HertsCoreUMethodHandler;
-import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 import com.tomoyane.herts.hertscore.model.ReflectMethod;
 import com.tomoyane.herts.hertscore.validator.HertsRpcValidator;
 import com.tomoyane.herts.hertsmetrics.HertsMetrics;
 import com.tomoyane.herts.hertsmetrics.handler.HertsMetricsHandler;
+import com.tomoyane.herts.hertsmetrics.server.HertsMetricsServer;
 
 import io.grpc.Grpc;
 import io.grpc.InsecureServerCredentials;
@@ -41,12 +42,12 @@ import io.grpc.ServerServiceDefinition;
 import io.grpc.MethodDescriptor;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -58,6 +59,8 @@ public class HertsCoreBuilder implements HertsCoreEngine {
     private final List<HertsCoreService> hertsCoreServices;
     private final GrpcServerOption option;
     private final ServerCredentials credentials;
+    private final HertsMetricsServer hertsMetricsServer;
+    private final HertsMetrics hertsMetrics;
 
     private Server server;
 
@@ -67,6 +70,8 @@ public class HertsCoreBuilder implements HertsCoreEngine {
         this.hertsTypes = builder.getHertsCoreTypes();
         this.services = builder.getServices();
         this.hertsCoreServices = builder.getHertsServices();
+        this.hertsMetricsServer = builder.hertsMetricsServer;
+        this.hertsMetrics = builder.hertsMetrics;
     }
 
     public static Builder builder() {
@@ -83,7 +88,8 @@ public class HertsCoreBuilder implements HertsCoreEngine {
         private final List<HertsCoreService> hertsCoreServices = new ArrayList<>();
         private GrpcServerOption option;
         private ServerCredentials credentials;
-        private HertsMetricsSetting metricsSetting;
+        private HertsMetricsServer hertsMetricsServer;
+        private HertsMetrics hertsMetrics;
 
         private Builder() {
             this.option = new GrpcServerOption();
@@ -91,6 +97,23 @@ public class HertsCoreBuilder implements HertsCoreEngine {
 
         private Builder(GrpcServerOption option) {
             this.option = option;
+        }
+
+        private static HertsMetrics getHertsMetrics(List<HertsCoreService> coreServices, HertsMetricsSetting metricsSetting) {
+            HertsMetrics hertsMetrics;
+            if (metricsSetting != null) {
+                hertsMetrics = HertsMetricsHandler.builder()
+                        .hertsCoreServiceInterface(coreServices)
+                        .isErrRateEnabled(metricsSetting.isErrRateEnabled())
+                        .isJvmEnabled(metricsSetting.isJvmEnabled())
+                        .isLatencyEnabled(metricsSetting.isLatencyEnabled())
+                        .isServerResourceEnabled(metricsSetting.isServerResourceEnabled())
+                        .isRpsEnabled(metricsSetting.isRpsEnabled())
+                        .build();
+            } else {
+                hertsMetrics = HertsMetricsHandler.builder().hertsCoreServiceInterface(null).build();
+            }
+            return hertsMetrics;
         }
 
         @Override
@@ -168,8 +191,13 @@ public class HertsCoreBuilder implements HertsCoreEngine {
         }
 
         @Override
-        public HertsCoreEngineBuilder metricsSetting(HertsMetricsSetting metricsSetting) {
-            this.metricsSetting = metricsSetting;
+        public HertsCoreEngineBuilder enableMetrics(HertsMetricsSetting metricsSetting) {
+            if (this.hertsCoreServices.size() == 0) {
+                throw new HertsCoreBuildException("Please call addService before call enableMetrics");
+            }
+            this.hertsMetrics = getHertsMetrics(this.hertsCoreServices, metricsSetting);
+            this.hertsMetrics.register();
+            this.hertsMetricsServer = new HertsMetricsServer(this.hertsMetrics);
             return this;
         }
 
@@ -227,26 +255,8 @@ public class HertsCoreBuilder implements HertsCoreEngine {
             return hertsMethods;
         }
 
-        private HertsMetrics getHertsMetrics(HertsCoreService coreService) {
-            HertsMetrics hertsMetrics;
-            if (metricsSetting != null) {
-                hertsMetrics = HertsMetricsHandler.builder()
-                        .hertsCoreServiceInterface(coreService)
-                        .isErrRateEnabled(metricsSetting.isErrRateEnabled())
-                        .isJvmEnabled(metricsSetting.isJvmEnabled())
-                        .isLatencyEnabled(metricsSetting.isLatencyEnabled())
-                        .isServerResourceEnabled(metricsSetting.isServerResourceEnabled())
-                        .isRpsEnabled(metricsSetting.isRpsEnabled())
-                        .build();
-            } else {
-                hertsMetrics = HertsMetricsHandler.builder().hertsCoreServiceInterface(coreService).build();
-            }
-            return hertsMetrics;
-        }
-
         private BindableService registerBidirectionalStreamingService(BidirectionalStreamingCoreServiceCore core) {
             ReflectMethod reflectMethod = generateReflectMethod(core.getClass().getName());
-            var metrics = getHertsMetrics(core);
             return new BindableService() {
                 private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
 
@@ -258,7 +268,7 @@ public class HertsCoreBuilder implements HertsCoreEngine {
 
                     int index = 0;
                     for (MethodDescriptor<Object, Object> methodDescriptor : descriptor.getMethodDescriptors()) {
-                        HertsCoreBMethodHandler<Object, Object> handler = new HertsCoreBMethodHandler<>(hertsMethods.get(index), metrics);
+                        HertsCoreBMethodHandler<Object, Object> handler = new HertsCoreBMethodHandler<>(hertsMethods.get(index));
                         builder = builder.addMethod(methodDescriptor, ServerCalls.asyncBidiStreamingCall(handler));
                         index++;
                     }
@@ -269,7 +279,6 @@ public class HertsCoreBuilder implements HertsCoreEngine {
 
         private BindableService registerClientStreamingService(ClientStreamingCoreServiceCore core) {
             ReflectMethod reflectMethod = generateReflectMethod(core.getClass().getName());
-            var metrics = getHertsMetrics(core);
             return new BindableService() {
                 private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
 
@@ -281,7 +290,7 @@ public class HertsCoreBuilder implements HertsCoreEngine {
 
                     int index = 0;
                     for (MethodDescriptor<Object, Object> methodDescriptor : descriptor.getMethodDescriptors()) {
-                        HertsCoreCStreamingMethodHandler<Object, Object> handler = new HertsCoreCStreamingMethodHandler<>(hertsMethods.get(index), metrics);
+                        HertsCoreCStreamingMethodHandler<Object, Object> handler = new HertsCoreCStreamingMethodHandler<>(hertsMethods.get(index));
                         builder = builder.addMethod(methodDescriptor, ServerCalls.asyncClientStreamingCall(handler));
                         index++;
                     }
@@ -292,7 +301,6 @@ public class HertsCoreBuilder implements HertsCoreEngine {
 
         private BindableService registerServerStreamingService(ServerStreamingCoreServiceCore core) {
             ReflectMethod reflectMethod = generateReflectMethod(core.getClass().getName());
-            var metrics = getHertsMetrics(core);
             return new BindableService() {
                 private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
 
@@ -304,7 +312,7 @@ public class HertsCoreBuilder implements HertsCoreEngine {
 
                     int index = 0;
                     for (MethodDescriptor<Object, Object> methodDescriptor : descriptor.getMethodDescriptors()) {
-                        HertsCoreSStreamingMethodHandler<Object, Object> handler = new HertsCoreSStreamingMethodHandler<>(hertsMethods.get(index), metrics);
+                        HertsCoreSStreamingMethodHandler<Object, Object> handler = new HertsCoreSStreamingMethodHandler<>(hertsMethods.get(index));
                         builder = builder.addMethod(methodDescriptor, ServerCalls.asyncServerStreamingCall(handler));
                         index++;
                     }
@@ -315,7 +323,6 @@ public class HertsCoreBuilder implements HertsCoreEngine {
 
         private BindableService registerUnaryService(UnaryCoreServiceCore core) {
             ReflectMethod reflectMethod = generateReflectMethod(core.getClass().getName());
-            var metrics = getHertsMetrics(core);
             return new BindableService() {
                 private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
 
@@ -327,7 +334,7 @@ public class HertsCoreBuilder implements HertsCoreEngine {
 
                     int index = 0;
                     for (MethodDescriptor<byte[], byte[]> methodDescriptor : descriptor.getMethodDescriptors()) {
-                        HertsCoreUMethodHandler<byte[], byte[]> handler = new HertsCoreUMethodHandler<>(hertsMethods.get(index), metrics);
+                        HertsCoreUMethodHandler<byte[], byte[]> handler = new HertsCoreUMethodHandler<>(hertsMethods.get(index), hertsMetrics);
                         builder = builder.addMethod(methodDescriptor, ServerCalls.asyncUnaryCall(handler));
                         index++;
                     }
@@ -340,8 +347,11 @@ public class HertsCoreBuilder implements HertsCoreEngine {
     @Override
     public void start() {
         try {
-            ServerBuilder<?> serverBuilder;
+            if (this.option.getPort() == 8888) {
+                throw new HertsCoreBuildException("Port 8888 is reserved port number for metrics");
+            }
 
+            ServerBuilder<?> serverBuilder;
             if (this.credentials != null) {
                 serverBuilder = Grpc.newServerBuilderForPort(this.option.getPort(), this.credentials);
             } else {
@@ -373,11 +383,22 @@ public class HertsCoreBuilder implements HertsCoreEngine {
             if (this.option.getMaxConnectionIdleMilliSec() != null) {
                 serverBuilder = serverBuilder.maxConnectionIdle(this.option.getMaxConnectionIdleMilliSec(), TimeUnit.MILLISECONDS);
             }
+
+            // TODO: Graceful shutdown
+            CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
+                try {
+                    this.hertsMetricsServer.start();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                return null;
+            });
+
             this.server = serverBuilder.build();
             this.server.start();
             logger.info("Started Herts server. gRPC type " + this.hertsTypes.get(0) + " Port " + this.option.getPort());
             server.awaitTermination();
-        } catch (IOException | InterruptedException ex) {
+        } catch (Exception ex) {
             throw new HertsCoreBuildException(ex);
         }
     }

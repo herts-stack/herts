@@ -11,6 +11,7 @@ import com.tomoyane.herts.hertshttp.validator.HertsHttpValidator;
 import com.tomoyane.herts.hertsmetrics.HertsMetrics;
 import com.tomoyane.herts.hertsmetrics.handler.HertsMetricsHandler;
 
+import com.tomoyane.herts.hertsmetrics.server.HertsMetricsServer;
 import jakarta.servlet.DispatcherType;
 
 import org.eclipse.jetty.server.Connector;
@@ -22,6 +23,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.logging.Logger;
@@ -125,7 +127,7 @@ public class HertsHttpServer implements HertsHttpEngine {
                 HertsMetrics metrics;
                 if (this.metricsSetting != null) {
                     metrics = HertsMetricsHandler.builder()
-                            .hertsCoreServiceInterface(coreService)
+                            .hertsCoreServiceInterface(Collections.singletonList(coreService))
                             .isErrRateEnabled(this.metricsSetting.isErrRateEnabled())
                             .isJvmEnabled(this.metricsSetting.isJvmEnabled())
                             .isLatencyEnabled(this.metricsSetting.isLatencyEnabled())
@@ -133,9 +135,13 @@ public class HertsHttpServer implements HertsHttpEngine {
                             .isRpsEnabled(this.metricsSetting.isRpsEnabled())
                             .build();
                 } else {
-                    metrics = HertsMetricsHandler.builder().hertsCoreServiceInterface(coreService).build();
+                    metrics = HertsMetricsHandler.builder()
+                            .hertsCoreServiceInterface(Collections.singletonList(coreService))
+                            .build();
                 }
-                var hertsServer = new HertsHttpServerCore(coreService, metrics);
+
+                var metricsServer = new HertsMetricsServer(metrics, server);
+                var hertsServer = new HertsHttpServerCore(coreService, metrics, metricsServer);
 
                 endpointLogs.add(coreService.getClass().getSimpleName() + " endpoint.");
                 for (String endpoint : hertsServer.getEndpoints()) {

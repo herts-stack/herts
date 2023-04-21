@@ -6,6 +6,7 @@ import com.tomoyane.herts.hertscommon.context.HertsHttpResponse;
 import com.tomoyane.herts.hertscommon.exception.HertsInvalidBodyException;
 import com.tomoyane.herts.hertscommon.serializer.HertsSerializer;
 import com.tomoyane.herts.hertsmetrics.HertsMetrics;
+import com.tomoyane.herts.hertsmetrics.server.HertsMetricsServer;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -20,27 +21,23 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * Herts http caller base class
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
 public class HertsHttpCallerBase {
     private final Object coreObject;
-    private final HertsMetrics hertsMetrics;
+    private final HertsMetricsServer hertsMetricsServer;
     private final HertsSerializer hertsSerializer;
     private final ConcurrentMap<String, List<Parameter>> parameters;
 
-    public HertsHttpCallerBase(Object coreObject, HertsMetrics hertsMetrics,
+    public HertsHttpCallerBase(Object coreObject, HertsMetricsServer hertsMetricsServer,
                                HertsSerializer hertsSerializer, ConcurrentMap<String, List<Parameter>> parameters) {
 
         this.coreObject = coreObject;
-        this.hertsMetrics = hertsMetrics;
+        this.hertsMetricsServer = hertsMetricsServer;
         this.hertsSerializer = hertsSerializer;
         this.parameters = parameters;
-    }
-
-    public void setHertsHeader(HttpServletResponse response) {
-        response.setHeader(HertsHeaderContext.HERTS_CONTEXT_KEY, HertsHeaderContext.CODE_VERSION);
-        response.setHeader(HertsHeaderContext.HERTS_SERVER_KEY, HertsHeaderContext.HERTS_SERVER_VAL);
     }
 
     public void setWriter(PrintWriter out, String msg) {
@@ -48,12 +45,13 @@ public class HertsHttpCallerBase {
         out.flush();
     }
 
-    public void setMetrics(HttpServletResponse response) throws IOException {
-        response.setContentType(this.hertsMetrics.getPrometheusFormat());
-        response.setStatus(HttpServletResponse.SC_OK);
-        var w = response.getWriter();
-        w.print(this.hertsMetrics.scrape());
-        w.flush();
+    public void setMetricsResponse(HttpServletResponse response) throws IOException {
+        this.hertsMetricsServer.setMetricsResponse(response);
+    }
+
+    public void setHertsHeader(HttpServletResponse response) {
+        response.setHeader(HertsHeaderContext.HERTS_CONTEXT_KEY, HertsHeaderContext.CODE_VERSION);
+        response.setHeader(HertsHeaderContext.HERTS_SERVER_KEY, HertsHeaderContext.HERTS_SERVER_VAL);
     }
 
     protected void call(Method hertsMethod, HttpServletRequest request, HttpServletResponse response) throws Exception {

@@ -20,7 +20,7 @@ public class HertsHttpSimpleCaller extends HertsHttpCallerBase implements HertsH
 
     public HertsHttpSimpleCaller(Object coreObject, HertsMetrics hertsHttpMetrics,
                                  HertsSerializer hertsSerializer, ConcurrentMap<String, List<Parameter>> parameters) {
-        super(coreObject, hertsHttpMetrics, hertsSerializer, parameters);
+        super(coreObject, null, hertsSerializer, parameters);
     }
 
     @Override

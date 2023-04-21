@@ -14,11 +14,11 @@ public class ClientStreamingRpcCoreServiceImpl extends ClientStreamingCoreServic
 
     @Override
     public StreamObserver<HelloRequest> test10(StreamObserver<HelloResponse> responseObserver) {
-        logger.info("------------ test10 RPC ----------- ");
+        logger.info("------------ ClientStreaming test10 RPC");
         return new StreamObserver<>() {
             @Override
             public void onNext(HelloRequest response) {
-                logger.info("------------ " + response.getNumber());
+                logger.info("Caught from client. " + response.getNumber());
             }
 
             @Override

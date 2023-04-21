@@ -5,6 +5,7 @@ import com.tomoyane.herts.hertsmetrics.HertsMetrics;
 import com.tomoyane.herts.hertsmetrics.context.HertsMetricsContext;
 import com.tomoyane.herts.hertsmetrics.context.HertsTimer;
 
+import com.tomoyane.herts.hertsmetrics.server.HertsMetricsServer;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -25,10 +26,11 @@ public class HertsHttpMetricsCaller extends HertsHttpCallerBase implements Herts
     private final HertsMetrics hertsMetrics;
     private final HertsSerializer hertsSerializer;
 
-    public HertsHttpMetricsCaller(Object coreObject, HertsMetrics hertsMetrics, HertsSerializer hertsSerializer,
+    public HertsHttpMetricsCaller(Object coreObject, HertsMetrics hertsMetrics,
+                                  HertsSerializer hertsSerializer, HertsMetricsServer hertsMetricsServer,
                                   ConcurrentMap<String, List<Parameter>> parameters, String serviceName) {
 
-        super(coreObject, hertsMetrics, hertsSerializer, parameters);
+        super(coreObject, hertsMetricsServer, hertsSerializer, parameters);
         this.coreObject = coreObject;
         this.serviceName = serviceName;
         this.hertsMetrics = hertsMetrics;

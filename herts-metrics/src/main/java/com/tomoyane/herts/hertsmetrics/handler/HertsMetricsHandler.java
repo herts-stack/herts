@@ -18,15 +18,18 @@ import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
+
 import io.prometheus.client.exporter.common.TextFormat;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
  * Herts http metrics
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
@@ -35,7 +38,7 @@ public class HertsMetricsHandler implements HertsMetrics {
     private final ConcurrentMap<String, Timer> latencyTimer = new ConcurrentHashMap<>();
     private final MetricsType metricsType;
     private final PrometheusMeterRegistry prometheusMeterRegistry;
-    private final HertsCoreService hertsCoreService;
+    private final List<HertsCoreService> hertsCoreServices;
     private final HertsType hertsType;
     private final boolean isRpsEnabled;
     private final boolean isLatencyEnabled;
@@ -45,10 +48,9 @@ public class HertsMetricsHandler implements HertsMetrics {
 
     private Boolean isMetricsEnabled = null;
 
-     private HertsMetricsHandler(Builder builder) {
-        this.hertsCoreService = builder.hertsCoreService;
-        this.hertsType = builder.hertsCoreService.getHertsType();
-        System.out.println(this.hertsType);
+    private HertsMetricsHandler(Builder builder) {
+        this.hertsCoreServices = builder.hertsCoreServices;
+        this.hertsType = builder.hertsCoreServices.get(0).getHertsType();
         this.metricsType = MetricsType.Prometheus;
         this.isRpsEnabled = builder.isRpsEnabled;
         this.isLatencyEnabled = builder.isLatencyEnabled;
@@ -66,7 +68,7 @@ public class HertsMetricsHandler implements HertsMetrics {
     }
 
     public static class Builder implements HertsMetricsBuilder {
-        private HertsCoreService hertsCoreService;
+        private List<HertsCoreService> hertsCoreServices;
         private boolean isRpsEnabled = false;
         private boolean isLatencyEnabled = false;
         private boolean isErrRateEnabled = false;
@@ -77,8 +79,8 @@ public class HertsMetricsHandler implements HertsMetrics {
         }
 
         @Override
-        public HertsMetricsBuilder hertsCoreServiceInterface(HertsCoreService hertsCoreService) {
-            this.hertsCoreService = hertsCoreService;
+        public HertsMetricsBuilder hertsCoreServiceInterface(List<HertsCoreService> hertsCoreServices) {
+            this.hertsCoreServices = hertsCoreServices;
             return this;
         }
 
@@ -114,7 +116,7 @@ public class HertsMetricsHandler implements HertsMetrics {
 
         @Override
         public HertsMetrics build() {
-            if (this.hertsCoreService == null) {
+            if (this.hertsCoreServices == null || this.hertsCoreServices.size() == 0) {
                 throw new HertsCoreTypeInvalidException("Required HertsCoreService");
             }
             return new HertsMetricsHandler(this);
@@ -128,47 +130,49 @@ public class HertsMetricsHandler implements HertsMetrics {
 
     @Override
     public void register() {
-        Method[] methods;
-        try {
-            String serviceName = this.hertsCoreService.getClass().getName();
-            Class<?> thisClass = Class.forName(serviceName);
-            methods = thisClass.getDeclaredMethods();
-        } catch (Exception ex) {
-            throw new HertsCoreTypeInvalidException("Herts service is invalid", ex);
-        }
+        for (HertsCoreService hertsCoreService : this.hertsCoreServices) {
+            Method[] methods;
+            try {
+                String serviceName = hertsCoreService.getClass().getName();
+                Class<?> thisClass = Class.forName(serviceName);
+                methods = thisClass.getDeclaredMethods();
+            } catch (Exception ex) {
+                throw new HertsCoreTypeInvalidException("Herts service is invalid", ex);
+            }
 
-        for (Method method : methods) {
-            var tag = new ImmutableTag(HertsMetricsContext.METRICS_KEY, method.getName());
-            this.tagNames.put(method.getName(), tag);
+            for (Method method : methods) {
+                var tag = new ImmutableTag(HertsMetricsContext.METRICS_KEY, method.getName());
+                this.tagNames.put(method.getName(), tag);
+
+                if (this.hertsType == HertsType.Http) {
+                    this.latencyTimer.put(method.getName(), Timer.builder(HertsMetricsContext.HTTP_REQ_LATENCY)
+                            .publishPercentileHistogram()
+                            .tags(HertsMetricsContext.METRICS_KEY, method.getName())
+                            .register(this.prometheusMeterRegistry));
+                } else {
+                    this.latencyTimer.put(method.getName(), Timer.builder(HertsMetricsContext.RPC_CMD_LATENCY)
+                            .publishPercentileHistogram()
+                            .tags(HertsMetricsContext.METRICS_KEY, method.getName())
+                            .register(this.prometheusMeterRegistry));
+                }
+            }
 
             if (this.hertsType == HertsType.Http) {
-                this.latencyTimer.put(method.getName(), Timer.builder(HertsMetricsContext.HTTP_REQ_LATENCY)
-                        .publishPercentileHistogram()
-                        .tags(HertsMetricsContext.METRICS_KEY, method.getName())
-                        .register(this.prometheusMeterRegistry));
+                this.prometheusMeterRegistry.counter(HertsMetricsContext.HTTP_REQ_COUNT, this.tagNames.values());
+                this.prometheusMeterRegistry.gauge(HertsMetricsContext.HTTP_REQ_ERR_RATE, this.tagNames.values(), 0);
             } else {
-                this.latencyTimer.put(method.getName(), Timer.builder(HertsMetricsContext.RPC_CMD_LATENCY)
-                        .publishPercentileHistogram()
-                        .tags(HertsMetricsContext.METRICS_KEY, method.getName())
-                        .register(this.prometheusMeterRegistry));
+                this.prometheusMeterRegistry.counter(HertsMetricsContext.RPC_CMD_COUNT, this.tagNames.values());
+                this.prometheusMeterRegistry.gauge(HertsMetricsContext.RPC_CMD_ERR_RATE, this.tagNames.values(), 0);
             }
-        }
 
-        if (this.hertsType == HertsType.Http) {
-            this.prometheusMeterRegistry.counter(HertsMetricsContext.HTTP_REQ_COUNT, this.tagNames.values());
-            this.prometheusMeterRegistry.gauge(HertsMetricsContext.HTTP_REQ_ERR_RATE, this.tagNames.values(),  0);
-        } else {
-            this.prometheusMeterRegistry.counter(HertsMetricsContext.RPC_CMD_COUNT, this.tagNames.values());
-            this.prometheusMeterRegistry.gauge(HertsMetricsContext.RPC_CMD_ERR_RATE, this.tagNames.values(),  0);
-        }
+            Metrics.globalRegistry.add(this.prometheusMeterRegistry);
 
-        Metrics.globalRegistry.add(this.prometheusMeterRegistry);
-
-        if (this.isJvmEnabled) {
-            new JvmMemoryMetrics().bindTo(prometheusMeterRegistry);
-        }
-        if (this.isServerResourceEnabled) {
-            new ProcessorMetrics().bindTo(prometheusMeterRegistry);
+            if (this.isJvmEnabled) {
+                new JvmMemoryMetrics().bindTo(prometheusMeterRegistry);
+            }
+            if (this.isServerResourceEnabled) {
+                new ProcessorMetrics().bindTo(prometheusMeterRegistry);
+            }
         }
     }
 
@@ -192,7 +196,7 @@ public class HertsMetricsHandler implements HertsMetrics {
 
     @Override
     public boolean isRpsEnabled() {
-         return this.isRpsEnabled;
+        return this.isRpsEnabled;
     }
 
     @Override

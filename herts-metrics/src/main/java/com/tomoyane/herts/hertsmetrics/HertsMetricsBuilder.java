@@ -2,6 +2,8 @@ package com.tomoyane.herts.hertsmetrics;
 
 import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 
+import java.util.List;
+
 /**
  * Herts core metrics builder
  * @author Herts Contributer
@@ -11,10 +13,10 @@ public interface HertsMetricsBuilder {
 
     /**
      * Set HertsCoreService
-     * @param hertsCoreService HertsCoreService
+     * @param hertsCoreServices HertsCoreService
      * @return Builder
      */
-    HertsMetricsBuilder hertsCoreServiceInterface(HertsCoreService hertsCoreService);
+    HertsMetricsBuilder hertsCoreServiceInterface(List<HertsCoreService> hertsCoreServices);
 
     /**
      * Metrics rps is enabled or not

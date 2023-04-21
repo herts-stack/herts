@@ -34,19 +34,21 @@ public class Main {
                 var service01 = new UnaryRpcCoreServiceImpl01();
                 var service02 = new UnaryRpcCoreServiceImpl02();
 
-                engineBuilder.addService(service01, interceptor).addService(service02, interceptor).metricsSetting(metrics);
+                engineBuilder.addService(service01, interceptor)
+                        .addService(service02, interceptor)
+                        .enableMetrics(metrics);
             }
             case ClientStreaming -> {
                 var service = new ClientStreamingRpcCoreServiceImpl();
-                engineBuilder.addService(service, interceptor).metricsSetting(metrics);
+                engineBuilder.addService(service, interceptor).enableMetrics(metrics);
             }
             case ServerStreaming -> {
                 var service = new ServerStreamingRpcCoreServiceImpl();
-                engineBuilder.addService(service, interceptor).metricsSetting(metrics);
+                engineBuilder.addService(service, interceptor).enableMetrics(metrics);
             }
             case BidirectionalStreaming -> {
                 var service = new BidirectionalStreamingRpcCoreServiceImpl();
-                engineBuilder.addService(service, interceptor).metricsSetting(metrics);
+                engineBuilder.addService(service, interceptor).enableMetrics(metrics);
             }
             case Http -> {
                 HertsHttpEngine engine = HertsHttpServer.builder()

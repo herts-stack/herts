@@ -39,7 +39,7 @@ public interface HertsCoreEngineBuilder {
      * @param metricsSetting HertsMetricsSetting
      * @return HertsCoreEngineBuilder
      */
-    HertsCoreEngineBuilder metricsSetting(HertsMetricsSetting metricsSetting);
+    HertsCoreEngineBuilder enableMetrics(HertsMetricsSetting metricsSetting);
 
     /**
      * Add custom gRPC service

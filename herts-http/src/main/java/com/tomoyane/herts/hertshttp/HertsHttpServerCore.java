@@ -8,7 +8,9 @@ import com.tomoyane.herts.hertscommon.serializer.HertsSerializeType;
 import com.tomoyane.herts.hertscommon.serializer.HertsSerializer;
 import com.tomoyane.herts.hertscommon.service.HertsCoreService;
 import com.tomoyane.herts.hertsmetrics.HertsMetrics;
+import com.tomoyane.herts.hertsmetrics.server.HertsMetricsServer;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -39,7 +41,9 @@ public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer 
     public void init() {
     }
 
-    public HertsHttpServerCore(HertsCoreService hertsCoreService, HertsMetrics hertsHttpMetrics) throws ClassNotFoundException, NoSuchMethodException {
+    public HertsHttpServerCore(HertsCoreService hertsCoreService, HertsMetrics hertsHttpMetrics, HertsMetricsServer metricsServer)
+            throws ClassNotFoundException, NoSuchMethodException {
+
         String serviceName = hertsCoreService.getClass().getInterfaces()[0].getSimpleName();
         this.hertsHttpMetrics = hertsHttpMetrics;
         this.hertsHttpMetrics.register();
@@ -64,7 +68,7 @@ public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer 
 
         if (this.hertsHttpMetrics.isMetricsEnabled()) {
             this.hertsHttpCaller = new HertsHttpMetricsCaller(coreObject, this.hertsHttpMetrics,
-                    this.hertsSerializer, methodParameters, serviceName);
+                    this.hertsSerializer, metricsServer, methodParameters, serviceName);
         } else {
             this.hertsHttpCaller = new HertsHttpSimpleCaller(coreObject, this.hertsHttpMetrics,
                     this.hertsSerializer, methodParameters);
@@ -72,13 +76,12 @@ public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer 
     }
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         if (!this.hertsHttpMetrics.isMetricsEnabled() || !request.getRequestURI().equals("/metricsz")) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-        this.hertsHttpCaller.setHertsHeader(response);
-        this.hertsHttpCaller.setMetrics(response);
+        this.hertsHttpCaller.setMetricsResponse(response);
     }
 
     @Override

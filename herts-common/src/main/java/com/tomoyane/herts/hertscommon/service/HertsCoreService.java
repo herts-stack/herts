@@ -3,6 +3,7 @@ package com.tomoyane.herts.hertscommon.service;
 import com.tomoyane.herts.hertscommon.context.HertsType;
 
 import io.grpc.MethodDescriptor;
+import io.grpc.stub.StreamObserver;
 
 /**
  * Herts core service interface

@@ -54,7 +54,7 @@ public class ClientServiceExample {
                 .build();
 
         BidirectionalStreamingRpcCoreService service = client.createHertCoreInterface(BidirectionalStreamingRpcCoreService.class);
-        var res = service.test04(new StreamObserver<>() {
+        var res1 = service.test04(new StreamObserver<>() {
             @Override
             public void onNext(HelloResponse req) {
                 logger.info(String.format("Got message at %d, %d", req.getCode(), req.getTimestamp()));
@@ -74,8 +74,8 @@ public class ClientServiceExample {
 
         var r = new HelloResponse();
         r.setCode(10000);
-        res.onNext(r);
-        res.onCompleted();
+        res1.onNext(r);
+        res1.onCompleted();
     }
 
     public static void serverStreaming() {

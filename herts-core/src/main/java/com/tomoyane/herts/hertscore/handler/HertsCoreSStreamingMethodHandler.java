@@ -3,10 +3,8 @@ package com.tomoyane.herts.hertscore.handler;
 import com.tomoyane.herts.hertscommon.exception.HertsInstanceException;
 import com.tomoyane.herts.hertscommon.exception.HertsServiceNotFoundException;
 import com.tomoyane.herts.hertscommon.context.HertsMethod;
-import com.tomoyane.herts.hertscommon.context.HertsMsg;
 import com.tomoyane.herts.hertscommon.serializer.HertsSerializer;
 
-import com.tomoyane.herts.hertsmetrics.HertsMetrics;
 import io.grpc.stub.StreamObserver;
 
 import java.io.IOException;
@@ -26,7 +24,7 @@ public class HertsCoreSStreamingMethodHandler<Req, Resp> implements
     private final HertsMethod hertsMethod;
     private final HertsCoreCaller hertsCoreCaller;
 
-    public HertsCoreSStreamingMethodHandler(HertsMethod hertsMethod, HertsMetrics hertsMetrics) {
+    public HertsCoreSStreamingMethodHandler(HertsMethod hertsMethod) {
         this.hertsMethod = hertsMethod;
         this.requests = new Object[this.hertsMethod.getParameters().length];
 
@@ -52,11 +50,7 @@ public class HertsCoreSStreamingMethodHandler<Req, Resp> implements
         }
 
         this.reflectMethod = method;
-        if (hertsMetrics.isMetricsEnabled()) {
-            this.hertsCoreCaller = new HertsCoreMetricsCaller(this.reflectMethod, hertsMetrics, serializer, coreObject, requests);
-        } else {
-            this.hertsCoreCaller = new HertsCoreSimpleCaller(this.reflectMethod, serializer, coreObject, requests);
-        }
+        this.hertsCoreCaller = new HertsCoreSimpleCaller(this.reflectMethod, this.serializer, coreObject, requests);
     }
 
     @Override

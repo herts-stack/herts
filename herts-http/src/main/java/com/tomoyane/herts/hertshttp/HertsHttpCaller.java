@@ -24,12 +24,6 @@ public interface HertsHttpCaller {
     void post(Method hertsMethod, HttpServletRequest request, HttpServletResponse response) throws Exception;
 
     /**
-     * Set herts original header
-     * @param response HttpServletResponse
-     */
-    void setHertsHeader(HttpServletResponse response);
-
-    /**
      * Set Writer
      * @param out PrintWriter
      * @param msg String
@@ -41,5 +35,11 @@ public interface HertsHttpCaller {
      * @param response HttpServletResponse
      * @throws IOException Get error
      */
-    void setMetrics(HttpServletResponse response) throws IOException;
+    void setMetricsResponse(HttpServletResponse response) throws IOException;
+
+    /**
+     * Set herts http header
+     * @param response HttpServletResponse
+     */
+    void setHertsHeader(HttpServletResponse response);
 }
