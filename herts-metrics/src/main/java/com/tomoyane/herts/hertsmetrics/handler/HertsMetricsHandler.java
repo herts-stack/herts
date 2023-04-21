@@ -2,7 +2,7 @@ package com.tomoyane.herts.hertsmetrics.handler;
 
 import com.tomoyane.herts.hertscommon.context.HertsType;
 import com.tomoyane.herts.hertscommon.exception.HertsCoreTypeInvalidException;
-import com.tomoyane.herts.hertscommon.service.HertsCoreService;
+import com.tomoyane.herts.hertscommon.service.HertsRpcService;
 import com.tomoyane.herts.hertsmetrics.HertsMetrics;
 import com.tomoyane.herts.hertsmetrics.HertsMetricsBuilder;
 import com.tomoyane.herts.hertsmetrics.context.HertsMetricsContext;
@@ -38,7 +38,7 @@ public class HertsMetricsHandler implements HertsMetrics {
     private final ConcurrentMap<String, Timer> latencyTimer = new ConcurrentHashMap<>();
     private final MetricsType metricsType;
     private final PrometheusMeterRegistry prometheusMeterRegistry;
-    private final List<HertsCoreService> hertsCoreServices;
+    private final List<HertsRpcService> hertsRpcServices;
     private final HertsType hertsType;
     private final boolean isRpsEnabled;
     private final boolean isLatencyEnabled;
@@ -49,8 +49,8 @@ public class HertsMetricsHandler implements HertsMetrics {
     private Boolean isMetricsEnabled = null;
 
     private HertsMetricsHandler(Builder builder) {
-        this.hertsCoreServices = builder.hertsCoreServices;
-        this.hertsType = builder.hertsCoreServices.get(0).getHertsType();
+        this.hertsRpcServices = builder.hertsRpcServices;
+        this.hertsType = builder.hertsRpcServices.get(0).getHertsType();
         this.metricsType = MetricsType.Prometheus;
         this.isRpsEnabled = builder.isRpsEnabled;
         this.isLatencyEnabled = builder.isLatencyEnabled;
@@ -68,7 +68,7 @@ public class HertsMetricsHandler implements HertsMetrics {
     }
 
     public static class Builder implements HertsMetricsBuilder {
-        private List<HertsCoreService> hertsCoreServices;
+        private List<HertsRpcService> hertsRpcServices;
         private boolean isRpsEnabled = false;
         private boolean isLatencyEnabled = false;
         private boolean isErrRateEnabled = false;
@@ -79,8 +79,8 @@ public class HertsMetricsHandler implements HertsMetrics {
         }
 
         @Override
-        public HertsMetricsBuilder hertsCoreServiceInterface(List<HertsCoreService> hertsCoreServices) {
-            this.hertsCoreServices = hertsCoreServices;
+        public HertsMetricsBuilder hertsCoreServiceInterface(List<HertsRpcService> hertsRpcServices) {
+            this.hertsRpcServices = hertsRpcServices;
             return this;
         }
 
@@ -116,7 +116,7 @@ public class HertsMetricsHandler implements HertsMetrics {
 
         @Override
         public HertsMetrics build() {
-            if (this.hertsCoreServices == null || this.hertsCoreServices.size() == 0) {
+            if (this.hertsRpcServices == null || this.hertsRpcServices.size() == 0) {
                 throw new HertsCoreTypeInvalidException("Required HertsCoreService");
             }
             return new HertsMetricsHandler(this);
@@ -130,10 +130,10 @@ public class HertsMetricsHandler implements HertsMetrics {
 
     @Override
     public void register() {
-        for (HertsCoreService hertsCoreService : this.hertsCoreServices) {
+        for (HertsRpcService hertsRpcService : this.hertsRpcServices) {
             Method[] methods;
             try {
-                String serviceName = hertsCoreService.getClass().getName();
+                String serviceName = hertsRpcService.getClass().getName();
                 Class<?> thisClass = Class.forName(serviceName);
                 methods = thisClass.getDeclaredMethods();
             } catch (Exception ex) {

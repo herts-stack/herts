@@ -1,6 +1,6 @@
 .idea/
-herts-core/build/
-herts-core-client/build/
+herts-rpc/build/
+herts-rpc-client/build/
 herts-common/build/
 herts-metrics/build/
 herts-codegen/build/

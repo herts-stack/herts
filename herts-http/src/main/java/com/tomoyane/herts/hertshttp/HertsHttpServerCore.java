@@ -6,7 +6,7 @@ import com.tomoyane.herts.hertscommon.exception.HertsInvalidBodyException;
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
 import com.tomoyane.herts.hertscommon.serializer.HertsSerializeType;
 import com.tomoyane.herts.hertscommon.serializer.HertsSerializer;
-import com.tomoyane.herts.hertscommon.service.HertsCoreService;
+import com.tomoyane.herts.hertscommon.service.HertsRpcService;
 import com.tomoyane.herts.hertsmetrics.HertsMetrics;
 import com.tomoyane.herts.hertsmetrics.server.HertsMetricsServer;
 
@@ -41,14 +41,14 @@ public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer 
     public void init() {
     }
 
-    public HertsHttpServerCore(HertsCoreService hertsCoreService, HertsMetrics hertsHttpMetrics, HertsMetricsServer metricsServer)
+    public HertsHttpServerCore(HertsRpcService hertsRpcService, HertsMetrics hertsHttpMetrics, HertsMetricsServer metricsServer)
             throws ClassNotFoundException, NoSuchMethodException {
 
-        String serviceName = hertsCoreService.getClass().getInterfaces()[0].getSimpleName();
+        String serviceName = hertsRpcService.getClass().getInterfaces()[0].getSimpleName();
         this.hertsHttpMetrics = hertsHttpMetrics;
         this.hertsHttpMetrics.register();
 
-        Class<?> thisClass = Class.forName(hertsCoreService.getClass().getName());
+        Class<?> thisClass = Class.forName(hertsRpcService.getClass().getName());
         Method[] methods = thisClass.getDeclaredMethods();
         ConcurrentMap<String, List<Parameter>> methodParameters = new ConcurrentHashMap<>();
         for (Method method : methods) {

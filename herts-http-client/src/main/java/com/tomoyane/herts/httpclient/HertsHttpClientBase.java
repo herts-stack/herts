@@ -1,6 +1,6 @@
 package com.tomoyane.herts.httpclient;
 
-import com.tomoyane.herts.hertscommon.service.HertsCoreService;
+import com.tomoyane.herts.hertscommon.service.HertsRpcService;
 
 /**
  * Herts http client
@@ -15,5 +15,5 @@ public interface HertsHttpClientBase {
      * @return HertsCoreService
      * @param <T> Generics
      */
-    <T extends HertsCoreService> T createHertHttpCoreInterface(Class<T> classType);
+    <T extends HertsRpcService> T createHertHttpCoreInterface(Class<T> classType);
 }

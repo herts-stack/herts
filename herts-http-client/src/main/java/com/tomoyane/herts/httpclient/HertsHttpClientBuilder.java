@@ -1,6 +1,6 @@
 package com.tomoyane.herts.httpclient;
 
-import com.tomoyane.herts.hertscommon.service.HertsCoreService;
+import com.tomoyane.herts.hertscommon.service.HertsRpcService;
 
 /**
  * Herts http client builder interface
@@ -25,10 +25,10 @@ public interface HertsHttpClientBuilder {
 
     /**
      * Herts implementation service
-     * @param hertsCoreService HertsCoreService
+     * @param hertsRpcService HertsCoreService
      * @return HertsHttpClientBuilder
      */
-    HertsHttpClientBuilder hertsImplementationService(HertsCoreService hertsCoreService);
+    HertsHttpClientBuilder hertsImplementationService(HertsRpcService hertsRpcService);
 
     /**
      * Build

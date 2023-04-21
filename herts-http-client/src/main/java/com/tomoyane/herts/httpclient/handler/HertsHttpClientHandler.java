@@ -5,7 +5,7 @@ import com.tomoyane.herts.hertscommon.exception.HertsMessageException;
 import com.tomoyane.herts.hertscommon.exception.HertsServiceNotFoundException;
 import com.tomoyane.herts.hertscommon.serializer.HertsSerializeType;
 import com.tomoyane.herts.hertscommon.serializer.HertsSerializer;
-import com.tomoyane.herts.hertscommon.service.HertsCoreService;
+import com.tomoyane.herts.hertscommon.service.HertsRpcService;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -31,15 +31,15 @@ public class HertsHttpClientHandler implements InvocationHandler {
     private final String url;
     private final String serviceName;
 
-    public HertsHttpClientHandler(String url, HertsCoreService hertsCoreService) {
+    public HertsHttpClientHandler(String url, HertsRpcService hertsRpcService) {
         this.url = url;
-        this.serviceName = hertsCoreService.getClass().getInterfaces()[0].getSimpleName();
+        this.serviceName = hertsRpcService.getClass().getInterfaces()[0].getSimpleName();
 
         Class<?> hertsServiceClass;
         try {
-            hertsServiceClass = Class.forName(hertsCoreService.getClass().getName());
+            hertsServiceClass = Class.forName(hertsRpcService.getClass().getName());
         } catch (ClassNotFoundException ignore) {
-            throw new HertsServiceNotFoundException("Unknown class name. Allowed class is " + HertsCoreService.class.getName());
+            throw new HertsServiceNotFoundException("Unknown class name. Allowed class is " + HertsRpcService.class.getName());
         }
 
         Method[] methods = hertsServiceClass.getDeclaredMethods();

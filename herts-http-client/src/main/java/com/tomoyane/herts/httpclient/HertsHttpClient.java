@@ -3,7 +3,7 @@ package com.tomoyane.herts.httpclient;
 import com.tomoyane.herts.hertscommon.exception.HertsCoreClientBuildException;
 import com.tomoyane.herts.hertscommon.exception.HertsHttpBuildException;
 import com.tomoyane.herts.hertscommon.exception.HertsServiceNotFoundException;
-import com.tomoyane.herts.hertscommon.service.HertsCoreService;
+import com.tomoyane.herts.hertscommon.service.HertsRpcService;
 import com.tomoyane.herts.httpclient.handler.HertsHttpClientHandler;
 import com.tomoyane.herts.httpclient.validator.HertsHttpClientValidator;
 
@@ -17,13 +17,13 @@ import java.util.List;
  * @version 1.0.0
  */
 public class HertsHttpClient implements HertsHttpClientBase {
-    private final List<HertsCoreService> hertsCoreServices;
+    private final List<HertsRpcService> hertsRpcServices;
     private final String host;
     private final int serverPort;
     private final boolean isSecureConnection;
 
     public HertsHttpClient(Builder builder) {
-        this.hertsCoreServices = builder.hertsCoreServices;
+        this.hertsRpcServices = builder.hertsRpcServices;
         this.host = builder.host;
         this.serverPort = builder.serverPort;
         this.isSecureConnection = builder.isSecureConnection;
@@ -34,7 +34,7 @@ public class HertsHttpClient implements HertsHttpClientBase {
     }
 
     public static class Builder implements HertsHttpClientBuilder {
-        private final List<HertsCoreService> hertsCoreServices = new ArrayList<>();
+        private final List<HertsRpcService> hertsRpcServices = new ArrayList<>();
         private final String host;
         private int serverPort = 8080;
         private boolean isSecureConnection = false;
@@ -60,20 +60,20 @@ public class HertsHttpClient implements HertsHttpClientBase {
         }
 
         @Override
-        public HertsHttpClientBuilder hertsImplementationService(HertsCoreService hertsCoreService) {
-            this.hertsCoreServices.add(hertsCoreService);
+        public HertsHttpClientBuilder hertsImplementationService(HertsRpcService hertsRpcService) {
+            this.hertsRpcServices.add(hertsRpcService);
             return this;
         }
 
         @Override
         public HertsHttpClientBase build() {
-            if (this.hertsCoreServices.size() == 0 || this.host == null || this.host.isEmpty()) {
+            if (this.hertsRpcServices.size() == 0 || this.host == null || this.host.isEmpty()) {
                 throw new HertsCoreClientBuildException("Please register HertsService and host");
             }
-            if (!HertsHttpClientValidator.isAllHttpType(this.hertsCoreServices)) {
+            if (!HertsHttpClientValidator.isAllHttpType(this.hertsRpcServices)) {
                 throw new HertsHttpBuildException("Please register Http HertcoreService");
             }
-            var validateMsg = HertsHttpClientValidator.validateRegisteredServices(this.hertsCoreServices);
+            var validateMsg = HertsHttpClientValidator.validateRegisteredServices(this.hertsRpcServices);
             if (!validateMsg.isEmpty()) {
                 throw new HertsCoreClientBuildException(validateMsg);
             }
@@ -82,10 +82,10 @@ public class HertsHttpClient implements HertsHttpClientBase {
     }
 
     @Override
-    public <T extends HertsCoreService> T createHertHttpCoreInterface(Class<T> classType) {
+    public <T extends HertsRpcService> T createHertHttpCoreInterface(Class<T> classType) {
         var schema = this.isSecureConnection ? "https://" + this.host + ":" + this.serverPort : "http://" + this.host + ":" + this.serverPort;
 
-        var targetService = this.hertsCoreServices.stream()
+        var targetService = this.hertsRpcServices.stream()
                 .filter(s -> s.getClass().getInterfaces()[0].getName().equals(classType.getName()))
                 .findFirst().orElse(null);
 
