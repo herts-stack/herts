@@ -13,10 +13,6 @@ public class HertsHttpResponse implements Serializable {
     @JsonProperty
     private Object data;
 
-    public HertsHttpResponse(Object data) {
-        this.data = data;
-    }
-
     public Object getData() {
         return data;
     }

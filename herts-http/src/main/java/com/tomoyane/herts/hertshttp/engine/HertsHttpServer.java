@@ -1,12 +1,16 @@
 package com.tomoyane.herts.hertshttp.engine;
 
+import com.tomoyane.herts.hertscommon.context.HertsMetricsSetting;
 import com.tomoyane.herts.hertscommon.exception.HertsHttpBuildException;
 import com.tomoyane.herts.hertscommon.logger.HertsLogger;
-import com.tomoyane.herts.hertscommon.service.HertsCoreService;
+import com.tomoyane.herts.hertscommon.service.HertsRpcService;
 import com.tomoyane.herts.hertshttp.HertsHttpInterceptor;
 import com.tomoyane.herts.hertshttp.HertsHttpInterceptHandler;
 import com.tomoyane.herts.hertshttp.HertsHttpServerCore;
 import com.tomoyane.herts.hertshttp.validator.HertsHttpValidator;
+import com.tomoyane.herts.hertsmetrics.HertsMetrics;
+import com.tomoyane.herts.hertsmetrics.handler.HertsMetricsHandler;
+import com.tomoyane.herts.hertsmetrics.server.HertsMetricsServer;
 
 import jakarta.servlet.DispatcherType;
 
@@ -19,37 +23,46 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Herts http server implementation
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsHttpServer implements HertsHttpEngine {
     private static final Logger logger = HertsLogger.getLogger(HertsHttpEngine.class.getSimpleName());
     private static final String[] HETRS_HTTP_METHODS = new String[] { "POST", "OPTIONS" };
 
-    private final List<HertsCoreService> hertsCoreServices;
+    private final List<HertsRpcService> hertsRpcServices;
     private final HertsHttpInterceptor interceptor;
     private final SslContextFactory sslContextFactory;
+    private final HertsMetricsSetting metricsSetting;
     private final int port;
 
     public HertsHttpServer(Builder builder) {
-        this.hertsCoreServices = builder.hertsCoreServices;
+        this.hertsRpcServices = builder.hertsRpcServices;
         this.interceptor = builder.interceptor;
         this.sslContextFactory = builder.sslContextFactory;
+        this.metricsSetting = builder.metricsSetting;
         this.port = builder.port;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static class Builder implements HertHttpEngineBuilder {
-        private final List<HertsCoreService> hertsCoreServices = new ArrayList<>();
+        private final List<HertsRpcService> hertsRpcServices = new ArrayList<>();
         private HertsHttpInterceptor interceptor;
+        private HertsMetricsSetting metricsSetting;
         private SslContextFactory sslContextFactory;
         private int port = 8080;
 
         private Builder() {
-        }
-
-        public static HertHttpEngineBuilder create() {
-            return new Builder();
         }
 
         @Override
@@ -59,8 +72,14 @@ public class HertsHttpServer implements HertsHttpEngine {
         }
 
         @Override
-        public HertHttpEngineBuilder addImplementationService(HertsCoreService hertsCoreService) {
-            this.hertsCoreServices.add(hertsCoreService);
+        public HertHttpEngineBuilder addImplementationService(HertsRpcService hertsRpcService) {
+            this.hertsRpcServices.add(hertsRpcService);
+            return this;
+        }
+
+        @Override
+        public HertHttpEngineBuilder setMetricsSetting(HertsMetricsSetting metricsSetting) {
+            this.metricsSetting = metricsSetting;
             return this;
         }
 
@@ -79,14 +98,14 @@ public class HertsHttpServer implements HertsHttpEngine {
 
         @Override
         public HertsHttpEngine build() {
-            if (this.hertsCoreServices.size() == 0) {
+            if (this.hertsRpcServices.size() == 0) {
                 throw new HertsHttpBuildException("Please register HertsCoreService");
             }
-            if (!HertsHttpValidator.isAllHttpType(this.hertsCoreServices)) {
+            if (!HertsHttpValidator.isAllHttpType(this.hertsRpcServices)) {
                 throw new HertsHttpBuildException("Please register Http HertcoreService");
             }
 
-            var validateMsg = HertsHttpValidator.validateRegisteredServices(this.hertsCoreServices);
+            var validateMsg = HertsHttpValidator.validateRegisteredServices(this.hertsRpcServices);
             if (!validateMsg.isEmpty()) {
                 throw new HertsHttpBuildException(validateMsg);
             }
@@ -103,8 +122,27 @@ public class HertsHttpServer implements HertsHttpEngine {
             context.setContextPath("/");
 
             List<String> endpointLogs = new ArrayList<>();
-            for (HertsCoreService coreService : this.hertsCoreServices) {
-                var hertsServer = new HertsHttpServerCore(coreService);
+
+            for (HertsRpcService coreService : this.hertsRpcServices) {
+                HertsMetrics metrics;
+                if (this.metricsSetting != null) {
+                    metrics = HertsMetricsHandler.builder()
+                            .hertsCoreServiceInterface(Collections.singletonList(coreService))
+                            .isErrRateEnabled(this.metricsSetting.isErrRateEnabled())
+                            .isJvmEnabled(this.metricsSetting.isJvmEnabled())
+                            .isLatencyEnabled(this.metricsSetting.isLatencyEnabled())
+                            .isServerResourceEnabled(this.metricsSetting.isServerResourceEnabled())
+                            .isRpsEnabled(this.metricsSetting.isRpsEnabled())
+                            .build();
+                } else {
+                    metrics = HertsMetricsHandler.builder()
+                            .hertsCoreServiceInterface(Collections.singletonList(coreService))
+                            .build();
+                }
+
+                var metricsServer = new HertsMetricsServer(metrics, server);
+                var hertsServer = new HertsHttpServerCore(coreService, metrics, metricsServer);
+
                 endpointLogs.add(coreService.getClass().getSimpleName() + " endpoint.");
                 for (String endpoint : hertsServer.getEndpoints()) {
                     for (String m : HETRS_HTTP_METHODS) {

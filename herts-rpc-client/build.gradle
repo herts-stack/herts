@@ -1,0 +1,20 @@
+plugins {
+    id 'java'
+}
+apply plugin: 'application'
+
+group 'com.tomoyane.herts.hertsrpcclient'
+version '1.0.0'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':herts-common')
+}
+
+test {
+    useJUnitPlatform()
+}

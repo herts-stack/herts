@@ -8,12 +8,13 @@ version '1.0.0'
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
     implementation project(':herts-common')
-    implementation project(':herts-core')
-    implementation project(':herts-core-client')
+    implementation project(':herts-rpc')
+    implementation project(':herts-rpc-client')
     implementation project(':herts-http')
     implementation project(':herts-http-client')
 

@@ -15,6 +15,11 @@ repositories {
 dependencies {
     implementation project(':herts-common')
     implementation 'io.micrometer:micrometer-core:1.10.6'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.10.6'
+
+    implementation 'javax.servlet:servlet-api:3.0-alpha-1'
+    implementation 'org.eclipse.jetty:jetty-server:11.0.10'
+    implementation 'org.eclipse.jetty:jetty-webapp:11.0.14'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'

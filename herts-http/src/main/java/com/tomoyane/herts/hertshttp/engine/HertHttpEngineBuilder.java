@@ -1,6 +1,7 @@
 package com.tomoyane.herts.hertshttp.engine;
 
-import com.tomoyane.herts.hertscommon.service.HertsCoreService;
+import com.tomoyane.herts.hertscommon.context.HertsMetricsSetting;
+import com.tomoyane.herts.hertscommon.service.HertsRpcService;
 import com.tomoyane.herts.hertshttp.HertsHttpInterceptor;
 
 import org.eclipse.jetty.util.ssl.SslContextFactory;
@@ -22,10 +23,10 @@ public interface HertHttpEngineBuilder {
     /**
      * Add implementation service
      * Not interface
-     * @param hertsCoreService HertsCoreService
+     * @param hertsRpcService HertsCoreService
      * @return HertHttpEngineBuilder
      */
-    HertHttpEngineBuilder addImplementationService(HertsCoreService hertsCoreService);
+    HertHttpEngineBuilder addImplementationService(HertsRpcService hertsRpcService);
 
     /**
      * Set port
@@ -41,6 +42,13 @@ public interface HertHttpEngineBuilder {
      * @return HertHttpEngineBuilder
      */
     HertHttpEngineBuilder setSsl(SslContextFactory sslContextFactory, int port);
+
+    /**
+     * Set metrics setting information
+     * @param metricsSetting HertsHttpMetricsSetting
+     * @return HertHttpEngineBuilder
+     */
+    HertHttpEngineBuilder setMetricsSetting(HertsMetricsSetting metricsSetting);
 
     /**
      * Build

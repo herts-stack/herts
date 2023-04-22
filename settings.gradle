@@ -1,6 +1,6 @@
 rootProject.name = 'herts'
-include 'herts-core'
-include 'herts-core-client'
+include 'herts-rpc'
+include 'herts-rpc-client'
 include 'herts-common'
 include 'example'
 include 'herts-metrics'

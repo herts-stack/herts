@@ -1,7 +1,6 @@
 package com.tomoyane.herts.hertscommon.context;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -12,12 +11,7 @@ import java.util.Map;
  * @version 1.0.0
  */
 public class HertsHttpRequest implements Serializable {
-    @JsonProperty
     private Map<String, Object> data;
-
-    public HertsHttpRequest(Map<String, Object> data) {
-        this.data = data;
-    }
 
     public Map<String, Object> getData() {
         return data;

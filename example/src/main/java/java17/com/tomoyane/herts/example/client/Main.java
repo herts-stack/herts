@@ -1,12 +1,13 @@
 package java17.com.tomoyane.herts.example.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tomoyane.herts.ArgCollector;
 import com.tomoyane.herts.ClientHttpServiceExample;
 import com.tomoyane.herts.ClientServiceExample;
 import com.tomoyane.herts.hertscommon.context.HertsType;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException, JsonProcessingException {
         if (!ArgCollector.isOk(args[0])) {
             System.out.println("Failed to set args. Allowed " + String.valueOf(ArgCollector.allowedArgs));
             return;
@@ -24,6 +25,7 @@ public class Main {
             Thread.sleep(5000);
         } catch (Exception e) {
             e.printStackTrace();
+            throw e;
         }
     }
 }
