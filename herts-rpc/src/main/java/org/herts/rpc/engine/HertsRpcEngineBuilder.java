@@ -1,0 +1,88 @@
+package org.herts.rpc.engine;
+
+import org.herts.common.context.HertsMetricsSetting;
+import org.herts.common.context.HertsType;
+import org.herts.common.service.HertsRpcService;
+
+import io.grpc.BindableService;
+import io.grpc.ServerCredentials;
+import io.grpc.ServerInterceptor;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Herts server engine builder
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
+public interface HertsRpcEngineBuilder {
+
+    /**
+     * Add Herts service
+     * @param hertsRpcService HertsCoreService
+     * @param interceptor Interceptor
+     * @return HertsCoreEngineBuilder
+     */
+    HertsRpcEngineBuilder addService(HertsRpcService hertsRpcService, @Nullable ServerInterceptor interceptor);
+
+    /**
+     * Secure connection
+     * @param credentials ServerCredentials for gRPC
+     * @return HertsCoreEngineBuilder
+     */
+    HertsRpcEngineBuilder secure(ServerCredentials credentials);
+
+    /**
+     * Metrics setting
+     * @param metricsSetting HertsMetricsSetting
+     * @return HertsCoreEngineBuilder
+     */
+    HertsRpcEngineBuilder enableMetrics(HertsMetricsSetting metricsSetting);
+
+    /**
+     * Add custom gRPC service
+     * @param grpcService BindableService
+     * @param hertsType HertsType
+     * @param interceptor Interceptor
+     * @return HertsCoreEngineBuilder
+     */
+    HertsRpcEngineBuilder addCustomService(BindableService grpcService, HertsType hertsType, @Nullable ServerInterceptor interceptor);
+
+    /**
+     * Build HertsCoreEngine
+     * @return HertsCoreEngine
+     */
+    HertsRpcEngine build();
+
+    /**
+     * Get credential
+     * @return ServerCredentials
+     */
+    ServerCredentials getCredentials();
+
+    /**
+     * Get gRPC option
+     * @return GrpcServerOption
+     */
+    GrpcServerOption getOption();
+
+    /**
+     * Get registered services
+     * @return Service information by key value
+     */
+    Map<BindableService, ServerInterceptor> getServices();
+
+    /**
+     * Get registered herts types
+     * @return HertsType list
+     */
+    List<HertsType> getHertsCoreTypes();
+
+    /**
+     * Get registered herts services
+     * @return HertsService list
+     */
+    List<HertsRpcService> getHertsServices();
+}

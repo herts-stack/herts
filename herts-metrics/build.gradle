@@ -3,7 +3,7 @@ plugins {
 }
 apply plugin: 'application'
 
-group 'com.tomoyane.herts.hertsmetrics'
+group 'org.herts.metrics'
 version '1.0.0'
 sourceCompatibility = '17'
 

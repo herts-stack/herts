@@ -3,7 +3,7 @@ plugins {
 }
 apply plugin: 'application'
 
-group 'com.tomoyane.herts.hertscommon'
+group 'org.herts.common'
 version '1.0.0'
 sourceCompatibility = '17'
 
@@ -12,8 +12,13 @@ repositories {
 }
 
 dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 
 test {
     useJUnitPlatform()
+    testLogging {
+        events 'started', 'skipped', 'passed', 'failed'
+    }
 }

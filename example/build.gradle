@@ -3,7 +3,7 @@ plugins {
     id 'application'
 }
 
-group 'com.tomoyane.herts.example'
+group 'org.herts.example'
 version '1.0.0'
 
 repositories {
@@ -26,14 +26,14 @@ test {
     useJUnitPlatform()
 }
 
-tasks.register('runServer17', JavaExec) {
+tasks.register('runServer', JavaExec) {
     dependsOn 'classes'
-    main = 'java17.com.tomoyane.herts.example.server.Main'
+    main = 'org.herts.example.server.Main'
     classpath = sourceSets.main.runtimeClasspath
 }
 
-tasks.register('runClient17', JavaExec) {
+tasks.register('runClient', JavaExec) {
     dependsOn 'classes'
-    main = 'java17.com.tomoyane.herts.example.client.Main'
+    main = 'org.herts.example.client.Main'
     classpath = sourceSets.main.runtimeClasspath
 }
