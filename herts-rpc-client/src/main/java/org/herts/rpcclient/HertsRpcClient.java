@@ -1,7 +1,7 @@
 package org.herts.rpcclient;
 
 import org.herts.common.context.HertsType;
-import org.herts.common.service.HertsRpcService;
+import org.herts.common.service.HertsService;
 
 import io.grpc.ManagedChannel;
 
@@ -32,11 +32,11 @@ public interface HertsRpcClient {
 
     /**
      * Create herts core interface
-     * @param classType Class type
+     * @param interfaceClass Class type
      * @return HertsCoreService
      * @param <T> Generics
      */
-    <T extends HertsRpcService> T createHertCoreInterface(Class<T> classType);
+    <T extends HertsService> T createHertRpcService(Class<T> interfaceClass);
 
     /**
      * Get registered herts type

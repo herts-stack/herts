@@ -7,9 +7,10 @@ import org.herts.common.context.HertsType;
  * @author Herts Contributer
  * @version 1.0.0
  */
-public abstract class BidirectionalStreamingRpcServiceRpc extends HertsRpcRpcBase {
+public abstract class BidirectionalStreamingService<T> extends HertsServiceBase<T> {
+    private T t;
 
-    public BidirectionalStreamingRpcServiceRpc() {
+    public BidirectionalStreamingService() {
         super(HertsType.BidirectionalStreaming);
     }
 }

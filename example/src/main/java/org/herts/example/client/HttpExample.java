@@ -1,6 +1,7 @@
 package org.herts.example.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.herts.common.annotation.HertsHttp;
 import org.herts.example.HttpService;
 import org.herts.example.HttpServiceImpl;
 import org.herts.common.logger.HertsLogger;
@@ -18,14 +19,20 @@ public class HttpExample {
     public static void run() throws JsonProcessingException {
         HertsHttpClientBase client = HertsHttpClient
                 .builder("localhost")
-                .hertsImplementationService(new HttpServiceImpl())
+                .registerHertService(HttpService.class)
                 .secure(false)
                 .port(8080)
                 .build();
 
-        var service = client.createHertHttpCoreInterface(HttpService.class);
+        var service = client.createHertsService(HttpService.class);
         for (int i = 0; i < 100; i++) {
             var res = service.httpTest01("ID", "VALUE bu client");
+            logger.info(serializer.serializeAsStr(res));
+        }
+
+        service = client.recreateHertsService(HttpService.class);
+        for (int i = 0; i < 100; i++) {
+            var res = service.httpTest01("ID", "Recreate!");
             logger.info(serializer.serializeAsStr(res));
         }
     }

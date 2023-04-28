@@ -1,8 +1,8 @@
 package org.herts.metrics.handler;
 
 import org.herts.common.context.HertsType;
-import org.herts.common.exception.HertsCoreTypeInvalidException;
-import org.herts.common.service.HertsRpcService;
+import org.herts.common.exception.HertsTypeInvalidException;
+import org.herts.common.service.HertsService;
 import org.herts.metrics.HertsMetrics;
 import org.herts.metrics.HertsMetricsBuilder;
 import org.herts.metrics.context.HertsMetricsContext;
@@ -38,7 +38,7 @@ public class HertsMetricsHandler implements HertsMetrics {
     private final ConcurrentMap<String, Timer> latencyTimer = new ConcurrentHashMap<>();
     private final MetricsType metricsType;
     private final PrometheusMeterRegistry prometheusMeterRegistry;
-    private final List<HertsRpcService> hertsRpcServices;
+    private final List<HertsService> hertsRpcServices;
     private final HertsType hertsType;
     private final boolean isRpsEnabled;
     private final boolean isLatencyEnabled;
@@ -68,7 +68,7 @@ public class HertsMetricsHandler implements HertsMetrics {
     }
 
     public static class Builder implements HertsMetricsBuilder {
-        private List<HertsRpcService> hertsRpcServices;
+        private List<HertsService> hertsRpcServices;
         private boolean isRpsEnabled = false;
         private boolean isLatencyEnabled = false;
         private boolean isErrRateEnabled = false;
@@ -79,7 +79,7 @@ public class HertsMetricsHandler implements HertsMetrics {
         }
 
         @Override
-        public HertsMetricsBuilder hertsCoreServiceInterface(List<HertsRpcService> hertsRpcServices) {
+        public HertsMetricsBuilder hertsCoreServiceInterface(List<HertsService> hertsRpcServices) {
             this.hertsRpcServices = hertsRpcServices;
             return this;
         }
@@ -117,7 +117,7 @@ public class HertsMetricsHandler implements HertsMetrics {
         @Override
         public HertsMetrics build() {
             if (this.hertsRpcServices == null || this.hertsRpcServices.size() == 0) {
-                throw new HertsCoreTypeInvalidException("Required HertsCoreService");
+                throw new HertsTypeInvalidException("Required HertsCoreService");
             }
             return new HertsMetricsHandler(this);
         }
@@ -130,14 +130,14 @@ public class HertsMetricsHandler implements HertsMetrics {
 
     @Override
     public void register() {
-        for (HertsRpcService hertsRpcService : this.hertsRpcServices) {
+        for (HertsService hertsRpcService : this.hertsRpcServices) {
             Method[] methods;
             try {
                 String serviceName = hertsRpcService.getClass().getName();
                 Class<?> thisClass = Class.forName(serviceName);
                 methods = thisClass.getDeclaredMethods();
             } catch (Exception ex) {
-                throw new HertsCoreTypeInvalidException("Herts service is invalid", ex);
+                throw new HertsTypeInvalidException("Herts service is invalid", ex);
             }
 
             for (Method method : methods) {

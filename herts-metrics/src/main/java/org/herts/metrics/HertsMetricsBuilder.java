@@ -1,6 +1,6 @@
 package org.herts.metrics;
 
-import org.herts.common.service.HertsRpcService;
+import org.herts.common.service.HertsService;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public interface HertsMetricsBuilder {
      * @param hertsRpcServices HertsCoreService
      * @return Builder
      */
-    HertsMetricsBuilder hertsCoreServiceInterface(List<HertsRpcService> hertsRpcServices);
+    HertsMetricsBuilder hertsCoreServiceInterface(List<HertsService> hertsRpcServices);
 
     /**
      * Metrics rps is enabled or not

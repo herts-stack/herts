@@ -5,7 +5,7 @@ import org.herts.common.exception.HertsMessageException;
 import org.herts.common.exception.HertsServiceNotFoundException;
 import org.herts.common.serializer.HertsSerializeType;
 import org.herts.common.serializer.HertsSerializer;
-import org.herts.common.service.HertsRpcService;
+import org.herts.common.service.HertsService;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Herts http client handler
@@ -26,20 +28,33 @@ import java.util.Map;
  */
 public class HertsHttpClientHandler implements InvocationHandler {
     private final HertsSerializer serializer = new HertsSerializer(HertsSerializeType.Json);
-    private final Map<String, List<String>> methodTypes = new HashMap<>();
+    private final ConcurrentMap<String, List<String>> methodTypes = new ConcurrentHashMap<>();
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final String url;
     private final String serviceName;
 
-    public HertsHttpClientHandler(String url, HertsRpcService hertsRpcService) {
-        this.url = url;
-        this.serviceName = hertsRpcService.getClass().getInterfaces()[0].getSimpleName();
+    private ConcurrentMap<String, String> customHeaders;
 
+    public HertsHttpClientHandler(String url, Class<?> hertsRpcService) {
+        this.url = url;
+        this.serviceName = hertsRpcService.getSimpleName();
+        init(hertsRpcService.getName());
+    }
+
+    public HertsHttpClientHandler(String url, Class<?> hertsRpcService, Map<String, String> customHeaders) {
+        this.url = url;
+        this.serviceName = hertsRpcService.getSimpleName();
+        this.customHeaders = new ConcurrentHashMap<>();
+        this.customHeaders.putAll(customHeaders);
+        init(hertsRpcService.getName());
+    }
+
+    private void init(String instanceName) {
         Class<?> hertsServiceClass;
         try {
-            hertsServiceClass = Class.forName(hertsRpcService.getClass().getName());
+            hertsServiceClass = Class.forName(instanceName);
         } catch (ClassNotFoundException ignore) {
-            throw new HertsServiceNotFoundException("Unknown class name. Allowed class is " + HertsRpcService.class.getName());
+            throw new HertsServiceNotFoundException("Unknown class name. Allowed class is " + HertsService.class.getName());
         }
 
         Method[] methods = hertsServiceClass.getDeclaredMethods();
@@ -62,10 +77,21 @@ public class HertsHttpClientHandler implements InvocationHandler {
             data.put(parameterNames.get(index), arg);
             index++;
         }
+
         var hertRequest = new HertsHttpRequest();
         hertRequest.setData(data);
-        HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(url + "/api/" + this.serviceName + "/" + method.getName()))
-                .header("Content-Type", "application/json")
+
+        HttpRequest.Builder builder = HttpRequest
+                .newBuilder(URI.create(url + "/api/" + this.serviceName + "/" + method.getName()))
+                .header("Content-Type", "application/json");
+
+        if (this.customHeaders != null) {
+            for (var entry : this.customHeaders.entrySet()) {
+                builder = builder.header(entry.getKey(), entry.getValue());
+            }
+        }
+
+        HttpRequest httpRequest = builder
                 .POST(HttpRequest.BodyPublishers.ofString(this.serializer.serializeAsStr(hertRequest)))
                 .build();
 

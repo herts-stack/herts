@@ -29,7 +29,7 @@ public class HertsRpcUMethodHandler<Req, Resp> implements
         this.hertsMethod = hertsMethod;
         this.requests = new Object[this.hertsMethod.getParameters().length];
 
-        String serviceName = hertsMethod.getCoreServiceName();
+        String serviceName = hertsMethod.getCoreImplServiceName();
         Class<?> coreClass;
         try {
             coreClass = Class.forName(serviceName);

@@ -6,6 +6,7 @@ import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import org.herts.http.http.HertsHttpRequestImpl;
 
 import java.io.IOException;
 
@@ -28,7 +29,7 @@ public class HertsHttpInterceptHandler implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
-        this.hertsHttpInterceptor.beforeHandle();
+        this.hertsHttpInterceptor.beforeHandle(new HertsHttpRequestImpl(request));
         chain.doFilter(request, response);
         this.hertsHttpInterceptor.afterHandle();
     }

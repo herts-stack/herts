@@ -1,6 +1,5 @@
 package org.herts.rpcclient;
 
-import org.herts.common.service.HertsRpcService;
 import io.grpc.Channel;
 import io.grpc.ClientInterceptor;
 
@@ -19,12 +18,12 @@ public interface HertsRpcClientIBuilder {
     HertsRpcClientIBuilder secure(boolean isSecureConnection);
 
     /**
-     * Herts implementation service
-     * Not interface class
-     * @param hertsRpcService HertsCoreService
+     * Herts interface service
+     * Not implementation class. Required @HertsRpc annotation
+     * @param interfaceClass HertsCoreService
      * @return HertsCoreClientBuilder
      */
-    HertsRpcClientIBuilder hertsImplementationService(HertsRpcService hertsRpcService);
+    <T> HertsRpcClientIBuilder registerHertsRpcInterface(Class<T> interfaceClass);
 
     /**
      * Channel for gRPC
@@ -48,8 +47,8 @@ public interface HertsRpcClientIBuilder {
     HertsRpcClientIBuilder grpcOption(GrpcClientOption option);
 
     /**
-     * Build
-     * @return HertsCoreClient
+     * Connect to server
+     * @return HertsRpcClient
      */
-    HertsRpcClient build();
+    HertsRpcClient connect();
 }

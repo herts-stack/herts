@@ -1,10 +1,13 @@
 package org.herts.example;
 
-import org.herts.common.service.HertsRpcService;
+import org.herts.common.annotation.HertsRpc;
+import org.herts.common.context.HertsType;
+import org.herts.common.service.HertsService;
 
 import java.util.Map;
 
-public interface UnaryRpcRpcService01 extends HertsRpcService {
+@HertsRpc(value = HertsType.Unary)
+public interface UnaryRpcRpcService01 extends HertsService {
     String test01(String id, String value);
     boolean test02();
     Map<String, String> test03();

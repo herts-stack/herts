@@ -3,11 +3,10 @@ package org.herts.http.engine;
 import org.herts.common.context.HertsMetricsSetting;
 import org.herts.common.exception.HertsHttpBuildException;
 import org.herts.common.logger.HertsLogger;
-import org.herts.common.service.HertsRpcService;
+import org.herts.common.service.HertsService;
 import org.herts.http.HertsHttpInterceptor;
 import org.herts.http.HertsHttpInterceptHandler;
 import org.herts.http.HertsHttpServerCore;
-import org.herts.http.validator.HertsHttpValidator;
 import org.herts.metrics.HertsMetrics;
 import org.herts.metrics.handler.HertsMetricsHandler;
 import org.herts.metrics.server.HertsMetricsServer;
@@ -37,80 +36,22 @@ public class HertsHttpServer implements HertsHttpEngine {
     private static final Logger logger = HertsLogger.getLogger(HertsHttpEngine.class.getSimpleName());
     private static final String[] HETRS_HTTP_METHODS = new String[] { "POST", "OPTIONS" };
 
-    private final List<HertsRpcService> hertsRpcServices;
+    private final List<HertsService> hertsRpcServices;
     private final HertsHttpInterceptor interceptor;
     private final SslContextFactory sslContextFactory;
     private final HertsMetricsSetting metricsSetting;
     private final int port;
 
-    public HertsHttpServer(Builder builder) {
-        this.hertsRpcServices = builder.hertsRpcServices;
-        this.interceptor = builder.interceptor;
-        this.sslContextFactory = builder.sslContextFactory;
-        this.metricsSetting = builder.metricsSetting;
-        this.port = builder.port;
+    public HertsHttpServer(HertsHttpEngineBuilder builder) {
+        this.hertsRpcServices = builder.getHertsRpcServices();
+        this.interceptor = builder.getInterceptor();
+        this.sslContextFactory = builder.getSslContextFactory();
+        this.metricsSetting = builder.getMetricsSetting();
+        this.port = builder.getPort();
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder implements HertsHttpEngineBuilder {
-        private final List<HertsRpcService> hertsRpcServices = new ArrayList<>();
-        private HertsHttpInterceptor interceptor;
-        private HertsMetricsSetting metricsSetting;
-        private SslContextFactory sslContextFactory;
-        private int port = 8080;
-
-        private Builder() {
-        }
-
-        @Override
-        public HertsHttpEngineBuilder setInterceptor(HertsHttpInterceptor interceptor) {
-            this.interceptor = interceptor;
-            return this;
-        }
-
-        @Override
-        public HertsHttpEngineBuilder addImplementationService(HertsRpcService hertsRpcService) {
-            this.hertsRpcServices.add(hertsRpcService);
-            return this;
-        }
-
-        @Override
-        public HertsHttpEngineBuilder setMetricsSetting(HertsMetricsSetting metricsSetting) {
-            this.metricsSetting = metricsSetting;
-            return this;
-        }
-
-        @Override
-        public HertsHttpEngineBuilder setPort(int port) {
-            this.port = port;
-            return this;
-        }
-
-        @Override
-        public HertsHttpEngineBuilder setSsl(SslContextFactory sslContextFactory, int port) {
-            this.sslContextFactory = sslContextFactory;
-            this.port = port;
-            return this;
-        }
-
-        @Override
-        public HertsHttpEngine build() {
-            if (this.hertsRpcServices.size() == 0) {
-                throw new HertsHttpBuildException("Please register HertsCoreService");
-            }
-            if (!HertsHttpValidator.isAllHttpType(this.hertsRpcServices)) {
-                throw new HertsHttpBuildException("Please register Http HertcoreService");
-            }
-
-            var validateMsg = HertsHttpValidator.validateRegisteredServices(this.hertsRpcServices);
-            if (!validateMsg.isEmpty()) {
-                throw new HertsHttpBuildException(validateMsg);
-            }
-            return new HertsHttpServer(this);
-        }
+    public static HertsHttpEngineBuilder builder() {
+        return new ServerBuilder();
     }
 
     @Override
@@ -123,7 +64,7 @@ public class HertsHttpServer implements HertsHttpEngine {
 
             List<String> endpointLogs = new ArrayList<>();
 
-            for (HertsRpcService coreService : this.hertsRpcServices) {
+            for (HertsService coreService : this.hertsRpcServices) {
                 HertsMetrics metrics;
                 if (this.metricsSetting != null) {
                     metrics = HertsMetricsHandler.builder()

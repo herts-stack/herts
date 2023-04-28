@@ -1,5 +1,7 @@
 package org.herts.http;
 
+import org.herts.http.http.HertsHttpRequest;
+
 /**
  * Herts http server interceptor
  * @author Herts Contributer
@@ -10,7 +12,7 @@ public interface HertsHttpInterceptor {
     /**
      * Before handle intercept
      */
-    void beforeHandle();
+    void beforeHandle(HertsHttpRequest request);
 
     /**
      * After handle intercept

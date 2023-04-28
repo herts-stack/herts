@@ -2,11 +2,13 @@ package org.herts.rpc.engine;
 
 import org.herts.common.context.HertsMetricsSetting;
 import org.herts.common.context.HertsType;
-import org.herts.common.service.HertsRpcService;
+import org.herts.common.service.HertsService;
 
 import io.grpc.BindableService;
 import io.grpc.ServerCredentials;
 import io.grpc.ServerInterceptor;
+import org.herts.metrics.HertsMetrics;
+import org.herts.metrics.server.HertsMetricsServer;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -25,7 +27,7 @@ public interface HertsRpcEngineBuilder {
      * @param interceptor Interceptor
      * @return HertsCoreEngineBuilder
      */
-    HertsRpcEngineBuilder addService(HertsRpcService hertsRpcService, @Nullable ServerInterceptor interceptor);
+    HertsRpcEngineBuilder registerHertsRpcService(HertsService hertsRpcService, @Nullable ServerInterceptor interceptor);
 
     /**
      * Secure connection
@@ -84,5 +86,17 @@ public interface HertsRpcEngineBuilder {
      * Get registered herts services
      * @return HertsService list
      */
-    List<HertsRpcService> getHertsServices();
+    List<HertsService> getHertsServices();
+
+    /**
+     * Get HertsMetricsServer
+     * @return HertsMetricsServer
+     */
+    HertsMetricsServer getHertsMetricsServer();
+
+    /**
+     * HertsMetrics
+     * @return HertsMetrics
+     */
+    HertsMetrics getHertsMetrics();
 }

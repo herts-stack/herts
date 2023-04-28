@@ -1,10 +1,12 @@
 package org.herts.http.engine;
 
 import org.herts.common.context.HertsMetricsSetting;
-import org.herts.common.service.HertsRpcService;
+import org.herts.common.service.HertsService;
 import org.herts.http.HertsHttpInterceptor;
 
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+
+import java.util.List;
 
 /**
  * Herts http server engine builder
@@ -26,7 +28,7 @@ public interface HertsHttpEngineBuilder {
      * @param hertsRpcService HertsCoreService
      * @return HertHttpEngineBuilder
      */
-    HertsHttpEngineBuilder addImplementationService(HertsRpcService hertsRpcService);
+    HertsHttpEngineBuilder addImplementationService(HertsService hertsRpcService);
 
     /**
      * Set port
@@ -49,6 +51,36 @@ public interface HertsHttpEngineBuilder {
      * @return HertHttpEngineBuilder
      */
     HertsHttpEngineBuilder setMetricsSetting(HertsMetricsSetting metricsSetting);
+
+    /**
+     * Get registered HertsRpcService
+     * @return HertsRpcService of List
+     */
+    List<HertsService> getHertsRpcServices();
+
+    /**
+     * Get interceptor
+     * @return HertsHttpInterceptor
+     */
+    HertsHttpInterceptor getInterceptor();
+
+    /**
+     * Get Metrics setting
+     * @return HertsMetricsSetting
+     */
+    HertsMetricsSetting getMetricsSetting();
+
+    /**
+     * Get ssl context
+     * @return SslContextFactory
+     */
+    SslContextFactory getSslContextFactory();
+
+    /**
+     * Get port number
+     * @return integer port
+     */
+    int getPort();
 
     /**
      * Build

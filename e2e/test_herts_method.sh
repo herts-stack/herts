@@ -21,32 +21,38 @@ function run_test {
     sleep 5
 }
 
+function kill {
+    pkill java
+    sleep 1
+    echo "Killed Java process"
+}
+
 echo "==================================="
 echo "========= Http server test ========"
 echo "==================================="
 run_test "h"
-pkill java
+kill
 
 echo "==================================="
 echo "======== Unary server test ========"
 echo "==================================="
 run_test "u"
-pkill java
+kill
 
 echo "==================================="
 echo "== Server Streaming server test ==="
 echo "==================================="
 run_test "s"
-pkill java
+kill
 
 echo "==================================="
 echo "== Client Streaming server test ==="
 echo "==================================="
 run_test "c"
-pkill java
+kill
 
 echo "==================================="
 echo "==== Bid Streaming server test ===="
 echo "==================================="
 run_test "b"
-pkill java
+kill

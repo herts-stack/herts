@@ -1,16 +1,16 @@
 package org.herts.example;
 
 import org.herts.common.logger.HertsLogger;
-import org.herts.common.service.UnaryRpcServiceRpc;
+import org.herts.common.service.UnaryService;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class UnaryRpcRpcServiceImpl01 extends UnaryRpcServiceRpc implements UnaryRpcRpcService01 {
-    private static final Logger logger = HertsLogger.getLogger(UnaryRpcRpcServiceImpl01.class.getSimpleName());
+public class UnaryServiceServiceImpl01 extends UnaryService<UnaryRpcRpcService01> implements UnaryRpcRpcService01 {
+    private static final Logger logger = HertsLogger.getLogger(UnaryServiceServiceImpl01.class.getSimpleName());
 
-    public UnaryRpcRpcServiceImpl01() {
+    public UnaryServiceServiceImpl01() {
     }
 
     public String test01(String id, String value) {
@@ -29,7 +29,6 @@ public class UnaryRpcRpcServiceImpl01 extends UnaryRpcServiceRpc implements Unar
         return Collections.singletonMap("Key", "Value");
     }
 
-    @Override
     public boolean test100(HelloRequest req) {
         logger.info("------------ Unary test100 RPC");
         return false;

@@ -8,6 +8,7 @@ package org.herts.common.context;
 public class HertsMethod {
     private HertsType hertsType;
     private String coreServiceName;
+    private String coreImplServiceName;
     private String methodName;
     private Class<?> methodReturnType;
     private Class<?>[] parameters;
@@ -17,12 +18,13 @@ public class HertsMethod {
 
     public HertsMethod(HertsType methodType,
                        String coreServiceName,
-                       String methodName,
+                       String coreImplServiceName, String methodName,
                        Class<?> methodReturnType,
                        Class<?>[] parameters) {
 
         this.hertsType = methodType;
         this.coreServiceName = coreServiceName;
+        this.coreImplServiceName = coreImplServiceName;
         this.methodName = methodName;
         this.methodReturnType = methodReturnType;
         this.parameters = parameters;
@@ -42,6 +44,14 @@ public class HertsMethod {
 
     public void setCoreServiceName(String coreServiceName) {
         this.coreServiceName = coreServiceName;
+    }
+
+    public String getCoreImplServiceName() {
+        return coreImplServiceName;
+    }
+
+    public void setCoreImplServiceName(String coreImplServiceName) {
+        this.coreImplServiceName = coreImplServiceName;
     }
 
     public String getMethodName() {

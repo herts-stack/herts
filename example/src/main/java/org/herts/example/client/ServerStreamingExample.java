@@ -2,9 +2,7 @@ package org.herts.example.client;
 
 import org.herts.example.HelloRequest;
 import org.herts.example.HelloResponse;
-import org.herts.example.ServerStreamingRpcRpcService;
-import org.herts.example.ServerStreamingRpcRpcServiceImpl;
-import org.herts.common.context.HertsType;
+import org.herts.example.ServerStreamingRpcService;
 import org.herts.common.logger.HertsLogger;
 import org.herts.rpcclient.HertsRpcClient;
 import org.herts.rpcclient.HertsRpcClientBuilder;
@@ -16,15 +14,13 @@ public class ServerStreamingExample {
     private static final Logger logger = HertsLogger.getLogger(ServerStreamingExample.class.getSimpleName());
 
     public static void run() {
-        ServerStreamingRpcRpcService serverStreamingRpcRpcService = new ServerStreamingRpcRpcServiceImpl();
-
         HertsRpcClient client = HertsRpcClientBuilder
-                .builder("localhost", 9000, HertsType.ServerStreaming)
+                .builder("localhost", 9000)
                 .secure(false)
-                .hertsImplementationService(serverStreamingRpcRpcService)
-                .build();
+                .registerHertsRpcInterface(ServerStreamingRpcService.class)
+                .connect();
 
-        ServerStreamingRpcRpcService service = client.createHertCoreInterface(ServerStreamingRpcRpcService.class);
+        ServerStreamingRpcService service = client.createHertRpcService(ServerStreamingRpcService.class);
         var req = new HelloRequest();
         req.setNumber(7777);
         service.test05("ABC_id", req, new StreamObserver<HelloResponse>() {

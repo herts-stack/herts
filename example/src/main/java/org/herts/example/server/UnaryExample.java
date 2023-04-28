@@ -1,26 +1,30 @@
 package org.herts.example.server;
 
-import org.herts.example.GrpcServerInterceptor;
-import org.herts.example.UnaryRpcRpcServiceImpl01;
-import org.herts.example.UnaryRpcRpcServiceImpl02;
+import org.herts.example.UnaryRpcRpcService01;
+import org.herts.example.UnaryRpcRpcService02;
+import org.herts.example.UnaryServiceServiceImpl01;
+import org.herts.example.UnaryServiceServiceImpl02;
 import org.herts.common.context.HertsMetricsSetting;
 import org.herts.rpc.HertsRpcInterceptBuilder;
 import org.herts.rpc.engine.HertsRpcBuilder;
-import org.herts.rpc.engine.HertsRpcEngineBuilder;
 
 public class UnaryExample {
     public static void run() {
-        var metrics = HertsMetricsSetting.builder().isRpsEnabled(true).isLatencyEnabled(true).build();
+        var metrics = HertsMetricsSetting.builder()
+                .isRpsEnabled(true)
+                .isLatencyEnabled(true)
+                .build();
+
         var interceptor = HertsRpcInterceptBuilder.builder(new GrpcServerInterceptor()).build();
-        var service01 = new UnaryRpcRpcServiceImpl01();
-        var service02 = new UnaryRpcRpcServiceImpl02();
+        UnaryRpcRpcService01 service01 = new UnaryServiceServiceImpl01();
+        UnaryRpcRpcService02 service02 = new UnaryServiceServiceImpl02();
 
-        HertsRpcEngineBuilder engineBuilder = HertsRpcBuilder.builder()
-                .addService(service01, interceptor)
-                .addService(service02, interceptor)
-                .enableMetrics(metrics);
+        var engine = HertsRpcBuilder.builder()
+                .registerHertsRpcService(service01, interceptor)
+                .registerHertsRpcService(service02, interceptor)
+                .enableMetrics(metrics)
+                .build();
 
-        var engine = engineBuilder.build();
         engine.start();
     }
 }

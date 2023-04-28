@@ -1,4 +1,4 @@
-package org.herts.example;
+package org.herts.example.server;
 
 import org.herts.common.logger.HertsLogger;
 import org.herts.rpc.HertsRpcInterceptor;

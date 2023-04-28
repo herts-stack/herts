@@ -1,6 +1,6 @@
 package org.herts.common.util;
 
-import org.herts.common.service.HertsRpcService;
+import org.herts.common.service.HertsService;
 import org.herts.common.context.HertsType;
 import org.herts.common.exception.HertsServiceNotFoundException;
 
@@ -30,28 +30,64 @@ public class HertsServiceValidateUtil {
      * @param services HertsService list
      * @return Result
      */
-    public static String validateRegisteredServices(List<HertsRpcService> services) {
+    public static String validateRegisteredServices(List<HertsService> services) {
         List<String> serviceNames = new ArrayList<>();
-        for (HertsRpcService hertsRpcService : services) {
+        Method[] methods = null;
+        for (HertsService hertsRpcService : services) {
             var serviceName = hertsRpcService.getClass().getName();
             serviceNames.add(serviceName);
 
             Class<?> thisClass;
             try {
                 thisClass = Class.forName(serviceName);
+                methods = thisClass.getDeclaredMethods();
             } catch (ClassNotFoundException ignore) {
                 throw new HertsServiceNotFoundException("Unknown class name. Allowed class is " + serviceName);
             }
+        }
+        if (methods == null) {
+            throw new HertsServiceNotFoundException("Definition method is not found");
+        }
+        return validateMethods(methods, serviceNames);
+    }
 
-            Method[] methods = thisClass.getDeclaredMethods();
-            List<String> methodNames = new ArrayList<>();
-            for (Method method : methods) {
-                methodNames.add(method.getName());
+    /**
+     * Check method condition
+     * @param classes Class of List
+     * @return Result
+     */
+    public static String validateMethod(List<Class<?>> classes) {
+        List<String> serviceNames = new ArrayList<>();
+        Method[] methods = null;
+        for (Class<?> c : classes) {
+            try {
+                var serviceName = c.getName();
+                serviceNames.add(serviceName);
+                methods = c.getDeclaredMethods();
+            } catch (Exception ex) {
+                throw new HertsServiceNotFoundException("Unknown class name.");
             }
+        }
+        if (methods == null) {
+            throw new HertsServiceNotFoundException("Definition method is not found");
+        }
+        return validateMethods(methods, serviceNames);
+    }
 
-            if (CollectionUtil.findDuplicates(methodNames).size() > 0) {
-                return "Method name is duplicated. Herts supports uniq method name only. HertsService = " + serviceName;
-            }
+    /**
+     * Check method condition
+     * @param methods Method of List
+     * @param serviceNames Herts service name
+     * @return Result
+     */
+    public static String validateMethods(Method[] methods, List<String> serviceNames) {
+        List<String> methodNames = new ArrayList<>();
+        for (Method method : methods) {
+            methodNames.add(method.getName());
+        }
+
+        if (CollectionUtil.findDuplicates(methodNames).size() > 0) {
+            return "Method name is duplicated. Herts supports uniq method name only.";
         }
 
         var dupServiceNames = CollectionUtil.findDuplicates(serviceNames);
@@ -62,12 +98,36 @@ public class HertsServiceValidateUtil {
     }
 
     /**
+     * Check streaming rpc method
+     * @param classTypes Class of List
+     * @return Result
+     */
+    public static boolean isStreamingRpc(List<Class<?>> classTypes) {
+        for (Class<?> c : classTypes) {
+            try {
+                Method[] methods = c.getDeclaredMethods();
+                for (Method method : methods) {
+                    if (method.getParameterTypes().length != 1) {
+                        return false;
+                    }
+                    if (!method.getParameterTypes()[0].getName().equals("io.grpc.stub.StreamObserver")) {
+                        return false;
+                    }
+                }
+            } catch (Exception ex) {
+                throw new HertsServiceNotFoundException("Unknown class name.");
+            }
+        }
+        return true;
+    }
+
+    /**
      * Check streaming rpc precondition
      * @param services Herts service list
      * @return Result
      */
-    public static boolean isValidStreamingRpc(List<HertsRpcService> services) {
-        for (HertsRpcService service : services) {
+    public static boolean isValidStreamingRpc(List<HertsService> services) {
+        for (HertsService service : services) {
             if (service.getHertsType() != HertsType.BidirectionalStreaming && service.getHertsType() != HertsType.ClientStreaming) {
                 continue;
             }
@@ -93,11 +153,25 @@ public class HertsServiceValidateUtil {
 
     /**
      * Check http type
+     * @param serviceTypes Herts service type list
+     * @return Result
+     */
+    public static boolean isAllHttpType(List<HertsType> serviceTypes) {
+        for (HertsType hertsType : serviceTypes) {
+            if (hertsType != HertsType.Http) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Check http type
      * @param coreServices Herts service list
      * @return Result
      */
-    public static boolean isAllHttpType(List<HertsRpcService> coreServices) {
-        for (HertsRpcService coreService : coreServices) {
+    public static boolean isAllHttpTypeByService(List<HertsService> coreServices) {
+        for (HertsService coreService : coreServices) {
             if (coreService.getHertsType() != HertsType.Http) {
                 return false;
             }

@@ -11,25 +11,29 @@ import java.util.List;
  * @version 1.0.0
  */
 public class ReflectMethod {
-    private final String className;
+    private final String serviceName;
+    private final String serviceImplName;
     private final List<Method> methods = new ArrayList<>();
 
-    private ReflectMethod(String className, Method[] methods) {
-        this.className = className;
+    private ReflectMethod(String className, Method[] methods, String classImplName) {
+        this.serviceName = className;
+        this.serviceImplName = classImplName;
         this.methods.addAll(Arrays.asList(methods));
     }
 
     /**
      * Factory method
-     * @param className Class name
+     * @param serviceName Service interface name
+     * @param serviceImplName Service implement class name
      * @param methods method list
      * @return ReflectMethod instance
      */
-    public static ReflectMethod create(String className, Method[] methods) {
-        return new ReflectMethod(className, methods);
+    public static ReflectMethod create(String serviceName, String serviceImplName, Method[] methods) {
+        return new ReflectMethod(serviceName, methods, serviceImplName);
     }
 
     public void printMethodName() {
+        System.out.println(this.serviceName);
         for (Method method : this.methods) {
             System.out.println(method.getName());
         }
@@ -39,8 +43,12 @@ public class ReflectMethod {
         this.methods.add(method);
     }
 
-    public String getClassName() {
-        return className;
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public String getServiceImplName() {
+        return serviceImplName;
     }
 
     public Method[] getMethods() {

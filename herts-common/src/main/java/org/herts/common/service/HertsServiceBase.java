@@ -4,10 +4,11 @@ import org.herts.common.context.HertsType;
 
 import io.grpc.MethodDescriptor;
 
-public class HertsRpcRpcBase implements HertsRpcService {
+public class HertsServiceBase<T> implements HertsService {
+    private T t;
     private final HertsType coreType;
 
-    public HertsRpcRpcBase(HertsType rpcType) {
+    public HertsServiceBase(HertsType rpcType) {
         this.coreType = rpcType;
     }
 
@@ -24,5 +25,10 @@ public class HertsRpcRpcBase implements HertsRpcService {
     @Override
     public String[] getConnections() {
         return new String[0];
+    }
+
+    @Override
+    public Class<?> getInterface() {
+        return (Class<?>) this.t;
     }
 }

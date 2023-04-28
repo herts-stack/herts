@@ -5,11 +5,11 @@ import org.herts.common.context.HertsType;
 import io.grpc.MethodDescriptor;
 
 /**
- * Herts core service interface
+ * Herts service interface
  * @author Herts Contributer
  * @version 1.0.0
  */
-public interface HertsRpcService {
+public interface HertsService {
 
     /**
      * Get implemented herts core type
@@ -28,4 +28,6 @@ public interface HertsRpcService {
      * @return Connection list
      */
     String[] getConnections();
+
+    public Class<?> getInterface();
 }

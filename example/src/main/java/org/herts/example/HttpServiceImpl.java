@@ -1,13 +1,13 @@
 package org.herts.example;
 
 import org.herts.common.logger.HertsLogger;
-import org.herts.common.service.HttpRpcServiceRpc;
+import org.herts.common.service.HttpServiceService;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class HttpServiceImpl extends HttpRpcServiceRpc implements HttpService {
+public class HttpServiceImpl extends HttpServiceService<HttpService> implements HttpService {
     private static final Logger logger = HertsLogger.getLogger(HttpServiceImpl.class.getSimpleName());
 
     public HttpServiceImpl() {

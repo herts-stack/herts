@@ -6,7 +6,7 @@ import org.herts.common.exception.HertsInvalidBodyException;
 import org.herts.common.logger.HertsLogger;
 import org.herts.common.serializer.HertsSerializeType;
 import org.herts.common.serializer.HertsSerializer;
-import org.herts.common.service.HertsRpcService;
+import org.herts.common.service.HertsService;
 import org.herts.metrics.HertsMetrics;
 import org.herts.metrics.server.HertsMetricsServer;
 
@@ -41,7 +41,7 @@ public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer 
     public void init() {
     }
 
-    public HertsHttpServerCore(HertsRpcService hertsRpcService, HertsMetrics hertsHttpMetrics, HertsMetricsServer metricsServer)
+    public HertsHttpServerCore(HertsService hertsRpcService, HertsMetrics hertsHttpMetrics, HertsMetricsServer metricsServer)
             throws ClassNotFoundException, NoSuchMethodException {
 
         String serviceName = hertsRpcService.getClass().getInterfaces()[0].getSimpleName();

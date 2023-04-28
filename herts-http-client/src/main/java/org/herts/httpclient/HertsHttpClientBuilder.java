@@ -1,6 +1,8 @@
 package org.herts.httpclient;
 
-import org.herts.common.service.HertsRpcService;
+import org.herts.common.service.HertsService;
+
+import java.util.List;
 
 /**
  * Herts http client builder interface
@@ -25,10 +27,35 @@ public interface HertsHttpClientBuilder {
 
     /**
      * Herts implementation service
-     * @param hertsRpcService HertsCoreService
+     * Not implementation class. Required @HertsHttp annotation
+     * @param interfaceClass Interface class
      * @return HertsHttpClientBuilder
      */
-    HertsHttpClientBuilder hertsImplementationService(HertsRpcService hertsRpcService);
+    <T> HertsHttpClientBuilder registerHertService(Class<T> interfaceClass);
+
+    /**
+     * Get HertsRpcService of list
+     * @return HertsRpcService
+     */
+    List<Class<?>> getHertsRpcServices();
+
+    /**
+     * Get server host
+     * @return Host
+     */
+    String getHost();
+
+    /**
+     * Get Server port
+     * @return Server port
+     */
+    int getServerPort();
+
+    /**
+     * Get scure or not
+     * @return Result
+     */
+    boolean isSecureConnection();
 
     /**
      * Build

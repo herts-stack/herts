@@ -5,7 +5,7 @@ import org.herts.common.context.HertsType;
 import org.herts.common.exception.HertsServiceNotFoundException;
 import org.herts.common.context.HertsMsg;
 import org.herts.common.serializer.HertsSerializer;
-import org.herts.common.service.HertsRpcService;
+import org.herts.common.service.HertsService;
 
 import io.grpc.CallOptions;
 import io.grpc.Channel;
@@ -16,24 +16,27 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class HertsRpcClientUMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsRpcClientUMethodHandler> implements InvocationHandler {
     private final HertsSerializer serializer = new HertsSerializer();
     private final Map<String, Class<?>> methodTypes = new HashMap<>();
-    private final Map<String, MethodDescriptor<byte[], byte[]>> descriptors = new HashMap<>();
-    private final HertsRpcService hertsRpcService;
+    private final ConcurrentMap<String, MethodDescriptor<byte[], byte[]>> descriptors = new ConcurrentHashMap<>();
+    private final Class<?> hertsRpcService;
     private final String serviceName;
 
-    public HertsRpcClientUMethodHandler(Channel channel, CallOptions callOptions, HertsRpcService hertsRpcService) {
+    public HertsRpcClientUMethodHandler(Channel channel, CallOptions callOptions, Class<?> hertsRpcService) {
         super(channel, callOptions);
         this.hertsRpcService = hertsRpcService;
-        this.serviceName = hertsRpcService.getClass().getName();
+        this.serviceName = hertsRpcService.getName();
+        System.out.println(this.serviceName);
 
         Class<?> hertsServiceClass;
         try {
-            hertsServiceClass = Class.forName(this.serviceName);
+            hertsServiceClass = Class.forName(hertsRpcService.getName());
         } catch (ClassNotFoundException ignore) {
-            throw new HertsServiceNotFoundException("Unknown class name. Allowed class is " + HertsRpcService.class.getName());
+            throw new HertsServiceNotFoundException("Unknown class name. Allowed class is " + HertsService.class.getName());
         }
 
         Method[] methods = hertsServiceClass.getDeclaredMethods();

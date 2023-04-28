@@ -1,6 +1,6 @@
 package org.herts.common.context;
 
-import org.herts.common.exception.HertsCoreTypeInvalidException;
+import org.herts.common.exception.HertsTypeInvalidException;
 
 import io.grpc.MethodDescriptor;
 
@@ -41,7 +41,7 @@ public enum HertsType {
         } else if (id == BidirectionalStreaming.getId()) {
             methodType = MethodDescriptor.MethodType.BIDI_STREAMING;
         } else {
-            throw new HertsCoreTypeInvalidException("gRPC Herts type is invalid");
+            throw new HertsTypeInvalidException("gRPC Herts type is invalid");
         }
         return methodType;
     }

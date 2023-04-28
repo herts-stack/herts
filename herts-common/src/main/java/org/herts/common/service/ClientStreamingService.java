@@ -7,9 +7,10 @@ import org.herts.common.context.HertsType;
  * @author Herts Contributer
  * @version 1.0.0
  */
-public abstract class ClientStreamingRpcServiceRpc extends HertsRpcRpcBase {
+public abstract class ClientStreamingService<T> extends HertsServiceBase<T> {
+    private T t;
 
-    public ClientStreamingRpcServiceRpc() {
+    public ClientStreamingService() {
         super(HertsType.ClientStreaming);
     }
 }
