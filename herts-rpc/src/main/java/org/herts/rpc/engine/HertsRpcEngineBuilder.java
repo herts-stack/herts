@@ -30,6 +30,13 @@ public interface HertsRpcEngineBuilder {
     HertsRpcEngineBuilder registerHertsRpcService(HertsService hertsRpcService, @Nullable ServerInterceptor interceptor);
 
     /**
+     * Add Herts service
+     * @param hertsRpcService HertsCoreService
+     * @return HertsCoreEngineBuilder
+     */
+    HertsRpcEngineBuilder registerHertsRpcService(HertsService hertsRpcService);
+
+    /**
      * Secure connection
      * @param credentials ServerCredentials for gRPC
      * @return HertsCoreEngineBuilder

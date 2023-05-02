@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -37,14 +38,14 @@ public class HertsHttpServer implements HertsHttpEngine {
     private static final String[] HETRS_HTTP_METHODS = new String[] { "POST", "OPTIONS" };
 
     private final List<HertsService> hertsRpcServices;
-    private final HertsHttpInterceptor interceptor;
+    private final Map<String, HertsHttpInterceptor> interceptors;
     private final SslContextFactory sslContextFactory;
     private final HertsMetricsSetting metricsSetting;
     private final int port;
 
     public HertsHttpServer(HertsHttpEngineBuilder builder) {
         this.hertsRpcServices = builder.getHertsRpcServices();
-        this.interceptor = builder.getInterceptor();
+        this.interceptors = builder.getInterceptors();
         this.sslContextFactory = builder.getSslContextFactory();
         this.metricsSetting = builder.getMetricsSetting();
         this.port = builder.getPort();
@@ -91,12 +92,12 @@ public class HertsHttpServer implements HertsHttpEngine {
                         endpointLogs.add(logM + endpoint);
                     }
                 }
-                context.addServlet(new ServletHolder(hertsServer),"/*");
+                context.addServlet(new ServletHolder(hertsServer),hertsServer.getBaseEndpoint() + "/*");
             }
 
-            if (this.interceptor != null) {
+            if (this.interceptors != null && this.interceptors.size() > 0) {
                 context.addFilter(new FilterHolder(
-                        new HertsHttpInterceptHandler(this.interceptor)), "/*", EnumSet.of(DispatcherType.REQUEST));
+                        new HertsHttpInterceptHandler(this.interceptors)), "/*", EnumSet.of(DispatcherType.REQUEST));
             }
 
             if (this.sslContextFactory != null) {

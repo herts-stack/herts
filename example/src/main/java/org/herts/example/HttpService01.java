@@ -6,7 +6,7 @@ import org.herts.common.service.HertsService;
 import java.util.Map;
 
 @HertsHttp
-public interface HttpService extends HertsService {
+public interface HttpService01 extends HertsService {
     Map<String, String> httpTest01(String id, String value);
     boolean httpTest02();
 

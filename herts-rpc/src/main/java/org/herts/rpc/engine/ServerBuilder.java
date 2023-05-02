@@ -1,13 +1,5 @@
 package org.herts.rpc.engine;
 
-import io.grpc.BindableService;
-import io.grpc.Metadata;
-import io.grpc.MethodDescriptor;
-import io.grpc.ServerCall;
-import io.grpc.ServerCredentials;
-import io.grpc.ServerInterceptor;
-import io.grpc.ServerServiceDefinition;
-import io.grpc.stub.ServerCalls;
 import org.herts.common.context.HertsMethod;
 import org.herts.common.context.HertsMetricsSetting;
 import org.herts.common.context.HertsType;
@@ -33,6 +25,15 @@ import org.herts.rpc.handler.HertsRpcSStreamingMethodHandler;
 import org.herts.rpc.handler.HertsRpcUMethodHandler;
 import org.herts.rpc.model.ReflectMethod;
 import org.herts.rpc.validator.HertsRpcValidator;
+
+import io.grpc.BindableService;
+import io.grpc.Metadata;
+import io.grpc.MethodDescriptor;
+import io.grpc.ServerCall;
+import io.grpc.ServerCredentials;
+import io.grpc.ServerInterceptor;
+import io.grpc.ServerServiceDefinition;
+import io.grpc.stub.ServerCalls;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Method;
@@ -113,31 +114,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
 
     @Override
     public HertsRpcEngineBuilder registerHertsRpcService(HertsService hertsRpcService, @Nullable ServerInterceptor interceptor) {
-        if (hertsRpcService == null) {
-            throw new HertsRpcBuildException("HertsService arg is null");
-        }
-
-        this.hertsRpcServices.add(hertsRpcService);
-        this.hertsTypes.add(hertsRpcService.getHertsType());
-
-        BindableService bindableService;
-        switch (hertsRpcService.getHertsType()) {
-            case Unary:
-                bindableService = registerUnaryService(hertsRpcService);
-                break;
-            case BidirectionalStreaming:
-                bindableService = registerBidirectionalStreamingService((BidirectionalStreamingService) hertsRpcService);
-                break;
-            case ServerStreaming:
-                bindableService = registerServerStreamingService((ServerStreamingService) hertsRpcService);
-                break;
-            case ClientStreaming:
-                bindableService = registerClientStreamingService((ClientStreamingService) hertsRpcService);
-                break;
-            default:
-                throw new HertsRpcBuildException("HertsCoreType is invalid");
-        }
-
+        BindableService bindableService = createBindableService(hertsRpcService);
         if (interceptor == null) {
             var defaultInterceptor = new HertsRpcInterceptor() {
                 @Override
@@ -151,6 +128,21 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
         } else {
             this.services.put(bindableService, interceptor);
         }
+        return this;
+    }
+
+    @Override
+    public HertsRpcEngineBuilder registerHertsRpcService(HertsService hertsRpcService) {
+        BindableService bindableService = createBindableService(hertsRpcService);
+        var defaultInterceptor = new HertsRpcInterceptor() {
+            @Override
+            public void setResponseMetadata(Metadata metadata) {
+            }
+            @Override
+            public <ReqT, RespT> void beforeCallMethod(ServerCall<ReqT, RespT> call, Metadata requestHeaders) {
+            }
+        };
+        this.services.put(bindableService, HertsRpcInterceptBuilder.builder(defaultInterceptor).build());
         return this;
     }
 
@@ -197,6 +189,34 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
             throw new HertsNotSupportParameterTypeException("Support StreamObserver<T> parameter only of BidirectionalStreaming and ClientStreaming. Please remove other method parameter.");
         }
         return new HertsRpcBuilder(this);
+    }
+
+    private BindableService createBindableService(HertsService hertsRpcService) {
+        if (hertsRpcService == null) {
+            throw new HertsRpcBuildException("HertsService arg is null");
+        }
+
+        this.hertsRpcServices.add(hertsRpcService);
+        this.hertsTypes.add(hertsRpcService.getHertsType());
+
+        BindableService bindableService;
+        switch (hertsRpcService.getHertsType()) {
+            case Unary:
+                bindableService = registerUnaryService(hertsRpcService);
+                break;
+            case BidirectionalStreaming:
+                bindableService = registerBidirectionalStreamingService((BidirectionalStreamingService) hertsRpcService);
+                break;
+            case ServerStreaming:
+                bindableService = registerServerStreamingService((ServerStreamingService) hertsRpcService);
+                break;
+            case ClientStreaming:
+                bindableService = registerClientStreamingService((ClientStreamingService) hertsRpcService);
+                break;
+            default:
+                throw new HertsRpcBuildException("HertsCoreType is invalid");
+        }
+        return bindableService;
     }
 
     private static ReflectMethod generateReflectMethod(String serviceName, String serviceImplName) {

@@ -6,7 +6,9 @@ import org.herts.http.HertsHttpInterceptor;
 
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
+import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Herts http server engine builder
@@ -16,11 +18,12 @@ import java.util.List;
 public interface HertsHttpEngineBuilder {
 
     /**
-     * Set interceptor
-     * @param interceptor HertsHttpInterceptor
+     * Add implementation service
+     * Not interface
+     * @param hertsRpcService HertsCoreService
      * @return HertHttpEngineBuilder
      */
-    HertsHttpEngineBuilder setInterceptor(HertsHttpInterceptor interceptor);
+    HertsHttpEngineBuilder registerHertsHttpService(HertsService hertsRpcService, @Nullable HertsHttpInterceptor interceptor);
 
     /**
      * Add implementation service
@@ -28,7 +31,8 @@ public interface HertsHttpEngineBuilder {
      * @param hertsRpcService HertsCoreService
      * @return HertHttpEngineBuilder
      */
-    HertsHttpEngineBuilder addImplementationService(HertsService hertsRpcService);
+    HertsHttpEngineBuilder registerHertsHttpService(HertsService hertsRpcService);
+
 
     /**
      * Set port
@@ -62,7 +66,7 @@ public interface HertsHttpEngineBuilder {
      * Get interceptor
      * @return HertsHttpInterceptor
      */
-    HertsHttpInterceptor getInterceptor();
+    Map<String, HertsHttpInterceptor> getInterceptors();
 
     /**
      * Get Metrics setting

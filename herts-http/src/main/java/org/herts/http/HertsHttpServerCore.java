@@ -37,6 +37,7 @@ public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer 
     private final HertsHttpCaller hertsHttpCaller;
     private final HertsSerializer hertsSerializer = new HertsSerializer(HertsSerializeType.Json);
     private final ConcurrentMap<String, Method> methods = new ConcurrentHashMap<>();
+    private final String baseEndpoint;
 
     public void init() {
     }
@@ -47,6 +48,7 @@ public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer 
         String serviceName = hertsRpcService.getClass().getInterfaces()[0].getSimpleName();
         this.hertsHttpMetrics = hertsHttpMetrics;
         this.hertsHttpMetrics.register();
+        this.baseEndpoint = "/api/" + serviceName;
 
         Class<?> thisClass = Class.forName(hertsRpcService.getClass().getName());
         Method[] methods = thisClass.getDeclaredMethods();
@@ -54,7 +56,7 @@ public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer 
         for (Method method : methods) {
             List<Parameter> parameters = Arrays.asList(thisClass.getMethod(method.getName(), method.getParameterTypes()).getParameters());
 
-            String endpoint = "/api/" + serviceName + "/" + method.getName();
+            String endpoint = this.baseEndpoint + "/" + method.getName();
             this.methods.put(endpoint, method);
             methodParameters.put(method.getName(), parameters);
         }
@@ -76,7 +78,7 @@ public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer 
     }
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (!this.hertsHttpMetrics.isMetricsEnabled() || !request.getRequestURI().equals("/metricsz")) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -117,6 +119,11 @@ public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer 
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             this.hertsHttpCaller.setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(Collections.singletonMap("error", ex.getMessage())));
         }
+    }
+
+    @Override
+    public String getBaseEndpoint() {
+        return this.baseEndpoint;
     }
 
     @Override

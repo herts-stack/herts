@@ -1,6 +1,7 @@
 package org.herts.httpclient.handler;
 
 import org.herts.common.context.HertsHttpRequest;
+import org.herts.common.context.HertsHttpResponse;
 import org.herts.common.exception.HertsMessageException;
 import org.herts.common.exception.HertsServiceNotFoundException;
 import org.herts.common.serializer.HertsSerializeType;
@@ -66,21 +67,6 @@ public class HertsHttpClientHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        var parameterNames = methodTypes.get(method.getName());
-        if (parameterNames == null || args.length != parameterNames.size()) {
-            throw new HertsMessageException("Invalid herts method.");
-        }
-
-        var data = new HashMap<String, Object>();
-        int index = 0;
-        for (Object arg : args) {
-            data.put(parameterNames.get(index), arg);
-            index++;
-        }
-
-        var hertRequest = new HertsHttpRequest();
-        hertRequest.setData(data);
-
         HttpRequest.Builder builder = HttpRequest
                 .newBuilder(URI.create(url + "/api/" + this.serviceName + "/" + method.getName()))
                 .header("Content-Type", "application/json");
@@ -91,11 +77,37 @@ public class HertsHttpClientHandler implements InvocationHandler {
             }
         }
 
-        HttpRequest httpRequest = builder
-                .POST(HttpRequest.BodyPublishers.ofString(this.serializer.serializeAsStr(hertRequest)))
-                .build();
+        var parameterNames = methodTypes.get(method.getName());
+        HttpRequest httpRequest;
+        if (args != null) {
+            if (parameterNames == null || args.length != parameterNames.size()) {
+                throw new HertsMessageException("Invalid herts method.");
+            }
+
+            var data = new HashMap<String, Object>();
+            int index = 0;
+            for (Object arg : args) {
+                data.put(parameterNames.get(index), arg);
+                index++;
+            }
+
+            var hertRequest = new HertsHttpRequest();
+            hertRequest.setData(data);
+
+            httpRequest = builder
+                    .POST(HttpRequest.BodyPublishers.ofString(this.serializer.serializeAsStr(hertRequest)))
+                    .build();
+        } else {
+            var hertRequest = new HertsHttpRequest();
+            hertRequest.setData(null);
+
+            httpRequest = builder
+                    .POST(HttpRequest.BodyPublishers.ofString(this.serializer.serializeAsStr(hertRequest)))
+                    .build();
+        }
 
         HttpResponse<byte[]> httpResponse = this.httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
-        return this.serializer.deserialize(httpResponse.body(), method.getReturnType());
+        HertsHttpResponse deserialize = this.serializer.deserialize(httpResponse.body(), HertsHttpResponse.class);
+        return deserialize.getData();
     }
 }

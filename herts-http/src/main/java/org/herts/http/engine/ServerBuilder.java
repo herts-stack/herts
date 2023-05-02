@@ -7,12 +7,15 @@ import org.herts.common.service.HertsService;
 import org.herts.http.HertsHttpInterceptor;
 import org.herts.http.validator.HertsHttpValidator;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ServerBuilder implements HertsHttpEngineBuilder {
     private final List<HertsService> hertsRpcServices = new ArrayList<>();
-    private HertsHttpInterceptor interceptor;
+    private final Map<String, HertsHttpInterceptor> interceptorMap = new HashMap<>();
     private HertsMetricsSetting metricsSetting;
     private SslContextFactory sslContextFactory;
     private int port = 8080;
@@ -21,13 +24,22 @@ public class ServerBuilder implements HertsHttpEngineBuilder {
     }
 
     @Override
-    public HertsHttpEngineBuilder setInterceptor(HertsHttpInterceptor interceptor) {
-        this.interceptor = interceptor;
+    public HertsHttpEngineBuilder registerHertsHttpService(HertsService hertsRpcService, @Nullable HertsHttpInterceptor interceptor) {
+        if (hertsRpcService.getClass().getInterfaces().length == 0) {
+            throw new HertsHttpBuildException("Please implemented interface with @HertsHttp");
+        }
+        if (interceptor != null) {
+            this.interceptorMap.put(hertsRpcService.getClass().getInterfaces()[0].getSimpleName(), interceptor);
+        }
+        this.hertsRpcServices.add(hertsRpcService);
         return this;
     }
 
     @Override
-    public HertsHttpEngineBuilder addImplementationService(HertsService hertsRpcService) {
+    public HertsHttpEngineBuilder registerHertsHttpService(HertsService hertsRpcService) {
+        if (hertsRpcService.getClass().getInterfaces().length == 0) {
+            throw new HertsHttpBuildException("Please implemented interface with @HertsHttp");
+        }
         this.hertsRpcServices.add(hertsRpcService);
         return this;
     }
@@ -73,8 +85,8 @@ public class ServerBuilder implements HertsHttpEngineBuilder {
     }
 
     @Override
-    public HertsHttpInterceptor getInterceptor() {
-        return interceptor;
+    public Map<String, HertsHttpInterceptor> getInterceptors() {
+        return interceptorMap;
     }
 
     @Override

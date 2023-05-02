@@ -10,9 +10,9 @@ public class HertsHttpRequestImpl implements HertsHttpRequest {
     private HttpServletRequest httpRequest;
     private Enumeration<String> headerNames;
 
-    public HertsHttpRequestImpl(ServletRequest request) {
+    public HertsHttpRequestImpl(ServletRequest request, HttpServletRequest httpRequest) {
         this.request = request;
-        this.httpRequest = (HttpServletRequest) request;
+        this.httpRequest = httpRequest;
         this.headerNames = this.httpRequest.getHeaderNames();
     }
 
@@ -21,12 +21,9 @@ public class HertsHttpRequestImpl implements HertsHttpRequest {
     }
 
     public String getHeader(String headerName) {
-        if (headerNames != null) {
-            while (headerNames.hasMoreElements()) {
-                if (headerName.equals(headerNames.nextElement())) {
-                    return httpRequest.getHeader(headerNames.nextElement());
-                }
-            }
+        var val = this.httpRequest.getHeader(headerName);
+        if (val != null && !val.equals("")) {
+            return val;
         }
         return null;
     }

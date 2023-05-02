@@ -1,4 +1,4 @@
-package org.herts.example;
+package org.herts.example.server;
 
 import org.herts.common.logger.HertsLogger;
 import org.herts.http.HertsHttpInterceptor;
@@ -11,9 +11,11 @@ public class HttpServerInterceptor implements HertsHttpInterceptor {
 
     @Override
     public void beforeHandle(HertsHttpRequest request) {
+        logger.info("Intercept before " + request.getHeader("Authorization"));
     }
 
     @Override
     public void afterHandle() {
+        logger.info("Intercept after ");
     }
 }

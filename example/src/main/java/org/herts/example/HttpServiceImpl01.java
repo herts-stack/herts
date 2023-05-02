@@ -7,10 +7,10 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class HttpServiceImpl extends HttpServiceService<HttpService> implements HttpService {
-    private static final Logger logger = HertsLogger.getLogger(HttpServiceImpl.class.getSimpleName());
+public class HttpServiceImpl01 extends HttpServiceService<HttpService01> implements HttpService01 {
+    private static final Logger logger = HertsLogger.getLogger(HttpServiceImpl01.class.getSimpleName());
 
-    public HttpServiceImpl() {
+    public HttpServiceImpl01() {
     }
 
     @Override
