@@ -1,19 +1,31 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
-group 'com.tomoyane.herts.hertscodegen'
+group 'org.herts.codegen'
 version '1.0.0'
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
+    implementation project(':herts-common')
+    implementation project(':herts-rpc')
+    implementation project(':herts-http')
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 
 test {
     useJUnitPlatform()
+}
+
+tasks.register('genTypeScriptClient', JavaExec) {
+    dependsOn 'classes'
+    main = 'org.herts.codegen.codetype.MainTs'
+    classpath = sourceSets.main.runtimeClasspath
 }

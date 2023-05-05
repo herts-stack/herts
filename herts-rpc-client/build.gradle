@@ -3,7 +3,7 @@ plugins {
 }
 apply plugin: 'application'
 
-group 'com.tomoyane.herts.hertsrpcclient'
+group 'org.herts.rpcclient'
 version '1.0.0'
 sourceCompatibility = '17'
 
@@ -17,4 +17,8 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    testLogging {
+        events 'started', 'skipped', 'passed', 'failed'
+        exceptionFormat = 'full'
+    }
 }

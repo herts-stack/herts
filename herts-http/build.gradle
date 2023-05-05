@@ -3,7 +3,7 @@ plugins {
 }
 apply plugin: 'application'
 
-group 'com.tomoyane.herts.hertshttp'
+group 'org.herts.http'
 version '1.0.0'
 sourceCompatibility = '17'
 
