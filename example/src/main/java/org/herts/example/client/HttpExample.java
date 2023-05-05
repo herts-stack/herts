@@ -1,6 +1,8 @@
 package org.herts.example.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.herts.common.exception.http.HertsHttpError400;
+import org.herts.common.exception.http.HertsHttpErrorException;
 import org.herts.example.HttpService01;
 import org.herts.common.logger.HertsLogger;
 import org.herts.common.serializer.HertsSerializeType;
@@ -51,6 +53,12 @@ public class HttpExample {
 
         var res06 = service.httpTest06("hello", true, 100, 200, 1.4);
         logger.info(res06);
+
+        try {
+            var res07 = service.httpTest07();
+        } catch (HertsHttpError400 ex) {
+            logger.info(ex.getStatusCode() + " " + ex.getMessage());
+        }
 
         var service02 = client.createHertsService(HttpService02.class);
         for (int i = 0; i < 100; i++) {

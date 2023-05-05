@@ -1,9 +1,10 @@
 package org.herts.http;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.herts.common.context.HertsHttpResponse;
+import org.herts.common.context.HertsHttpErrorResponse;
 import org.herts.common.exception.HertsInstanceException;
 import org.herts.common.exception.HertsInvalidBodyException;
+import org.herts.common.exception.http.HertsHttpErrorException;
 import org.herts.common.logger.HertsLogger;
 import org.herts.common.serializer.HertsSerializeType;
 import org.herts.common.serializer.HertsSerializer;
@@ -11,16 +12,15 @@ import org.herts.common.service.HertsService;
 import org.herts.metrics.HertsMetrics;
 import org.herts.metrics.server.HertsMetricsServer;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -108,17 +108,18 @@ public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer 
         try {
             this.hertsHttpCaller.post(hertsMethod, request, response);
         } catch (HertsInvalidBodyException | JsonProcessingException ex) {
-            ex.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            var hertsResponse = new HertsHttpResponse();
-            hertsResponse.setExceptionCauseMessage(ex.getMessage());
-            this.hertsHttpCaller.setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(hertsResponse));
+            setError(ex.getMessage(), HttpServletResponse.SC_BAD_REQUEST, response);
+        } catch (InvocationTargetException ex) {
+            Throwable cause = ex.getCause();
+            if (cause instanceof HertsHttpErrorException exception) {
+                setError(exception.getMessage(), exception.getStatusCode().getIntegerCode(), response);
+            } else {
+                ex.printStackTrace();
+                setError(ex.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            var hertsResponse = new HertsHttpResponse();
-            hertsResponse.setExceptionCauseMessage(ex.getMessage());
-            this.hertsHttpCaller.setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(hertsResponse));
+            setError(ex.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
         }
     }
 
@@ -130,5 +131,13 @@ public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer 
     @Override
     public String[] getEndpoints() {
         return this.methods.keySet().toArray(new String[0]);
+    }
+
+    private void setError(String message, int statusCode, HttpServletResponse response) throws IOException {
+        response.setStatus(statusCode);
+        var hertsResponse = new HertsHttpErrorResponse();
+        hertsResponse.setStatusCode(HertsHttpErrorException.StatusCode.Status400);
+        hertsResponse.setMessage(message);
+        this.hertsHttpCaller.setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(hertsResponse));
     }
 }

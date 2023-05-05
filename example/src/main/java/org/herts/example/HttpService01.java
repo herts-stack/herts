@@ -19,4 +19,6 @@ public interface HttpService01 extends HertsService {
     String httpTest05(List<String> a, Map<String, String> b);
 
     String httpTest06(String a, boolean b, int c, Integer d, double e);
+
+    String httpTest07();
 }

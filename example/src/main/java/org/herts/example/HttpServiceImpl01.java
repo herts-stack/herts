@@ -1,5 +1,6 @@
 package org.herts.example;
 
+import org.herts.common.exception.http.HertsHttpError400;
 import org.herts.common.logger.HertsLogger;
 import org.herts.common.service.HertsHttpService;
 import org.herts.example.model.TestData;
@@ -49,4 +50,8 @@ public class HttpServiceImpl01 extends HertsHttpService<HttpService01> implement
         return String.format("a=%s, b=%s, c=%d, d=%d, e=%f  ", a, b, c, d, e);
     }
 
+    @Override
+    public String httpTest07() {
+       throw new HertsHttpError400("badrequest") ;
+    }
 }

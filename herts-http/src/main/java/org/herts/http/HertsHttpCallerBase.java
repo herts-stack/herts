@@ -7,6 +7,7 @@ import org.herts.common.context.Payload;
 import org.herts.common.exception.HertsInvalidBodyException;
 import org.herts.common.serializer.HertsSerializer;
 import org.herts.metrics.server.HertsMetricsServer;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -15,9 +16,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -87,6 +86,7 @@ public class HertsHttpCallerBase {
             args[idx] = castedArg;
             idx++;
         }
+
         Object res = hertsMethod.invoke(this.coreObject, args);
         response.setStatus(HttpServletResponse.SC_OK);
         if (res == null) {

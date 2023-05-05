@@ -1,14 +1,17 @@
 package org.herts.httpclient.handler;
 
+import org.herts.common.context.HertsHttpErrorResponse;
 import org.herts.common.context.HertsHttpRequest;
 import org.herts.common.context.HertsHttpResponse;
 import org.herts.common.context.Payload;
 import org.herts.common.exception.HertsMessageException;
 import org.herts.common.exception.HertsServiceNotFoundException;
+import org.herts.common.exception.http.HertsHttpErrorException;
 import org.herts.common.serializer.HertsSerializeType;
 import org.herts.common.serializer.HertsSerializer;
 import org.herts.common.service.HertsService;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -96,7 +99,6 @@ public class HertsHttpClientHandler implements InvocationHandler {
                 payload.setClassInfo(aClass.getName());
                 payloads.add(payload);
             });
-            System.out.println(serializer.serializeAsStr(payloads));
             body.setPayloads(payloads);
             httpRequest = builder
                     .POST(HttpRequest.BodyPublishers.ofString(this.serializer.serializeAsStr(body)))
@@ -109,12 +111,14 @@ public class HertsHttpClientHandler implements InvocationHandler {
         }
 
         HttpResponse<byte[]> httpResponse = this.httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
+        if (httpResponse.statusCode() < 200 || httpResponse.statusCode() > 299) {
+            throwHertsHttpError(httpResponse);
+            return null;
+        }
+
         HertsHttpResponse deserialize = this.serializer.deserialize(httpResponse.body(), HertsHttpResponse.class);
         if (deserialize == null) {
             return null;
-        }
-        if (deserialize.getExceptionCauseMessage() != null) {
-            throw new Exception(deserialize.getExceptionCauseMessage());
         }
 
         var payload = deserialize.getPayload();
@@ -124,5 +128,10 @@ public class HertsHttpClientHandler implements InvocationHandler {
         } catch (ClassNotFoundException ex) {
             return payload.getValue();
         }
+    }
+
+    private void throwHertsHttpError(HttpResponse<byte[]> httpResponse) throws IOException {
+        HertsHttpErrorResponse deserialize = this.serializer.deserialize(httpResponse.body(), HertsHttpErrorResponse.class);
+        deserialize.throwHertsHttpErrorException();
     }
 }
