@@ -7,9 +7,9 @@ import org.herts.common.context.HertsType;
  * @author Herts Contributer
  * @version 1.0.0
  */
-public abstract class HttpServiceService<T> extends HertsServiceBase<T> {
+public abstract class HertsHttpService<T> extends HertsServiceBase<T> {
 
-    public HttpServiceService() {
+    public HertsHttpService() {
         super(HertsType.Http);
     }
 }

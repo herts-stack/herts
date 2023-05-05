@@ -1,11 +1,11 @@
 package org.herts.example;
 
 import org.herts.common.logger.HertsLogger;
-import org.herts.common.service.UnaryService;
+import org.herts.common.service.HertsUnaryService;
 
 import java.util.logging.Logger;
 
-public class UnaryServiceServiceImpl02 extends UnaryService<UnaryRpcRpcService02> implements UnaryRpcRpcService02 {
+public class UnaryServiceServiceImpl02 extends HertsUnaryService<UnaryRpcRpcService02> implements UnaryRpcRpcService02 {
     private static final Logger logger = HertsLogger.getLogger(UnaryServiceServiceImpl02.class.getSimpleName());
 
     public UnaryServiceServiceImpl02() {

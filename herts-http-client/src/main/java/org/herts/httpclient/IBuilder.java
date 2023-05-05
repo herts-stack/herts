@@ -3,7 +3,6 @@ package org.herts.httpclient;
 import org.herts.common.annotation.HertsHttp;
 import org.herts.common.context.HertsType;
 import org.herts.common.exception.HertsHttpBuildException;
-import org.herts.common.exception.HertsRpcClientBuildException;
 import org.herts.httpclient.validator.HertsHttpClientValidator;
 
 import java.util.ArrayList;
@@ -38,7 +37,7 @@ public class IBuilder implements HertsHttpClientBuilder {
     @Override
     public <T> HertsHttpClientBuilder registerHertService(Class<T> interfaceClass) {
         if (!interfaceClass.isInterface()) {
-            throw new HertsRpcClientBuildException("Please register Interface with extends HertsRpcService");
+            throw new HertsHttpBuildException("Please register Interface with extends HertsRpcService");
         }
         this.hertsRpcServices.add(interfaceClass);
         return this;
@@ -67,7 +66,7 @@ public class IBuilder implements HertsHttpClientBuilder {
     @Override
     public HertsHttpClientBase build() {
         if (this.hertsRpcServices.size() == 0 || this.host == null || this.host.isEmpty()) {
-            throw new HertsRpcClientBuildException("Please register HertsService and host");
+            throw new HertsHttpBuildException("Please register HertsService and host");
         }
 
         List<HertsType> hertsTypes = new ArrayList<>();
@@ -76,7 +75,7 @@ public class IBuilder implements HertsHttpClientBuilder {
                 var annotation = c.getAnnotation(HertsHttp.class);
                 hertsTypes.add(annotation.value());
             } catch (Exception ex) {
-                throw new HertsRpcClientBuildException("Could not find @HertsHttp annotation in " + c.getName(), ex);
+                throw new HertsHttpBuildException("Could not find @HertsHttp annotation in " + c.getName(), ex);
             }
         }
 
@@ -85,7 +84,7 @@ public class IBuilder implements HertsHttpClientBuilder {
         }
         var validateMsg = HertsHttpClientValidator.validateMethod(this.hertsRpcServices);
         if (!validateMsg.isEmpty()) {
-            throw new HertsRpcClientBuildException(validateMsg);
+            throw new HertsHttpBuildException(validateMsg);
         }
         return new HertsHttpClient(this);
     }

@@ -12,10 +12,16 @@ repositories {
 dependencies {
     implementation project(':herts-common')
 
+    testImplementation project(':herts-http')
+    testImplementation project(':herts-common')
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 
 test {
     useJUnitPlatform()
+    testLogging {
+        events 'started', 'skipped', 'passed', 'failed'
+        exceptionFormat = 'full'
+    }
 }

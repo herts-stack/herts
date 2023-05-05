@@ -1,12 +1,12 @@
 package org.herts.example;
 
 import org.herts.common.logger.HertsLogger;
-import org.herts.common.service.ClientStreamingService;
+import org.herts.common.service.HertsClientStreamingService;
 import io.grpc.stub.StreamObserver;
 
 import java.util.logging.Logger;
 
-public class ClientStreamingServiceImpl extends ClientStreamingService<ClientStreamingRpcService> implements ClientStreamingRpcService {
+public class ClientStreamingServiceImpl extends HertsClientStreamingService<ClientStreamingRpcService> implements ClientStreamingRpcService {
     private static final Logger logger = HertsLogger.getLogger(ClientStreamingServiceImpl.class.getSimpleName());
 
     public ClientStreamingServiceImpl() {

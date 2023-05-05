@@ -1,9 +1,11 @@
 package org.herts.common.context;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
-import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Herts http request for internal message
@@ -11,18 +13,21 @@ import java.util.Map;
  * @version 1.0.0
  */
 public class HertsHttpRequest implements Serializable {
-    private Map<String, Object> data;
+    @JsonProperty
+    private List<Payload> payloads;
 
-    public Map<String, Object> getData() {
-        return data;
+    public HertsHttpRequest() {
+    }
+    public List<Payload> getPayloads() {
+        return payloads;
     }
 
-    public void setData(Map<String, Object> data) {
-        this.data = data;
+    public void setPayloads(List<Payload> payloads) {
+        this.payloads = payloads;
     }
 
     @JsonIgnore
-    public Object[] getDataValues() {
-        return this.data.values().toArray();
+    public List<String> getKeyNames() {
+        return this.payloads.stream().map(Payload::getKeyName).collect(Collectors.toList());
     }
 }

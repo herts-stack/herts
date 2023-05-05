@@ -6,6 +6,7 @@ import org.herts.common.logger.HertsLogger;
 import org.herts.common.serializer.HertsSerializeType;
 import org.herts.common.serializer.HertsSerializer;
 import org.herts.example.HttpService02;
+import org.herts.example.model.TestData;
 import org.herts.httpclient.HertsHttpClient;
 import org.herts.httpclient.HertsHttpClientBase;
 
@@ -39,6 +40,17 @@ public class HttpExample {
             var res = service.httpTest01("ID", "Recreate!");
             logger.info(serializer.serializeAsStr(res));
         }
+        var testData = new TestData();
+        testData.setBar("bar");
+        testData.setFoo("foo");
+        var res04 = service.httpTest04(testData);
+        logger.info(serializer.serializeAsStr(res04));
+
+        var res05 = service.httpTest05(Collections.singletonList("hello"), Collections.singletonMap("test10", "value"));
+        logger.info(res05);
+
+        var res06 = service.httpTest06("hello", true, 100, 200, 1.4);
+        logger.info(res06);
 
         var service02 = client.createHertsService(HttpService02.class);
         for (int i = 0; i < 100; i++) {

@@ -7,10 +7,10 @@ import org.herts.common.context.HertsType;
  * @author Herts Contributer
  * @version 1.0.0
  */
-public abstract class ServerStreamingService<T> extends HertsServiceBase<T> {
+public abstract class HertsServerStreamingService<T> extends HertsServiceBase<T> {
     private T t;
 
-    public ServerStreamingService() {
+    public HertsServerStreamingService() {
         super(HertsType.ServerStreaming);
     }
 }

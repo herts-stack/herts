@@ -7,10 +7,10 @@ import org.herts.common.context.HertsType;
  * @author Herts Contributer
  * @version 1.0.0
  */
-public abstract class UnaryService<T> extends HertsServiceBase<T> {
+public abstract class HertsUnaryService<T> extends HertsServiceBase<T> {
     private T t;
 
-    public UnaryService() {
+    public HertsUnaryService() {
         super(HertsType.Unary);
     }
 }

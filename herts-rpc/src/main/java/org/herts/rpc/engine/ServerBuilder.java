@@ -10,10 +10,10 @@ import org.herts.common.exception.HertsNotSupportParameterTypeException;
 import org.herts.common.exception.HertsRpcBuildException;
 import org.herts.common.exception.HertsServiceNotFoundException;
 import org.herts.common.logger.HertsLogger;
-import org.herts.common.service.BidirectionalStreamingService;
-import org.herts.common.service.ClientStreamingService;
+import org.herts.common.service.HertsBidirectionalStreamingService;
+import org.herts.common.service.HertsClientStreamingService;
 import org.herts.common.service.HertsService;
-import org.herts.common.service.ServerStreamingService;
+import org.herts.common.service.HertsServerStreamingService;
 import org.herts.metrics.HertsMetrics;
 import org.herts.metrics.handler.HertsMetricsHandler;
 import org.herts.metrics.server.HertsMetricsServer;
@@ -205,13 +205,13 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
                 bindableService = registerUnaryService(hertsRpcService);
                 break;
             case BidirectionalStreaming:
-                bindableService = registerBidirectionalStreamingService((BidirectionalStreamingService) hertsRpcService);
+                bindableService = registerBidirectionalStreamingService((HertsBidirectionalStreamingService) hertsRpcService);
                 break;
             case ServerStreaming:
-                bindableService = registerServerStreamingService((ServerStreamingService) hertsRpcService);
+                bindableService = registerServerStreamingService((HertsServerStreamingService) hertsRpcService);
                 break;
             case ClientStreaming:
-                bindableService = registerClientStreamingService((ClientStreamingService) hertsRpcService);
+                bindableService = registerClientStreamingService((HertsClientStreamingService) hertsRpcService);
                 break;
             default:
                 throw new HertsRpcBuildException("HertsCoreType is invalid");
@@ -246,7 +246,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
         return hertsMethods;
     }
 
-    private BindableService registerBidirectionalStreamingService(BidirectionalStreamingService core) {
+    private BindableService registerBidirectionalStreamingService(HertsBidirectionalStreamingService core) {
         ReflectMethod reflectMethod = generateReflectMethod(core.getClass().getInterfaces()[0].getName(), core.getClass().getName());
         return new BindableService() {
             private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
@@ -268,7 +268,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
         };
     }
 
-    private BindableService registerClientStreamingService(ClientStreamingService core) {
+    private BindableService registerClientStreamingService(HertsClientStreamingService core) {
         ReflectMethod reflectMethod = generateReflectMethod(core.getClass().getInterfaces()[0].getName(), core.getClass().getName());
         return new BindableService() {
             private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
@@ -290,7 +290,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
         };
     }
 
-    private BindableService registerServerStreamingService(ServerStreamingService core) {
+    private BindableService registerServerStreamingService(HertsServerStreamingService core) {
         ReflectMethod reflectMethod = generateReflectMethod(core.getClass().getInterfaces()[0].getName(), core.getClass().getName());
         return new BindableService() {
             private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());

@@ -4,9 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.herts.common.exception.HertsInvalidBodyException;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Reader;
 
 /**
@@ -127,6 +130,21 @@ public class HertsSerializer {
             return objectMapper.convertValue(message, classType);
         } else {
             return msgPackMapper.convertValue(message, classType);
+        }
+    }
+
+    /**
+     * Convert to Object from value of HertsHttpRequest.Payload
+     * @param hertsHttpPayloadValue Value of HertsHttpRequest.Payload
+     * @param aClass Class type
+     * @return Object
+     * @throws IOException If fail deserialize
+     */
+    public Object convertFromHertHttpPayload(Object hertsHttpPayloadValue, Class<?> aClass) throws IOException {
+        if (aClass.isInstance(hertsHttpPayloadValue)) {
+            return aClass.cast(hertsHttpPayloadValue);
+        } else {
+            return deserialize(serializeAsStr(hertsHttpPayloadValue).getBytes(), aClass);
         }
     }
 }

@@ -1,6 +1,7 @@
 package org.herts.http;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.herts.common.context.HertsHttpResponse;
 import org.herts.common.exception.HertsInstanceException;
 import org.herts.common.exception.HertsInvalidBodyException;
 import org.herts.common.logger.HertsLogger;
@@ -106,18 +107,18 @@ public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer 
 
         try {
             this.hertsHttpCaller.post(hertsMethod, request, response);
-        } catch (HertsInvalidBodyException ex) {
+        } catch (HertsInvalidBodyException | JsonProcessingException ex) {
             ex.printStackTrace();
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            this.hertsHttpCaller.setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(Collections.singletonMap("error", ex.getMessage())));
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            this.hertsHttpCaller.setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(Collections.singletonMap("error", ex.getMessage())));
+            var hertsResponse = new HertsHttpResponse();
+            hertsResponse.setExceptionCauseMessage(ex.getMessage());
+            this.hertsHttpCaller.setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(hertsResponse));
         } catch (Exception ex) {
             ex.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            this.hertsHttpCaller.setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(Collections.singletonMap("error", ex.getMessage())));
+            var hertsResponse = new HertsHttpResponse();
+            hertsResponse.setExceptionCauseMessage(ex.getMessage());
+            this.hertsHttpCaller.setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(hertsResponse));
         }
     }
 

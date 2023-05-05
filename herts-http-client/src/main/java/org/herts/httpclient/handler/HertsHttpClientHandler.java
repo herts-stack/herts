@@ -2,6 +2,7 @@ package org.herts.httpclient.handler;
 
 import org.herts.common.context.HertsHttpRequest;
 import org.herts.common.context.HertsHttpResponse;
+import org.herts.common.context.Payload;
 import org.herts.common.exception.HertsMessageException;
 import org.herts.common.exception.HertsServiceNotFoundException;
 import org.herts.common.serializer.HertsSerializeType;
@@ -10,17 +11,17 @@ import org.herts.common.service.HertsService;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.IntStream;
 
 /**
  * Herts http client handler
@@ -29,7 +30,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class HertsHttpClientHandler implements InvocationHandler {
     private final HertsSerializer serializer = new HertsSerializer(HertsSerializeType.Json);
-    private final ConcurrentMap<String, List<String>> methodTypes = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, List<Class<?>>> methodParameters = new ConcurrentHashMap<>();
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final String url;
     private final String serviceName;
@@ -60,8 +61,8 @@ public class HertsHttpClientHandler implements InvocationHandler {
 
         Method[] methods = hertsServiceClass.getDeclaredMethods();
         for (Method method : methods) {
-            var paramNames = Arrays.stream(method.getParameters()).map(Parameter::getName).toList();
-            methodTypes.put(method.getName(), paramNames);
+            var paramTypes = new ArrayList<>(Arrays.asList(method.getParameterTypes()));
+            this.methodParameters.put(method.getName(), paramTypes);
         }
     }
 
@@ -77,37 +78,51 @@ public class HertsHttpClientHandler implements InvocationHandler {
             }
         }
 
-        var parameterNames = methodTypes.get(method.getName());
         HttpRequest httpRequest;
+        var body = new HertsHttpRequest();
         if (args != null) {
-            if (parameterNames == null || args.length != parameterNames.size()) {
+            var parameterTypes = this.methodParameters.get(method.getName());
+            if (parameterTypes == null || args.length != parameterTypes.size()) {
                 throw new HertsMessageException("Invalid herts method.");
             }
 
-            var data = new HashMap<String, Object>();
-            int index = 0;
-            for (Object arg : args) {
-                data.put(parameterNames.get(index), arg);
-                index++;
-            }
-
-            var hertRequest = new HertsHttpRequest();
-            hertRequest.setData(data);
-
+            var payloads = new ArrayList<Payload>();
+            IntStream.range(0, args.length).forEach(idx -> {
+                Object requestArg = args[idx];
+                Class<?> aClass = parameterTypes.get(idx);
+                var payload = new Payload();
+                payload.setKeyName("arg" + idx);
+                payload.setValue(requestArg);
+                payload.setClassInfo(aClass.getName());
+                payloads.add(payload);
+            });
+            System.out.println(serializer.serializeAsStr(payloads));
+            body.setPayloads(payloads);
             httpRequest = builder
-                    .POST(HttpRequest.BodyPublishers.ofString(this.serializer.serializeAsStr(hertRequest)))
+                    .POST(HttpRequest.BodyPublishers.ofString(this.serializer.serializeAsStr(body)))
                     .build();
         } else {
-            var hertRequest = new HertsHttpRequest();
-            hertRequest.setData(null);
-
+            body.setPayloads(new ArrayList<>());
             httpRequest = builder
-                    .POST(HttpRequest.BodyPublishers.ofString(this.serializer.serializeAsStr(hertRequest)))
+                    .POST(HttpRequest.BodyPublishers.ofString(this.serializer.serializeAsStr(body)))
                     .build();
         }
 
         HttpResponse<byte[]> httpResponse = this.httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
         HertsHttpResponse deserialize = this.serializer.deserialize(httpResponse.body(), HertsHttpResponse.class);
-        return deserialize.getData();
+        if (deserialize == null) {
+            return null;
+        }
+        if (deserialize.getExceptionCauseMessage() != null) {
+            throw new Exception(deserialize.getExceptionCauseMessage());
+        }
+
+        var payload = deserialize.getPayload();
+        try {
+            Class<?> aClass = Class.forName(payload.getClassInfo());
+            return serializer.convertFromHertHttpPayload(payload.getValue(), aClass);
+        } catch (ClassNotFoundException ex) {
+            return payload.getValue();
+        }
     }
 }

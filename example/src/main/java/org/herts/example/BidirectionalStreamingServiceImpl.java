@@ -2,13 +2,13 @@ package org.herts.example;
 
 import org.herts.common.logger.HertsLogger;
 import org.herts.common.util.DateTimeUtil;
-import org.herts.common.service.BidirectionalStreamingService;
+import org.herts.common.service.HertsBidirectionalStreamingService;
 
 import io.grpc.stub.StreamObserver;
 
 import java.util.logging.Logger;
 
-public class BidirectionalStreamingServiceImpl extends BidirectionalStreamingService<BidirectionalStreamingRpcService> implements BidirectionalStreamingRpcService {
+public class BidirectionalStreamingServiceImpl extends HertsBidirectionalStreamingService<BidirectionalStreamingRpcService> implements BidirectionalStreamingRpcService {
     private static final Logger logger = HertsLogger.getLogger(BidirectionalStreamingServiceImpl.class.getSimpleName());
 
     public BidirectionalStreamingServiceImpl() {

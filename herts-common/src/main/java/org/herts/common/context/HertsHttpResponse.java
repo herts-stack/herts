@@ -11,13 +11,23 @@ import java.io.Serializable;
  */
 public class HertsHttpResponse implements Serializable {
     @JsonProperty
-    private Object data;
+    private Payload payload;
+    @JsonProperty
+    private String exceptionCauseMessage;
 
-    public Object getData() {
-        return data;
+    public Payload getPayload() {
+        return payload;
     }
 
-    public void setData(Object data) {
-        this.data = data;
+    public void setPayload(Payload payload) {
+        this.payload = payload;
+    }
+
+    public String getExceptionCauseMessage() {
+        return exceptionCauseMessage;
+    }
+
+    public void setExceptionCauseMessage(String exceptionCauseMessage) {
+        this.exceptionCauseMessage = exceptionCauseMessage;
     }
 }

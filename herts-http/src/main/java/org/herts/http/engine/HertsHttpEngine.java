@@ -11,4 +11,9 @@ public interface HertsHttpEngine {
      * Start server
      */
     void start();
+
+    /**
+     * Stop server
+     */
+    void stop() throws Exception;
 }

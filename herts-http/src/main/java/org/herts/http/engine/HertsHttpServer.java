@@ -43,6 +43,8 @@ public class HertsHttpServer implements HertsHttpEngine {
     private final HertsMetricsSetting metricsSetting;
     private final int port;
 
+    private Server server = null;
+
     public HertsHttpServer(HertsHttpEngineBuilder builder) {
         this.hertsRpcServices = builder.getHertsRpcServices();
         this.interceptors = builder.getInterceptors();
@@ -58,7 +60,7 @@ public class HertsHttpServer implements HertsHttpEngine {
     @Override
     public void start() {
         try {
-            Server server = new Server(this.port);
+            this.server = new Server(this.port);
 
             ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
             context.setContextPath("/");
@@ -114,6 +116,13 @@ public class HertsHttpServer implements HertsHttpEngine {
             server.join();
         } catch (Exception ex) {
             throw new HertsHttpBuildException(ex);
+        }
+    }
+
+    @Override
+    public void stop() throws Exception {
+        if (this.server != null) {
+            this.server.stop();
         }
     }
 }

@@ -3,19 +3,21 @@ package org.herts.http;
 import org.herts.common.context.HertsHeaderContext;
 import org.herts.common.context.HertsHttpRequest;
 import org.herts.common.context.HertsHttpResponse;
+import org.herts.common.context.Payload;
 import org.herts.common.exception.HertsInvalidBodyException;
 import org.herts.common.serializer.HertsSerializer;
 import org.herts.metrics.server.HertsMetricsServer;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -56,11 +58,11 @@ public class HertsHttpCallerBase {
     protected void call(Method hertsMethod, HttpServletRequest request, HttpServletResponse response) throws Exception {
         var parameters = this.parameters.get(hertsMethod.getName());
         HertsHttpRequest hertsRequest;
-        if (parameters.size() > 0) {
-            BufferedReader fileReader = request.getReader();
-            hertsRequest = this.hertsSerializer.deserialize(fileReader, HertsHttpRequest.class);
 
-            var keyNames = hertsRequest.getData().keySet();
+        if (parameters.size() > 0) {
+            hertsRequest = this.hertsSerializer.deserialize(request.getReader(), HertsHttpRequest.class);
+
+            var keyNames = hertsRequest.getKeyNames();
             for (Parameter param : parameters) {
                 if (!keyNames.contains(param.getName())) {
                     throw new HertsInvalidBodyException("Invalid body");
@@ -68,17 +70,35 @@ public class HertsHttpCallerBase {
             }
         } else {
             hertsRequest = new HertsHttpRequest();
-            hertsRequest.setData(Collections.emptyMap());
+            hertsRequest.setPayloads(new ArrayList<>());
         }
 
-        var res = hertsMethod.invoke(this.coreObject, hertsRequest.getDataValues());
+        List<Payload> payloads = hertsRequest.getPayloads();
+        Object[] args = new Object[payloads.size()];
+        int idx = 0;
+        for (Payload payload : payloads) {
+            Object castedArg;
+            try {
+                Class<?> aClass = Class.forName(payload.getClassInfo());
+                castedArg = this.hertsSerializer.convertFromHertHttpPayload(payload.getValue(), aClass);
+            } catch (ClassNotFoundException ex) {
+                castedArg = payload.getValue();
+            }
+            args[idx] = castedArg;
+            idx++;
+        }
+        Object res = hertsMethod.invoke(this.coreObject, args);
         response.setStatus(HttpServletResponse.SC_OK);
         if (res == null) {
             return;
         }
 
         var hertsResponse = new HertsHttpResponse();
-        hertsResponse.setData(res);
+        var payload = new Payload();
+        payload.setValue(res);
+        payload.setClassInfo(hertsMethod.getReturnType().getName());
+        hertsResponse.setPayload(payload);
+        hertsResponse.setExceptionCauseMessage(null);
         setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(hertsResponse));
     }
 }

@@ -1,7 +1,5 @@
 package org.herts.httpclient;
 
-import org.herts.common.service.HertsService;
-
 import java.util.List;
 
 /**
@@ -52,7 +50,7 @@ public interface HertsHttpClientBuilder {
     int getServerPort();
 
     /**
-     * Get scure or not
+     * Get secure or not
      * @return Result
      */
     boolean isSecureConnection();
