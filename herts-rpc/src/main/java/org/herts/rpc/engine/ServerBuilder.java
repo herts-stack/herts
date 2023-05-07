@@ -64,7 +64,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
         HertsMetrics hertsMetrics;
         if (metricsSetting != null) {
             hertsMetrics = HertsMetricsHandler.builder()
-                    .hertsCoreServiceInterface(coreServices)
+                    .registerHertsServices(coreServices)
                     .isErrRateEnabled(metricsSetting.isErrRateEnabled())
                     .isJvmEnabled(metricsSetting.isJvmEnabled())
                     .isLatencyEnabled(metricsSetting.isLatencyEnabled())
@@ -72,7 +72,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
                     .isRpsEnabled(metricsSetting.isRpsEnabled())
                     .build();
         } else {
-            hertsMetrics = HertsMetricsHandler.builder().hertsCoreServiceInterface(null).build();
+            hertsMetrics = HertsMetricsHandler.builder().registerHertsServices(null).build();
         }
         return hertsMetrics;
     }

@@ -108,18 +108,18 @@ public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer 
         try {
             this.hertsHttpCaller.post(hertsMethod, request, response);
         } catch (HertsInvalidBodyException | JsonProcessingException ex) {
-            setError(ex.getMessage(), HttpServletResponse.SC_BAD_REQUEST, response);
+            setError(ex.getMessage(), HttpServletResponse.SC_BAD_REQUEST, HertsHttpErrorException.StatusCode.Status400, response);
         } catch (InvocationTargetException ex) {
             Throwable cause = ex.getCause();
             if (cause instanceof HertsHttpErrorException exception) {
-                setError(exception.getMessage(), exception.getStatusCode().getIntegerCode(), response);
+                setError(exception.getMessage(), exception.getStatusCode().getIntegerCode(), exception.getStatusCode(), response);
             } else {
                 ex.printStackTrace();
-                setError(ex.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+                setError(ex.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, HertsHttpErrorException.StatusCode.Status500, response);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            setError(ex.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+            setError(ex.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, HertsHttpErrorException.StatusCode.Status500, response);
         }
     }
 
@@ -133,10 +133,10 @@ public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer 
         return this.methods.keySet().toArray(new String[0]);
     }
 
-    private void setError(String message, int statusCode, HttpServletResponse response) throws IOException {
+    private void setError(String message, int statusCode, HertsHttpErrorException.StatusCode statusCodeEnum, HttpServletResponse response) throws IOException {
         response.setStatus(statusCode);
         var hertsResponse = new HertsHttpErrorResponse();
-        hertsResponse.setStatusCode(HertsHttpErrorException.StatusCode.Status400);
+        hertsResponse.setStatusCode(statusCodeEnum);
         hertsResponse.setMessage(message);
         this.hertsHttpCaller.setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(hertsResponse));
     }

@@ -71,7 +71,7 @@ public class HertsHttpServer implements HertsHttpEngine {
                 HertsMetrics metrics;
                 if (this.metricsSetting != null) {
                     metrics = HertsMetricsHandler.builder()
-                            .hertsCoreServiceInterface(Collections.singletonList(coreService))
+                            .registerHertsServices(Collections.singletonList(coreService))
                             .isErrRateEnabled(this.metricsSetting.isErrRateEnabled())
                             .isJvmEnabled(this.metricsSetting.isJvmEnabled())
                             .isLatencyEnabled(this.metricsSetting.isLatencyEnabled())
@@ -80,7 +80,7 @@ public class HertsHttpServer implements HertsHttpEngine {
                             .build();
                 } else {
                     metrics = HertsMetricsHandler.builder()
-                            .hertsCoreServiceInterface(Collections.singletonList(coreService))
+                            .registerHertsServices(Collections.singletonList(coreService))
                             .build();
                 }
 

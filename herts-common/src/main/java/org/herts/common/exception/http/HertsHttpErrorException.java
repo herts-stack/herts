@@ -55,7 +55,6 @@ public abstract class HertsHttpErrorException extends RuntimeException {
             return Integer.parseInt(this.value);
         }
     }
-    public static final String CODE_451 = "451";
 
     public HertsHttpErrorException(StatusCode statusCode) {
         super();

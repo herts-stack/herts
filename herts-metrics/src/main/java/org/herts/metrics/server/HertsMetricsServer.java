@@ -8,6 +8,12 @@ import org.eclipse.jetty.server.Server;
 
 import java.io.IOException;
 
+/**
+ * Herts metrics server
+ *
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsMetricsServer {
     private final HertsMetrics hertsMetrics;
 

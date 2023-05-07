@@ -1,5 +1,7 @@
 package org.herts.httpclient;
 
+import org.herts.common.exception.http.HertsHttpError400;
+import org.herts.common.exception.http.HertsHttpError500;
 import org.herts.http.engine.HertsHttpEngine;
 import org.herts.http.engine.HertsHttpServer;
 import org.junit.jupiter.api.AfterAll;
@@ -9,8 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.HashSet;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class HertsHttpClientTest {
     private static HertsHttpEngine engine;
@@ -124,20 +125,28 @@ public class HertsHttpClientTest {
 
     @Test
     public void test11() {
-        var c = new HashSet<String>();
-        c.add("test11_list");
-
         var model = new TestDataModel();
         model.setA(Collections.singletonList("test11_list"));
         model.setB(Collections.singletonMap("test11_key", "value"));
-        //model.setC(c);
         model.setD("test11_str");
         model.setE(1);
         model.setF(0.1);
-        //model.setG(0.1f);
 
         var res = testHertsService.test11(model);
-
         assertEquals(res.getA(), model.getA());
+    }
+
+    @Test
+    public void test12() {
+        assertThrows(HertsHttpError400.class, () -> {
+            testHertsService.test12();
+        });
+    }
+
+    @Test
+    public void test13() {
+        assertThrows(HertsHttpError500.class, () -> {
+            testHertsService.test13();
+        });
     }
 }

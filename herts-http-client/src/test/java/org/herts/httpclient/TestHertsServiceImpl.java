@@ -63,4 +63,14 @@ public class TestHertsServiceImpl extends HertsHttpService<TestHertsService> imp
     public TestDataModel test11(TestDataModel a) {
         return a;
     }
+
+    @Override
+    public void test12() {
+        throw new BadRequest("test12");
+    }
+
+    @Override
+    public void test13() {
+        throw new InternalServerError("test13");
+    }
 }

@@ -16,7 +16,7 @@ public interface HertsMetricsBuilder {
      * @param hertsRpcServices HertsCoreService
      * @return Builder
      */
-    HertsMetricsBuilder hertsCoreServiceInterface(List<HertsService> hertsRpcServices);
+    HertsMetricsBuilder registerHertsServices(List<HertsService> hertsRpcServices);
 
     /**
      * Metrics rps is enabled or not
