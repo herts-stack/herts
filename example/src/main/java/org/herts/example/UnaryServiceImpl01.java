@@ -7,10 +7,10 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class UnaryServiceServiceImpl01 extends HertsUnaryService<UnaryRpcRpcService01> implements UnaryRpcRpcService01 {
-    private static final Logger logger = HertsLogger.getLogger(UnaryServiceServiceImpl01.class.getSimpleName());
+public class UnaryServiceImpl01 extends HertsUnaryService<UnaryRpcService01> implements UnaryRpcService01 {
+    private static final Logger logger = HertsLogger.getLogger(UnaryServiceImpl01.class.getSimpleName());
 
-    public UnaryServiceServiceImpl01() {
+    public UnaryServiceImpl01() {
     }
 
     public String test01(String id, String value) {

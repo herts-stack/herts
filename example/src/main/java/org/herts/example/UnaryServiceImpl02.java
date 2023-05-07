@@ -5,10 +5,10 @@ import org.herts.common.service.HertsUnaryService;
 
 import java.util.logging.Logger;
 
-public class UnaryServiceServiceImpl02 extends HertsUnaryService<UnaryRpcRpcService02> implements UnaryRpcRpcService02 {
-    private static final Logger logger = HertsLogger.getLogger(UnaryServiceServiceImpl02.class.getSimpleName());
+public class UnaryServiceImpl02 extends HertsUnaryService<UnaryRpcService02> implements UnaryRpcService02 {
+    private static final Logger logger = HertsLogger.getLogger(UnaryServiceImpl02.class.getSimpleName());
 
-    public UnaryServiceServiceImpl02() {
+    public UnaryServiceImpl02() {
     }
 
     @Override

@@ -6,10 +6,10 @@ import io.grpc.stub.StreamObserver;
 
 import java.util.logging.Logger;
 
-public class ServerStreamingServiceServiceImpl extends HertsServerStreamingService<ServerStreamingRpcService> implements ServerStreamingRpcService {
-    private static final Logger logger = HertsLogger.getLogger(ServerStreamingServiceServiceImpl.class.getSimpleName());
+public class ServerStreamingServiceImpl extends HertsServerStreamingService<ServerStreamingRpcService> implements ServerStreamingRpcService {
+    private static final Logger logger = HertsLogger.getLogger(ServerStreamingServiceImpl.class.getSimpleName());
 
-    public ServerStreamingServiceServiceImpl() {
+    public ServerStreamingServiceImpl() {
     }
 
     @Override

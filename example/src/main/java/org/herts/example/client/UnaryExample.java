@@ -1,9 +1,9 @@
 package org.herts.example.client;
 
 import org.herts.example.HelloRequest;
-import org.herts.example.UnaryRpcRpcService01;
+import org.herts.example.UnaryRpcService01;
 import org.herts.common.logger.HertsLogger;
-import org.herts.example.UnaryRpcRpcService02;
+import org.herts.example.UnaryRpcService02;
 import org.herts.rpcclient.HertsRpcClient;
 import org.herts.rpcclient.HertsRpcClientBuilder;
 import org.herts.rpcclient.HertsRpcClientInterceptBuilder;
@@ -20,12 +20,12 @@ public class UnaryExample {
         HertsRpcClient client = HertsRpcClientBuilder
                 .builder("localhost", 9000)
                 .secure(false)
-                .registerHertsRpcInterface(UnaryRpcRpcService01.class)
-                .registerHertsRpcInterface(UnaryRpcRpcService02.class)
+                .registerHertsRpcInterface(UnaryRpcService01.class)
+                .registerHertsRpcInterface(UnaryRpcService02.class)
                 .interceptor(HertsRpcClientInterceptBuilder.builder(grpcClientInterceptor).build())
                 .connect();
 
-        UnaryRpcRpcService01 service_01 = client.createHertRpcService(UnaryRpcRpcService01.class);
+        UnaryRpcService01 service_01 = client.createHertRpcService(UnaryRpcService01.class);
         var res01 = service_01.test01("TEST01", "VALUE01");
         logger.info(res01);
 
@@ -38,7 +38,7 @@ public class UnaryExample {
         var res100 = service_01.test100(new HelloRequest());
         logger.info(""  + res100);
 
-        UnaryRpcRpcService02 service_02 = client.createHertRpcService(UnaryRpcRpcService02.class);
+        UnaryRpcService02 service_02 = client.createHertRpcService(UnaryRpcService02.class);
         var res0201 = service_02.hello01("ID", "Hello!");
         logger.info(res0201);
         client.getChannel().shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
