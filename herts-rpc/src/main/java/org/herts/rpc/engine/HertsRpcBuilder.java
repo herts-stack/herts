@@ -107,6 +107,11 @@ public class HertsRpcBuilder implements HertsRpcEngine {
     }
 
     @Override
+    public void stop() {
+        server.shutdown();
+    }
+
+    @Override
     public Server getServer() {
         if (this.server == null) {
             return null;

@@ -6,6 +6,7 @@ import org.herts.example.UnaryServiceImpl01;
 import org.herts.example.UnaryServiceImpl02;
 import org.herts.common.context.HertsMetricsSetting;
 import org.herts.rpc.HertsRpcInterceptBuilder;
+import org.herts.rpc.engine.GrpcServerOption;
 import org.herts.rpc.engine.HertsRpcBuilder;
 
 public class UnaryExample {
@@ -19,7 +20,10 @@ public class UnaryExample {
         UnaryRpcService01 service01 = new UnaryServiceImpl01();
         UnaryRpcService02 service02 = new UnaryServiceImpl02();
 
-        var engine = HertsRpcBuilder.builder()
+        GrpcServerOption option = new GrpcServerOption();
+        option.setPort(9999);
+
+        var engine = HertsRpcBuilder.builder(option)
                 .registerHertsRpcService(service01, interceptor)
                 .registerHertsRpcService(service02, interceptor)
                 .enableMetrics(metrics)

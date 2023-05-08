@@ -51,7 +51,7 @@ public class HertsRpcUMethodHandler<Req, Resp> implements
         }
 
         this.reflectMethod = method;
-        if (hertsMetrics.isMetricsEnabled()) {
+        if (hertsMetrics != null && hertsMetrics.isMetricsEnabled()) {
             this.hertsRpcCaller = new HertsRpcMetricsCaller(this.reflectMethod, hertsMetrics, serializer, coreObject, requests);
         } else {
             this.hertsRpcCaller = new HertsRpcSimpleCaller(this.reflectMethod, serializer, coreObject, requests);
@@ -68,7 +68,7 @@ public class HertsRpcUMethodHandler<Req, Resp> implements
         try {
             Object response = this.hertsRpcCaller.invokeUnary(request, responseObserver);
             if (response == null) {
-                responseObserver.onNext(null);
+                responseObserver.onNext((Resp) new byte[]{});
                 responseObserver.onCompleted();
             } else {
                 var responseBytes = this.serializer.serialize(response);

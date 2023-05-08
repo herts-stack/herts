@@ -8,13 +8,14 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class HertsRpcSimpleCaller implements HertsRpcCaller {
+public class HertsRpcSimpleCaller extends BaseCaller implements HertsRpcCaller {
     private final Method reflectMethod;
     private final HertsSerializer hertsSerializer;
     private final Object coreObject;
     private final Object[] requests;
 
     public HertsRpcSimpleCaller(Method reflectMethod, HertsSerializer hertsSerializer, Object coreObject, Object[] requests) {
+        super(reflectMethod, hertsSerializer, coreObject, requests);
         this.reflectMethod = reflectMethod;
         this.hertsSerializer = hertsSerializer;
         this.coreObject = coreObject;
@@ -45,18 +46,13 @@ public class HertsRpcSimpleCaller implements HertsRpcCaller {
 
     @Override
     public <T, K> Object invokeUnary(T request, StreamObserver<K> responseObserver) throws InvocationTargetException, IllegalAccessException, IOException {
-        if (((byte[]) request).length > 0) {
-            HertsMsg deserialized = this.hertsSerializer.deserialize((byte[]) request, HertsMsg.class);
-            var index = 0;
-            for (Object obj : deserialized.getMessageParameters()) {
-                var castType = deserialized.getClassTypes()[index];
-                this.requests[index] = this.hertsSerializer.convert(obj, castType);
-                index++;
-            }
-
-            return this.reflectMethod.invoke(this.coreObject, this.requests);
+        Object res;
+        setMethodRequests(request);
+        if (this.requests != null && this.requests.length > 0) {
+            res = call(this.requests);
         } else {
-            return this.reflectMethod.invoke(this.coreObject);
+            res = call(null);
         }
+        return res;
     }
 }

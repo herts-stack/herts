@@ -3,7 +3,9 @@ package org.herts.example;
 import org.herts.common.logger.HertsLogger;
 import org.herts.common.service.HertsUnaryService;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -32,5 +34,21 @@ public class UnaryServiceImpl01 extends HertsUnaryService<UnaryRpcService01> imp
     public boolean test100(HelloRequest req) {
         logger.info("------------ Unary test100 RPC");
         return false;
+    }
+
+    @Override
+    public List<String> test101(Map<String, String> a, List<String> b) {
+        logger.info("------------ Unary test101 RPC");
+        List<String> result = new ArrayList<>();
+        for (Map.Entry<String, String> entries : a.entrySet()){
+            result.add(entries.getValue());
+        }
+        result.addAll(b);
+        return result;
+    }
+
+    @Override
+    public void test102() {
+        logger.info("------------ Unary test102 RPC");
     }
 }

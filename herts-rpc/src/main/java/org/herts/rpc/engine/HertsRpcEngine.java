@@ -17,6 +17,11 @@ public interface HertsRpcEngine {
     void start();
 
     /**
+     * diStop Herts rpc server
+     */
+    void stop();
+
+    /**
      * Get grpc Server
      * @return gRPC server
      */

@@ -22,8 +22,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
     private final HertsType hertsType;
     private final boolean isSecureConnection;
     private final List<Class<?>> registeredIfServices;
-
-    private Channel channel;
+    private final Channel channel;
 
     public HertsRpcClientBuilder(IBuilder builder) {
         this.connectedHost = builder.getConnectedHost();

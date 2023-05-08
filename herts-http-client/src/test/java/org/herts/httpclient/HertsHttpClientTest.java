@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
-import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -108,13 +107,6 @@ public class HertsHttpClientTest {
         assertEquals(1, res.size());
         assertEquals("value", res.get("key"));
     }
-
-//    @Test
-//    public void test09() {
-//        var res = testHertsService.test09();
-//        assertEquals(1, res.size());
-//        assertEquals("TEST_SET", res.stream().findFirst().get());
-//    }
 
     @Test
     public void test10() {

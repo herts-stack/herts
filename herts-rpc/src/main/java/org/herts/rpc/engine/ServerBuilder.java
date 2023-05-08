@@ -23,7 +23,7 @@ import org.herts.rpc.handler.HertsRpcBMethodHandler;
 import org.herts.rpc.handler.HertsRpcCStreamingMethodHandler;
 import org.herts.rpc.handler.HertsRpcSStreamingMethodHandler;
 import org.herts.rpc.handler.HertsRpcUMethodHandler;
-import org.herts.rpc.model.ReflectMethod;
+import org.herts.rpc.modelx.ReflectMethod;
 import org.herts.rpc.validator.HertsRpcValidator;
 
 import io.grpc.BindableService;

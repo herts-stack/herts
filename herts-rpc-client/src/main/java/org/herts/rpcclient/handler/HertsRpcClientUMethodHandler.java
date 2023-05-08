@@ -14,14 +14,12 @@ import io.grpc.stub.ClientCalls;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class HertsRpcClientUMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsRpcClientUMethodHandler> implements InvocationHandler {
     private final HertsSerializer serializer = new HertsSerializer();
-    private final Map<String, Class<?>> methodTypes = new HashMap<>();
+    private final ConcurrentMap<String, Method> methodInfos = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, MethodDescriptor<byte[], byte[]>> descriptors = new ConcurrentHashMap<>();
     private final Class<?> hertsRpcService;
     private final String serviceName;
@@ -30,7 +28,6 @@ public class HertsRpcClientUMethodHandler extends io.grpc.stub.AbstractBlockingS
         super(channel, callOptions);
         this.hertsRpcService = hertsRpcService;
         this.serviceName = hertsRpcService.getName();
-        System.out.println(this.serviceName);
 
         Class<?> hertsServiceClass;
         try {
@@ -41,7 +38,7 @@ public class HertsRpcClientUMethodHandler extends io.grpc.stub.AbstractBlockingS
 
         Method[] methods = hertsServiceClass.getDeclaredMethods();
         for (Method method : methods) {
-            methodTypes.put(method.getName(), method.getReturnType());
+            this.methodInfos.put(method.getName(), method);
         }
     }
 
@@ -55,19 +52,19 @@ public class HertsRpcClientUMethodHandler extends io.grpc.stub.AbstractBlockingS
             this.descriptors.put(methodName, methodDescriptor);
         }
 
+        Method cachedMethod = this.methodInfos.get(methodName);
+        Class<?> returnType = cachedMethod.getReturnType();
         byte[] bytes = new byte[]{};
         if (args != null) {
-            int index = 0;
-            Class<?>[] classTypes = new Class<?>[args.length];
-            for (Object arg : args) {
-                classTypes[index] = arg.getClass();
-                index++;
-            }
-            bytes = this.serializer.serialize(new HertsMsg(args, classTypes));
+            Class<?>[] parameterTypes = cachedMethod.getParameterTypes();
+            bytes = this.serializer.serialize(new HertsMsg(args, parameterTypes));
         }
 
         var res = ClientCalls.blockingUnaryCall(getChannel(), methodDescriptor, getCallOptions(), bytes);
-        return this.serializer.deserialize(res, this.methodTypes.get(methodName));
+        if (returnType.getName().equals("void")) {
+            return null;
+        }
+        return this.serializer.deserialize(res, returnType);
     }
 
     @Override
