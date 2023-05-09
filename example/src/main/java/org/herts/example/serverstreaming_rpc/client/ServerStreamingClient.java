@@ -34,7 +34,7 @@ public class ServerStreamingClient {
             @Override
             public void onError(Throwable t) {
                 t.printStackTrace();
-                logger.info("ERRRR");
+                logger.info("ERROR");
             }
 
             @Override
@@ -46,7 +46,7 @@ public class ServerStreamingClient {
         service.test01("id", "no", new StreamObserver<HelloResponse02>() {
             @Override
             public void onNext(HelloResponse02 value) {
-                System.err.println("recevice");
+                logger.info("recevice");
             }
 
             @Override
@@ -56,7 +56,7 @@ public class ServerStreamingClient {
 
             @Override
             public void onCompleted() {
-                System.err.println("done");
+                logger.info("done");
             }
         });
     }
