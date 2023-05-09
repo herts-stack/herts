@@ -1,22 +1,21 @@
-package org.herts.example.client;
+package org.herts.example.http.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.herts.common.exception.http.HertsHttpError400;
-import org.herts.common.exception.http.HertsHttpErrorException;
-import org.herts.example.HttpService01;
+import org.herts.example.http.HttpService01;
 import org.herts.common.logger.HertsLogger;
 import org.herts.common.serializer.HertsSerializeType;
 import org.herts.common.serializer.HertsSerializer;
-import org.herts.example.HttpService02;
-import org.herts.example.model.TestData;
+import org.herts.example.http.HttpService02;
+import org.herts.example.common.TestData;
 import org.herts.httpclient.HertsHttpClient;
 import org.herts.httpclient.HertsHttpClientBase;
 
 import java.util.Collections;
 import java.util.logging.Logger;
 
-public class HttpExample {
-    private static final Logger logger = HertsLogger.getLogger(HttpExample.class.getSimpleName());
+public class HttpServer {
+    private static final Logger logger = HertsLogger.getLogger(HttpServer.class.getSimpleName());
     private static final HertsSerializer serializer = new HertsSerializer(HertsSerializeType.Json);
 
     public static void run() throws JsonProcessingException {
