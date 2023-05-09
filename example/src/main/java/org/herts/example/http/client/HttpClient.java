@@ -2,6 +2,7 @@ package org.herts.example.http.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.herts.common.exception.http.HertsHttpError400;
+import org.herts.example.common.Constant;
 import org.herts.example.http.HttpService01;
 import org.herts.common.logger.HertsLogger;
 import org.herts.common.serializer.HertsSerializeType;
@@ -14,8 +15,8 @@ import org.herts.httpclient.HertsHttpClientBase;
 import java.util.Collections;
 import java.util.logging.Logger;
 
-public class HttpServer {
-    private static final Logger logger = HertsLogger.getLogger(HttpServer.class.getSimpleName());
+public class HttpClient {
+    private static final Logger logger = HertsLogger.getLogger(HttpClient.class.getSimpleName());
     private static final HertsSerializer serializer = new HertsSerializer(HertsSerializeType.Json);
 
     public static void run() throws JsonProcessingException {
@@ -24,7 +25,7 @@ public class HttpServer {
                 .registerHertService(HttpService01.class)
                 .registerHertService(HttpService02.class)
                 .secure(false)
-                .port(8080)
+                .port(Constant.port)
                 .build();
 
         var service = client.createHertsService(HttpService01.class, Collections.singletonMap("Authorization", "Bearer XXXXXXX"));

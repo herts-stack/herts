@@ -1,5 +1,6 @@
 package org.herts.example.unary_rpc.client;
 
+import org.herts.example.common.Constant;
 import org.herts.example.common.GrpcClientInterceptor;
 import org.herts.example.common.HelloRequest;
 import org.herts.example.unary_rpc.UnaryRpcService01;
@@ -13,14 +14,14 @@ import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-public class UnaryServer {
-    private static final Logger logger = HertsLogger.getLogger(UnaryServer.class.getSimpleName());
+public class UnaryClient {
+    private static final Logger logger = HertsLogger.getLogger(UnaryClient.class.getSimpleName());
 
     public static void run() throws InterruptedException {
         GrpcClientInterceptor grpcClientInterceptor = new GrpcClientInterceptor();
 
         HertsRpcClient client = HertsRpcClientBuilder
-                .builder("localhost", 9999)
+                .builder("localhost", Constant.port)
                 .secure(false)
                 .registerHertsRpcInterface(UnaryRpcService01.class)
                 .registerHertsRpcInterface(UnaryRpcService02.class)

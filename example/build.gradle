@@ -26,14 +26,8 @@ test {
     useJUnitPlatform()
 }
 
-tasks.register('runServer', JavaExec) {
+tasks.register('runExample', JavaExec) {
     dependsOn 'classes'
-    main = 'org.herts.example.server.Main'
-    classpath = sourceSets.main.runtimeClasspath
-}
-
-tasks.register('runClient', JavaExec) {
-    dependsOn 'classes'
-    main = 'org.herts.example.client.Main'
+    main = 'org.herts.example.Main'
     classpath = sourceSets.main.runtimeClasspath
 }

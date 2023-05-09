@@ -1,7 +1,8 @@
-package org.herts.example;
+package org.herts.example.unary_rpc;
 
 import org.herts.common.logger.HertsLogger;
 import org.herts.common.service.HertsUnaryService;
+import org.herts.example.common.HelloRequest;
 
 import java.util.ArrayList;
 import java.util.Collections;

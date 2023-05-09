@@ -1,15 +1,17 @@
-package org.herts.example.server;
+package org.herts.example.unary_rpc.server;
 
-import org.herts.example.UnaryRpcService01;
-import org.herts.example.UnaryRpcService02;
-import org.herts.example.UnaryServiceImpl01;
-import org.herts.example.UnaryServiceImpl02;
+import org.herts.example.common.Constant;
+import org.herts.example.common.GrpcServerInterceptor;
+import org.herts.example.unary_rpc.UnaryRpcService01;
+import org.herts.example.unary_rpc.UnaryRpcService02;
+import org.herts.example.unary_rpc.UnaryServiceImpl01;
+import org.herts.example.unary_rpc.UnaryServiceImpl02;
 import org.herts.common.context.HertsMetricsSetting;
 import org.herts.rpc.HertsRpcInterceptBuilder;
 import org.herts.rpc.engine.GrpcServerOption;
 import org.herts.rpc.engine.HertsRpcBuilder;
 
-public class UnaryExample {
+public class UnaryServer {
     public static void run() {
         var metrics = HertsMetricsSetting.builder()
                 .isRpsEnabled(true)
@@ -20,10 +22,7 @@ public class UnaryExample {
         UnaryRpcService01 service01 = new UnaryServiceImpl01();
         UnaryRpcService02 service02 = new UnaryServiceImpl02();
 
-        GrpcServerOption option = new GrpcServerOption();
-        option.setPort(9999);
-
-        var engine = HertsRpcBuilder.builder(option)
+        var engine = HertsRpcBuilder.builder(Constant.getGrpcServerOption())
                 .registerHertsRpcService(service01, interceptor)
                 .registerHertsRpcService(service02, interceptor)
                 .enableMetrics(metrics)

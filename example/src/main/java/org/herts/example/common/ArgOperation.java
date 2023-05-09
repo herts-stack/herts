@@ -1,10 +1,10 @@
-package org.herts.example;
+package org.herts.example.common;
 
 import org.herts.common.context.HertsType;
 
 public class ArgOperation {
     public static char[] allowedArgs = new char[] {'U', 'u', 'C', 'c', 'S', 's', 'B', 'b', 'h', 'H'};
-    public static boolean isOk(String arg) {
+    public static boolean isHertsTypeOk(String arg) {
         if (arg == null || arg.isEmpty()) {
             return false;
         }
@@ -15,6 +15,18 @@ public class ArgOperation {
             }
         }
         return false;
+    }
+
+    public static final String SERVER = "server";
+    public static final String CLIENT = "client";
+    public static boolean isExecuteTypeOk(String arg) {
+        if (arg == null || arg.isEmpty()) {
+            return false;
+        }
+        if (!arg.equals(SERVER) && !arg.equals(CLIENT)) {
+            return false;
+        }
+        return true;
     }
 
     public static HertsType convert(String arg) {

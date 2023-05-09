@@ -1,4 +1,4 @@
-package org.herts.example.model;
+package org.herts.example.common;
 
 public class TestData {
     private String foo;

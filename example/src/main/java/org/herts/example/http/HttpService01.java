@@ -1,8 +1,8 @@
-package org.herts.example;
+package org.herts.example.http;
 
 import org.herts.common.annotation.HertsHttp;
 import org.herts.common.service.HertsService;
-import org.herts.example.model.TestData;
+import org.herts.example.common.TestData;
 
 import java.util.List;
 import java.util.Map;

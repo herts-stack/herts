@@ -1,8 +1,10 @@
-package org.herts.example;
+package org.herts.example.clientstreaming_rpc;
 
 import org.herts.common.logger.HertsLogger;
 import org.herts.common.service.HertsClientStreamingService;
 import io.grpc.stub.StreamObserver;
+import org.herts.example.common.HelloRequest;
+import org.herts.example.common.HelloResponse01;
 
 import java.util.logging.Logger;
 

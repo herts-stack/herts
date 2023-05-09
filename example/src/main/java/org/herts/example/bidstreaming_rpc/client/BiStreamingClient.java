@@ -1,7 +1,8 @@
-package org.herts.example.client;
+package org.herts.example.bidstreaming_rpc.client;
 
-import org.herts.example.BidirectionalStreamingRpcService;
-import org.herts.example.HelloResponse01;
+import org.herts.example.bidstreaming_rpc.BidirectionalStreamingRpcService;
+import org.herts.example.common.Constant;
+import org.herts.example.common.HelloResponse01;
 import org.herts.common.logger.HertsLogger;
 import org.herts.rpcclient.HertsRpcClient;
 import org.herts.rpcclient.HertsRpcClientBuilder;
@@ -10,13 +11,13 @@ import io.grpc.stub.StreamObserver;
 
 import java.util.logging.Logger;
 
-public class BiStreamingExample {
-    private static final Logger logger = HertsLogger.getLogger(BiStreamingExample.class.getSimpleName());
+public class BiStreamingClient {
+    private static final Logger logger = HertsLogger.getLogger(BiStreamingClient.class.getSimpleName());
 
     public static void run() {
 
         HertsRpcClient client = HertsRpcClientBuilder
-                .builder("localhost", 9000)
+                .builder("localhost", Constant.port)
                 .secure(false)
                 .registerHertsRpcInterface(BidirectionalStreamingRpcService.class)
                 .connect();

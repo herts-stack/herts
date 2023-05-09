@@ -1,9 +1,9 @@
-package org.herts.example;
+package org.herts.example.http;
 
 import org.herts.common.exception.http.HertsHttpError400;
 import org.herts.common.logger.HertsLogger;
 import org.herts.common.service.HertsHttpService;
-import org.herts.example.model.TestData;
+import org.herts.example.common.TestData;
 
 import java.util.Collections;
 import java.util.List;

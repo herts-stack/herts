@@ -1,22 +1,23 @@
-package org.herts.example.client;
+package org.herts.example.serverstreaming_rpc.client;
 
-import org.herts.example.HelloRequest;
-import org.herts.example.HelloResponse01;
-import org.herts.example.ServerStreamingRpcService;
+import org.herts.example.common.Constant;
+import org.herts.example.common.HelloRequest;
+import org.herts.example.common.HelloResponse01;
+import org.herts.example.serverstreaming_rpc.ServerStreamingRpcService;
 import org.herts.common.logger.HertsLogger;
-import org.herts.example.HelloResponse02;
+import org.herts.example.common.HelloResponse02;
 import org.herts.rpcclient.HertsRpcClient;
 import org.herts.rpcclient.HertsRpcClientBuilder;
 import io.grpc.stub.StreamObserver;
 
 import java.util.logging.Logger;
 
-public class ServerStreamingExample {
-    private static final Logger logger = HertsLogger.getLogger(ServerStreamingExample.class.getSimpleName());
+public class ServerStreamingClient {
+    private static final Logger logger = HertsLogger.getLogger(ServerStreamingClient.class.getSimpleName());
 
     public static void run() {
         HertsRpcClient client = HertsRpcClientBuilder
-                .builder("localhost", 9999)
+                .builder("localhost", Constant.port)
                 .secure(false)
                 .registerHertsRpcInterface(ServerStreamingRpcService.class)
                 .connect();

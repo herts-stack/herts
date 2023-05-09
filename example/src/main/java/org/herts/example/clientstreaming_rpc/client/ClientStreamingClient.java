@@ -1,9 +1,11 @@
-package org.herts.example.client;
+package org.herts.example.clientstreaming_rpc.client;
 
-import org.herts.example.ClientStreamingRpcService;
-import org.herts.example.HelloRequest;
-import org.herts.example.HelloResponse01;
+import org.herts.example.clientstreaming_rpc.ClientStreamingRpcService;
+import org.herts.example.common.Constant;
+import org.herts.example.common.HelloRequest;
+import org.herts.example.common.HelloResponse01;
 import org.herts.common.logger.HertsLogger;
+import org.herts.example.common.GrpcClientInterceptor;
 import org.herts.rpcclient.HertsRpcClient;
 import org.herts.rpcclient.HertsRpcClientBuilder;
 import org.herts.rpcclient.HertsRpcClientInterceptBuilder;
@@ -12,12 +14,12 @@ import io.grpc.stub.StreamObserver;
 
 import java.util.logging.Logger;
 
-public class ClientStreamingExample {
-    private static final Logger logger = HertsLogger.getLogger(ClientStreamingExample.class.getSimpleName());
+public class ClientStreamingClient {
+    private static final Logger logger = HertsLogger.getLogger(ClientStreamingClient.class.getSimpleName());
 
     public static void run() {
         HertsRpcClient client = HertsRpcClientBuilder
-                .builder("localhost", 9000)
+                .builder("localhost", Constant.port)
                 .secure(false)
                 .registerHertsRpcInterface(ClientStreamingRpcService.class)
                 .interceptor(HertsRpcClientInterceptBuilder.builder(new GrpcClientInterceptor()).build())

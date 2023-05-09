@@ -1,4 +1,4 @@
-package org.herts.example;
+package org.herts.example.common;
 
 import org.herts.common.context.HertsMsg;
 

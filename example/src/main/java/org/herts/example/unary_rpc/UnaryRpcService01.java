@@ -1,8 +1,9 @@
-package org.herts.example;
+package org.herts.example.unary_rpc;
 
 import org.herts.common.annotation.HertsRpc;
 import org.herts.common.context.HertsType;
 import org.herts.common.service.HertsService;
+import org.herts.example.common.HelloRequest;
 
 import java.util.List;
 import java.util.Map;

@@ -1,6 +1,5 @@
-package org.herts.example.client;
+package org.herts.example.common;
 
-import org.herts.example.Constant;
 import org.herts.rpcclient.HertsRpcClientInterceptor;
 import org.herts.common.logger.HertsLogger;
 import io.grpc.CallOptions;

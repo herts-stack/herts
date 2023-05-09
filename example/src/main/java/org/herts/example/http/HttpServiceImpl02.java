@@ -1,4 +1,4 @@
-package org.herts.example;
+package org.herts.example.http;
 
 import org.herts.common.logger.HertsLogger;
 import org.herts.common.service.HertsHttpService;

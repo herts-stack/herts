@@ -1,4 +1,4 @@
-package org.herts.example;
+package org.herts.example.unary_rpc;
 
 import org.herts.common.logger.HertsLogger;
 import org.herts.common.service.HertsUnaryService;

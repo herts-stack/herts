@@ -1,4 +1,4 @@
-package org.herts.example;
+package org.herts.example.common;
 
 import java.io.Serializable;
 
