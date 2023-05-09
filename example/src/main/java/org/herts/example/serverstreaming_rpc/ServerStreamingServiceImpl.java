@@ -3,14 +3,17 @@ package org.herts.example.serverstreaming_rpc;
 import org.herts.common.logger.HertsLogger;
 import org.herts.common.service.HertsServerStreamingService;
 import io.grpc.stub.StreamObserver;
+import org.herts.example.clientstreaming_rpc.client.ClientStreamingClient;
 import org.herts.example.common.HelloRequest;
 import org.herts.example.common.HelloResponse01;
 import org.herts.example.common.HelloResponse02;
+import org.slf4j.LoggerFactory;
 
 import java.util.logging.Logger;
 
 public class ServerStreamingServiceImpl extends HertsServerStreamingService<ServerStreamingRpcService> implements ServerStreamingRpcService {
     private static final Logger logger = HertsLogger.getLogger(ServerStreamingServiceImpl.class.getSimpleName());
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ClientStreamingClient.class);
 
     public ServerStreamingServiceImpl() {
     }

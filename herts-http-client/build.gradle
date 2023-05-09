@@ -1,9 +1,11 @@
 plugins {
     id 'java'
 }
+apply plugin: 'application'
 
 group 'org.herts.httpclient'
 version '1.0.0'
+sourceCompatibility = '17'
 
 repositories {
     mavenCentral()
