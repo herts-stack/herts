@@ -7,5 +7,5 @@ import io.grpc.stub.StreamObserver;
 
 @HertsRpc(value = HertsType.BidirectionalStreaming)
 public interface BidirectionalStreamingRpcService extends HertsService {
-    StreamObserver<HelloResponse> test04(final StreamObserver<HelloResponse> responseObserver);
+    StreamObserver<HelloResponse01> test04(final StreamObserver<HelloResponse01> responseObserver);
 }

@@ -26,7 +26,7 @@ public class UnaryExample {
                 .interceptor(HertsRpcClientInterceptBuilder.builder(grpcClientInterceptor).build())
                 .connect();
 
-        UnaryRpcService01 service_01 = client.createHertRpcService(UnaryRpcService01.class);
+        UnaryRpcService01 service_01 = client.createHertsRpcService(UnaryRpcService01.class);
         var res01 = service_01.test01("TEST01", "VALUE01");
         logger.info(res01);
 
@@ -44,7 +44,7 @@ public class UnaryExample {
 
         service_01.test102();
 
-        UnaryRpcService02 service_02 = client.createHertRpcService(UnaryRpcService02.class);
+        UnaryRpcService02 service_02 = client.createHertsRpcService(UnaryRpcService02.class);
         var res0201 = service_02.hello01("ID", "Hello!");
         logger.info(res0201);
         client.getChannel().shutdownNow().awaitTermination(5, TimeUnit.SECONDS);

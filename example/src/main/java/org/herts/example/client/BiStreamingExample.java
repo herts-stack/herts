@@ -1,7 +1,7 @@
 package org.herts.example.client;
 
 import org.herts.example.BidirectionalStreamingRpcService;
-import org.herts.example.HelloResponse;
+import org.herts.example.HelloResponse01;
 import org.herts.common.logger.HertsLogger;
 import org.herts.rpcclient.HertsRpcClient;
 import org.herts.rpcclient.HertsRpcClientBuilder;
@@ -21,10 +21,10 @@ public class BiStreamingExample {
                 .registerHertsRpcInterface(BidirectionalStreamingRpcService.class)
                 .connect();
 
-        BidirectionalStreamingRpcService service = client.createHertRpcService(BidirectionalStreamingRpcService.class);
+        BidirectionalStreamingRpcService service = client.createHertsRpcService(BidirectionalStreamingRpcService.class);
         var res1 = service.test04(new StreamObserver<>() {
             @Override
-            public void onNext(HelloResponse req) {
+            public void onNext(HelloResponse01 req) {
                 logger.info(String.format("Got message at %d, %d", req.getCode(), req.getTimestamp()));
             }
 
@@ -40,7 +40,7 @@ public class BiStreamingExample {
             }
         });
 
-        var r = new HelloResponse();
+        var r = new HelloResponse01();
         r.setCode(10000);
         res1.onNext(r);
         res1.onCompleted();

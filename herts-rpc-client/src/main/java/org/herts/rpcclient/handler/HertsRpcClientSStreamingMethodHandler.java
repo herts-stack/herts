@@ -16,14 +16,14 @@ import io.grpc.stub.StreamObserver;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class HertsRpcClientSStreamingMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsRpcClientSStreamingMethodHandler> implements InvocationHandler {
     private final HertsSerializer serializer = new HertsSerializer();
-    private final Map<String, Class<?>> methodTypes = new HashMap<>();
+    private final ConcurrentMap<String, Method> methodInfos = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, MethodDescriptor<Object, Object>> descriptors = new ConcurrentHashMap<>();
     private final Class<?> hertsRpcService;
     private final String serviceName;
@@ -42,7 +42,7 @@ public class HertsRpcClientSStreamingMethodHandler extends io.grpc.stub.Abstract
 
         Method[] methods = hertsServiceClass.getDeclaredMethods();
         for (Method method : methods) {
-            methodTypes.put(method.getName(), method.getReturnType());
+            this.methodInfos.put(method.getName(), method);
         }
     }
 
@@ -56,26 +56,25 @@ public class HertsRpcClientSStreamingMethodHandler extends io.grpc.stub.Abstract
             this.descriptors.put(methodName, methodDescriptor);
         }
 
-        byte[] requestBytes;
         int index = 0;
-        Object[] req = new Object[args.length-1];
-        Class<?>[] classTypes = new Class<?>[args.length];
-        Object observer = null;
-        for (Object obj : args) {
-            if (obj instanceof StreamObserver) {
-                observer = obj;
+        List<Object> methodObservers = new ArrayList<>();
+        Object[] methodParameters = new Object[args.length-1];
+        Class<?>[] parameterTypes = this.methodInfos.get(methodName).getParameterTypes();
+        for (Object arg : args) {
+            if (arg instanceof StreamObserver) {
+                methodObservers.add(arg);
             } else {
-                req[index] = obj;
+                methodParameters[index] = arg;
             }
-            classTypes[index] = obj.getClass();
             index++;
         }
 
-        requestBytes = this.serializer.serialize(new HertsMsg(req, classTypes));
-        StreamObserver<Object> responseObserver = (StreamObserver<Object>) observer;
-        if (responseObserver == null) {
+        if (methodObservers.size() != 1) {
             throw new HertsStreamingResBodyException("Streaming response observer body data is null");
         }
+
+        byte[] requestBytes = this.serializer.serialize(new HertsMsg(methodParameters, parameterTypes));
+        StreamObserver<Object> responseObserver = (StreamObserver<Object>) methodObservers.get(0);
         ClientCalls.asyncServerStreamingCall(getChannel().newCall(methodDescriptor, getCallOptions()), requestBytes, responseObserver);
         return proxy;
     }

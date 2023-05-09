@@ -20,7 +20,6 @@ import java.util.logging.Logger;
  */
 public class HertsStramingMarshaller implements MethodDescriptor.Marshaller<Object> {
     private static final Logger logger = HertsLogger.getLogger(HertsStramingMarshaller.class.getSimpleName());
-    private final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
     public HertsStramingMarshaller() {
     }
@@ -31,12 +30,15 @@ public class HertsStramingMarshaller implements MethodDescriptor.Marshaller<Obje
             return null;
         }
 
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream oos;
         try {
-            oos = new ObjectOutputStream(this.byteArrayOutputStream);
+            oos = new ObjectOutputStream(byteArrayOutputStream);
             oos.writeObject(value);
             oos.close();
-            return new ByteArrayInputStream(this.byteArrayOutputStream.toByteArray());
+            var data = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            byteArrayOutputStream.close();
+            return data;
         } catch (Exception ex) {
             throw new HertsMessageException(ex);
         }

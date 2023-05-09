@@ -1,6 +1,5 @@
 package org.herts.rpc.handler;
 
-import org.herts.common.context.HertsMsg;
 import org.herts.common.serializer.HertsSerializer;
 import org.herts.metrics.HertsMetrics;
 import org.herts.metrics.context.HertsMetricsContext;
@@ -58,14 +57,8 @@ public class HertsRpcMetricsCaller extends BaseCaller implements HertsRpcCaller 
     public <T, K> Object invokeServerStreaming(T request, StreamObserver<K> responseObserver) throws InvocationTargetException, IllegalAccessException, IOException {
         var timer = before();
         Object res;
+        setMethodRequests(request);
         if (((byte[]) request).length > 0) {
-            HertsMsg deserialized = this.hertsSerializer.deserialize((byte[]) request, HertsMsg.class);
-            var index = 0;
-            for (Object obj : deserialized.getMessageParameters()) {
-                var castType = deserialized.getClassTypes()[index];
-                this.requests[index] = this.hertsSerializer.convert(obj, castType);
-                index++;
-            }
             this.requests[this.requests.length-1] =  (StreamObserver<Object>) responseObserver;
             res = this.reflectMethod.invoke(this.coreObject, this.requests);
         } else {

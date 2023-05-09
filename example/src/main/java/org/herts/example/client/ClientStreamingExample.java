@@ -2,7 +2,7 @@ package org.herts.example.client;
 
 import org.herts.example.ClientStreamingRpcService;
 import org.herts.example.HelloRequest;
-import org.herts.example.HelloResponse;
+import org.herts.example.HelloResponse01;
 import org.herts.common.logger.HertsLogger;
 import org.herts.rpcclient.HertsRpcClient;
 import org.herts.rpcclient.HertsRpcClientBuilder;
@@ -23,10 +23,10 @@ public class ClientStreamingExample {
                 .interceptor(HertsRpcClientInterceptBuilder.builder(new GrpcClientInterceptor()).build())
                 .connect();
 
-        ClientStreamingRpcService service = client.createHertRpcService(ClientStreamingRpcService.class);
+        ClientStreamingRpcService service = client.createHertsRpcService(ClientStreamingRpcService.class);
         var res = service.test10(new StreamObserver<>() {
             @Override
-            public void onNext(HelloResponse req) {
+            public void onNext(HelloResponse01 req) {
                 logger.info(String.format("Got message at %d, %d", req.getCode(), req.getTimestamp()));
             }
             @Override

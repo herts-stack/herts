@@ -9,10 +9,12 @@ sourceCompatibility = '17'
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
     implementation project(':herts-common')
+    implementation project(':herts-metrics')
 
     testImplementation project(':herts-rpc')
     testImplementation project(':herts-common')

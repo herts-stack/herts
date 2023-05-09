@@ -60,7 +60,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
     }
 
     @Override
-    public <T extends HertsService> T createHertRpcService(Class<T> interfaceType) {
+    public <T extends HertsService> T createHertsRpcService(Class<T> interfaceType) {
         if (!interfaceType.isInterface()) {
             throw new HertsRpcClientBuildException(interfaceType.getSimpleName() + " is not interface. You can create client by interface");
         }

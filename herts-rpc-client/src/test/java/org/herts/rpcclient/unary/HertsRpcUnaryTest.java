@@ -53,7 +53,7 @@ public class HertsRpcUnaryTest {
 
     @Test
     public void test01() {
-        TestUnaryRpcService rpc = client.createHertRpcService(TestUnaryRpcService.class);
+        TestUnaryRpcService rpc = client.createHertsRpcService(TestUnaryRpcService.class);
         var result = rpc.test01("test_id", "test_value");
 
         assertTrue(result.contains("test_id"));
@@ -62,7 +62,7 @@ public class HertsRpcUnaryTest {
 
     @Test
     public void test02() {
-        TestUnaryRpcService rpc = client.createHertRpcService(TestUnaryRpcService.class);
+        TestUnaryRpcService rpc = client.createHertsRpcService(TestUnaryRpcService.class);
         var result = rpc.test02();
 
         assertTrue(result);
@@ -70,7 +70,7 @@ public class HertsRpcUnaryTest {
 
     @Test
     public void test03() {
-        TestUnaryRpcService rpc = client.createHertRpcService(TestUnaryRpcService.class);
+        TestUnaryRpcService rpc = client.createHertsRpcService(TestUnaryRpcService.class);
         var result = rpc.test03(100, 0.99);
         var value = result.get("key");
 
@@ -80,7 +80,7 @@ public class HertsRpcUnaryTest {
 
     @Test
     public void test04() {
-        TestUnaryRpcService rpc = client.createHertRpcService(TestUnaryRpcService.class);
+        TestUnaryRpcService rpc = client.createHertsRpcService(TestUnaryRpcService.class);
         var result = rpc.test04(Collections.singletonMap("key", "map_val"), Collections.singletonList("hello"));
 
         assertTrue(result.contains("map_val"));
@@ -89,14 +89,14 @@ public class HertsRpcUnaryTest {
 
     @Test
     public void test05() {
-        TestUnaryRpcService rpc = client.createHertRpcService(TestUnaryRpcService.class);
+        TestUnaryRpcService rpc = client.createHertsRpcService(TestUnaryRpcService.class);
         TestFoo foo = new TestFoo();
-        foo.setA("a");
-        foo.setB(100);
-        foo.setC(0.999);
-        foo.setD(Collections.singletonMap("key", "value"));
-        foo.setE(Collections.singletonList("list"));
-        foo.setF(Collections.emptySet());
+        foo.setA01("a");
+        foo.setB01(100);
+        foo.setC01(0.999);
+        foo.setD01(Collections.singletonMap("key", "value"));
+        foo.setE01(Collections.singletonList("list"));
+        foo.setF01(Collections.emptySet());
 
         var result = rpc.test05(foo);
         assertNotNull(result);
@@ -104,7 +104,7 @@ public class HertsRpcUnaryTest {
 
     @Test
     public void test06() {
-        TestUnaryRpcService rpc = client.createHertRpcService(TestUnaryRpcService.class);
+        TestUnaryRpcService rpc = client.createHertsRpcService(TestUnaryRpcService.class);
         rpc.test06();
     }
 }

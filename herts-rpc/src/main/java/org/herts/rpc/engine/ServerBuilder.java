@@ -181,12 +181,16 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
         if (!HertsRpcValidator.isSameHertsCoreType(this.hertsTypes)) {
             throw new HertsRpcBuildException("Please register same HertsCoreService. Not supported multiple different services");
         }
+        var hertsType = this.hertsTypes.get(0);
         var validateMsg = HertsRpcValidator.validateRegisteredServices(this.hertsRpcServices);
         if (!validateMsg.isEmpty()) {
             throw new HertsRpcBuildException(validateMsg);
         }
         if (!HertsRpcValidator.isValidStreamingRpc(this.hertsRpcServices)) {
             throw new HertsNotSupportParameterTypeException("Support StreamObserver<T> parameter only of BidirectionalStreaming and ClientStreaming. Please remove other method parameter.");
+        }
+        if (hertsType == HertsType.ServerStreaming && !HertsRpcValidator.isAllReturnVoid(this.hertsRpcServices)) {
+            throw new HertsNotSupportParameterTypeException("Support `void` return method only on ServerStreaming");
         }
         return new HertsRpcBuilder(this);
     }
