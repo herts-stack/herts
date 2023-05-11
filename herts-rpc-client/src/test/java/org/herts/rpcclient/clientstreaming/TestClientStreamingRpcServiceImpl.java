@@ -38,9 +38,17 @@ public class TestClientStreamingRpcServiceImpl extends HertsClientStreamingServi
 
     @Override
     public StreamObserver<TestHoo> test02(StreamObserver<TestFoo> responseObserver) {
+        TestFoo foo = new TestFoo();
         return new StreamObserver<TestHoo>() {
             @Override
             public void onNext(TestHoo value) {
+                String currentData = "";
+                if (foo.getA01() != null) {
+                    currentData = foo.getA01() + value.getA01() + "\n";
+                } else {
+                    currentData = value.getA01();
+                }
+                foo.setA01(currentData);
             }
 
             @Override
@@ -49,7 +57,7 @@ public class TestClientStreamingRpcServiceImpl extends HertsClientStreamingServi
 
             @Override
             public void onCompleted() {
-                responseObserver.onNext();
+                responseObserver.onNext(foo);
                 responseObserver.onCompleted();
             }
         };
@@ -57,6 +65,27 @@ public class TestClientStreamingRpcServiceImpl extends HertsClientStreamingServi
 
     @Override
     public StreamObserver<Map<String, String>> test03(StreamObserver<String> responseObserver) {
-        return null;
+        StringBuilder next = new StringBuilder();
+        return new StreamObserver<Map<String, String>>() {
+            @Override
+            public void onNext(Map<String, String> value) {
+                for (Map.Entry<String, String> entries : value.entrySet()) {
+                    next.append(entries.getKey())
+                            .append(':')
+                            .append(entries.getValue())
+                            .append("\n");
+                }
+            }
+
+            @Override
+            public void onError(Throwable t) {
+            }
+
+            @Override
+            public void onCompleted() {
+                responseObserver.onNext(next.toString());
+                responseObserver.onCompleted();
+            }
+        };
     }
 }
