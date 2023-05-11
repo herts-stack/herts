@@ -23,4 +23,16 @@ public class HertsRpcValidator extends HertsServiceValidateUtil {
         }
         return true;
     }
+
+    public static boolean isAllReturnStreamObserver(List<HertsService> hertsServices) {
+        for (HertsService hertsService : hertsServices) {
+            for (Method method : hertsService.getClass().getDeclaredMethods()) {
+                var methodReturnType = method.getReturnType().getName();
+                if (!methodReturnType.equals("io.grpc.stub.StreamObserver")) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

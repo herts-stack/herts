@@ -192,6 +192,9 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
         if (hertsType == HertsType.ServerStreaming && !HertsRpcValidator.isAllReturnVoid(this.hertsRpcServices)) {
             throw new HertsNotSupportParameterTypeException("Support `void` return method only on ServerStreaming");
         }
+        if (hertsType == HertsType.ClientStreaming && !HertsRpcValidator.isAllReturnStreamObserver(this.hertsRpcServices)) {
+            throw new HertsNotSupportParameterTypeException("Support `StreamObserver` return method only on ClientStreaming");
+        }
         return new HertsRpcBuilder(this);
     }
 
