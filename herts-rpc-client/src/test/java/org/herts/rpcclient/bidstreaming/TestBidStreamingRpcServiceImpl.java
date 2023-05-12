@@ -77,4 +77,41 @@ public class TestBidStreamingRpcServiceImpl extends HertsBidirectionalStreamingS
             }
         };
     }
+
+    @Override
+    public StreamObserver<byte[]> error01(StreamObserver<byte[]> responseObserver) {
+        return new StreamObserver<byte[]>() {
+            @Override
+            public void onNext(byte[] value) {
+                throw new RuntimeException("unexpected");
+            }
+
+            @Override
+            public void onError(Throwable t) {
+            }
+
+            @Override
+            public void onCompleted() {
+            }
+        };
+    }
+
+    @Override
+    public StreamObserver<byte[]> error02(StreamObserver<byte[]> responseObserver) {
+        return new StreamObserver<byte[]>() {
+            @Override
+            public void onNext(byte[] value) {
+                responseObserver.onNext(new byte[100]);
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                responseObserver.onError(t);
+            }
+
+            @Override
+            public void onCompleted() {
+            }
+        };
+    }
 }

@@ -14,4 +14,6 @@ public interface TestBidStreamingRpcService extends HertsService {
     StreamObserver<String> test01(final StreamObserver<String> responseObserver);
     StreamObserver<TestFoo> test02(final StreamObserver<TestHoo> responseObserver);
     StreamObserver<Map<String, String>> test03(final StreamObserver<Map<String, String>> responseObserver);
+    StreamObserver<byte[]> error01(final StreamObserver<byte[]> responseObserver);
+    StreamObserver<byte[]> error02(final StreamObserver<byte[]> responseObserver);
 }

@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HertsBidStreamingRpcTest {
     private static final int port = 9999;
@@ -160,5 +161,58 @@ public class HertsBidStreamingRpcTest {
         var uniqValues = data.values().stream().toList();
         Set<String> duplicates = CollectionUtil.findDuplicates(uniqValues);
         assertEquals(0, duplicates.size());
+    }
+
+    @Test
+    public void error01() throws InterruptedException {
+        TestBidStreamingRpcService clientService = client.createHertsRpcService(TestBidStreamingRpcService.class);
+        final boolean[] isErr = {false};
+        var observer = clientService.error01(new StreamObserver<byte[]>() {
+            @Override
+            public void onNext(byte[] value) {
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                isErr[0] = true;
+            }
+
+            @Override
+            public void onCompleted() {
+            }
+        });
+
+        observer.onNext(new byte[100]);
+        observer.onCompleted();
+        Thread.sleep(1000);
+
+        assertTrue(isErr[0]);
+    }
+
+    @Test
+    public void error02() throws InterruptedException {
+        TestBidStreamingRpcService clientService = client.createHertsRpcService(TestBidStreamingRpcService.class);
+        final boolean[] isErr = {false};
+        var observer = clientService.error02(new StreamObserver<byte[]>() {
+            @Override
+            public void onNext(byte[] value) {
+                throw new RuntimeException("unexpected");
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                isErr[0] = true;
+            }
+
+            @Override
+            public void onCompleted() {
+            }
+        });
+
+        observer.onNext(new byte[100]);
+        observer.onCompleted();
+        Thread.sleep(1000);
+
+        assertTrue(isErr[0]);
     }
 }
