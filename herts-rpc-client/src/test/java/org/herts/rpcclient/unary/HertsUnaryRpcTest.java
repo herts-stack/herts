@@ -16,7 +16,7 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class HertsRpcUnaryTest {
+public class HertsUnaryRpcTest {
     private static final int port = 9999;
     private static final HertsService service = new TestUnaryRpcServiceImpl();
     private static HertsRpcEngine engine;
