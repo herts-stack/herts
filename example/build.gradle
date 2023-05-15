@@ -1,10 +1,12 @@
 plugins {
     id 'java'
-    id 'application'
+    id 'org.graalvm.buildtools.native' version '0.9.21'
 }
+apply plugin: 'application'
 
 group 'org.herts.example'
 version '1.0.0'
+sourceCompatibility = '17'
 
 repositories {
     mavenCentral()
@@ -22,18 +24,27 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 
+def mainClassPath = 'org.herts.example.Main'
+application {
+    mainClass = mainClassPath
+}
+
 test {
     useJUnitPlatform()
 }
 
-tasks.register('runServer', JavaExec) {
+tasks.register('runExample', JavaExec) {
     dependsOn 'classes'
-    main = 'org.herts.example.server.Main'
+    main = mainClassPath
     classpath = sourceSets.main.runtimeClasspath
 }
 
-tasks.register('runClient', JavaExec) {
-    dependsOn 'classes'
-    main = 'org.herts.example.client.Main'
-    classpath = sourceSets.main.runtimeClasspath
+graalvmNative {
+    binaries {
+        main {
+            javaLauncher = javaToolchains.launcherFor {
+                languageVersion = JavaLanguageVersion.of(17)
+            }
+        }
+    }
 }

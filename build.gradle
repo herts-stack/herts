@@ -1,5 +1,4 @@
 allprojects {
-    version = '1.0.0'
 }
 
 subprojects {
@@ -15,6 +14,9 @@ subprojects {
         // msg pack
         implementation 'org.msgpack:jackson-dataformat-msgpack:0.7.1'
         implementation 'org.msgpack:msgpack:0.6.12'
+
+        implementation 'org.slf4j:slf4j-nop:2.0.5'
+        implementation 'org.slf4j:slf4j-api:2.0.5'
     }
 
     repositories {

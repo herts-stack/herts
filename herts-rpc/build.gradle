@@ -1,10 +1,14 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 apply plugin: 'application'
 
-group 'org.herts.rpc'
-version '1.0.0'
+def pkgName = 'org.herts.rpc'
+def pkgVersion = '1.0.0'
+
+group pkgName
+version pkgVersion
 sourceCompatibility = '17'
 
 repositories {
@@ -25,5 +29,45 @@ test {
     testLogging {
         events 'started', 'skipped', 'passed', 'failed'
         exceptionFormat = 'full'
+    }
+}
+
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = pkgName
+            artifactId = 'library'
+            version = pkgVersion
+
+            from components.java
+
+            pom {
+                name = 'Herts framework'
+                description = 'tmp'
+                url = 'https://www.example.com/'
+                properties = [
+                        myProp: "value",
+                ]
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'tomoyane'
+                        name = 'tomoyane'
+                        email = 'tomoyane111@gmail.com'
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url 'file://Users/tomohito.oyane/Developers/maven-herts-repo'
+        }
     }
 }

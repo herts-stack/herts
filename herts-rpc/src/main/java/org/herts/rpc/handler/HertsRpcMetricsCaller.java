@@ -1,6 +1,5 @@
 package org.herts.rpc.handler;
 
-import org.herts.common.context.HertsMsg;
 import org.herts.common.serializer.HertsSerializer;
 import org.herts.metrics.HertsMetrics;
 import org.herts.metrics.context.HertsMetricsContext;
@@ -11,7 +10,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class HertsRpcMetricsCaller implements HertsRpcCaller {
+public class HertsRpcMetricsCaller extends BaseCaller implements HertsRpcCaller {
     private final Method reflectMethod;
     private final HertsMetrics hertsMetrics;
     private final HertsSerializer hertsSerializer;
@@ -20,6 +19,8 @@ public class HertsRpcMetricsCaller implements HertsRpcCaller {
 
     public HertsRpcMetricsCaller(Method reflectMethod, HertsMetrics hertsMetrics, HertsSerializer hertsSerializer,
                                  Object coreObject, Object[] requests) {
+
+        super(reflectMethod, hertsSerializer, coreObject, requests);
         this.reflectMethod = reflectMethod;
         this.hertsMetrics = hertsMetrics;
         this.hertsSerializer = hertsSerializer;
@@ -56,14 +57,8 @@ public class HertsRpcMetricsCaller implements HertsRpcCaller {
     public <T, K> Object invokeServerStreaming(T request, StreamObserver<K> responseObserver) throws InvocationTargetException, IllegalAccessException, IOException {
         var timer = before();
         Object res;
+        setMethodRequests(request);
         if (((byte[]) request).length > 0) {
-            HertsMsg deserialized = this.hertsSerializer.deserialize((byte[]) request, HertsMsg.class);
-            var index = 0;
-            for (Object obj : deserialized.getMessageParameters()) {
-                var castType = deserialized.getClassTypes()[index];
-                this.requests[index] = this.hertsSerializer.convert(obj, castType);
-                index++;
-            }
             this.requests[this.requests.length-1] =  (StreamObserver<Object>) responseObserver;
             res = this.reflectMethod.invoke(this.coreObject, this.requests);
         } else {
@@ -77,18 +72,11 @@ public class HertsRpcMetricsCaller implements HertsRpcCaller {
     public <T, K> Object invokeUnary(T request, StreamObserver<K> responseObserver) throws InvocationTargetException, IllegalAccessException, IOException {
         var timer = before();
         Object res;
-        if (((byte[]) request).length > 0) {
-            HertsMsg deserialized = this.hertsSerializer.deserialize((byte[]) request, HertsMsg.class);
-            var index = 0;
-            for (Object obj : deserialized.getMessageParameters()) {
-                var castType = deserialized.getClassTypes()[index];
-                this.requests[index] = this.hertsSerializer.convert(obj, castType);
-                index++;
-            }
-
-            res = this.reflectMethod.invoke(this.coreObject, this.requests);
+        setMethodRequests(request);
+        if (this.requests != null && this.requests.length > 0) {
+            res = call(this.requests);
         } else {
-            res = this.reflectMethod.invoke(this.coreObject);
+            res = call(null);
         }
         after(timer);
         return res;

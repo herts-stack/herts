@@ -23,7 +23,7 @@ import org.herts.rpc.handler.HertsRpcBMethodHandler;
 import org.herts.rpc.handler.HertsRpcCStreamingMethodHandler;
 import org.herts.rpc.handler.HertsRpcSStreamingMethodHandler;
 import org.herts.rpc.handler.HertsRpcUMethodHandler;
-import org.herts.rpc.model.ReflectMethod;
+import org.herts.rpc.modelx.ReflectMethod;
 import org.herts.rpc.validator.HertsRpcValidator;
 
 import io.grpc.BindableService;
@@ -64,7 +64,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
         HertsMetrics hertsMetrics;
         if (metricsSetting != null) {
             hertsMetrics = HertsMetricsHandler.builder()
-                    .hertsCoreServiceInterface(coreServices)
+                    .registerHertsServices(coreServices)
                     .isErrRateEnabled(metricsSetting.isErrRateEnabled())
                     .isJvmEnabled(metricsSetting.isJvmEnabled())
                     .isLatencyEnabled(metricsSetting.isLatencyEnabled())
@@ -72,7 +72,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
                     .isRpsEnabled(metricsSetting.isRpsEnabled())
                     .build();
         } else {
-            hertsMetrics = HertsMetricsHandler.builder().hertsCoreServiceInterface(null).build();
+            hertsMetrics = HertsMetricsHandler.builder().registerHertsServices(null).build();
         }
         return hertsMetrics;
     }
@@ -181,12 +181,19 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
         if (!HertsRpcValidator.isSameHertsCoreType(this.hertsTypes)) {
             throw new HertsRpcBuildException("Please register same HertsCoreService. Not supported multiple different services");
         }
+        var hertsType = this.hertsTypes.get(0);
         var validateMsg = HertsRpcValidator.validateRegisteredServices(this.hertsRpcServices);
         if (!validateMsg.isEmpty()) {
             throw new HertsRpcBuildException(validateMsg);
         }
         if (!HertsRpcValidator.isValidStreamingRpc(this.hertsRpcServices)) {
             throw new HertsNotSupportParameterTypeException("Support StreamObserver<T> parameter only of BidirectionalStreaming and ClientStreaming. Please remove other method parameter.");
+        }
+        if (hertsType == HertsType.ServerStreaming && !HertsRpcValidator.isAllReturnVoid(this.hertsRpcServices)) {
+            throw new HertsNotSupportParameterTypeException("Support `void` return method only on ServerStreaming");
+        }
+        if (hertsType == HertsType.ClientStreaming && !HertsRpcValidator.isAllReturnStreamObserver(this.hertsRpcServices)) {
+            throw new HertsNotSupportParameterTypeException("Support `StreamObserver` return method only on ClientStreaming");
         }
         return new HertsRpcBuilder(this);
     }

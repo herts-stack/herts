@@ -47,13 +47,6 @@ public class TestHertsServiceImpl extends HertsHttpService<TestHertsService> imp
         return Collections.singletonMap("key", "value");
     }
 
-//    @Override
-//    public Set<String> test09() {
-//        Set<String> data = new HashSet<>();
-//        data.add("TEST_SET");
-//        return data;
-//    }
-
     @Override
     public String test10(List<String> a, Map<String, String> b) {
         return String.format("a=%s, b=%s", a.get(0), b.get("test10"));
@@ -62,5 +55,15 @@ public class TestHertsServiceImpl extends HertsHttpService<TestHertsService> imp
     @Override
     public TestDataModel test11(TestDataModel a) {
         return a;
+    }
+
+    @Override
+    public void test12() {
+        throw new BadRequest("test12");
+    }
+
+    @Override
+    public void test13() {
+        throw new InternalServerError("test13");
     }
 }

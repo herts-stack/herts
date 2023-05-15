@@ -3,6 +3,8 @@ package org.herts.rpc.handler;
 import org.herts.common.exception.HertsInstanceException;
 import org.herts.common.exception.HertsServiceNotFoundException;
 import org.herts.common.context.HertsMethod;
+import org.herts.common.exception.http.HertsHttpErrorException;
+import org.herts.common.exception.rpc.HertsRpcErrorException;
 import org.herts.common.serializer.HertsSerializer;
 
 import org.herts.metrics.HertsMetrics;
@@ -51,7 +53,7 @@ public class HertsRpcUMethodHandler<Req, Resp> implements
         }
 
         this.reflectMethod = method;
-        if (hertsMetrics.isMetricsEnabled()) {
+        if (hertsMetrics != null && hertsMetrics.isMetricsEnabled()) {
             this.hertsRpcCaller = new HertsRpcMetricsCaller(this.reflectMethod, hertsMetrics, serializer, coreObject, requests);
         } else {
             this.hertsRpcCaller = new HertsRpcSimpleCaller(this.reflectMethod, serializer, coreObject, requests);
@@ -68,7 +70,7 @@ public class HertsRpcUMethodHandler<Req, Resp> implements
         try {
             Object response = this.hertsRpcCaller.invokeUnary(request, responseObserver);
             if (response == null) {
-                responseObserver.onNext(null);
+                responseObserver.onNext((Resp) new byte[]{});
                 responseObserver.onCompleted();
             } else {
                 var responseBytes = this.serializer.serialize(response);
@@ -76,9 +78,14 @@ public class HertsRpcUMethodHandler<Req, Resp> implements
                 responseObserver.onCompleted();
             }
         } catch (IllegalAccessException | IOException ex) {
-            responseObserver.onError(ex);
+            responseObserver.onError(new HertsRpcErrorException(HertsRpcErrorException.StatusCode.Status13, ex.getMessage()).createStatusException());
         } catch (InvocationTargetException ex) {
-            responseObserver.onError(ex.getCause());
+            Throwable cause = ex.getCause();
+            if (cause instanceof HertsRpcErrorException exception) {
+                responseObserver.onError(exception.createStatusException());
+            } else {
+                responseObserver.onError(new HertsRpcErrorException(HertsRpcErrorException.StatusCode.Status13, "Unexpected error occurred. " + ex.getMessage()).createStatusException());
+            }
         }
     }
 }

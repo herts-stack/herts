@@ -79,7 +79,7 @@ public class HertsMetricsHandler implements HertsMetrics {
         }
 
         @Override
-        public HertsMetricsBuilder hertsCoreServiceInterface(List<HertsService> hertsRpcServices) {
+        public HertsMetricsBuilder registerHertsServices(List<HertsService> hertsRpcServices) {
             this.hertsRpcServices = hertsRpcServices;
             return this;
         }
@@ -168,10 +168,10 @@ public class HertsMetricsHandler implements HertsMetrics {
             Metrics.globalRegistry.add(this.prometheusMeterRegistry);
 
             if (this.isJvmEnabled) {
-                new JvmMemoryMetrics().bindTo(prometheusMeterRegistry);
+                new JvmMemoryMetrics().bindTo(this.prometheusMeterRegistry);
             }
             if (this.isServerResourceEnabled) {
-                new ProcessorMetrics().bindTo(prometheusMeterRegistry);
+                new ProcessorMetrics().bindTo(this.prometheusMeterRegistry);
             }
         }
     }

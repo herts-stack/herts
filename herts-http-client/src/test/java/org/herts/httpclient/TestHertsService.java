@@ -16,7 +16,8 @@ public interface TestHertsService extends HertsService {
     double test06();
     List<String> test07();
     Map<String, String> test08();
-//    Set<String> test09();
     String test10(List<String> a, Map<String, String> b);
     TestDataModel test11(TestDataModel a);
+    void test12();
+    void test13();
 }

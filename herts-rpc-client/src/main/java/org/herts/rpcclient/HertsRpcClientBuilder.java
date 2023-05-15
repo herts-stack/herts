@@ -22,8 +22,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
     private final HertsType hertsType;
     private final boolean isSecureConnection;
     private final List<Class<?>> registeredIfServices;
-
-    private Channel channel;
+    private final Channel channel;
 
     public HertsRpcClientBuilder(IBuilder builder) {
         this.connectedHost = builder.getConnectedHost();
@@ -61,7 +60,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
     }
 
     @Override
-    public <T extends HertsService> T createHertRpcService(Class<T> interfaceType) {
+    public <T extends HertsService> T createHertsRpcService(Class<T> interfaceType) {
         if (!interfaceType.isInterface()) {
             throw new HertsRpcClientBuildException(interfaceType.getSimpleName() + " is not interface. You can create client by interface");
         }

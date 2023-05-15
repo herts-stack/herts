@@ -4,10 +4,10 @@ set -e
 
 function run_test {
     herts_type=$1
-    ./gradlew :example:runServer --args="${herts_type}" &
+    ./gradlew :example:runExample --args="server ${herts_type}" &
 
     while sleep 5; do
-      ps aux | grep "runServer" | grep -v grep
+      ps aux | grep "runExample" | grep -v grep
       is_up_server=$?
 
       if [ $is_up_server -ne 0 ]; then
@@ -17,7 +17,7 @@ function run_test {
       break
     done
 
-    ./gradlew :example:runClient --args="${herts_type}"
+    ./gradlew :example:runExample --args="client ${herts_type}"
     sleep 5
 }
 

@@ -36,7 +36,7 @@ public interface HertsRpcClient {
      * @return HertsCoreService
      * @param <T> Generics
      */
-    <T extends HertsService> T createHertRpcService(Class<T> interfaceClass);
+    <T extends HertsService> T createHertsRpcService(Class<T> interfaceClass);
 
     /**
      * Get registered herts type
