@@ -1,5 +1,6 @@
 package org.herts.rpcclient.unary;
 
+import org.herts.common.exception.rpc.HertsRpcErrorException;
 import org.herts.common.service.HertsService;
 import org.herts.rpc.engine.GrpcServerOption;
 import org.herts.rpc.engine.HertsRpcBuilder;
@@ -13,8 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class HertsUnaryRpcTest {
     private static final int port = 9999;
@@ -106,5 +106,44 @@ public class HertsUnaryRpcTest {
     public void test06() {
         TestUnaryRpcService rpc = client.createHertsRpcService(TestUnaryRpcService.class);
         rpc.test06();
+    }
+
+    @Test
+    public void error01() {
+        TestUnaryRpcService rpc = client.createHertsRpcService(TestUnaryRpcService.class);
+
+        try {
+            rpc.error01();
+            throw new RuntimeException("Invalid exception");
+        } catch (HertsRpcErrorException ex) {
+            assertEquals(HertsRpcErrorException.StatusCode.Status13, ex.getStatusCode());
+            assertTrue(ex.getMessage().contains("Unexpected error occurred"));
+        }
+    }
+
+    @Test
+    public void error02() {
+        TestUnaryRpcService rpc = client.createHertsRpcService(TestUnaryRpcService.class);
+
+        try {
+            rpc.error02();
+            throw new RuntimeException("Invalid exception");
+        } catch (HertsRpcErrorException ex) {
+            assertEquals("error02", ex.getMessage());
+            assertEquals(HertsRpcErrorException.StatusCode.Status2, ex.getStatusCode());
+        }
+    }
+
+    @Test
+    public void error03() {
+        TestUnaryRpcService rpc = client.createHertsRpcService(TestUnaryRpcService.class);
+
+        try {
+            rpc.error03();
+            throw new RuntimeException("Invalid exception");
+        } catch (HertsRpcErrorException ex) {
+            assertEquals("error03", ex.getMessage());
+            assertEquals(HertsRpcErrorException.StatusCode.Status10, ex.getStatusCode());
+        }
     }
 }

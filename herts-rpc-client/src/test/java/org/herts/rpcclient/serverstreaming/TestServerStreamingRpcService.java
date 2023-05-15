@@ -10,4 +10,5 @@ import org.herts.rpcclient.TestHoo;
 public interface TestServerStreamingRpcService extends HertsService {
     void test01(String id, String id2, final StreamObserver<TestHoo> responseObserver);
     void test02(int id, final StreamObserver<TestHoo> responseObserver);
+    void error01(int id, final StreamObserver<byte[]> responseObserver);
 }

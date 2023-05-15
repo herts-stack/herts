@@ -5,11 +5,19 @@ package org.herts.common.exception.http;
  * @author Herts Contributer
  * @version 1.0.0
  */
-public abstract class HertsHttpErrorException extends RuntimeException {
+public class HertsHttpErrorException extends RuntimeException {
     private final StatusCode statusCode;
 
     public enum StatusCode {
-        // Status3XX("3XX"),
+        Status300("300"),
+        Status301("301"),
+        Status302("302"),
+        Status303("303"),
+        Status304("304"),
+        Status305("305"),
+        Status306("306"),
+        Status307("307"),
+        Status308("308"),
         Status400("400"),
         Status401("401"),
         Status402("402"),
@@ -40,7 +48,17 @@ public abstract class HertsHttpErrorException extends RuntimeException {
         Status429("429"),
         Status431("431"),
         Status451("451"),
-        Status500("500");
+        Status500("500"),
+        Status501("501"),
+        Status502("502"),
+        Status503("503"),
+        Status504("504"),
+        Status505("505"),
+        Status506("506"),
+        Status507("507"),
+        Status508("508"),
+        Status510("510"),
+        Status511("511");
 
         private final String value;
         StatusCode(final String value) {

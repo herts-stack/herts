@@ -16,4 +16,7 @@ public interface TestUnaryRpcService extends HertsService {
     List<String> test04(Map<String, String> a, List<String> b);
     TestFoo test05(TestFoo foo);
     void test06();
+    void error01();
+    void error02();
+    void error03();
 }

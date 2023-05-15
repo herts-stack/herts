@@ -1,6 +1,6 @@
 package org.herts.example.http;
 
-import org.herts.common.exception.http.HertsHttpError400;
+import org.herts.common.exception.http.HertsHttpErrorException;
 import org.herts.common.logger.HertsLogger;
 import org.herts.common.service.HertsHttpService;
 import org.herts.example.common.TestData;
@@ -52,6 +52,6 @@ public class HttpServiceImpl01 extends HertsHttpService<HttpService01> implement
 
     @Override
     public String httpTest07() {
-       throw new HertsHttpError400("badrequest") ;
+       throw new HertsHttpErrorException(HertsHttpErrorException.StatusCode.Status400, "badrequest") ;
     }
 }

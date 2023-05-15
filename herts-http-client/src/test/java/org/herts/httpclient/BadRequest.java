@@ -1,9 +1,9 @@
 package org.herts.httpclient;
 
-import org.herts.common.exception.http.HertsHttpError400;
+import org.herts.common.exception.http.HertsHttpErrorException;
 
-public class BadRequest extends HertsHttpError400 {
+public class BadRequest extends HertsHttpErrorException {
     public BadRequest(String msg){
-        super(msg);
+        super(StatusCode.Status400, msg);
     }
 }

@@ -1,7 +1,7 @@
 package org.herts.example.http.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.herts.common.exception.http.HertsHttpError400;
+import org.herts.common.exception.http.HertsHttpErrorException;
 import org.herts.example.common.Constant;
 import org.herts.example.http.HttpService01;
 import org.herts.common.logger.HertsLogger;
@@ -56,7 +56,7 @@ public class HttpClient {
 
         try {
             var res07 = service.httpTest07();
-        } catch (HertsHttpError400 ex) {
+        } catch (HertsHttpErrorException ex) {
             logger.info(ex.getStatusCode() + " " + ex.getMessage());
         }
 

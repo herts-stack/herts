@@ -1,5 +1,6 @@
 package org.herts.example.unary_rpc.client;
 
+import org.herts.common.exception.rpc.HertsRpcErrorException;
 import org.herts.example.common.Constant;
 import org.herts.example.common.GrpcClientInterceptor;
 import org.herts.example.common.HelloRequest;
@@ -45,6 +46,24 @@ public class UnaryClient {
         logger.info(""  + res101);
 
         service_01.test102();
+
+        try {
+            service_01.error01();
+        } catch (HertsRpcErrorException ex) {
+            logger.info(ex.getMessage() + " " + ex.getStatusCode() + " " + ex.getStatus());
+        }
+
+        try {
+            service_01.error02();
+        } catch (HertsRpcErrorException ex) {
+            logger.info(ex.getMessage() + " " + ex.getStatusCode() + " " + ex.getStatus());
+        }
+
+        try {
+            service_01.error03();
+        } catch (HertsRpcErrorException ex) {
+            logger.info(ex.getMessage() + " " + ex.getStatusCode() + " " + ex.getStatus());
+        }
 
         UnaryRpcService02 service_02 = client.createHertsRpcService(UnaryRpcService02.class);
         var res0201 = service_02.hello01("ID", "Hello!");

@@ -1,5 +1,6 @@
 package org.herts.example.unary_rpc;
 
+import org.herts.common.exception.rpc.HertsRpcErrorException;
 import org.herts.common.logger.HertsLogger;
 import org.herts.common.service.HertsUnaryService;
 import org.herts.example.common.HelloRequest;
@@ -51,5 +52,20 @@ public class UnaryServiceImpl01 extends HertsUnaryService<UnaryRpcService01> imp
     @Override
     public void test102() {
         logger.info("------------ Unary test102 RPC");
+    }
+
+    @Override
+    public void error01() {
+        throw new HertsRpcErrorException(HertsRpcErrorException.StatusCode.Status2, "error02");
+    }
+
+    @Override
+    public void error02() {
+        throw new HertsRpcErrorException(HertsRpcErrorException.StatusCode.Status10, "error03");
+    }
+
+    @Override
+    public void error03() {
+        throw new IllegalArgumentException("Invalid!");
     }
 }

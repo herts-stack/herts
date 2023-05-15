@@ -1,7 +1,6 @@
 package org.herts.httpclient;
 
-import org.herts.common.exception.http.HertsHttpError400;
-import org.herts.common.exception.http.HertsHttpError500;
+import org.herts.common.exception.http.HertsHttpErrorException;
 import org.herts.http.engine.HertsHttpEngine;
 import org.herts.http.engine.HertsHttpServer;
 import org.junit.jupiter.api.AfterAll;
@@ -130,15 +129,21 @@ public class HertsHttpClientTest {
 
     @Test
     public void test12() {
-        assertThrows(HertsHttpError400.class, () -> {
+        try {
             testHertsService.test12();
-        });
+            throw new RuntimeException("Invalid test");
+        } catch (HertsHttpErrorException ex) {
+            assertEquals(ex.getStatusCode(), HertsHttpErrorException.StatusCode.Status400);
+        }
     }
 
     @Test
     public void test13() {
-        assertThrows(HertsHttpError500.class, () -> {
+        try {
             testHertsService.test13();
-        });
+            throw new RuntimeException("Invalid test");
+        } catch (HertsHttpErrorException ex) {
+            assertEquals(ex.getStatusCode(), HertsHttpErrorException.StatusCode.Status500);
+        }
     }
 }

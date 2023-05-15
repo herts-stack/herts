@@ -1,5 +1,6 @@
 package org.herts.rpcclient.unary;
 
+import org.herts.common.exception.rpc.HertsRpcErrorException;
 import org.herts.common.service.HertsUnaryService;
 import org.herts.rpcclient.TestFoo;
 
@@ -46,5 +47,20 @@ public class TestUnaryRpcServiceImpl extends HertsUnaryService<TestUnaryRpcServi
 
     @Override
     public void test06() {
+    }
+
+    @Override
+    public void error01() {
+        throw new IndexOutOfBoundsException();
+    }
+
+    @Override
+    public void error02() {
+        throw new HertsRpcErrorException(HertsRpcErrorException.StatusCode.Status2, "error02");
+    }
+
+    @Override
+    public void error03() {
+        throw new HertsRpcErrorException(HertsRpcErrorException.StatusCode.Status10, "error03");
     }
 }

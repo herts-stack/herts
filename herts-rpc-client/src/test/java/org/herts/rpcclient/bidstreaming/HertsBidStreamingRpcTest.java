@@ -9,8 +9,6 @@ import org.herts.rpcclient.HertsRpcClient;
 import org.herts.rpcclient.HertsRpcClientBuilder;
 import org.herts.rpcclient.TestFoo;
 import org.herts.rpcclient.TestHoo;
-import org.herts.rpcclient.clientstreaming.TestClientStreamingRpcService;
-import org.herts.rpcclient.clientstreaming.TestClientStreamingRpcServiceImpl;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

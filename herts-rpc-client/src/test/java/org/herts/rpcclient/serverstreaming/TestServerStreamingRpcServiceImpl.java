@@ -30,4 +30,9 @@ public class TestServerStreamingRpcServiceImpl extends HertsServerStreamingServi
         responseObserver.onNext(foo);
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void error01(int id, StreamObserver<byte[]> responseObserver) {
+        throw new RuntimeException();
+    }
 }

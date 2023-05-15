@@ -3,6 +3,8 @@ package org.herts.rpc.handler;
 import org.herts.common.exception.HertsInstanceException;
 import org.herts.common.exception.HertsServiceNotFoundException;
 import org.herts.common.context.HertsMethod;
+import org.herts.common.exception.http.HertsHttpErrorException;
+import org.herts.common.exception.rpc.HertsRpcErrorException;
 import org.herts.common.serializer.HertsSerializer;
 
 import org.herts.metrics.HertsMetrics;
@@ -76,9 +78,14 @@ public class HertsRpcUMethodHandler<Req, Resp> implements
                 responseObserver.onCompleted();
             }
         } catch (IllegalAccessException | IOException ex) {
-            responseObserver.onError(ex);
+            responseObserver.onError(new HertsRpcErrorException(HertsRpcErrorException.StatusCode.Status13, ex.getMessage()).createStatusException());
         } catch (InvocationTargetException ex) {
-            responseObserver.onError(ex.getCause());
+            Throwable cause = ex.getCause();
+            if (cause instanceof HertsRpcErrorException exception) {
+                responseObserver.onError(exception.createStatusException());
+            } else {
+                responseObserver.onError(new HertsRpcErrorException(HertsRpcErrorException.StatusCode.Status13, "Unexpected error occurred. " + ex.getMessage()).createStatusException());
+            }
         }
     }
 }

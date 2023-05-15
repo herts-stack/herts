@@ -1,9 +1,11 @@
 package org.herts.rpcclient.handler;
 
+import io.grpc.StatusRuntimeException;
 import org.herts.common.descriptor.HertsGrpcDescriptor;
 import org.herts.common.context.HertsType;
 import org.herts.common.exception.HertsServiceNotFoundException;
 import org.herts.common.context.HertsMsg;
+import org.herts.common.exception.rpc.HertsRpcErrorException;
 import org.herts.common.serializer.HertsSerializer;
 import org.herts.common.service.HertsService;
 
@@ -60,7 +62,12 @@ public class HertsRpcClientUMethodHandler extends io.grpc.stub.AbstractBlockingS
             bytes = this.serializer.serialize(new HertsMsg(args, parameterTypes));
         }
 
-        var res = ClientCalls.blockingUnaryCall(getChannel(), methodDescriptor, getCallOptions(), bytes);
+        byte[] res;
+        try {
+            res = ClientCalls.blockingUnaryCall(getChannel(), methodDescriptor, getCallOptions(), bytes);
+        } catch (StatusRuntimeException ex) {
+            throw new HertsRpcErrorException(ex);
+        }
         if (returnType.getName().equals("void")) {
             return null;
         }

@@ -14,8 +14,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class HertsServerStreamingRpcTest {
     private static final int port = 9999;
@@ -102,5 +101,30 @@ public class HertsServerStreamingRpcTest {
 
         Thread.sleep(2000);
         assertEquals(1, data[0]);
+    }
+
+    @Test
+    public void error01() throws InterruptedException {
+        TestServerStreamingRpcService clientService = client.createHertsRpcService(TestServerStreamingRpcService.class);
+        final boolean[] isErr = {false};
+        clientService.error01(1, new StreamObserver<byte[]>() {
+            @Override
+            public void onNext(byte[] value) {
+
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                isErr[0] = true;
+            }
+
+            @Override
+            public void onCompleted() {
+
+            }
+        });
+
+        Thread.sleep(2000);
+        assertTrue(isErr[0]);
     }
 }

@@ -15,6 +15,8 @@ public interface UnaryRpcService01 extends HertsService {
     Map<String, String> test03();
     boolean test100(HelloRequest req);
     List<String> test101(Map<String, String> a, List<String> b);
-
     void test102();
+    void error01();
+    void error02();
+    void error03();
 }
