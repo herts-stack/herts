@@ -29,7 +29,7 @@ public class HertsRpcBMethodHandler<Req, Resp> implements
         this.requests = new Object[this.hertsMethod.getParameters().length];
         this.coreObject = hertsService;
 
-        Class<?> coreClass = hertsMethod.getClass();
+        Class<?> coreClass = hertsService.getClass();
         Method method;
         try {
             method = coreClass.getMethod(hertsMethod.getMethodName(), hertsMethod.getParameters());

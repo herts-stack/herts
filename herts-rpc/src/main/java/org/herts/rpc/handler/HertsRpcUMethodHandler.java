@@ -27,12 +27,12 @@ public class HertsRpcUMethodHandler<Req, Resp> implements
     private final HertsMethod hertsMethod;
     private final HertsRpcCaller hertsRpcCaller;
 
-    public HertsRpcUMethodHandler(HertsMethod hertsMethod, HertsMetrics hertsMetrics, HertsService core) {
+    public HertsRpcUMethodHandler(HertsMethod hertsMethod, HertsMetrics hertsMetrics, HertsService hertsService) {
         this.hertsMethod = hertsMethod;
         this.requests = new Object[this.hertsMethod.getParameters().length];
 
-        Class<?> coreClass = core.getClass();
-        this.coreObject = core;
+        Class<?> coreClass = hertsService.getClass();
+        this.coreObject = hertsService;
         Method method;
         try {
             method = coreClass.getDeclaredMethod(hertsMethod.getMethodName(), hertsMethod.getParameters());
