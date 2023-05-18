@@ -12,11 +12,13 @@ import org.herts.common.exception.HertsServiceNotFoundException;
 import org.herts.common.logger.HertsLogger;
 import org.herts.common.service.HertsBidirectionalStreamingService;
 import org.herts.common.service.HertsClientStreamingService;
+import org.herts.common.service.HertsDuplexService;
 import org.herts.common.service.HertsService;
 import org.herts.common.service.HertsServerStreamingService;
 import org.herts.metrics.HertsMetrics;
 import org.herts.metrics.handler.HertsMetricsHandler;
 import org.herts.metrics.server.HertsMetricsServer;
+import org.herts.rpc.HertsDefaultRpcInterceptor;
 import org.herts.rpc.HertsRpcInterceptBuilder;
 import org.herts.rpc.HertsRpcInterceptor;
 import org.herts.rpc.handler.HertsRpcBMethodHandler;
@@ -41,6 +43,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 public class ServerBuilder implements HertsRpcEngineBuilder {
@@ -113,18 +116,28 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
     }
 
     @Override
+    public HertsRpcEngineBuilder registerHertsRpcService(HertsDuplexService hertsDuplexService, @Nullable ServerInterceptor interceptor) {
+        if (hertsDuplexService.getClass().getInterfaces().length == 0) {
+            throw new HertsRpcBuildException("You need to define interface on " + hertsDuplexService.getClass().getName());
+        }
+        BindableService bindableReceiver = createBindableReceiver(hertsDuplexService);
+        BindableService bindableService = createBindableService(hertsDuplexService);
+        if (interceptor == null) {
+            var defaultInterceptor = HertsDefaultRpcInterceptor.create();
+            this.services.put(bindableService, HertsRpcInterceptBuilder.builder(defaultInterceptor).build());
+            this.services.put(bindableReceiver, HertsRpcInterceptBuilder.builder(defaultInterceptor).build());
+        } else {
+            this.services.put(bindableService, interceptor);
+            this.services.put(bindableReceiver, interceptor);
+        }
+        return this;
+    }
+
+    @Override
     public HertsRpcEngineBuilder registerHertsRpcService(HertsService hertsRpcService, @Nullable ServerInterceptor interceptor) {
         BindableService bindableService = createBindableService(hertsRpcService);
         if (interceptor == null) {
-            var defaultInterceptor = new HertsRpcInterceptor() {
-                @Override
-                public void setResponseMetadata(Metadata metadata) {
-                }
-                @Override
-                public <ReqT, RespT> void beforeCallMethod(ServerCall<ReqT, RespT> call, Metadata requestHeaders) {
-                }
-            };
-            this.services.put(bindableService, HertsRpcInterceptBuilder.builder(defaultInterceptor).build());
+            this.services.put(bindableService, HertsRpcInterceptBuilder.builder(HertsDefaultRpcInterceptor.create()).build());
         } else {
             this.services.put(bindableService, interceptor);
         }
@@ -134,15 +147,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
     @Override
     public HertsRpcEngineBuilder registerHertsRpcService(HertsService hertsRpcService) {
         BindableService bindableService = createBindableService(hertsRpcService);
-        var defaultInterceptor = new HertsRpcInterceptor() {
-            @Override
-            public void setResponseMetadata(Metadata metadata) {
-            }
-            @Override
-            public <ReqT, RespT> void beforeCallMethod(ServerCall<ReqT, RespT> call, Metadata requestHeaders) {
-            }
-        };
-        this.services.put(bindableService, HertsRpcInterceptBuilder.builder(defaultInterceptor).build());
+        this.services.put(bindableService, HertsRpcInterceptBuilder.builder(HertsDefaultRpcInterceptor.create()).build());
         return this;
     }
 
@@ -179,23 +184,70 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
             throw new HertsRpcBuildException("Please register HertsCoreService");
         }
         if (!HertsRpcValidator.isSameHertsCoreType(this.hertsTypes)) {
-            throw new HertsRpcBuildException("Please register same HertsCoreService. Not supported multiple different services");
+            throw new HertsRpcBuildException(
+                    "Please register same HertsCoreService. Not supported multiple different services");
         }
+
         var hertsType = this.hertsTypes.get(0);
         var validateMsg = HertsRpcValidator.validateRegisteredServices(this.hertsRpcServices);
         if (!validateMsg.isEmpty()) {
             throw new HertsRpcBuildException(validateMsg);
         }
         if (!HertsRpcValidator.isValidStreamingRpc(this.hertsRpcServices)) {
-            throw new HertsNotSupportParameterTypeException("Support StreamObserver<T> parameter only of BidirectionalStreaming and ClientStreaming. Please remove other method parameter.");
+            throw new HertsNotSupportParameterTypeException(
+                    "Support StreamObserver<T> parameter only of BidirectionalStreaming and ClientStreaming. Please remove other method parameter.");
         }
         if (hertsType == HertsType.ServerStreaming && !HertsRpcValidator.isAllReturnVoid(this.hertsRpcServices)) {
-            throw new HertsNotSupportParameterTypeException("Support `void` return method only on ServerStreaming");
+            throw new HertsNotSupportParameterTypeException(
+                    "Support `void` return method only on ServerStreaming");
         }
-        if (hertsType == HertsType.ClientStreaming && !HertsRpcValidator.isAllReturnStreamObserver(this.hertsRpcServices)) {
-            throw new HertsNotSupportParameterTypeException("Support `StreamObserver` return method only on ClientStreaming");
+        if ((hertsType == HertsType.ClientStreaming || hertsType == HertsType.BidirectionalStreaming)
+                && !HertsRpcValidator.isAllReturnStreamObserver(this.hertsRpcServices)) {
+            throw new HertsNotSupportParameterTypeException(
+                    "Support `StreamObserver` return method if use ClientStreaming or BidirectionalStreaming");
         }
+//        if (hertsType == HertsType.DuplexStreaming && !HertsRpcValidator.hasDuplexInterface(this.hertsRpcServices)) {
+//            throw new HertsNotSupportParameterTypeException(
+//                    "Support `void` return method only on DuplexStreaming. Also, Please set receiver interface on second param of HertsService");
+//        }
         return new HertsRpcBuilder(this);
+    }
+
+    private BindableService createBindableReceiver(HertsDuplexService hertsDuplexService) {
+        Class<?> hertsDuplexStreamingService = hertsDuplexService.getClass().getSuperclass();
+        Class<?> hertsDuplexStreamingServiceIf = hertsDuplexStreamingService.getInterfaces()[0];
+
+        ReflectMethod reflectMethod = generateReflectMethod(
+                hertsDuplexStreamingServiceIf.getName(), hertsDuplexStreamingService.getName(), true);
+        reflectMethod.printMethodName();
+
+        return new BindableService() {
+            private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
+            private ServerServiceDefinition bindableService = null;
+
+            @Override
+            public ServerServiceDefinition bindService() {
+                if (this.bindableService != null) {
+                    return this.bindableService;
+                }
+
+                List<HertsMethod> hertsMethods = generateHertsMethod(
+                        HertsType.ServerStreaming, reflectMethod.getMethods(), reflectMethod.getServiceName(), reflectMethod.getServiceImplName());
+
+                HertsStreamingDescriptor descriptor = HertsGrpcDescriptor.generateStreamingGrpcDescriptor(reflectMethod.getServiceName(), hertsMethods);
+                ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
+
+                int index = 0;
+                for (MethodDescriptor<Object, Object> methodDescriptor : descriptor.getMethodDescriptors()) {
+                    HertsRpcSStreamingMethodHandler<Object, Object> handler = new HertsRpcSStreamingMethodHandler<>(hertsMethods.get(index), hertsDuplexService);
+                    builder = builder.addMethod(methodDescriptor, ServerCalls.asyncServerStreamingCall(handler));
+                    index++;
+                }
+
+                this.bindableService = builder.build();
+                return builder.build();
+            }
+        };
     }
 
     private BindableService createBindableService(HertsService hertsRpcService) {
@@ -220,13 +272,16 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
             case ClientStreaming:
                 bindableService = registerClientStreamingService((HertsClientStreamingService) hertsRpcService);
                 break;
+            case DuplexStreaming:
+                bindableService = registerUnaryService(hertsRpcService);
+                break;
             default:
                 throw new HertsRpcBuildException("HertsCoreType is invalid");
         }
         return bindableService;
     }
 
-    private static ReflectMethod generateReflectMethod(String serviceName, String serviceImplName) {
+    private static ReflectMethod generateReflectMethod(String serviceName, String serviceImplName, boolean isReceiver) {
         Class<?> thisClass;
         try {
             thisClass = Class.forName(serviceName);
@@ -234,8 +289,23 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
             throw new HertsServiceNotFoundException("Unknown class name. Allowed class is " + serviceName);
         }
 
-        Method[] methods = thisClass.getDeclaredMethods();
-        return ReflectMethod.create(serviceName, serviceImplName, methods);
+        Method[] targetMethods;
+        Method[] definedMethods = thisClass.getDeclaredMethods();
+        if (!isReceiver) {
+            targetMethods = definedMethods;
+        } else {
+            targetMethods = new Method[1];
+            for (Method method : definedMethods) {
+                if (method.getName().equals("registerReceiver")) {
+                    targetMethods[0] = method;
+                    break;
+                }
+            }
+            if (targetMethods[0] == null) {
+                throw new HertsServiceNotFoundException("Unrecognized Receiver class");
+            }
+        }
+        return ReflectMethod.create(serviceName, serviceImplName, targetMethods);
     }
 
     private static List<HertsMethod> generateHertsMethod(HertsType coreType, Method[] methods, String serviceName, String serviceImplName) {
@@ -254,89 +324,137 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
     }
 
     private BindableService registerBidirectionalStreamingService(HertsBidirectionalStreamingService core) {
-        ReflectMethod reflectMethod = generateReflectMethod(core.getClass().getInterfaces()[0].getName(), core.getClass().getName());
+        ReflectMethod reflectMethod = generateReflectMethod(
+                core.getClass().getInterfaces()[0].getName(), core.getClass().getName(), false);
+        reflectMethod.printMethodName();
+
         return new BindableService() {
             private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
+            private ServerServiceDefinition serverServiceDefinition = null;
 
             @Override
             public ServerServiceDefinition bindService() {
-                List<HertsMethod> hertsMethods = generateHertsMethod(HertsType.BidirectionalStreaming, reflectMethod.getMethods(), reflectMethod.getServiceName(), reflectMethod.getServiceImplName());
+                if (this.serverServiceDefinition != null) {
+                    return this.serverServiceDefinition;
+                }
+
+                List<HertsMethod> hertsMethods = generateHertsMethod(
+                        HertsType.BidirectionalStreaming, reflectMethod.getMethods(), reflectMethod.getServiceName(), reflectMethod.getServiceImplName());
+
                 HertsStreamingDescriptor descriptor = HertsGrpcDescriptor.generateStreamingGrpcDescriptor(reflectMethod.getServiceName(), hertsMethods);
                 ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
 
                 int index = 0;
                 for (MethodDescriptor<Object, Object> methodDescriptor : descriptor.getMethodDescriptors()) {
-                    HertsRpcBMethodHandler<Object, Object> handler = new HertsRpcBMethodHandler<>(hertsMethods.get(index));
+                    HertsRpcBMethodHandler<Object, Object> handler = new HertsRpcBMethodHandler<>(hertsMethods.get(index), core);
                     builder = builder.addMethod(methodDescriptor, ServerCalls.asyncBidiStreamingCall(handler));
                     index++;
                 }
-                return builder.build();
+
+                this.serverServiceDefinition = builder.build();
+                return this.serverServiceDefinition;
             }
         };
     }
 
     private BindableService registerClientStreamingService(HertsClientStreamingService core) {
-        ReflectMethod reflectMethod = generateReflectMethod(core.getClass().getInterfaces()[0].getName(), core.getClass().getName());
+        ReflectMethod reflectMethod = generateReflectMethod(
+                core.getClass().getInterfaces()[0].getName(), core.getClass().getName(), false);
+        reflectMethod.printMethodName();
+
         return new BindableService() {
             private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
+            private ServerServiceDefinition serverServiceDefinition = null;
 
             @Override
             public ServerServiceDefinition bindService() {
-                List<HertsMethod> hertsMethods = generateHertsMethod(HertsType.ClientStreaming, reflectMethod.getMethods(), reflectMethod.getServiceName(), reflectMethod.getServiceImplName());
+                if (this.serverServiceDefinition != null) {
+                    return this.serverServiceDefinition;
+                }
+
+                List<HertsMethod> hertsMethods = generateHertsMethod(
+                        HertsType.ClientStreaming, reflectMethod.getMethods(), reflectMethod.getServiceName(), reflectMethod.getServiceImplName());
+
                 HertsStreamingDescriptor descriptor = HertsGrpcDescriptor.generateStreamingGrpcDescriptor(reflectMethod.getServiceName(), hertsMethods);
                 ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
 
                 int index = 0;
                 for (MethodDescriptor<Object, Object> methodDescriptor : descriptor.getMethodDescriptors()) {
-                    HertsRpcCStreamingMethodHandler<Object, Object> handler = new HertsRpcCStreamingMethodHandler<>(hertsMethods.get(index));
+                    HertsRpcCStreamingMethodHandler<Object, Object> handler = new HertsRpcCStreamingMethodHandler<>(hertsMethods.get(index), core);
                     builder = builder.addMethod(methodDescriptor, ServerCalls.asyncClientStreamingCall(handler));
                     index++;
                 }
-                return builder.build();
+
+                this.serverServiceDefinition = builder.build();
+                return this.serverServiceDefinition;
             }
         };
     }
 
     private BindableService registerServerStreamingService(HertsServerStreamingService core) {
-        ReflectMethod reflectMethod = generateReflectMethod(core.getClass().getInterfaces()[0].getName(), core.getClass().getName());
+        ReflectMethod reflectMethod = generateReflectMethod(
+                core.getClass().getInterfaces()[0].getName(), core.getClass().getName(), false);
+
+        reflectMethod.printMethodName();
+
         return new BindableService() {
             private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
+            private ServerServiceDefinition serverServiceDefinition = null;
 
             @Override
             public ServerServiceDefinition bindService() {
-                List<HertsMethod> hertsMethods = generateHertsMethod(HertsType.ServerStreaming, reflectMethod.getMethods(), reflectMethod.getServiceName(), reflectMethod.getServiceImplName());
+                if (this.serverServiceDefinition != null) {
+                    return this.serverServiceDefinition;
+                }
+                List<HertsMethod> hertsMethods = generateHertsMethod(
+                        HertsType.ServerStreaming, reflectMethod.getMethods(), reflectMethod.getServiceName(), reflectMethod.getServiceImplName());
+
                 HertsStreamingDescriptor descriptor = HertsGrpcDescriptor.generateStreamingGrpcDescriptor(reflectMethod.getServiceName(), hertsMethods);
                 ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
 
                 int index = 0;
                 for (MethodDescriptor<Object, Object> methodDescriptor : descriptor.getMethodDescriptors()) {
-                    HertsRpcSStreamingMethodHandler<Object, Object> handler = new HertsRpcSStreamingMethodHandler<>(hertsMethods.get(index));
+                    HertsRpcSStreamingMethodHandler<Object, Object> handler = new HertsRpcSStreamingMethodHandler<>(hertsMethods.get(index), core);
                     builder = builder.addMethod(methodDescriptor, ServerCalls.asyncServerStreamingCall(handler));
                     index++;
                 }
-                return builder.build();
+
+                this.serverServiceDefinition = builder.build();
+                return this.serverServiceDefinition;
             }
         };
     }
 
     private BindableService registerUnaryService(HertsService core) {
-        ReflectMethod reflectMethod = generateReflectMethod(core.getClass().getInterfaces()[0].getName(), core.getClass().getName());
+        ReflectMethod reflectMethod = generateReflectMethod(
+                core.getClass().getInterfaces()[0].getName(), core.getClass().getName(), false);
+        reflectMethod.printMethodName();
+
         return new BindableService() {
             private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
+            private ServerServiceDefinition serverServiceDefinition = null;
 
             @Override
             public ServerServiceDefinition bindService() {
-                List<HertsMethod> hertsMethods = generateHertsMethod(HertsType.Unary, reflectMethod.getMethods(), reflectMethod.getServiceName(), reflectMethod.getServiceImplName());
+                if (this.serverServiceDefinition != null) {
+                    return this.serverServiceDefinition;
+                }
+
+                List<HertsMethod> hertsMethods = generateHertsMethod(
+                        HertsType.Unary, reflectMethod.getMethods(), reflectMethod.getServiceName(), reflectMethod.getServiceImplName());
+
                 HertsUnaryDescriptor descriptor = HertsGrpcDescriptor.generateGrpcDescriptor(reflectMethod.getServiceName(), hertsMethods);
                 ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
 
                 int index = 0;
                 for (MethodDescriptor<byte[], byte[]> methodDescriptor : descriptor.getMethodDescriptors()) {
-                    HertsRpcUMethodHandler<byte[], byte[]> handler = new HertsRpcUMethodHandler<>(hertsMethods.get(index), hertsMetrics);
+                    HertsRpcUMethodHandler<byte[], byte[]> handler = new HertsRpcUMethodHandler<>(hertsMethods.get(index), hertsMetrics, core);
                     builder = builder.addMethod(methodDescriptor, ServerCalls.asyncUnaryCall(handler));
                     index++;
                 }
-                return builder.build();
+
+                this.serverServiceDefinition = builder.build();
+                return this.serverServiceDefinition;
             }
         };
     }

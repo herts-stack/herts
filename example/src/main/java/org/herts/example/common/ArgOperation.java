@@ -3,7 +3,7 @@ package org.herts.example.common;
 import org.herts.common.context.HertsType;
 
 public class ArgOperation {
-    public static char[] allowedArgs = new char[] {'U', 'u', 'C', 'c', 'S', 's', 'B', 'b', 'h', 'H'};
+    public static char[] allowedArgs = new char[] {'U', 'u', 'C', 'c', 'S', 's', 'B', 'b', 'h', 'H', 'd', 'D'};
     public static boolean isHertsTypeOk(String arg) {
         if (arg == null || arg.isEmpty()) {
             return false;
@@ -45,6 +45,9 @@ public class ArgOperation {
         }
         if (argChar == allowedArgs[8] || argChar == allowedArgs[9]) {
             return HertsType.Http;
+        }
+        if (argChar == allowedArgs[10] || argChar == allowedArgs[11]) {
+            return HertsType.DuplexStreaming;
         }
         return HertsType.Unary;
     }

@@ -14,7 +14,8 @@ public enum HertsType {
     ServerStreaming(2),
     ClientStreaming(3),
     BidirectionalStreaming(4),
-    Http(5);
+    DuplexStreaming(5),
+    Http(6);
 
     private final int id;
 
@@ -39,6 +40,8 @@ public enum HertsType {
         } else if (id == ServerStreaming.getId()) {
             methodType = MethodDescriptor.MethodType.SERVER_STREAMING;
         } else if (id == BidirectionalStreaming.getId()) {
+            methodType = MethodDescriptor.MethodType.BIDI_STREAMING;
+        } else if (id == DuplexStreaming.getId()) {
             methodType = MethodDescriptor.MethodType.BIDI_STREAMING;
         } else {
             throw new HertsTypeInvalidException("gRPC Herts type is invalid");

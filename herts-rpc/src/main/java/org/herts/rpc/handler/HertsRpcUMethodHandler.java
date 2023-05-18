@@ -3,10 +3,10 @@ package org.herts.rpc.handler;
 import org.herts.common.exception.HertsInstanceException;
 import org.herts.common.exception.HertsServiceNotFoundException;
 import org.herts.common.context.HertsMethod;
-import org.herts.common.exception.http.HertsHttpErrorException;
 import org.herts.common.exception.rpc.HertsRpcErrorException;
 import org.herts.common.serializer.HertsSerializer;
 
+import org.herts.common.service.HertsService;
 import org.herts.metrics.HertsMetrics;
 import io.grpc.stub.StreamObserver;
 
@@ -27,24 +27,12 @@ public class HertsRpcUMethodHandler<Req, Resp> implements
     private final HertsMethod hertsMethod;
     private final HertsRpcCaller hertsRpcCaller;
 
-    public HertsRpcUMethodHandler(HertsMethod hertsMethod, HertsMetrics hertsMetrics) {
+    public HertsRpcUMethodHandler(HertsMethod hertsMethod, HertsMetrics hertsMetrics, HertsService core) {
         this.hertsMethod = hertsMethod;
         this.requests = new Object[this.hertsMethod.getParameters().length];
 
-        String serviceName = hertsMethod.getCoreImplServiceName();
-        Class<?> coreClass;
-        try {
-            coreClass = Class.forName(serviceName);
-        } catch (ClassNotFoundException ex) {
-            throw new HertsServiceNotFoundException("Unknown Herts core class. " + ex.getMessage());
-        }
-
-        try {
-            this.coreObject = coreClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new HertsInstanceException(e);
-        }
-
+        Class<?> coreClass = core.getClass();
+        this.coreObject = core;
         Method method;
         try {
             method = coreClass.getDeclaredMethod(hertsMethod.getMethodName(), hertsMethod.getParameters());

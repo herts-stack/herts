@@ -2,6 +2,7 @@ package org.herts.rpc.engine;
 
 import org.herts.common.context.HertsMetricsSetting;
 import org.herts.common.context.HertsType;
+import org.herts.common.service.HertsDuplexService;
 import org.herts.common.service.HertsService;
 
 import io.grpc.BindableService;
@@ -20,6 +21,8 @@ import java.util.Map;
  * @version 1.0.0
  */
 public interface HertsRpcEngineBuilder {
+
+    HertsRpcEngineBuilder registerHertsRpcService(HertsDuplexService hertsDuplexService, @Nullable ServerInterceptor interceptor);
 
     /**
      * Add Herts service

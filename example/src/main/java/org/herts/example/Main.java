@@ -7,6 +7,7 @@ import org.herts.example.common.ArgOperation;
 import org.herts.common.context.HertsType;
 import org.herts.example.bidstreaming_rpc.server.BiStreamingServer;
 import org.herts.example.clientstreaming_rpc.server.ClientStreamingServer;
+import org.herts.example.duplexstreaming_rpc.server.DuplexStreamingServer;
 import org.herts.example.http.client.HttpClient;
 import org.herts.example.http.server.HttpServer;
 import org.herts.example.serverstreaming_rpc.client.ServerStreamingClient;
@@ -28,21 +29,12 @@ public class Main {
         HertsType coreType = ArgOperation.convert(args[1]);
         if (args[0].equals(ArgOperation.SERVER)) {
             switch (coreType) {
-                case Unary -> {
-                    UnaryServer.run();
-                }
-                case ClientStreaming -> {
-                    ClientStreamingServer.run();
-                }
-                case ServerStreaming -> {
-                    ServerStreamingServer.run();
-                }
-                case BidirectionalStreaming -> {
-                    BiStreamingServer.run();
-                }
-                case Http -> {
-                    HttpServer.run();
-                }
+                case Unary -> UnaryServer.run();
+                case ClientStreaming -> ClientStreamingServer.run();
+                case ServerStreaming -> ServerStreamingServer.run();
+                case BidirectionalStreaming -> BiStreamingServer.run();
+                case DuplexStreaming -> DuplexStreamingServer.run();
+                case Http -> HttpServer.run();
             }
         } else {
             try {

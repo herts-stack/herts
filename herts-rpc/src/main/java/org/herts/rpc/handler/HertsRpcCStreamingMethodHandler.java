@@ -7,6 +7,7 @@ import org.herts.common.context.HertsMethod;
 import org.herts.common.serializer.HertsSerializer;
 
 import io.grpc.stub.StreamObserver;
+import org.herts.common.service.HertsService;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -23,24 +24,12 @@ public class HertsRpcCStreamingMethodHandler<Req, Resp> implements
     private final HertsMethod hertsMethod;
     private final HertsRpcCaller hertsRpcCaller;
 
-    public HertsRpcCStreamingMethodHandler(HertsMethod hertsMethod) {
+    public HertsRpcCStreamingMethodHandler(HertsMethod hertsMethod, HertsService hertsService) {
         this.hertsMethod = hertsMethod;
         this.requests = new Object[this.hertsMethod.getParameters().length];
+        this.coreObject = hertsService;
 
-        String serviceName = hertsMethod.getCoreImplServiceName();
-        Class<?> coreClass;
-        try {
-            coreClass = Class.forName(serviceName);
-        } catch (ClassNotFoundException ex) {
-            throw new HertsServiceNotFoundException("Unknown Herts core class. " + ex.getMessage());
-        }
-
-        try {
-            this.coreObject = coreClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new HertsInstanceException(e);
-        }
-
+        Class<?> coreClass = hertsMethod.getClass();
         Method method;
         try {
             method = coreClass.getDeclaredMethod(hertsMethod.getMethodName(), hertsMethod.getParameters());
