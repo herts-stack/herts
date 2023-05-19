@@ -19,7 +19,7 @@ public class ServerStreamingClient {
         HertsRpcClient client = HertsRpcClientBuilder
                 .builder("localhost", Constant.port)
                 .secure(false)
-                .registerHertsRpcInterface(ServerStreamingRpcService.class)
+                .registerHertsRpcServiceInterface(ServerStreamingRpcService.class)
                 .connect();
 
         ServerStreamingRpcService service = client.createHertsRpcService(ServerStreamingRpcService.class);

@@ -1,5 +1,7 @@
 package org.herts.example.duplexstreaming_rpc;
 
-public interface DuplexStreamingReceiver {
+import org.herts.common.service.HertsReceiver;
+
+public interface DuplexStreamingReceiver extends HertsReceiver {
     void onReceivedHello02();
 }

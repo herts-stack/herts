@@ -13,20 +13,7 @@ import java.util.List;
  * @version 1.0.0
  */
 public class HertsRpcValidator extends HertsServiceValidateUtil {
-    private static final String voidReturnName = "void";
     private static final String ioGrpcStreamPkgName = "io.grpc.stub.StreamObserver";
-
-    public static boolean isAllReturnVoid(List<HertsService> hertsServices) {
-        for (HertsService hertsService : hertsServices) {
-            for (Method method : hertsService.getClass().getDeclaredMethods()) {
-                var methodReturnType = method.getReturnType().getName();
-                if (!methodReturnType.equals(voidReturnName)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
 
     public static boolean isAllReturnStreamObserver(List<HertsService> hertsServices) {
         for (HertsService hertsService : hertsServices) {

@@ -2,6 +2,7 @@ package org.herts.rpcclient;
 
 import io.grpc.Channel;
 import io.grpc.ClientInterceptor;
+import org.herts.common.service.HertsReceiver;
 
 /**
  * Herts core client builder interface
@@ -20,10 +21,12 @@ public interface HertsRpcClientIBuilder {
     /**
      * Herts interface service
      * Not implementation class. Required @HertsRpc annotation
-     * @param interfaceClass HertsCoreService
+     * @param serviceClass HertsService
      * @return HertsCoreClientBuilder
      */
-    <T> HertsRpcClientIBuilder registerHertsRpcInterface(Class<T> interfaceClass);
+    <T> HertsRpcClientIBuilder registerHertsRpcServiceInterface(Class<T> serviceClass);
+
+    HertsRpcClientIBuilder registerHertsRpcReceiver(HertsReceiver hertsReceiver);
 
     /**
      * Channel for gRPC

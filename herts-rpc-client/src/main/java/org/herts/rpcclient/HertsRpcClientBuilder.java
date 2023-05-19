@@ -1,6 +1,7 @@
 package org.herts.rpcclient;
 
 import org.herts.rpcclient.handler.HertsRpcClientCStreamingMethodHandler;
+import org.herts.rpcclient.handler.HertsRpcClientDStreamingMethodHandler;
 import org.herts.rpcclient.handler.HertsRpcClientUMethodHandler;
 import org.herts.rpcclient.handler.HertsRpcClientBStreamingMethodHandler;
 import org.herts.rpcclient.handler.HertsRpcClientSStreamingMethodHandler;
@@ -149,5 +150,16 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
                     }
                 };
         return HertsRpcClientCStreamingMethodHandler.newStub(factory, channel);
+    }
+
+    private static HertsRpcClientDStreamingMethodHandler newHertsDuplexStreamingService(Channel channel, Class<?> hertsRpcService) {
+        io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientDStreamingMethodHandler> factory =
+                new io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientDStreamingMethodHandler>() {
+                    @java.lang.Override
+                    public HertsRpcClientDStreamingMethodHandler newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+                        return new HertsRpcClientDStreamingMethodHandler(channel, callOptions, hertsRpcService);
+                    }
+                };
+        return HertsRpcClientDStreamingMethodHandler.newStub(factory, channel);
     }
 }

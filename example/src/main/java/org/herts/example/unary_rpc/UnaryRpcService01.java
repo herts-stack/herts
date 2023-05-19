@@ -1,6 +1,6 @@
 package org.herts.example.unary_rpc;
 
-import org.herts.common.annotation.HertsRpc;
+import org.herts.common.annotation.HertsRpcService;
 import org.herts.common.context.HertsType;
 import org.herts.common.service.HertsService;
 import org.herts.example.common.HelloRequest;
@@ -8,7 +8,7 @@ import org.herts.example.common.HelloRequest;
 import java.util.List;
 import java.util.Map;
 
-@HertsRpc(value = HertsType.Unary)
+@HertsRpcService(value = HertsType.Unary)
 public interface UnaryRpcService01 extends HertsService {
     String test01(String id, String value);
     boolean test02();

@@ -18,9 +18,8 @@ import org.herts.common.service.HertsServerStreamingService;
 import org.herts.metrics.HertsMetrics;
 import org.herts.metrics.handler.HertsMetricsHandler;
 import org.herts.metrics.server.HertsMetricsServer;
-import org.herts.rpc.HertsDefaultRpcInterceptor;
+import org.herts.rpc.HertsEmptyRpcInterceptor;
 import org.herts.rpc.HertsRpcInterceptBuilder;
-import org.herts.rpc.HertsRpcInterceptor;
 import org.herts.rpc.handler.HertsRpcBMethodHandler;
 import org.herts.rpc.handler.HertsRpcCStreamingMethodHandler;
 import org.herts.rpc.handler.HertsRpcSStreamingMethodHandler;
@@ -29,9 +28,7 @@ import org.herts.rpc.modelx.ReflectMethod;
 import org.herts.rpc.validator.HertsRpcValidator;
 
 import io.grpc.BindableService;
-import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
-import io.grpc.ServerCall;
 import io.grpc.ServerCredentials;
 import io.grpc.ServerInterceptor;
 import io.grpc.ServerServiceDefinition;
@@ -43,7 +40,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 public class ServerBuilder implements HertsRpcEngineBuilder {
@@ -123,7 +119,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
         BindableService bindableReceiver = createBindableReceiver(hertsDuplexService);
         BindableService bindableService = createBindableService(hertsDuplexService);
         if (interceptor == null) {
-            var defaultInterceptor = HertsDefaultRpcInterceptor.create();
+            var defaultInterceptor = HertsEmptyRpcInterceptor.create();
             this.services.put(bindableService, HertsRpcInterceptBuilder.builder(defaultInterceptor).build());
             this.services.put(bindableReceiver, HertsRpcInterceptBuilder.builder(defaultInterceptor).build());
         } else {
@@ -137,7 +133,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
     public HertsRpcEngineBuilder registerHertsRpcService(HertsService hertsRpcService, @Nullable ServerInterceptor interceptor) {
         BindableService bindableService = createBindableService(hertsRpcService);
         if (interceptor == null) {
-            this.services.put(bindableService, HertsRpcInterceptBuilder.builder(HertsDefaultRpcInterceptor.create()).build());
+            this.services.put(bindableService, HertsRpcInterceptBuilder.builder(HertsEmptyRpcInterceptor.create()).build());
         } else {
             this.services.put(bindableService, interceptor);
         }
@@ -147,7 +143,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
     @Override
     public HertsRpcEngineBuilder registerHertsRpcService(HertsService hertsRpcService) {
         BindableService bindableService = createBindableService(hertsRpcService);
-        this.services.put(bindableService, HertsRpcInterceptBuilder.builder(HertsDefaultRpcInterceptor.create()).build());
+        this.services.put(bindableService, HertsRpcInterceptBuilder.builder(HertsEmptyRpcInterceptor.create()).build());
         return this;
     }
 

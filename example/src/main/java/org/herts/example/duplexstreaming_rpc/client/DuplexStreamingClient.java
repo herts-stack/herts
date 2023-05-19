@@ -20,7 +20,7 @@ public class DuplexStreamingClient {
         HertsRpcClient client = HertsRpcClientBuilder
                 .builder("localhost", Constant.port)
                 .secure(false)
-                .registerHertsRpcInterface(ClientStreamingRpcService.class)
+                .registerHertsRpcServiceInterface(ClientStreamingRpcService.class)
                 .interceptor(HertsRpcClientInterceptBuilder.builder(new GrpcClientInterceptor()).build())
                 .connect();
 
