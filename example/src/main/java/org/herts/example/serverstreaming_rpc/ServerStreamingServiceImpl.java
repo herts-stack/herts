@@ -1,5 +1,6 @@
 package org.herts.example.serverstreaming_rpc;
 
+import com.google.protobuf.Descriptors;
 import org.herts.common.logger.HertsLogger;
 import org.herts.common.service.HertsServerStreamingService;
 import io.grpc.stub.StreamObserver;
@@ -31,6 +32,14 @@ public class ServerStreamingServiceImpl extends HertsServerStreamingService<Serv
             foo.setA01("_" + i);
             foo.setB01(i);
             responseObserver.onNext(foo);
+        }
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void test04(String id, StreamObserver<Object> responseObserver) {
+        for (int i = 1; i <= 10; i++) {
+            responseObserver.onNext("hey");
         }
         responseObserver.onCompleted();
     }

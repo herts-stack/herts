@@ -4,12 +4,14 @@ import io.grpc.stub.StreamObserver;
 import org.herts.common.cache.DuplexStreamingCache;
 import org.herts.common.cache.DuplexStreamingCacheImpl;
 import org.herts.common.context.HertsClientInfo;
+import org.herts.common.context.HertsSystemContext;
 import org.herts.common.context.HertsType;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import java.util.Collections;
 
 /**
  * Herts duplex streaming service
@@ -21,7 +23,7 @@ public class HertsDuplexStreamingService<T, K> extends HertsDuplexServiceBase<T,
     private final Class<?> serviceT;
     private final Class<?> receiverK;
 
-    private HertsDuplexService proxyReceiver = null;
+    private HertsReceiver proxyReceiver = null;
     private String clientId;
 
     public HertsDuplexStreamingService() {
@@ -45,13 +47,20 @@ public class HertsDuplexStreamingService<T, K> extends HertsDuplexServiceBase<T,
         return this.serviceT;
     }
 
-    private void createReceiver() {
-        StreamObserver<Object[]> observer = this.duplexStreamingCache.getObserver(this.clientId);
+    private void createReceiver(String clientId) {
+        StreamObserver<Object> observer = this.duplexStreamingCache.getObserver(clientId);
+        if (observer == null) {
+            return;
+        }
         InvocationHandler handler = new HertsDuplexStreamingInvoker(observer);
-        this.proxyReceiver = (HertsDuplexService) Proxy.newProxyInstance(
-                this.receiverK.getClassLoader(),
-                new Class<?>[]{ this.receiverK },
-                handler);
+        try {
+            this.proxyReceiver = (HertsReceiver) Proxy.newProxyInstance(
+                    this.receiverK.getClassLoader(),
+                    new Class<?>[]{ this.receiverK },
+                    handler);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     protected K broadcast(String clientId) {
@@ -59,16 +68,17 @@ public class HertsDuplexStreamingService<T, K> extends HertsDuplexServiceBase<T,
             return null;
         }
         if (this.proxyReceiver == null) {
-            createReceiver();
+            createReceiver(clientId);
         }
         return (K) this.proxyReceiver;
     }
 
     @Override
-    public void registerReceiver(HertsClientInfo clientInfo, StreamObserver<Object[]> objectStreamObservers) {
+    public void registerReceiver(HertsClientInfo clientInfo, StreamObserver<Object> objectStreamObservers) {
         this.duplexStreamingCache.setClientInfo(clientInfo);
         this.duplexStreamingCache.registerObserverToServer(clientInfo.id, objectStreamObservers);
+        objectStreamObservers.onNext(Collections.singletonList(HertsSystemContext.Rpc.REGISTERED_METHOD_NAME));
         this.clientId = clientInfo.id;
-        createReceiver();
+        createReceiver(clientInfo.id);
     }
 }

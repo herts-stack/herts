@@ -62,9 +62,10 @@ public class HertsRpcBuilder implements HertsRpcEngine {
             }
 
             for (Map.Entry<BindableService, ServerInterceptor> service : this.services.entrySet()) {
-                serverBuilder = serverBuilder.addService(service.getKey());
                 if (service.getValue() != null) {
                     serverBuilder = serverBuilder.addService(ServerInterceptors.intercept(service.getKey(), service.getValue()));
+                } else {
+                    serverBuilder = serverBuilder.addService(service.getKey());
                 }
             }
 

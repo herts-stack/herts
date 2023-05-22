@@ -1,10 +1,14 @@
 package org.herts.rpcclient;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import io.grpc.CallOptions;
 import org.herts.common.annotation.HertsRpcService;
 import org.herts.common.context.HertsType;
 import org.herts.common.exception.HertsNotSupportParameterTypeException;
 import org.herts.common.exception.HertsRpcClientBuildException;
+import org.herts.common.service.HertsDuplexInternalStreaming;
 import org.herts.common.service.HertsReceiver;
+import org.herts.rpcclient.receiver.InternalReceiveStreaming;
 import org.herts.rpcclient.validator.HertsRpcClientValidator;
 
 import io.grpc.Channel;
@@ -112,6 +116,17 @@ public class IBuilder implements HertsRpcClientIBuilder {
                 managedChannelBuilder = managedChannelBuilder.idleTimeout(this.option.getIdleTimeoutMilliSec(), TimeUnit.MILLISECONDS);
             }
             this.channel = managedChannelBuilder.build();
+        }
+
+        if (this.hertsType == HertsType.DuplexStreaming && this.hertsRpcReceivers.size() > 0) {
+            for (HertsReceiver receiver : this.hertsRpcReceivers) {
+                try {
+                    new InternalReceiveStreaming(receiver).newHertsClientStreamingService(this.channel).registerReceiver(HertsDuplexInternalStreaming.class);
+                    Thread.sleep(500);
+                } catch (JsonProcessingException | InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
         return new HertsRpcClientBuilder(this);
     }

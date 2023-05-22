@@ -8,8 +8,8 @@ import io.grpc.ServerInterceptor;
 
 import java.util.logging.Logger;
 
-import static org.herts.common.context.HertsHeaderContext.CODE_VERSION;
-import static org.herts.common.context.HertsHeaderContext.HERTS_HEADER_KEY;
+import static org.herts.common.context.HertsSystemContext.Header.CODE_VERSION;
+import static org.herts.common.context.HertsSystemContext.Header.HERTS_HEADER_KEY;
 
 public class HertsRpcInterceptBuilder implements ServerInterceptor {
     private static final Logger logger = Logger.getLogger(HertsRpcInterceptBuilder.class.getName());

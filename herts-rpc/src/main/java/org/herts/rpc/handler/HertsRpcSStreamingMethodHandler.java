@@ -1,7 +1,6 @@
 package org.herts.rpc.handler;
 
 import org.herts.common.exception.HertsInstanceException;
-import org.herts.common.exception.HertsServiceNotFoundException;
 import org.herts.common.context.HertsMethod;
 import org.herts.common.serializer.HertsSerializer;
 

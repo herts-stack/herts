@@ -1,6 +1,6 @@
 package org.herts.http;
 
-import org.herts.common.context.HertsHeaderContext;
+import org.herts.common.context.HertsSystemContext;
 import org.herts.common.context.HertsHttpRequest;
 import org.herts.common.context.HertsHttpResponse;
 import org.herts.common.context.Payload;
@@ -50,8 +50,8 @@ public class HertsHttpCallerBase {
     }
 
     public void setHertsHeader(HttpServletResponse response) {
-        response.setHeader(HertsHeaderContext.HERTS_CONTEXT_KEY, HertsHeaderContext.CODE_VERSION);
-        response.setHeader(HertsHeaderContext.HERTS_SERVER_KEY, HertsHeaderContext.HERTS_SERVER_VAL);
+        response.setHeader(HertsSystemContext.Header.HERTS_CONTEXT_KEY, HertsSystemContext.Header.CODE_VERSION);
+        response.setHeader(HertsSystemContext.Header.HERTS_SERVER_KEY, HertsSystemContext.Header.HERTS_SERVER_VAL);
     }
 
     protected void call(Method hertsMethod, HttpServletRequest request, HttpServletResponse response) throws Exception {

@@ -1,5 +1,6 @@
 package org.herts.example.serverstreaming_rpc;
 
+import com.google.protobuf.Descriptors;
 import org.herts.common.annotation.HertsRpcService;
 import org.herts.common.context.HertsType;
 import org.herts.common.service.HertsService;
@@ -12,4 +13,5 @@ import org.herts.example.common.HelloResponse02;
 public interface ServerStreamingRpcService extends HertsService {
     void test05(String id, final HelloRequest req, final StreamObserver<HelloResponse01> responseObserver);
     void test01(String id, String id2, final StreamObserver<HelloResponse02> responseObserver);
+    void test04(String id, final StreamObserver<Object> responseObserver);
 }

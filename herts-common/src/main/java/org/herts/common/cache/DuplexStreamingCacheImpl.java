@@ -1,12 +1,13 @@
 package org.herts.common.cache;
 
 import io.grpc.stub.StreamObserver;
+
 import org.herts.common.context.HertsClientInfo;
 
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DuplexStreamingCacheImpl implements DuplexStreamingCache {
-    private volatile ConcurrentHashMap<String, StreamObserver<Object[]>> observers = new ConcurrentHashMap<>();
+    private volatile ConcurrentHashMap<String, StreamObserver<Object>> observers = new ConcurrentHashMap<>();
     private volatile ConcurrentHashMap<String, HertsClientInfo> clientInfo = new ConcurrentHashMap<>();
     private static DuplexStreamingCacheImpl thisClass;
 
@@ -19,12 +20,12 @@ public class DuplexStreamingCacheImpl implements DuplexStreamingCache {
     }
 
     @Override
-    public void registerObserverToServer(String hertsClientId, StreamObserver<Object[]> observer) {
+    public void registerObserverToServer(String hertsClientId, StreamObserver<Object> observer) {
         this.observers.put(hertsClientId, observer);
     }
 
     @Override
-    public StreamObserver<Object[]> getObserver(String hertsClientId) {
+    public StreamObserver<Object> getObserver(String hertsClientId) {
         return this.observers.get(hertsClientId);
     }
 

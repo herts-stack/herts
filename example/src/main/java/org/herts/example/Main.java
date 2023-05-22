@@ -7,6 +7,7 @@ import org.herts.example.common.ArgOperation;
 import org.herts.common.context.HertsType;
 import org.herts.example.bidstreaming_rpc.server.BiStreamingServer;
 import org.herts.example.clientstreaming_rpc.server.ClientStreamingServer;
+import org.herts.example.duplexstreaming_rpc.client.DuplexStreamingClient;
 import org.herts.example.duplexstreaming_rpc.server.DuplexStreamingServer;
 import org.herts.example.http.client.HttpClient;
 import org.herts.example.http.server.HttpServer;
@@ -43,6 +44,7 @@ public class Main {
                     case ClientStreaming -> ClientStreamingClient.run();
                     case ServerStreaming -> ServerStreamingClient.run();
                     case BidirectionalStreaming -> BiStreamingClient.run();
+                    case DuplexStreaming -> DuplexStreamingClient.run();
                     case Http -> HttpClient.run();
                 }
                 Thread.sleep(5000);

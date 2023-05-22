@@ -9,11 +9,13 @@ public class DuplexStreamingServiceImpl extends HertsDuplexStreamingService<Dupl
     private static final Logger logger = HertsLogger.getLogger(DuplexStreamingServiceImpl.class.getSimpleName());
 
     public DuplexStreamingServiceImpl() {
-        System.out.println("New");
     }
 
     @Override
     public void hello01() {
+        logger.info("------------ DuplexStreamingService hello01 RPC");
+        var clientId = getClientId();
+        broadcast(clientId).onReceivedHello02();
     }
 
     @Override

@@ -2,7 +2,7 @@ package org.herts.common.context;
 
 import java.io.Serializable;
 
-public class HertsClientInfo implements Serializable {
+public class HertsClientInfo extends HertsMsg {
     public String id;
     public String globalIp;
     public String userAgent;

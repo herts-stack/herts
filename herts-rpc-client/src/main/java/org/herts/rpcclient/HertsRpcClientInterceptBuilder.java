@@ -9,8 +9,8 @@ import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import io.grpc.ForwardingClientCall.SimpleForwardingClientCall;
 
-import static org.herts.common.context.HertsHeaderContext.CODE_VERSION;
-import static org.herts.common.context.HertsHeaderContext.HERTS_HEADER_KEY;
+import static org.herts.common.context.HertsSystemContext.Header.CODE_VERSION;
+import static org.herts.common.context.HertsSystemContext.Header.HERTS_HEADER_KEY;
 
 public class HertsRpcClientInterceptBuilder implements ClientInterceptor {
     private final HertsRpcClientInterceptor interceptor;

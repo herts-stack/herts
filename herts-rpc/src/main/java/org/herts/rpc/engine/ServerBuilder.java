@@ -2,6 +2,7 @@ package org.herts.rpc.engine;
 
 import org.herts.common.context.HertsMethod;
 import org.herts.common.context.HertsMetricsSetting;
+import org.herts.common.context.HertsSystemContext;
 import org.herts.common.context.HertsType;
 import org.herts.common.descriptor.HertsGrpcDescriptor;
 import org.herts.common.descriptor.HertsStreamingDescriptor;
@@ -292,7 +293,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
         } else {
             targetMethods = new Method[1];
             for (Method method : definedMethods) {
-                if (method.getName().equals("registerReceiver")) {
+                if (method.getName().equals(HertsSystemContext.Rpc.RECEIVER_METHOD_NAME)) {
                     targetMethods[0] = method;
                     break;
                 }

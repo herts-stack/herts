@@ -96,6 +96,10 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
                 var clientStreaming = newHertsClientStreamingService(channel, interfaceType);
                 return (T) generateService(clientStreaming, interfaceType);
             }
+            case DuplexStreaming -> {
+                var duplexStreaming = newHertsBlockingService(channel, interfaceType);
+                return (T) generateService(duplexStreaming, interfaceType);
+            }
             default ->
                     throw new HertsTypeInvalidException("Undefined Hert core type. HertsCoreType" + this.hertsType);
         }
