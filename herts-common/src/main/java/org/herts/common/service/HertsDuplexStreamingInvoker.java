@@ -5,7 +5,6 @@ import io.grpc.stub.StreamObserver;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class HertsDuplexStreamingInvoker implements InvocationHandler {
@@ -20,8 +19,9 @@ public class HertsDuplexStreamingInvoker implements InvocationHandler {
         List<Object> methodParameters = new ArrayList<>();
         methodParameters.add(method.getName());
         if (args != null && args.length > 0) {
-            methodParameters = Arrays.asList(args);
+            methodParameters.addAll(List.of(args));
         }
+
         this.streamObservers.onNext(methodParameters);
         return proxy;
     }
