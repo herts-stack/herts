@@ -25,7 +25,6 @@ public class DuplexStreamingClient {
 
         DuplexStreamingService service = client.createHertsRpcService(DuplexStreamingService.class);
         service.hello01();
-
         client.getChannel().shutdown();
     }
 }

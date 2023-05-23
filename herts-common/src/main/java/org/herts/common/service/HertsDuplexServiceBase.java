@@ -5,11 +5,11 @@ import org.herts.common.context.HertsType;
 
 public class HertsDuplexServiceBase<T, K> implements HertsDuplexService {
     private final HertsType coreType;
-    private Class<?> service;
-    private Class<?> receiver;
+    private final HertsBroadCaster broadCaster;
 
     public HertsDuplexServiceBase(HertsType rpcType) {
         this.coreType = rpcType;
+        this.broadCaster = new HertsBroadCasterImpl();
     }
 
     @Override
@@ -34,19 +34,15 @@ public class HertsDuplexServiceBase<T, K> implements HertsDuplexService {
 
     @Override
     public Class<?> getService() {
-        return this.service;
+        return this.broadCaster.getService();
     }
 
     @Override
     public Class<?> getReceiver() {
-        return this.receiver;
+        return this.broadCaster.getReceiver();
     }
 
-    protected void setService(Class<?> service) {
-        this.service = service;
-    }
-
-    protected void setReceiver(Class<?> receiver) {
-        this.receiver = receiver;
+    public HertsBroadCaster getBroadCaster() {
+        return this.broadCaster;
     }
 }

@@ -5,6 +5,10 @@ import io.grpc.stub.StreamObserver;
 import java.util.List;
 
 public class ReceiveObserver implements StreamObserver<Object> {
+
+    public ReceiveObserver() {
+    }
+
     @Override
     public void onNext(Object value) {
         List<Object> receivedData = (List<Object>) value;

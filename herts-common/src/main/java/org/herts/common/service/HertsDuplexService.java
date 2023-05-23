@@ -16,6 +16,8 @@ public interface HertsDuplexService extends HertsService {
      */
     HertsType getHertsType();
 
+    String[] getConnections();
+
     /**
      * Get grpc method
      * @return MethodDescriptor.MethodType

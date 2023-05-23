@@ -203,10 +203,6 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
             throw new HertsNotSupportParameterTypeException(
                     "Support `StreamObserver` return method if use ClientStreaming or BidirectionalStreaming");
         }
-//        if (hertsType == HertsType.DuplexStreaming && !HertsRpcValidator.hasDuplexInterface(this.hertsRpcServices)) {
-//            throw new HertsNotSupportParameterTypeException(
-//                    "Support `void` return method only on DuplexStreaming. Also, Please set receiver interface on second param of HertsService");
-//        }
         return new HertsRpcBuilder(this);
     }
 

@@ -1,6 +1,5 @@
 package org.herts.example.serverstreaming_rpc;
 
-import com.google.protobuf.Descriptors;
 import org.herts.common.logger.HertsLogger;
 import org.herts.common.service.HertsServerStreamingService;
 import io.grpc.stub.StreamObserver;

@@ -42,8 +42,6 @@ public class InternalReceiveStreaming {
             var serviceName = streaming.getName();
             Method method = streaming.getDeclaredMethods()[0];
 
-            System.out.println(serviceName);
-            System.out.println(method.getName());
             MethodDescriptor<Object, Object> methodDescriptor = HertsGrpcDescriptor
                     .generateStramingMethodDescriptor(HertsType.ServerStreaming, serviceName, method.getName());
 

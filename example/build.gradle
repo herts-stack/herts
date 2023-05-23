@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'org.graalvm.buildtools.native' version '0.9.21'
 }
 apply plugin: 'application'
@@ -29,8 +30,18 @@ application {
     mainClass = mainClassPath
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassPath
+    }
+}
+
 test {
     useJUnitPlatform()
+}
+
+shadowJar {
+    mergeServiceFiles()
 }
 
 tasks.register('runExample', JavaExec) {
