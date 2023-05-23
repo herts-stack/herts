@@ -47,7 +47,7 @@ public class ArgOperation {
             return HertsType.Http;
         }
         if (argChar == allowedArgs[10] || argChar == allowedArgs[11]) {
-            return HertsType.DuplexStreaming;
+            return HertsType.Reactive;
         }
         return HertsType.Unary;
     }

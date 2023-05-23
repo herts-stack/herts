@@ -8,7 +8,7 @@ import org.herts.common.context.HertsType;
  * @author Herts Contributer
  * @version 1.0.0
  */
-public interface HertsDuplexService extends HertsService {
+public interface HertsReactiveService extends HertsService {
 
     /**
      * Get implemented herts core type

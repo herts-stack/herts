@@ -6,16 +6,16 @@ import org.herts.common.context.HertsClientInfo;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DuplexStreamingCacheImpl implements DuplexStreamingCache {
+public class ReactiveStreamingCacheImpl implements ReactiveStreamingCache {
     private volatile ConcurrentHashMap<String, StreamObserver<Object>> observers = new ConcurrentHashMap<>();
     private volatile ConcurrentHashMap<String, HertsClientInfo> clientInfo = new ConcurrentHashMap<>();
-    private static DuplexStreamingCacheImpl thisClass;
+    private static ReactiveStreamingCacheImpl thisClass;
 
-    public static DuplexStreamingCache getInstance() {
+    public static ReactiveStreamingCache getInstance() {
         if (thisClass != null) {
             return thisClass;
         }
-        thisClass = new DuplexStreamingCacheImpl();
+        thisClass = new ReactiveStreamingCacheImpl();
         return thisClass;
     }
 

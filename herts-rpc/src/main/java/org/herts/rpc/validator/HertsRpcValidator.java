@@ -1,10 +1,11 @@
 package org.herts.rpc.validator;
 
-import org.herts.common.service.HertsDuplexStreamingService;
 import org.herts.common.service.HertsService;
 import org.herts.common.util.HertsServiceValidateUtil;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -27,27 +28,22 @@ public class HertsRpcValidator extends HertsServiceValidateUtil {
         return true;
     }
 
-    public static boolean hasDuplexInterface(List<HertsService> hertsServices) {
+    public static boolean hasReactiveInterface(List<HertsService> hertsServices) {
         for (HertsService service : hertsServices) {
-            HertsDuplexStreamingService<Object, Object> duplexStreamingService;
-            try {
-                duplexStreamingService = (HertsDuplexStreamingService<Object, Object>) service;
-            } catch (Exception ex) {
-                return false;
-            }
+            Type type = service.getClass().getGenericSuperclass();
 
-            var receiver = duplexStreamingService.getReceiver();
-            if (receiver == null) {
-                return false;
-            }
-            var duplexService = duplexStreamingService.getService();
-            if (duplexService == null) {
-                return false;
-            }
-            for (Method method : receiver.getClass().getDeclaredMethods()) {
-                var methodReturnType = method.getReturnType().getName();
-                if (!methodReturnType.equals(voidReturnName)) {
-                    return false;
+            if (type instanceof ParameterizedType parameterizedType) {
+                Type[] typeArguments = parameterizedType.getActualTypeArguments();
+                if (typeArguments.length > 1) {
+                    Type typeArgument = typeArguments[1];
+                    if (typeArgument instanceof Class<?> genericClass) {
+                        Method[] methods = genericClass.getDeclaredMethods();
+                        for (Method method : methods) {
+                            if (!method.getReturnType().getName().equals(voidReturnName)) {
+                                return false;
+                            }
+                        }
+                    }
                 }
             }
         }

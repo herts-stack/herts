@@ -7,8 +7,8 @@ import org.herts.example.common.ArgOperation;
 import org.herts.common.context.HertsType;
 import org.herts.example.bidstreaming_rpc.server.BiStreamingServer;
 import org.herts.example.clientstreaming_rpc.server.ClientStreamingServer;
-import org.herts.example.duplexstreaming_rpc.client.DuplexStreamingClient;
-import org.herts.example.duplexstreaming_rpc.server.DuplexStreamingServer;
+import org.herts.example.reactivestreaming_rpc.client.ReactiveStreamingClient;
+import org.herts.example.reactivestreaming_rpc.server.ReactiveStreamingServer;
 import org.herts.example.http.client.HttpClient;
 import org.herts.example.http.server.HttpServer;
 import org.herts.example.serverstreaming_rpc.client.ServerStreamingClient;
@@ -34,7 +34,7 @@ public class Main {
                 case ClientStreaming -> ClientStreamingServer.run();
                 case ServerStreaming -> ServerStreamingServer.run();
                 case BidirectionalStreaming -> BiStreamingServer.run();
-                case DuplexStreaming -> DuplexStreamingServer.run();
+                case Reactive -> ReactiveStreamingServer.run();
                 case Http -> HttpServer.run();
             }
         } else {
@@ -44,7 +44,7 @@ public class Main {
                     case ClientStreaming -> ClientStreamingClient.run();
                     case ServerStreaming -> ServerStreamingClient.run();
                     case BidirectionalStreaming -> BiStreamingClient.run();
-                    case DuplexStreaming -> DuplexStreamingClient.run();
+                    case Reactive -> ReactiveStreamingClient.run();
                     case Http -> HttpClient.run();
                 }
                 Thread.sleep(5000);

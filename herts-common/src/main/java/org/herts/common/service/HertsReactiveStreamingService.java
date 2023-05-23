@@ -8,14 +8,14 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
- * Herts duplex streaming service
+ * Herts reactive streaming service
  * @author Herts Contributer
  * @version 1.0.0
  */
-public class HertsDuplexStreamingService<T, K> extends HertsDuplexServiceBase<T, K> implements HertsDuplexInternalStreaming {
+public class HertsReactiveStreamingService<T, K> extends HertsReactiveStreamingServiceBase<T, K> implements HertsReactiveStreamingInternal {
 
-    public HertsDuplexStreamingService() {
-        super(HertsType.DuplexStreaming);
+    public HertsReactiveStreamingService() {
+        super(HertsType.Reactive);
         Type superClass = getClass().getGenericSuperclass();
         ParameterizedType parameterizedType = (ParameterizedType) superClass;
         Type[] typeArguments = parameterizedType.getActualTypeArguments();

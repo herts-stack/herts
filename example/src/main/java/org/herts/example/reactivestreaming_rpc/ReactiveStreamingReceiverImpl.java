@@ -1,12 +1,12 @@
-package org.herts.example.duplexstreaming_rpc;
+package org.herts.example.reactivestreaming_rpc;
 
 import org.herts.common.logger.HertsLogger;
 
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class DuplexStreamingReceiverImpl implements DuplexStreamingReceiver {
-    private static final Logger logger = HertsLogger.getLogger(DuplexStreamingReceiverImpl.class.getSimpleName());
+public class ReactiveStreamingReceiverImpl implements ReactiveStreamingReceiver {
+    private static final Logger logger = HertsLogger.getLogger(ReactiveStreamingReceiverImpl.class.getSimpleName());
 
     @Override
     public void onReceivedHello01() {

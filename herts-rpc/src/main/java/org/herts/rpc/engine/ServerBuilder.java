@@ -13,7 +13,7 @@ import org.herts.common.exception.HertsServiceNotFoundException;
 import org.herts.common.logger.HertsLogger;
 import org.herts.common.service.HertsBidirectionalStreamingService;
 import org.herts.common.service.HertsClientStreamingService;
-import org.herts.common.service.HertsDuplexService;
+import org.herts.common.service.HertsReactiveService;
 import org.herts.common.service.HertsService;
 import org.herts.common.service.HertsServerStreamingService;
 import org.herts.metrics.HertsMetrics;
@@ -113,25 +113,27 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
     }
 
     @Override
-    public HertsRpcEngineBuilder registerHertsRpcService(HertsDuplexService hertsDuplexService, @Nullable ServerInterceptor interceptor) {
-        if (hertsDuplexService.getClass().getInterfaces().length == 0) {
-            throw new HertsRpcBuildException("You need to define interface on " + hertsDuplexService.getClass().getName());
+    public HertsRpcEngineBuilder registerHertsRpcService(HertsReactiveService hertsReactiveService, @Nullable ServerInterceptor interceptor) {
+        if (hertsReactiveService.getClass().getInterfaces().length == 0) {
+            throw new HertsRpcBuildException("You need to define interface on " + hertsReactiveService.getClass().getName());
         }
-        BindableService bindableReceiver = createBindableReceiver(hertsDuplexService);
-        BindableService bindableService = createBindableService(hertsDuplexService);
+        this.hertsRpcServices.add(hertsReactiveService);
+
+        BindableService bindableReceiver = createBindableReceiver(hertsReactiveService);
+        BindableService bindableService = createBindableService(hertsReactiveService);
+        var defaultInterceptor = HertsEmptyRpcInterceptor.create();
+        this.services.put(bindableReceiver, HertsRpcInterceptBuilder.builder(defaultInterceptor).build());
         if (interceptor == null) {
-            var defaultInterceptor = HertsEmptyRpcInterceptor.create();
             this.services.put(bindableService, HertsRpcInterceptBuilder.builder(defaultInterceptor).build());
-            this.services.put(bindableReceiver, HertsRpcInterceptBuilder.builder(defaultInterceptor).build());
         } else {
             this.services.put(bindableService, interceptor);
-            this.services.put(bindableReceiver, interceptor);
         }
         return this;
     }
 
     @Override
     public HertsRpcEngineBuilder registerHertsRpcService(HertsService hertsRpcService, @Nullable ServerInterceptor interceptor) {
+        this.hertsRpcServices.add(hertsRpcService);
         BindableService bindableService = createBindableService(hertsRpcService);
         if (interceptor == null) {
             this.services.put(bindableService, HertsRpcInterceptBuilder.builder(HertsEmptyRpcInterceptor.create()).build());
@@ -143,6 +145,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
 
     @Override
     public HertsRpcEngineBuilder registerHertsRpcService(HertsService hertsRpcService) {
+        this.hertsRpcServices.add(hertsRpcService);
         BindableService bindableService = createBindableService(hertsRpcService);
         this.services.put(bindableService, HertsRpcInterceptBuilder.builder(HertsEmptyRpcInterceptor.create()).build());
         return this;
@@ -203,15 +206,18 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
             throw new HertsNotSupportParameterTypeException(
                     "Support `StreamObserver` return method if use ClientStreaming or BidirectionalStreaming");
         }
+        if (HertsRpcValidator.hasReactiveInterface(this.hertsRpcServices)) {
+
+        }
         return new HertsRpcBuilder(this);
     }
 
-    private BindableService createBindableReceiver(HertsDuplexService hertsDuplexService) {
-        Class<?> hertsDuplexStreamingService = hertsDuplexService.getClass().getSuperclass();
-        Class<?> hertsDuplexStreamingServiceIf = hertsDuplexStreamingService.getInterfaces()[0];
+    private BindableService createBindableReceiver(HertsReactiveService hertsReactiveService) {
+        Class<?> hertsReactiveStreamingService = hertsReactiveService.getClass().getSuperclass();
+        Class<?> hertsReactiveStreamingServiceIf = hertsReactiveStreamingService.getInterfaces()[0];
 
         ReflectMethod reflectMethod = generateReflectMethod(
-                hertsDuplexStreamingServiceIf.getName(), hertsDuplexStreamingService.getName(), true);
+                hertsReactiveStreamingServiceIf.getName(), hertsReactiveStreamingService.getName(), true);
         reflectMethod.printMethodName();
 
         return new BindableService() {
@@ -232,7 +238,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
 
                 int index = 0;
                 for (MethodDescriptor<Object, Object> methodDescriptor : descriptor.getMethodDescriptors()) {
-                    HertsRpcSStreamingMethodHandler<Object, Object> handler = new HertsRpcSStreamingMethodHandler<>(hertsMethods.get(index), hertsDuplexService);
+                    HertsRpcSStreamingMethodHandler<Object, Object> handler = new HertsRpcSStreamingMethodHandler<>(hertsMethods.get(index), hertsReactiveService);
                     builder = builder.addMethod(methodDescriptor, ServerCalls.asyncServerStreamingCall(handler));
                     index++;
                 }
@@ -248,9 +254,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
             throw new HertsRpcBuildException("HertsService arg is null");
         }
 
-        this.hertsRpcServices.add(hertsRpcService);
         this.hertsTypes.add(hertsRpcService.getHertsType());
-
         BindableService bindableService;
         switch (hertsRpcService.getHertsType()) {
             case Unary:
@@ -265,7 +269,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
             case ClientStreaming:
                 bindableService = registerClientStreamingService((HertsClientStreamingService) hertsRpcService);
                 break;
-            case DuplexStreaming:
+            case Reactive:
                 bindableService = registerUnaryService(hertsRpcService);
                 break;
             default:

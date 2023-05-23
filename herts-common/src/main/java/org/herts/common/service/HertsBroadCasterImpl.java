@@ -1,8 +1,8 @@
 package org.herts.common.service;
 
 import io.grpc.stub.StreamObserver;
-import org.herts.common.cache.DuplexStreamingCache;
-import org.herts.common.cache.DuplexStreamingCacheImpl;
+import org.herts.common.cache.ReactiveStreamingCache;
+import org.herts.common.cache.ReactiveStreamingCacheImpl;
 import org.herts.common.context.HertsClientInfo;
 import org.herts.common.context.HertsSystemContext;
 
@@ -11,7 +11,7 @@ import java.lang.reflect.Proxy;
 import java.util.Collections;
 
 public class HertsBroadCasterImpl implements HertsBroadCaster {
-    private final DuplexStreamingCache duplexStreamingCache = DuplexStreamingCacheImpl.getInstance();
+    private final ReactiveStreamingCache reactiveStreamingCache = ReactiveStreamingCacheImpl.getInstance();
     private Class<?> service;
     private Class<?> receiver;
     private HertsReceiver proxyReceiver;
@@ -22,7 +22,7 @@ public class HertsBroadCasterImpl implements HertsBroadCaster {
 
     @Override
     public <K> K broadcast(String clientId) {
-        if (this.duplexStreamingCache == null) {
+        if (this.reactiveStreamingCache == null) {
             return null;
         }
         if (this.proxyReceiver == null) {
@@ -33,8 +33,8 @@ public class HertsBroadCasterImpl implements HertsBroadCaster {
 
     @Override
     public void registerReceiver(HertsClientInfo clientInfo, StreamObserver<Object> objectStreamObservers) {
-        this.duplexStreamingCache.setClientInfo(clientInfo);
-        this.duplexStreamingCache.registerObserverToServer(clientInfo.id, objectStreamObservers);
+        this.reactiveStreamingCache.setClientInfo(clientInfo);
+        this.reactiveStreamingCache.registerObserverToServer(clientInfo.id, objectStreamObservers);
         objectStreamObservers.onNext(Collections.singletonList(HertsSystemContext.Rpc.REGISTERED_METHOD_NAME));
         this.clientId = clientInfo.id;
         createReceiver(clientInfo.id);
@@ -66,11 +66,11 @@ public class HertsBroadCasterImpl implements HertsBroadCaster {
     }
 
     private void createReceiver(String clientId) {
-        StreamObserver<Object> observer = this.duplexStreamingCache.getObserver(clientId);
+        StreamObserver<Object> observer = this.reactiveStreamingCache.getObserver(clientId);
         if (observer == null) {
             return;
         }
-        InvocationHandler handler = new HertsDuplexStreamingInvoker(observer);
+        InvocationHandler handler = new HertsReactiveStreamingInvoker(observer);
         try {
             this.proxyReceiver = (HertsReceiver) Proxy.newProxyInstance(
                     this.receiver.getClassLoader(),

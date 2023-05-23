@@ -96,9 +96,9 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
                 var clientStreaming = newHertsClientStreamingService(channel, interfaceType);
                 return (T) generateService(clientStreaming, interfaceType);
             }
-            case DuplexStreaming -> {
-                var duplexStreaming = newHertsBlockingService(channel, interfaceType);
-                return (T) generateService(duplexStreaming, interfaceType);
+            case Reactive -> {
+                var reactiveStreaming = newHertsBlockingService(channel, interfaceType);
+                return (T) generateService(reactiveStreaming, interfaceType);
             }
             default ->
                     throw new HertsTypeInvalidException("Undefined Hert core type. HertsCoreType" + this.hertsType);
@@ -156,7 +156,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
         return HertsRpcClientCStreamingMethodHandler.newStub(factory, channel);
     }
 
-    private static HertsRpcClientDStreamingMethodHandler newHertsDuplexStreamingService(Channel channel, Class<?> hertsRpcService) {
+    private static HertsRpcClientDStreamingMethodHandler newHertsReactiveStreamingService(Channel channel, Class<?> hertsRpcService) {
         io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientDStreamingMethodHandler> factory =
                 new io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientDStreamingMethodHandler>() {
                     @java.lang.Override

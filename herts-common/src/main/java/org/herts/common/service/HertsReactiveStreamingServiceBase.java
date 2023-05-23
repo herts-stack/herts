@@ -3,11 +3,11 @@ package org.herts.common.service;
 import io.grpc.MethodDescriptor;
 import org.herts.common.context.HertsType;
 
-public class HertsDuplexServiceBase<T, K> implements HertsDuplexService {
+public class HertsReactiveStreamingServiceBase<T, K> implements HertsReactiveService {
     private final HertsType coreType;
     private final HertsBroadCaster broadCaster;
 
-    public HertsDuplexServiceBase(HertsType rpcType) {
+    public HertsReactiveStreamingServiceBase(HertsType rpcType) {
         this.coreType = rpcType;
         this.broadCaster = new HertsBroadCasterImpl();
     }

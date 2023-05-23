@@ -5,7 +5,7 @@ import org.herts.common.annotation.HertsRpcService;
 import org.herts.common.context.HertsType;
 import org.herts.common.exception.HertsNotSupportParameterTypeException;
 import org.herts.common.exception.HertsRpcClientBuildException;
-import org.herts.common.service.HertsDuplexInternalStreaming;
+import org.herts.common.service.HertsReactiveStreamingInternal;
 import org.herts.common.service.HertsReceiver;
 import org.herts.rpcclient.receiver.InternalReceiveStreaming;
 import org.herts.rpcclient.validator.HertsRpcClientValidator;
@@ -82,7 +82,7 @@ public class IBuilder implements HertsRpcClientIBuilder {
         }
         this.hertsType = serviceHertsTypes.get(0);
 
-        if (this.hertsType != HertsType.DuplexStreaming) {
+        if (this.hertsType != HertsType.Reactive) {
             validateHertsService();
         } else {
             if (this.hertsRpcReceivers.size() > 0) {
@@ -117,10 +117,10 @@ public class IBuilder implements HertsRpcClientIBuilder {
             this.channel = managedChannelBuilder.build();
         }
 
-        if (this.hertsType == HertsType.DuplexStreaming && this.hertsRpcReceivers.size() > 0) {
+        if (this.hertsType == HertsType.Reactive && this.hertsRpcReceivers.size() > 0) {
             for (HertsReceiver receiver : this.hertsRpcReceivers) {
                 try {
-                    new InternalReceiveStreaming(receiver).newHertsClientStreamingService(this.channel).registerReceiver(HertsDuplexInternalStreaming.class);
+                    new InternalReceiveStreaming(receiver).newHertsClientStreamingService(this.channel).registerReceiver(HertsReactiveStreamingInternal.class);
                     Thread.sleep(500);
                 } catch (JsonProcessingException | InterruptedException e) {
                     throw new RuntimeException(e);

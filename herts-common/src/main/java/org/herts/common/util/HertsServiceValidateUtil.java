@@ -87,7 +87,6 @@ public class HertsServiceValidateUtil {
         for (Method method : methods) {
             methodNames.add(method.getName());
         }
-
         if (CollectionUtil.findDuplicates(methodNames).size() > 0) {
             return "Method name is duplicated. Herts supports uniq method name only.";
         }

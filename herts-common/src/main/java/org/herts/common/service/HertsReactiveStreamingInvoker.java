@@ -7,10 +7,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HertsDuplexStreamingInvoker implements InvocationHandler {
+public class HertsReactiveStreamingInvoker implements InvocationHandler {
     private final StreamObserver<Object> streamObservers;
 
-    public HertsDuplexStreamingInvoker(StreamObserver<Object> streamObservers) {
+    public HertsReactiveStreamingInvoker(StreamObserver<Object> streamObservers) {
         this.streamObservers = streamObservers;
     }
 
