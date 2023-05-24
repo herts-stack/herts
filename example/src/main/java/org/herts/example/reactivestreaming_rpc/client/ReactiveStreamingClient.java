@@ -1,5 +1,6 @@
 package org.herts.example.reactivestreaming_rpc.client;
 
+import io.grpc.ConnectivityState;
 import org.herts.common.logger.HertsLogger;
 import org.herts.example.common.Constant;
 import org.herts.example.common.GrpcClientInterceptor;
@@ -27,6 +28,21 @@ public class ReactiveStreamingClient {
         service.hello01();
 
         service.hello02(null);
+
+        client.getChannel().notifyWhenStateChanged(ConnectivityState.READY, () -> {
+            ConnectivityState currentState = client.getChannel().getState(true);
+            if (currentState == ConnectivityState.READY) {
+                logger.info("Connected");
+            } else if (currentState == ConnectivityState.IDLE) {
+                logger.info("Waiting for connected");
+            } else if (currentState == ConnectivityState.CONNECTING) {
+                logger.info("Connecting");
+            } else if (currentState == ConnectivityState.TRANSIENT_FAILURE) {
+                logger.info("Caught temporary error");
+            } else if (currentState == ConnectivityState.SHUTDOWN) {
+                logger.info("Disconnected");
+            }
+        });
         client.getChannel().shutdown();
     }
 }

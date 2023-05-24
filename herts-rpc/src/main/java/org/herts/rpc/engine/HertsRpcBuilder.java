@@ -107,15 +107,19 @@ public class HertsRpcBuilder implements HertsRpcEngine {
             });
 
             Runtime.getRuntime().addShutdownHook(new Thread() {
-                private static final Logger _logger = HertsLogger.getLogger("ShutdownTrigger");
                 @Override
                 public void run() {
-                    if (hook != null) {
-                        hook.hookShutdown();
+                    try {
+                        Logger _logger = HertsLogger.getLogger("ShutdownTrigger");
+                        if (hook != null) {
+                            hook.hookShutdown();
+                        }
+                        _logger.info("Shutdown Herts RPC server");
+                        hertsMetricsServer.stop();
+                        server.shutdown();
+                    } finally {
+                        HertsLogger.HertsLogManager.resetFinally();
                     }
-                    _logger.info("Shutdown Herts RPC server");
-                    hertsMetricsServer.stop();
-                    server.shutdown();
                 }
             });
 

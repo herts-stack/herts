@@ -198,7 +198,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
             throw new HertsNotSupportParameterTypeException(
                     "Support `StreamObserver` return method if use ClientStreaming or BidirectionalStreaming");
         }
-        if (hertsType == HertsType.Reactive && HertsRpcValidator.isAllReceiverVoid(this.hertsRpcServices)) {
+        if (hertsType == HertsType.Reactive && !HertsRpcValidator.isAllReceiverVoid(this.hertsRpcServices)) {
             throw new HertsNotSupportParameterTypeException(
                     "Receiver supports void method only");
         }
