@@ -22,7 +22,13 @@ public class ReactiveStreamingServiceImpl extends HertsReactiveStreamingService<
     }
 
     @Override
-    public void hello02() {
+    public void hello02(String id) {
         logger.info("------------ ReactiveStreamingService hello02 RPC");
+        var clientId = getClientId();
+        try {
+            broadcast(clientId).onReceivedHello02(null, 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

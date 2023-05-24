@@ -132,6 +132,19 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
     }
 
     @Override
+    public HertsRpcEngineBuilder registerHertsRpcService(HertsReactiveService hertsReactiveService) {
+        if (hertsReactiveService.getClass().getInterfaces().length == 0) {
+            throw new HertsRpcBuildException("You need to define interface on " + hertsReactiveService.getClass().getName());
+        }
+        this.hertsRpcServices.add(hertsReactiveService);
+
+        var defaultInterceptor = HertsEmptyRpcInterceptor.create();
+        this.services.put(createBindableReceiver(hertsReactiveService), HertsRpcInterceptBuilder.builder(defaultInterceptor).build());
+        this.services.put(createBindableService(hertsReactiveService), HertsRpcInterceptBuilder.builder(defaultInterceptor).build());
+        return this;
+    }
+
+    @Override
     public HertsRpcEngineBuilder registerHertsRpcService(HertsService hertsRpcService, @Nullable ServerInterceptor interceptor) {
         this.hertsRpcServices.add(hertsRpcService);
         BindableService bindableService = createBindableService(hertsRpcService);
@@ -206,7 +219,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
             throw new HertsNotSupportParameterTypeException(
                     "Support `StreamObserver` return method if use ClientStreaming or BidirectionalStreaming");
         }
-        if (HertsRpcValidator.hasReactiveInterface(this.hertsRpcServices)) {
+        if (HertsRpcValidator.isAllReceiverVoid(this.hertsRpcServices)) {
 
         }
         return new HertsRpcBuilder(this);

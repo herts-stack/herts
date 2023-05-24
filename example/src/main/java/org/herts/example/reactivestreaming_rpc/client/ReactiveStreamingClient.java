@@ -25,6 +25,8 @@ public class ReactiveStreamingClient {
 
         ReactiveStreamingService service = client.createHertsRpcService(ReactiveStreamingService.class);
         service.hello01();
+
+        service.hello02(null);
         client.getChannel().shutdown();
     }
 }

@@ -180,6 +180,12 @@ public class HertsServiceValidateUtil {
         return true;
     }
 
+    /**
+     * Check method type of all services.
+     * If all method return type is void, return true
+     * @param hertsServices HertsService list
+     * @return Result
+     */
     public static boolean isAllReturnVoid(List<HertsService> hertsServices) {
         for (HertsService hertsService : hertsServices) {
             for (Method method : hertsService.getClass().getDeclaredMethods()) {
@@ -192,6 +198,12 @@ public class HertsServiceValidateUtil {
         return true;
     }
 
+    /**
+     * Check method type of all receiver services.
+     * If all method return type is void, return true
+     * @param hertsReceivers HertsReceiver list
+     * @return Result
+     */
     public static boolean isAllReturnVoidBy(List<HertsReceiver> hertsReceivers) {
         for (HertsReceiver herts : hertsReceivers) {
             for (Method method : herts.getClass().getDeclaredMethods()) {

@@ -7,5 +7,5 @@ import org.herts.common.service.HertsReactiveService;
 @HertsRpcService(value = HertsType.Reactive)
 public interface ReactiveStreamingService extends HertsReactiveService {
     void hello01();
-    void hello02();
+    void hello02(String id);
 }

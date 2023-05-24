@@ -24,6 +24,8 @@ public interface HertsRpcEngineBuilder {
 
     HertsRpcEngineBuilder registerHertsRpcService(HertsReactiveService hertsReactiveService, @Nullable ServerInterceptor interceptor);
 
+    HertsRpcEngineBuilder registerHertsRpcService(HertsReactiveService hertsReactiveService);
+
     /**
      * Add Herts service
      * @param hertsRpcService HertsCoreService

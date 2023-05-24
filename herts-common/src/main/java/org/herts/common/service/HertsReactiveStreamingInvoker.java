@@ -5,6 +5,7 @@ import io.grpc.stub.StreamObserver;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class HertsReactiveStreamingInvoker implements InvocationHandler {
@@ -19,7 +20,7 @@ public class HertsReactiveStreamingInvoker implements InvocationHandler {
         List<Object> methodParameters = new ArrayList<>();
         methodParameters.add(method.getName());
         if (args != null && args.length > 0) {
-            methodParameters.addAll(List.of(args));
+            methodParameters.addAll(Arrays.asList(args));
         }
 
         this.streamObservers.onNext(methodParameters);

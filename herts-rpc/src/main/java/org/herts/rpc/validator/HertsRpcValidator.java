@@ -16,6 +16,12 @@ import java.util.List;
 public class HertsRpcValidator extends HertsServiceValidateUtil {
     private static final String ioGrpcStreamPkgName = "io.grpc.stub.StreamObserver";
 
+    /**
+     * Check method type of all services.
+     * If all method return type is Streaming, return true
+     * @param hertsServices HertsService list
+     * @return Result
+     */
     public static boolean isAllReturnStreamObserver(List<HertsService> hertsServices) {
         for (HertsService hertsService : hertsServices) {
             for (Method method : hertsService.getClass().getDeclaredMethods()) {
@@ -28,7 +34,13 @@ public class HertsRpcValidator extends HertsServiceValidateUtil {
         return true;
     }
 
-    public static boolean hasReactiveInterface(List<HertsService> hertsServices) {
+    /**
+     * Check method type of all receiver services.
+     * If all method return type is void, return true
+     * @param hertsServices HertsService list
+     * @return Result
+     */
+    public static boolean isAllReceiverVoid(List<HertsService> hertsServices) {
         for (HertsService service : hertsServices) {
             Type type = service.getClass().getGenericSuperclass();
 

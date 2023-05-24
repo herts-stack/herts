@@ -50,5 +50,5 @@ kill
 run_test "b" "BidStreaming"
 kill
 
-run_test "d" "HertsStreaming"
+run_test "d" "HertsReactive"
 kill
