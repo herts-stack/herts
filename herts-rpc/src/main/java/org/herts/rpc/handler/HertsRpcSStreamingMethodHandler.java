@@ -6,6 +6,7 @@ import org.herts.common.serializer.HertsSerializer;
 
 import io.grpc.stub.StreamObserver;
 import org.herts.common.service.HertsService;
+import org.herts.metrics.HertsMetrics;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -29,7 +30,7 @@ public class HertsRpcSStreamingMethodHandler<Req, Resp> implements
     private final HertsMethod hertsMethod;
     private final HertsRpcCaller hertsRpcCaller;
 
-    public HertsRpcSStreamingMethodHandler(HertsMethod hertsMethod, HertsService hertsService) {
+    public HertsRpcSStreamingMethodHandler(HertsMethod hertsMethod, HertsMetrics hertsMetrics, HertsService hertsService) {
         this.hertsMethod = hertsMethod;
         this.requests = new Object[this.hertsMethod.getParameters().length];
         this.coreObject = hertsService;
@@ -43,7 +44,11 @@ public class HertsRpcSStreamingMethodHandler<Req, Resp> implements
         }
 
         this.reflectMethod = method;
-        this.hertsRpcCaller = new HertsRpcSimpleCaller(this.reflectMethod, this.serializer, coreObject, requests);
+        if (hertsMetrics != null && hertsMetrics.isMetricsEnabled()) {
+            this.hertsRpcCaller = new HertsRpcMetricsCaller(this.reflectMethod, hertsMetrics, serializer, coreObject, requests);
+        } else {
+            this.hertsRpcCaller = new HertsRpcSimpleCaller(this.reflectMethod, serializer, coreObject, requests);
+        }
     }
 
     @Override

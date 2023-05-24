@@ -256,7 +256,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
 
                 int index = 0;
                 for (MethodDescriptor<Object, Object> methodDescriptor : descriptor.getMethodDescriptors()) {
-                    HertsRpcSStreamingMethodHandler<Object, Object> handler = new HertsRpcSStreamingMethodHandler<>(hertsMethods.get(index), hertsReactiveService);
+                    HertsRpcSStreamingMethodHandler<Object, Object> handler = new HertsRpcSStreamingMethodHandler<>(hertsMethods.get(index), null, hertsReactiveService);
                     builder = builder.addMethod(methodDescriptor, ServerCalls.asyncServerStreamingCall(handler));
                     index++;
                 }
@@ -361,7 +361,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
 
                 int index = 0;
                 for (MethodDescriptor<Object, Object> methodDescriptor : descriptor.getMethodDescriptors()) {
-                    HertsRpcBMethodHandler<Object, Object> handler = new HertsRpcBMethodHandler<>(hertsMethods.get(index), core);
+                    HertsRpcBMethodHandler<Object, Object> handler = new HertsRpcBMethodHandler<>(hertsMethods.get(index), hertsMetrics, core);
                     builder = builder.addMethod(methodDescriptor, ServerCalls.asyncBidiStreamingCall(handler));
                     index++;
                 }
@@ -395,7 +395,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
 
                 int index = 0;
                 for (MethodDescriptor<Object, Object> methodDescriptor : descriptor.getMethodDescriptors()) {
-                    HertsRpcCStreamingMethodHandler<Object, Object> handler = new HertsRpcCStreamingMethodHandler<>(hertsMethods.get(index), core);
+                    HertsRpcCStreamingMethodHandler<Object, Object> handler = new HertsRpcCStreamingMethodHandler<>(hertsMethods.get(index), hertsMetrics, core);
                     builder = builder.addMethod(methodDescriptor, ServerCalls.asyncClientStreamingCall(handler));
                     index++;
                 }
@@ -429,7 +429,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
 
                 int index = 0;
                 for (MethodDescriptor<Object, Object> methodDescriptor : descriptor.getMethodDescriptors()) {
-                    HertsRpcSStreamingMethodHandler<Object, Object> handler = new HertsRpcSStreamingMethodHandler<>(hertsMethods.get(index), core);
+                    HertsRpcSStreamingMethodHandler<Object, Object> handler = new HertsRpcSStreamingMethodHandler<>(hertsMethods.get(index), hertsMetrics, core);
                     builder = builder.addMethod(methodDescriptor, ServerCalls.asyncServerStreamingCall(handler));
                     index++;
                 }

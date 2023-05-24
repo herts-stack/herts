@@ -113,6 +113,7 @@ public class HertsHttpServer implements HertsHttpEngine {
             }
             server.setHandler(context);
             server.start();
+            logger.info("Started Herts HTTP server. Port " + this.port);
             server.join();
         } catch (Exception ex) {
             throw new HertsHttpBuildException(ex);

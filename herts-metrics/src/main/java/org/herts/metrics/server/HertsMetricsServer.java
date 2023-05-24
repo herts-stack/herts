@@ -1,5 +1,6 @@
 package org.herts.metrics.server;
 
+import org.herts.common.logger.HertsLogger;
 import org.herts.metrics.HertsMetrics;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -7,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Server;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 /**
  * Herts metrics server
@@ -15,6 +17,7 @@ import java.io.IOException;
  * @version 1.0.0
  */
 public class HertsMetricsServer {
+    private static final Logger logger = HertsLogger.getLogger(HertsMetricsServer.class.getSimpleName());
     private final HertsMetrics hertsMetrics;
 
     private int port = 8888;
@@ -50,6 +53,7 @@ public class HertsMetricsServer {
                 .server(this.port)
                 .build();
         this.server.start();
+        logger.info("Started Herts metrics server. Port " + this.port);
         this.server.join();
     }
 

@@ -105,7 +105,7 @@ public class HertsRpcBuilder implements HertsRpcEngine {
 
             this.server = serverBuilder.build();
             this.server.start();
-            logger.info("Started Herts server. gRPC type " + this.hertsTypes.get(0) + " Port " + this.option.getPort());
+            logger.info("Started Herts RPC server. gRPC type " + this.hertsTypes.get(0) + " Port " + this.option.getPort());
             server.awaitTermination();
         } catch (Exception ex) {
             throw new HertsRpcBuildException(ex);

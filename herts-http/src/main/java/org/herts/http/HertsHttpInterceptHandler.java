@@ -1,6 +1,5 @@
 package org.herts.http;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -53,11 +52,15 @@ public class HertsHttpInterceptHandler implements Filter {
     }
 
     private String parseUri(String uri) {
-        var splitUris = uri.split("/");
-        if (splitUris.length < 2) {
+        try {
+            var splitUris = uri.split("/");
+            if (splitUris.length < 2) {
+                return "";
+            } else {
+                return splitUris[2];
+            }
+        } catch (Exception ex) {
             return "";
-        } else {
-            return splitUris[2];
         }
     }
 }
