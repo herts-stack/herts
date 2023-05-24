@@ -5,7 +5,7 @@ set -e
 function run_test {
     herts_type=$1
     echo "==================================="
-    echo "===== $herts_type Server ====="
+    echo "  $herts_type Server"
     echo "==================================="
     java -jar example/build/libs/example-1.0.0-all.jar --exec_type='server' --herts_type="${herts_type}" &
 
@@ -20,7 +20,7 @@ function run_test {
     done
 
     echo "==================================="
-    echo "====== $herts_type Client ===="
+    echo "  $herts_type Client"
     echo "==================================="
     java -jar example/build/libs/example-1.0.0-all.jar --exec_type='client' --herts_type="${herts_type}"
     sleep 5
