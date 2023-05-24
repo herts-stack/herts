@@ -7,7 +7,7 @@ import org.herts.common.exception.HertsNotSupportParameterTypeException;
 import org.herts.common.exception.HertsRpcClientBuildException;
 import org.herts.common.service.HertsReactiveStreamingInternal;
 import org.herts.common.service.HertsReceiver;
-import org.herts.rpcclient.receiver.InternalReceiveStreaming;
+import org.herts.rpcclient.receiver.InternalReactiveReceiver;
 import org.herts.rpcclient.validator.HertsRpcClientValidator;
 
 import io.grpc.Channel;
@@ -120,7 +120,7 @@ public class IBuilder implements HertsRpcClientIBuilder {
         if (this.hertsType == HertsType.Reactive && this.hertsRpcReceivers.size() > 0) {
             for (HertsReceiver receiver : this.hertsRpcReceivers) {
                 try {
-                    new InternalReceiveStreaming(receiver).newHertsClientStreamingService(this.channel).registerReceiver(HertsReactiveStreamingInternal.class);
+                    new InternalReactiveReceiver(receiver).newHertsClientStreamingService(this.channel).registerReceiver(HertsReactiveStreamingInternal.class);
                     Thread.sleep(500);
                 } catch (JsonProcessingException | InterruptedException e) {
                     throw new RuntimeException(e);

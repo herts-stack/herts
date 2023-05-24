@@ -20,6 +20,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+/**
+ * Herts server engine builder implementation
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsRpcBuilder implements HertsRpcEngine {
     private static final Logger logger = HertsLogger.getLogger(HertsRpcBuilder.class.getSimpleName());
 

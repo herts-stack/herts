@@ -18,14 +18,20 @@ import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class HertsRpcClientDStreamingMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsRpcClientDStreamingMethodHandler> implements InvocationHandler {
+/**
+ * Herts rpc client handler
+ * Reactive streaming Method Handler
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
+public class HertsRpcClientRStreamingMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsRpcClientRStreamingMethodHandler> implements InvocationHandler {
     private final HertsSerializer serializer = new HertsSerializer();
     private final ConcurrentMap<String, Method> methodInfos = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, MethodDescriptor<byte[], byte[]>> descriptors = new ConcurrentHashMap<>();
     private final Class<?> hertsRpcService;
     private final String serviceName;
 
-    public HertsRpcClientDStreamingMethodHandler(Channel channel, CallOptions callOptions, Class<?> hertsRpcService) {
+    public HertsRpcClientRStreamingMethodHandler(Channel channel, CallOptions callOptions, Class<?> hertsRpcService) {
         super(channel, callOptions);
         this.hertsRpcService = hertsRpcService;
         this.serviceName = hertsRpcService.getName();
@@ -74,7 +80,7 @@ public class HertsRpcClientDStreamingMethodHandler extends io.grpc.stub.Abstract
     }
 
     @Override
-    protected HertsRpcClientDStreamingMethodHandler build(Channel channel, CallOptions callOptions) {
-        return new HertsRpcClientDStreamingMethodHandler(channel, callOptions, hertsRpcService);
+    protected HertsRpcClientRStreamingMethodHandler build(Channel channel, CallOptions callOptions) {
+        return new HertsRpcClientRStreamingMethodHandler(channel, callOptions, hertsRpcService);
     }
 }

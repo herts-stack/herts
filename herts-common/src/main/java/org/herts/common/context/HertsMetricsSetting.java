@@ -1,5 +1,10 @@
 package org.herts.common.context;
 
+/**
+ * HertsMetricsSetting
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsMetricsSetting {
     private boolean isRpsEnabled;
     private boolean isLatencyEnabled;

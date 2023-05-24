@@ -11,6 +11,11 @@ import java.util.logging.Logger;
 import static org.herts.common.context.HertsSystemContext.Header.CODE_VERSION;
 import static org.herts.common.context.HertsSystemContext.Header.HERTS_HEADER_KEY;
 
+/**
+ * Herts intercept builder
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsRpcInterceptBuilder implements ServerInterceptor {
     private static final Logger logger = Logger.getLogger(HertsRpcInterceptBuilder.class.getName());
 

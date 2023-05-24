@@ -10,11 +10,16 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class ReceiveObserver implements StreamObserver<Object> {
+/**
+ * Internal reactive observer
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
+public class InternalReactiveObserver implements StreamObserver<Object> {
     private final ConcurrentMap<String, Method> reflectMethods = new ConcurrentHashMap<>();
     private final Object coreObject;
 
-    public ReceiveObserver(HertsReceiver hertsReceiver) {
+    public InternalReactiveObserver(HertsReceiver hertsReceiver) {
         this.coreObject = hertsReceiver;
 
         Class<?> hertsReceiverClass = hertsReceiver.getClass();
@@ -59,6 +64,5 @@ public class ReceiveObserver implements StreamObserver<Object> {
 
     @Override
     public void onCompleted() {
-        System.out.println("Comp!");
     }
 }

@@ -43,6 +43,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+/**
+ * Herts server builder
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class ServerBuilder implements HertsRpcEngineBuilder {
     private final Map<BindableService, ServerInterceptor> services = new HashMap<>();
     private final List<HertsType> hertsTypes = new ArrayList<>();

@@ -4,11 +4,10 @@ set -e
 
 function run_test {
     herts_type=$1
-    herts_type_long=$2
     echo "==================================="
-    echo "===== $herts_type_long Server ====="
+    echo "===== $herts_type Server ====="
     echo "==================================="
-    java -jar example/build/libs/example-1.0.0-all.jar "server" "${herts_type}" &
+    java -jar example/build/libs/example-1.0.0-all.jar --exec_type='server' --herts_type="${herts_type}" &
 
     while sleep 5; do
       ps aux | grep java | grep server | grep -v grep
@@ -21,9 +20,9 @@ function run_test {
     done
 
     echo "==================================="
-    echo "====== $herts_type_long Client ===="
+    echo "====== $herts_type Client ===="
     echo "==================================="
-    java -jar example/build/libs/example-1.0.0-all.jar "client" "${herts_type}"
+    java -jar example/build/libs/example-1.0.0-all.jar --exec_type='client' --herts_type="${herts_type}"
     sleep 5
 }
 
@@ -35,20 +34,20 @@ function kill {
 
 ./gradlew :example:clean :example:shadowJar
 
-run_test "h" "Http"
+run_test "http"
 kill
 
-run_test "u" "Unary"
+run_test "unary"
 kill
 
-run_test "s" "ServerStreaming"
+run_test "server_streaming"
 kill
 
-run_test "c" "ClientStreaming"
+run_test "client_streaming"
 kill
 
-run_test "b" "BidStreaming"
+run_test "bidirectional_streaming"
 kill
 
-run_test "d" "HertsReactive"
+run_test "reactive_streaming"
 kill

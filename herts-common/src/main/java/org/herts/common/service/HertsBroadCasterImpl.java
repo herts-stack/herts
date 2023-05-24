@@ -2,7 +2,7 @@ package org.herts.common.service;
 
 import io.grpc.stub.StreamObserver;
 import org.herts.common.cache.ReactiveStreamingCache;
-import org.herts.common.cache.ReactiveStreamingCacheImpl;
+import org.herts.common.cache.ReactiveStreamingLocalCacheImpl;
 import org.herts.common.context.HertsClientInfo;
 import org.herts.common.context.HertsSystemContext;
 
@@ -10,8 +10,14 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.Collections;
 
+/**
+ * HertsBroadCaster implementation
+ * Wrapped java.util.logging.Logger
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsBroadCasterImpl implements HertsBroadCaster {
-    private final ReactiveStreamingCache reactiveStreamingCache = ReactiveStreamingCacheImpl.getInstance();
+    private final ReactiveStreamingCache reactiveStreamingCache = ReactiveStreamingLocalCacheImpl.getInstance();
     private Class<?> service;
     private Class<?> receiver;
     private HertsReceiver proxyReceiver;

@@ -1,6 +1,5 @@
 package org.herts.rpc.modelx;
 
-import io.grpc.BindableService;
 import org.herts.common.logger.HertsLogger;
 
 import java.lang.reflect.Method;

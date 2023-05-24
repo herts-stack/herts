@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Herts reactive invocation handler for server side
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsReactiveStreamingInvoker implements InvocationHandler {
     private final StreamObserver<Object> streamObservers;
 

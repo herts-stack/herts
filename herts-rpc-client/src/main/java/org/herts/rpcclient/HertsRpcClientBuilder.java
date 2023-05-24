@@ -1,7 +1,7 @@
 package org.herts.rpcclient;
 
 import org.herts.rpcclient.handler.HertsRpcClientCStreamingMethodHandler;
-import org.herts.rpcclient.handler.HertsRpcClientDStreamingMethodHandler;
+import org.herts.rpcclient.handler.HertsRpcClientRStreamingMethodHandler;
 import org.herts.rpcclient.handler.HertsRpcClientUMethodHandler;
 import org.herts.rpcclient.handler.HertsRpcClientBStreamingMethodHandler;
 import org.herts.rpcclient.handler.HertsRpcClientSStreamingMethodHandler;
@@ -156,14 +156,14 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
         return HertsRpcClientCStreamingMethodHandler.newStub(factory, channel);
     }
 
-    private static HertsRpcClientDStreamingMethodHandler newHertsReactiveStreamingService(Channel channel, Class<?> hertsRpcService) {
-        io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientDStreamingMethodHandler> factory =
-                new io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientDStreamingMethodHandler>() {
+    private static HertsRpcClientRStreamingMethodHandler newHertsReactiveStreamingService(Channel channel, Class<?> hertsRpcService) {
+        io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientRStreamingMethodHandler> factory =
+                new io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientRStreamingMethodHandler>() {
                     @java.lang.Override
-                    public HertsRpcClientDStreamingMethodHandler newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
-                        return new HertsRpcClientDStreamingMethodHandler(channel, callOptions, hertsRpcService);
+                    public HertsRpcClientRStreamingMethodHandler newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+                        return new HertsRpcClientRStreamingMethodHandler(channel, callOptions, hertsRpcService);
                     }
                 };
-        return HertsRpcClientDStreamingMethodHandler.newStub(factory, channel);
+        return HertsRpcClientRStreamingMethodHandler.newStub(factory, channel);
     }
 }

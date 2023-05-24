@@ -8,6 +8,9 @@ package org.herts.common.exception.http;
 public class HertsHttpErrorException extends RuntimeException {
     private final StatusCode statusCode;
 
+    /**
+     * Herts supports http status code
+     */
     public enum StatusCode {
         Status300("300"),
         Status301("301"),

@@ -10,6 +10,12 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/**
+ * Herts rpc with metrics caller.
+ * HertsRpcCaller implementation
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsRpcMetricsCaller extends BaseCaller implements HertsRpcCaller {
     private final Method reflectMethod;
     private final HertsMetrics hertsMetrics;
@@ -28,6 +34,10 @@ public class HertsRpcMetricsCaller extends BaseCaller implements HertsRpcCaller 
         this.requests = requests;
     }
 
+    /**
+     * Before call rpc.
+     * @return HertsTimer
+     */
     private HertsTimer before() {
         HertsTimer timer = null;
         if (this.hertsMetrics.isLatencyEnabled()) {
@@ -39,6 +49,10 @@ public class HertsRpcMetricsCaller extends BaseCaller implements HertsRpcCaller 
         return timer;
     }
 
+    /**
+     * After call rpc
+     * @param timer HertsTimer
+     */
     private void after(HertsTimer timer) {
         if (this.hertsMetrics.isLatencyEnabled()) {
             this.hertsMetrics.stopLatencyTimer(timer);

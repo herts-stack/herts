@@ -22,8 +22,19 @@ import java.util.Map;
  */
 public interface HertsRpcEngineBuilder {
 
+    /**
+     * Register HertsReactiveService with Interceptor.
+     * @param hertsReactiveService HertsReactiveService
+     * @param interceptor Interceptor
+     * @return HertsCoreEngineBuilder
+     */
     HertsRpcEngineBuilder registerHertsRpcService(HertsReactiveService hertsReactiveService, @Nullable ServerInterceptor interceptor);
 
+    /**
+     * Register HertsReactiveService with Interceptor.
+     * @param hertsReactiveService HertsReactiveService
+     * @return HertsRpcEngineBuilder
+     */
     HertsRpcEngineBuilder registerHertsRpcService(HertsReactiveService hertsReactiveService);
 
     /**

@@ -14,6 +14,11 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/**
+ * Herts rpc Unary streaming Method Handler
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsRpcUMethodHandler<Req, Resp> implements
         io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
         io.grpc.stub.ServerCalls.ServerStreamingMethod<Req, Resp>,

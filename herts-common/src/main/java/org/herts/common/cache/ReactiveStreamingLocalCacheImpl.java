@@ -6,16 +6,27 @@ import org.herts.common.context.HertsClientInfo;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ReactiveStreamingCacheImpl implements ReactiveStreamingCache {
+/**
+ * HertsReactive cache local implementation.
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
+public class ReactiveStreamingLocalCacheImpl implements ReactiveStreamingCache {
     private volatile ConcurrentHashMap<String, StreamObserver<Object>> observers = new ConcurrentHashMap<>();
     private volatile ConcurrentHashMap<String, HertsClientInfo> clientInfo = new ConcurrentHashMap<>();
-    private static ReactiveStreamingCacheImpl thisClass;
+    private static ReactiveStreamingLocalCacheImpl thisClass;
 
+    private ReactiveStreamingLocalCacheImpl() {}
+
+    /**
+     * Singleton instance.
+     * @return ReactiveStreamingCache
+     */
     public static ReactiveStreamingCache getInstance() {
         if (thisClass != null) {
             return thisClass;
         }
-        thisClass = new ReactiveStreamingCacheImpl();
+        thisClass = new ReactiveStreamingLocalCacheImpl();
         return thisClass;
     }
 

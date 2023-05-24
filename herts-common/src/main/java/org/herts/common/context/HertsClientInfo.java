@@ -1,7 +1,10 @@
 package org.herts.common.context;
 
-import java.io.Serializable;
-
+/**
+ * HertsClientInfo
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsClientInfo extends HertsMsg {
     public String id;
     public String globalIp;

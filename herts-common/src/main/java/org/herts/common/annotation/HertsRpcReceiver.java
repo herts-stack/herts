@@ -8,9 +8,20 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Herts HertsRpcReceiver annotation.
+ * If use HertsReactiveStreaming receiver, please set this annotation to interface
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 @Inherited
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HertsRpcReceiver {
+
+    /**
+     * HertsType. Default is Reactive
+     * @return HertsType
+     */
     HertsType value() default HertsType.Reactive;
 }

@@ -3,6 +3,11 @@ package org.herts.common.service;
 import io.grpc.MethodDescriptor;
 import org.herts.common.context.HertsType;
 
+/**
+ * HertsReactiveStreamingServiceBase
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsReactiveStreamingServiceBase<T, K> implements HertsReactiveService {
     private final HertsType coreType;
     private final HertsBroadCaster broadCaster;
