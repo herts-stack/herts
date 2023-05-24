@@ -19,7 +19,7 @@ public class BiStreamingClient {
         HertsRpcClient client = HertsRpcClientBuilder
                 .builder("localhost", Constant.port)
                 .secure(false)
-                .registerHertsRpcInterface(BidirectionalStreamingRpcService.class)
+                .registerHertsRpcServiceInterface(BidirectionalStreamingRpcService.class)
                 .connect();
 
         BidirectionalStreamingRpcService service = client.createHertsRpcService(BidirectionalStreamingRpcService.class);

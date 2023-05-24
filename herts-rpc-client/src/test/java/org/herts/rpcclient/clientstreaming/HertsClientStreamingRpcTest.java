@@ -46,7 +46,7 @@ public class HertsClientStreamingRpcTest {
         client = HertsRpcClientBuilder
                 .builder("localhost", port)
                 .secure(false)
-                .registerHertsRpcInterface(TestClientStreamingRpcService.class)
+                .registerHertsRpcServiceInterface(TestClientStreamingRpcService.class)
                 .connect();
     }
 

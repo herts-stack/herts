@@ -8,9 +8,20 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Herts HertsRpcService annotation.
+ * If use HertsRpcService, please set this annotation to interface
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 @Inherited
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface HertsRpc {
+public @interface HertsRpcService {
+
+    /**
+     * HertsType. Default is null
+     * @return HertsType
+     */
     HertsType value();
 }

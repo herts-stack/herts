@@ -1,6 +1,7 @@
 package org.herts.rpcclient;
 
 import org.herts.rpcclient.handler.HertsRpcClientCStreamingMethodHandler;
+import org.herts.rpcclient.handler.HertsRpcClientRStreamingMethodHandler;
 import org.herts.rpcclient.handler.HertsRpcClientUMethodHandler;
 import org.herts.rpcclient.handler.HertsRpcClientBStreamingMethodHandler;
 import org.herts.rpcclient.handler.HertsRpcClientSStreamingMethodHandler;
@@ -95,6 +96,10 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
                 var clientStreaming = newHertsClientStreamingService(channel, interfaceType);
                 return (T) generateService(clientStreaming, interfaceType);
             }
+            case Reactive -> {
+                var reactiveStreaming = newHertsBlockingService(channel, interfaceType);
+                return (T) generateService(reactiveStreaming, interfaceType);
+            }
             default ->
                     throw new HertsTypeInvalidException("Undefined Hert core type. HertsCoreType" + this.hertsType);
         }
@@ -149,5 +154,16 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
                     }
                 };
         return HertsRpcClientCStreamingMethodHandler.newStub(factory, channel);
+    }
+
+    private static HertsRpcClientRStreamingMethodHandler newHertsReactiveStreamingService(Channel channel, Class<?> hertsRpcService) {
+        io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientRStreamingMethodHandler> factory =
+                new io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientRStreamingMethodHandler>() {
+                    @java.lang.Override
+                    public HertsRpcClientRStreamingMethodHandler newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+                        return new HertsRpcClientRStreamingMethodHandler(channel, callOptions, hertsRpcService);
+                    }
+                };
+        return HertsRpcClientRStreamingMethodHandler.newStub(factory, channel);
     }
 }

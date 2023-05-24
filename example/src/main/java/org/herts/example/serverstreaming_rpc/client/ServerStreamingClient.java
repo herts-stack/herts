@@ -19,7 +19,7 @@ public class ServerStreamingClient {
         HertsRpcClient client = HertsRpcClientBuilder
                 .builder("localhost", Constant.port)
                 .secure(false)
-                .registerHertsRpcInterface(ServerStreamingRpcService.class)
+                .registerHertsRpcServiceInterface(ServerStreamingRpcService.class)
                 .connect();
 
         ServerStreamingRpcService service = client.createHertsRpcService(ServerStreamingRpcService.class);
@@ -51,7 +51,7 @@ public class ServerStreamingClient {
 
             @Override
             public void onError(Throwable t) {
-
+                t.printStackTrace();
             }
 
             @Override
@@ -59,5 +59,23 @@ public class ServerStreamingClient {
                 logger.info("done");
             }
         });
+
+        service.test04("id", new StreamObserver<Object>() {
+            @Override
+            public void onNext(Object value) {
+                logger.info("" + value);
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                t.printStackTrace();
+            }
+
+            @Override
+            public void onCompleted() {
+                logger.info("done");
+            }
+        });
+
     }
 }

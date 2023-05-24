@@ -24,8 +24,8 @@ public class UnaryClient {
         HertsRpcClient client = HertsRpcClientBuilder
                 .builder("localhost", Constant.port)
                 .secure(false)
-                .registerHertsRpcInterface(UnaryRpcService01.class)
-                .registerHertsRpcInterface(UnaryRpcService02.class)
+                .registerHertsRpcServiceInterface(UnaryRpcService01.class)
+                .registerHertsRpcServiceInterface(UnaryRpcService02.class)
                 .interceptor(HertsRpcClientInterceptBuilder.builder(grpcClientInterceptor).build())
                 .connect();
 

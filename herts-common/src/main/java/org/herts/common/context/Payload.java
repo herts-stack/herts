@@ -1,5 +1,10 @@
 package org.herts.common.context;
 
+/**
+ * Internal Payload.
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class Payload {
     private String keyName;
     private Object value;

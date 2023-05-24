@@ -8,6 +8,12 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/**
+ * Herts rpc with metrics caller.
+ * HertsRpcCaller implementation
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsRpcSimpleCaller extends BaseCaller implements HertsRpcCaller {
     private final Method reflectMethod;
     private final Object coreObject;

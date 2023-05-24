@@ -147,8 +147,6 @@ public class HertsRpcErrorException extends io.grpc.StatusRuntimeException {
         super(Status.fromThrowable(ex).withDescription(ex.getMessage()));
         Status s = Status.fromThrowable(ex);
         this.statusCode = convertToHertsCode(s);
-        System.out.println(this.statusCode );
-        System.out.println(s);
         this.status = s;
     }
 

@@ -4,7 +4,6 @@ import org.herts.common.service.HertsService;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +50,15 @@ public class HertsRpcValidatorTest {
             var res = HertsRpcValidator.isAllReturnStreamObserver(hertsServices);
             assertFalse(res);
         }
-
     }
 
+    @Nested
+    class isAllReceiverVoid {
+        @Test
+        public void ok() {
+            List<HertsService> hertsServices = Collections.singletonList(new TestReactiveStreamingService());
+            var res = HertsRpcValidator.isAllReceiverVoid(hertsServices);
+            assertTrue(res);
+        }
+    }
 }

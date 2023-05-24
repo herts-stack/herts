@@ -7,6 +7,12 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/**
+ * Base caller class.
+ * If implement caller, extends this
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class BaseCaller {
     private final Method reflectMethod;
     private final HertsSerializer hertsSerializer;
@@ -20,6 +26,11 @@ public class BaseCaller {
         this.requests = requests;
     }
 
+    /**
+     * Set method request stats.
+     * @param request Generics
+     * @throws IOException Fail data parsing
+     */
     protected <T> void setMethodRequests(T request) throws IOException {
         if (((byte[]) request).length > 0) {
             HertsMsg deserialized = this.hertsSerializer.deserialize((byte[]) request, HertsMsg.class);
@@ -32,6 +43,11 @@ public class BaseCaller {
         }
     }
 
+    /**
+     * Call method
+     * @param requestParameters Object[]
+     * @return Object
+     */
     protected Object call(Object[] requestParameters) throws InvocationTargetException, IllegalAccessException {
         Object res = null;
         if (requestParameters == null) {

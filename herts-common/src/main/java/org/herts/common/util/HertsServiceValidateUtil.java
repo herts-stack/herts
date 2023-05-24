@@ -1,5 +1,6 @@
 package org.herts.common.util;
 
+import org.herts.common.service.HertsReceiver;
 import org.herts.common.service.HertsService;
 import org.herts.common.context.HertsType;
 import org.herts.common.exception.HertsServiceNotFoundException;
@@ -14,6 +15,7 @@ import java.util.List;
  * @version 1.0.0
  */
 public class HertsServiceValidateUtil {
+    protected static final String voidReturnName = "void";
 
     /**
      * Check registered hert type
@@ -85,7 +87,6 @@ public class HertsServiceValidateUtil {
         for (Method method : methods) {
             methodNames.add(method.getName());
         }
-
         if (CollectionUtil.findDuplicates(methodNames).size() > 0) {
             return "Method name is duplicated. Herts supports uniq method name only.";
         }
@@ -174,6 +175,42 @@ public class HertsServiceValidateUtil {
         for (HertsService coreService : coreServices) {
             if (coreService.getHertsType() != HertsType.Http) {
                 return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Check method type of all services.
+     * If all method return type is void, return true
+     * @param hertsServices HertsService list
+     * @return Result
+     */
+    public static boolean isAllReturnVoid(List<HertsService> hertsServices) {
+        for (HertsService hertsService : hertsServices) {
+            for (Method method : hertsService.getClass().getDeclaredMethods()) {
+                var methodReturnType = method.getReturnType().getName();
+                if (!methodReturnType.equals(voidReturnName)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Check method type of all receiver services.
+     * If all method return type is void, return true
+     * @param hertsReceivers HertsReceiver list
+     * @return Result
+     */
+    public static boolean isAllReturnVoidBy(List<HertsReceiver> hertsReceivers) {
+        for (HertsReceiver herts : hertsReceivers) {
+            for (Method method : herts.getClass().getDeclaredMethods()) {
+                var methodReturnType = method.getReturnType().getName();
+                if (!methodReturnType.equals(voidReturnName)) {
+                    return false;
+                }
             }
         }
         return true;

@@ -42,7 +42,7 @@ public class HertsUnaryRpcTest {
         client = HertsRpcClientBuilder
                 .builder("localhost", port)
                 .secure(false)
-                .registerHertsRpcInterface(TestUnaryRpcService.class)
+                .registerHertsRpcServiceInterface(TestUnaryRpcService.class)
                 .connect();
     }
 

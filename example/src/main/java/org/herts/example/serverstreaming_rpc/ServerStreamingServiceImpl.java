@@ -34,4 +34,12 @@ public class ServerStreamingServiceImpl extends HertsServerStreamingService<Serv
         }
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void test04(String id, StreamObserver<Object> responseObserver) {
+        for (int i = 1; i <= 10; i++) {
+            responseObserver.onNext("hey");
+        }
+        responseObserver.onCompleted();
+    }
 }

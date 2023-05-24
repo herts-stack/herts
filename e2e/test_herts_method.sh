@@ -4,20 +4,25 @@ set -e
 
 function run_test {
     herts_type=$1
-    ./gradlew :example:runExample --args="server ${herts_type}" &
+    echo "==================================="
+    echo "  $herts_type Server"
+    echo "==================================="
+    java -jar example/build/libs/example-1.0.0-all.jar --exec_type='server' --herts_type="${herts_type}" &
 
     while sleep 5; do
-      ps aux | grep "runExample" | grep -v grep
+      ps aux | grep java | grep server | grep -v grep
       is_up_server=$?
 
       if [ $is_up_server -ne 0 ]; then
         continue
       fi
-      echo "Started server"
       break
     done
 
-    ./gradlew :example:runExample --args="client ${herts_type}"
+    echo "==================================="
+    echo "  $herts_type Client"
+    echo "==================================="
+    java -jar example/build/libs/example-1.0.0-all.jar --exec_type='client' --herts_type="${herts_type}"
     sleep 5
 }
 
@@ -27,32 +32,22 @@ function kill {
     echo "Killed Java process"
 }
 
-echo "==================================="
-echo "========= Http server test ========"
-echo "==================================="
-run_test "h"
+./gradlew :example:clean :example:shadowJar
+
+run_test "http"
 kill
 
-echo "==================================="
-echo "======== Unary server test ========"
-echo "==================================="
-run_test "u"
+run_test "unary"
 kill
 
-echo "==================================="
-echo "== Server Streaming server test ==="
-echo "==================================="
-run_test "s"
+run_test "server_streaming"
 kill
 
-echo "==================================="
-echo "== Client Streaming server test ==="
-echo "==================================="
-run_test "c"
+run_test "client_streaming"
 kill
 
-echo "==================================="
-echo "==== Bid Streaming server test ===="
-echo "==================================="
-run_test "b"
+run_test "bidirectional_streaming"
+kill
+
+run_test "reactive_streaming"
 kill

@@ -1,9 +1,12 @@
 package org.herts.rpc.modelx;
 
+import org.herts.common.logger.HertsLogger;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Herts refection method
@@ -11,6 +14,8 @@ import java.util.List;
  * @version 1.0.0
  */
 public class ReflectMethod {
+    private static final Logger logger = HertsLogger.getLogger(ReflectMethod.class.getSimpleName());
+
     private final String serviceName;
     private final String serviceImplName;
     private final List<Method> methods = new ArrayList<>();
@@ -33,9 +38,11 @@ public class ReflectMethod {
     }
 
     public void printMethodName() {
-        System.out.println(this.serviceName);
+        var rpcPaths = this.serviceName.split("\\.");
+        var rpcPath = rpcPaths[rpcPaths.length-1];
+        logger.info(rpcPath + " stats");
         for (Method method : this.methods) {
-            System.out.println(method.getName());
+            logger.info(rpcPath + "/" + method.getName());
         }
     }
 

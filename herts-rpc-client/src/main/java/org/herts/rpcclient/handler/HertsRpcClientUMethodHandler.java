@@ -19,6 +19,12 @@ import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+/**
+ * Herts rpc client handler
+ * Client streaming Method Handler
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsRpcClientUMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsRpcClientUMethodHandler> implements InvocationHandler {
     private final HertsSerializer serializer = new HertsSerializer();
     private final ConcurrentMap<String, Method> methodInfos = new ConcurrentHashMap<>();

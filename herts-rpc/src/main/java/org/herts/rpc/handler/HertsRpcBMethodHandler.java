@@ -7,10 +7,16 @@ import org.herts.common.context.HertsMethod;
 import org.herts.common.serializer.HertsSerializer;
 
 import io.grpc.stub.StreamObserver;
+import org.herts.common.service.HertsService;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/**
+ * Herts rpc Bidirectional streaming Method Handler
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class HertsRpcBMethodHandler<Req, Resp> implements
         io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
         io.grpc.stub.ServerCalls.ServerStreamingMethod<Req, Resp>,
@@ -23,24 +29,12 @@ public class HertsRpcBMethodHandler<Req, Resp> implements
     private final HertsMethod hertsMethod;
     private final HertsRpcCaller hertsRpcCaller;
 
-    public HertsRpcBMethodHandler(HertsMethod hertsMethod) {
+    public HertsRpcBMethodHandler(HertsMethod hertsMethod, HertsService hertsService) {
         this.hertsMethod = hertsMethod;
         this.requests = new Object[this.hertsMethod.getParameters().length];
+        this.coreObject = hertsService;
 
-        String serviceName = hertsMethod.getCoreImplServiceName();
-        Class<?> coreClass;
-        try {
-            coreClass = Class.forName(serviceName);
-        } catch (ClassNotFoundException ex) {
-            throw new HertsServiceNotFoundException("Unknown Herts core class. " + ex.getMessage());
-        }
-
-        try {
-            this.coreObject = coreClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new HertsInstanceException(e);
-        }
-
+        Class<?> coreClass = hertsService.getClass();
         Method method;
         try {
             method = coreClass.getMethod(hertsMethod.getMethodName(), hertsMethod.getParameters());
