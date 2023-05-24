@@ -10,6 +10,7 @@ import io.grpc.ServerCredentials;
 import io.grpc.ServerInterceptor;
 import org.herts.metrics.HertsMetrics;
 import org.herts.metrics.server.HertsMetricsServer;
+import org.herts.rpc.HertsRpcServerShutdownHook;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -38,7 +39,7 @@ public interface HertsRpcEngineBuilder {
     HertsRpcEngineBuilder registerHertsRpcService(HertsReactiveService hertsReactiveService);
 
     /**
-     * Add Herts service
+     * Register Herts service
      * @param hertsRpcService HertsCoreService
      * @param interceptor Interceptor
      * @return HertsCoreEngineBuilder
@@ -46,11 +47,17 @@ public interface HertsRpcEngineBuilder {
     HertsRpcEngineBuilder registerHertsRpcService(HertsService hertsRpcService, @Nullable ServerInterceptor interceptor);
 
     /**
-     * Add Herts service
+     * Register Herts service
      * @param hertsRpcService HertsCoreService
      * @return HertsCoreEngineBuilder
      */
     HertsRpcEngineBuilder registerHertsRpcService(HertsService hertsRpcService);
+
+    /**
+     * Add server shutdown hook.
+     * @return HertsRpcEngineBuilder
+     */
+    HertsRpcEngineBuilder addShutdownHook(HertsRpcServerShutdownHook hook);
 
     /**
      * Secure connection
@@ -80,46 +87,4 @@ public interface HertsRpcEngineBuilder {
      * @return HertsCoreEngine
      */
     HertsRpcEngine build();
-
-    /**
-     * Get credential
-     * @return ServerCredentials
-     */
-    ServerCredentials getCredentials();
-
-    /**
-     * Get gRPC option
-     * @return GrpcServerOption
-     */
-    GrpcServerOption getOption();
-
-    /**
-     * Get registered services
-     * @return Service information by key value
-     */
-    Map<BindableService, ServerInterceptor> getServices();
-
-    /**
-     * Get registered herts types
-     * @return HertsType list
-     */
-    List<HertsType> getHertsCoreTypes();
-
-    /**
-     * Get registered herts services
-     * @return HertsService list
-     */
-    List<HertsService> getHertsServices();
-
-    /**
-     * Get HertsMetricsServer
-     * @return HertsMetricsServer
-     */
-    HertsMetricsServer getHertsMetricsServer();
-
-    /**
-     * HertsMetrics
-     * @return HertsMetrics
-     */
-    HertsMetrics getHertsMetrics();
 }

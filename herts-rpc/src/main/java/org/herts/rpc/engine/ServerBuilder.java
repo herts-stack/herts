@@ -21,11 +21,13 @@ import org.herts.metrics.handler.HertsMetricsHandler;
 import org.herts.metrics.server.HertsMetricsServer;
 import org.herts.rpc.HertsEmptyRpcInterceptor;
 import org.herts.rpc.HertsRpcInterceptBuilder;
+import org.herts.rpc.HertsRpcServerShutdownHook;
 import org.herts.rpc.handler.HertsRpcBMethodHandler;
 import org.herts.rpc.handler.HertsRpcCStreamingMethodHandler;
 import org.herts.rpc.handler.HertsRpcSStreamingMethodHandler;
 import org.herts.rpc.handler.HertsRpcUMethodHandler;
 import org.herts.rpc.modelx.ReflectMethod;
+import org.herts.rpc.modelx.ServerBuildInfo;
 import org.herts.rpc.validator.HertsRpcValidator;
 
 import io.grpc.BindableService;
@@ -56,6 +58,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
     private ServerCredentials credentials;
     private HertsMetricsServer hertsMetricsServer;
     private HertsMetrics hertsMetrics;
+    private HertsRpcServerShutdownHook hook;
 
     public ServerBuilder() {
         this.option = new GrpcServerOption();
@@ -80,41 +83,6 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
             hertsMetrics = HertsMetricsHandler.builder().registerHertsServices(null).build();
         }
         return hertsMetrics;
-    }
-
-    @Override
-    public List<HertsService> getHertsServices() {
-        return hertsRpcServices;
-    }
-
-    @Override
-    public HertsMetricsServer getHertsMetricsServer() {
-        return hertsMetricsServer;
-    }
-
-    @Override
-    public HertsMetrics getHertsMetrics() {
-        return hertsMetrics;
-    }
-
-    @Override
-    public Map<BindableService, ServerInterceptor> getServices() {
-        return services;
-    }
-
-    @Override
-    public List<HertsType> getHertsCoreTypes() {
-        return hertsTypes;
-    }
-
-    @Override
-    public GrpcServerOption getOption() {
-        return option;
-    }
-
-    @Override
-    public ServerCredentials getCredentials() {
-        return credentials;
     }
 
     @Override
@@ -166,6 +134,12 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
         this.hertsRpcServices.add(hertsRpcService);
         BindableService bindableService = createBindableService(hertsRpcService);
         this.services.put(bindableService, HertsRpcInterceptBuilder.builder(HertsEmptyRpcInterceptor.create()).build());
+        return this;
+    }
+
+    @Override
+    public HertsRpcEngineBuilder addShutdownHook(HertsRpcServerShutdownHook hook) {
+        this.hook = hook;
         return this;
     }
 
@@ -224,10 +198,13 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
             throw new HertsNotSupportParameterTypeException(
                     "Support `StreamObserver` return method if use ClientStreaming or BidirectionalStreaming");
         }
-        if (HertsRpcValidator.isAllReceiverVoid(this.hertsRpcServices)) {
-
+        if (hertsType == HertsType.Reactive && HertsRpcValidator.isAllReceiverVoid(this.hertsRpcServices)) {
+            throw new HertsNotSupportParameterTypeException(
+                    "Receiver supports void method only");
         }
-        return new HertsRpcBuilder(this);
+
+        var buildInfo = new ServerBuildInfo(this.services, this.hertsTypes, this.option, this.credentials, this.hertsMetricsServer, this.hook);
+        return new HertsRpcBuilder(buildInfo);
     }
 
     private BindableService createBindableReceiver(HertsReactiveService hertsReactiveService) {

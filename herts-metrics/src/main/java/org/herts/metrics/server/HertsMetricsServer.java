@@ -3,10 +3,9 @@ package org.herts.metrics.server;
 import org.herts.common.logger.HertsLogger;
 import org.herts.metrics.HertsMetrics;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.eclipse.jetty.server.Server;
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -38,6 +37,17 @@ public class HertsMetricsServer {
         this.server = server;
         this.isCustom = true;
         this.hertsMetrics = hertsMetrics;
+    }
+
+    public void stop() {
+        if (this.server == null) {
+            return;
+        }
+        try {
+            this.server.stop();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void start() throws Exception {

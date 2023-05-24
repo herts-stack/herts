@@ -13,6 +13,8 @@ import io.grpc.ServerInterceptor;
 import io.grpc.ServerInterceptors;
 import io.grpc.BindableService;
 import io.grpc.Server;
+import org.herts.rpc.HertsRpcServerShutdownHook;
+import org.herts.rpc.modelx.ServerBuildInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -33,15 +35,17 @@ public class HertsRpcBuilder implements HertsRpcEngine {
     private final GrpcServerOption option;
     private final ServerCredentials credentials;
     private final HertsMetricsServer hertsMetricsServer;
+    private final HertsRpcServerShutdownHook hook;
 
     private Server server;
 
-    public HertsRpcBuilder(HertsRpcEngineBuilder builder) {
-        this.option = builder.getOption();
-        this.credentials = builder.getCredentials();
-        this.hertsTypes = builder.getHertsCoreTypes();
-        this.services = builder.getServices();
-        this.hertsMetricsServer = builder.getHertsMetricsServer();
+    public HertsRpcBuilder(ServerBuildInfo serverBuildInfo) {
+        this.option = serverBuildInfo.getOption();
+        this.credentials = serverBuildInfo.getCredentials();
+        this.hertsTypes = serverBuildInfo.getHertsTypes();
+        this.services = serverBuildInfo.getServices();
+        this.hertsMetricsServer = serverBuildInfo.getHertsMetricsServer();
+        this.hook = serverBuildInfo.getHook();
     }
 
     public static HertsRpcEngineBuilder builder() {
@@ -93,14 +97,26 @@ public class HertsRpcBuilder implements HertsRpcEngine {
                 serverBuilder = serverBuilder.maxConnectionIdle(this.option.getMaxConnectionIdleMilliSec(), TimeUnit.MILLISECONDS);
             }
 
-            // TODO: Graceful shutdown
-            CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
+            CompletableFuture.supplyAsync(() -> {
                 try {
                     this.hertsMetricsServer.start();
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
                 return null;
+            });
+
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+                private static final Logger _logger = HertsLogger.getLogger("ShutdownTrigger");
+                @Override
+                public void run() {
+                    if (hook != null) {
+                        hook.hookShutdown();
+                    }
+                    _logger.info("Shutdown Herts RPC server");
+                    hertsMetricsServer.stop();
+                    server.shutdown();
+                }
             });
 
             this.server = serverBuilder.build();
