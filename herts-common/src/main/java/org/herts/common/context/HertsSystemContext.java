@@ -18,6 +18,7 @@ public class HertsSystemContext {
     }
 
     public static class Rpc {
+        public static final String METHOD_NAME = "MethodName";
         public static final String RECEIVER_METHOD_NAME = "registerReceiver";
         public static final String REGISTERED_METHOD_NAME = "registered";
     }

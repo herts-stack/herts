@@ -12,11 +12,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 1.0.0
  */
 public class ReactiveStreamingLocalCacheImpl implements ReactiveStreamingCache {
-    private volatile ConcurrentHashMap<String, StreamObserver<Object>> observers = new ConcurrentHashMap<>();
-    private volatile ConcurrentHashMap<String, HertsClientInfo> clientInfo = new ConcurrentHashMap<>();
+    private volatile ConcurrentHashMap<String, StreamObserver<Object>> observers;
+    private volatile ConcurrentHashMap<String, HertsClientInfo> clientInfo;
     private static ReactiveStreamingLocalCacheImpl thisClass;
 
-    private ReactiveStreamingLocalCacheImpl() {}
+    private ReactiveStreamingLocalCacheImpl() {
+        this.observers = new ConcurrentHashMap<>();
+        this.clientInfo = new ConcurrentHashMap<>();
+    }
 
     /**
      * Singleton instance.

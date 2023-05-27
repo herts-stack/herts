@@ -1,7 +1,9 @@
 package org.herts.example.reactivestreaming_rpc;
 
 import org.herts.common.logger.HertsLogger;
+import org.herts.example.common.HelloRequest;
 
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -25,5 +27,15 @@ public class ReactiveStreamingReceiverImpl implements ReactiveStreamingReceiver 
         for (Map.Entry<String, String> data : a.entrySet()) {
             logger.info("key=" + data.getKey() + ", value-" + data.getValue());
         }
+    }
+
+    @Override
+    public void onReceivedHello04(HelloRequest req) {
+        logger.info("------------- onReceivedHello04 event");
+    }
+
+    @Override
+    public void onReceivedHello05(List<String> data01, Map<String, String> data02) {
+        logger.info("------------- onReceivedHello05 event");
     }
 }

@@ -5,7 +5,6 @@ import org.herts.common.context.HertsClientInfo;
 
 /**
  * HertsBroadCaster for internal reactive streaming.
- * Wrapped java.util.logging.Logger
  * @author Herts Contributer
  * @version 1.0.0
  */
