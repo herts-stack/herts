@@ -2,6 +2,7 @@ package org.herts.rpc.engine;
 
 import org.herts.common.context.HertsType;
 import org.herts.common.exception.HertsRpcBuildException;
+import org.herts.common.loadbalancing.HertsMessageBroker;
 import org.herts.common.logger.HertsLogger;
 import org.herts.metrics.server.HertsMetricsServer;
 
@@ -35,7 +36,7 @@ public class HertsRpcBuilder implements HertsRpcEngine {
     private final GrpcServerOption option;
     private final ServerCredentials credentials;
     private final HertsMetricsServer hertsMetricsServer;
-    private final HertsRpcServerShutdownHook hook;
+    private final HertsRpcServerShutdownHook hertsShutdownHook;
 
     private Server server;
 
@@ -45,7 +46,7 @@ public class HertsRpcBuilder implements HertsRpcEngine {
         this.hertsTypes = serverBuildInfo.getHertsTypes();
         this.services = serverBuildInfo.getServices();
         this.hertsMetricsServer = serverBuildInfo.getHertsMetricsServer();
-        this.hook = serverBuildInfo.getHook();
+        this.hertsShutdownHook = serverBuildInfo.getHook();
     }
 
     public static HertsRpcEngineBuilder builder() {
@@ -111,8 +112,8 @@ public class HertsRpcBuilder implements HertsRpcEngine {
                 public void run() {
                     try {
                         Logger _logger = HertsLogger.getLogger("ShutdownTrigger");
-                        if (hook != null) {
-                            hook.hookShutdown();
+                        if (hertsShutdownHook != null) {
+                            hertsShutdownHook.hookShutdown();
                         }
                         _logger.info("Shutdown Herts RPC server");
                         hertsMetricsServer.stop();

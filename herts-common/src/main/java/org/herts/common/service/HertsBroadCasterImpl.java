@@ -22,14 +22,13 @@ import java.util.Collections;
 public class HertsBroadCasterImpl implements HertsBroadCaster {
     private final ReactiveStreamingCache reactiveStreamingCache = ReactiveStreamingLocalCacheImpl.getInstance();
     private final ReactiveStreamingReceiverCache reactiveStreamingReceiverCache;
-    private final HertsMessageBroker broker; // TODO: Change DI
+    private HertsMessageBroker broker;
     private Class<?> service;
     private Class<?> receiver;
     private String clientId;
 
     public HertsBroadCasterImpl() {
         this.reactiveStreamingReceiverCache = new ReactiveStreamingReceiverCacheImpl();
-        this.broker = ConcurrentLocalBroker.getInstance();
     }
 
     @Override
@@ -67,6 +66,11 @@ public class HertsBroadCasterImpl implements HertsBroadCaster {
     @Override
     public void setReceiver(Class<?> receiver) {
         this.receiver = receiver;
+    }
+
+    @Override
+    public void setBroker(HertsMessageBroker broker) {
+        this.broker = broker;
     }
 
     @Override
