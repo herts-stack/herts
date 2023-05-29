@@ -8,6 +8,7 @@ import org.herts.common.modelx.HertsReceiverInfo;
 
 import java.lang.reflect.Proxy;
 import java.util.Collections;
+import java.util.logging.Logger;
 
 /**
  * HertsBroadCaster implementation
@@ -16,6 +17,8 @@ import java.util.Collections;
  * @version 1.0.0
  */
 public class HertsBroadCasterImpl implements HertsBroadCaster {
+    private static final Logger logger = Logger.getLogger(HertsBroadCasterImpl.class.getName());
+
     private final ReactiveStreamingCache reactiveStreamingCache = ReactiveStreamingCacheImpl.getInstance();
     private HertsBroker broker;
     private Class<?> service;
@@ -67,6 +70,13 @@ public class HertsBroadCasterImpl implements HertsBroadCaster {
     @Override
     public Class<?> getReceiver() {
         return this.receiver;
+    }
+
+    private void printClientIds() {
+        logger.info("Debug client id stat");
+        for (String id : this.reactiveStreamingCache.getClientIds()) {
+            logger.info(id);
+        }
     }
 
     private HertsReceiver createReceiver(String clientId) {

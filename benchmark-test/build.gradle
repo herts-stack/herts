@@ -1,0 +1,54 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'org.graalvm.buildtools.native' version '0.9.21'
+}
+apply plugin: 'application'
+
+group 'org.herts.benchmarktest'
+version '1.0.0'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+}
+
+dependencies {
+    implementation project(':herts-common')
+    implementation project(':herts-rpc')
+    implementation project(':herts-rpc-client')
+    implementation project(':herts-http')
+    implementation project(':herts-http-client')
+
+    implementation 'commons-cli:commons-cli:1.5.0'
+}
+
+def mainClassPath = 'org.herts.benchmarktest.Main'
+application {
+    mainClass = mainClassPath
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassPath
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+graalvmNative {
+    binaries {
+        main {
+            javaLauncher = javaToolchains.launcherFor {
+                languageVersion = JavaLanguageVersion.of(17)
+            }
+        }
+    }
+}

@@ -50,7 +50,7 @@ public class HertsRpcInterceptBuilder implements ServerInterceptor {
             this.interceptor.beforeCallMethod(call, requestHeaders);
         }
 
-        return next.startCall(new ForwardingServerCall.SimpleForwardingServerCall<>(call) {
+        var listener = next.startCall(new ForwardingServerCall.SimpleForwardingServerCall<>(call) {
             @Override
             public void sendHeaders(Metadata responseHeaders) {
                 if (interceptor != null) {
@@ -60,5 +60,6 @@ public class HertsRpcInterceptBuilder implements ServerInterceptor {
                 super.sendHeaders(responseHeaders);
             }
         }, requestHeaders);
+        return listener;
     }
 }

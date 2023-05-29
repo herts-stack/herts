@@ -54,6 +54,12 @@ public interface ReactiveStreamingCache {
     HertsClientInfo getClientInfo(String clientId);
 
     /**
+     * Get all client ids.
+     * @return Client ids
+     */
+    String[] getClientIds();
+
+    /**
      * Set Herts receiver.
      *
      * @param clientId      ClientId
