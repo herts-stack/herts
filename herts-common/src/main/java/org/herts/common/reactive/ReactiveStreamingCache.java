@@ -15,7 +15,7 @@ public interface ReactiveStreamingCache {
 
     /**
      * Register StreamingObserver to server cache service.
-     * Object parameter is same as Receiver method paramaters
+     * Object parameter is same as Receiver method parameters
      *
      * @param hertsClientId ClientId
      * @param observer      StreamObserver

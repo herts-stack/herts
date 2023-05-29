@@ -22,12 +22,9 @@ public class HertsReactiveStreamingInvoker implements InvocationHandler {
     private final HertsSerializer hertsSerializer;
     private String clientId;
 
-    public HertsReactiveStreamingInvoker(HertsBroker hertsMessageBroker) {
+    public HertsReactiveStreamingInvoker(HertsBroker hertsMessageBroker, String clientId) {
         this.hertsMessageBroker = hertsMessageBroker;
         this.hertsSerializer = new HertsSerializer();
-    }
-
-    public void setTarget(String clientId) {
         this.clientId = clientId;
     }
 

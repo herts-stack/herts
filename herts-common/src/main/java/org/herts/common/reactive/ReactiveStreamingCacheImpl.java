@@ -17,12 +17,14 @@ public class ReactiveStreamingCacheImpl implements ReactiveStreamingCache {
     private volatile ConcurrentHashMap<String, HertsReceiverInfo> receivers;
     private volatile ConcurrentHashMap<String, StreamObserver<Object>> observers;
     private volatile ConcurrentHashMap<String, HertsClientInfo> clientInfo;
+    private volatile ConcurrentHashMap<String, HertsReactiveStreamingInvoker> hertsInvoker;
     private static ReactiveStreamingCacheImpl thisClass;
 
     private ReactiveStreamingCacheImpl() {
         this.receivers = new ConcurrentHashMap<>();
         this.observers = new ConcurrentHashMap<>();
         this.clientInfo = new ConcurrentHashMap<>();
+        this.hertsInvoker = new ConcurrentHashMap<>();
     }
 
     /**

@@ -4,6 +4,7 @@ import io.grpc.stub.StreamObserver;
 import org.herts.common.modelx.HertsClientInfo;
 import org.herts.common.context.HertsSystemContext;
 import org.herts.common.loadbalancing.HertsBroker;
+import org.herts.common.modelx.HertsReceiverInfo;
 
 import java.lang.reflect.Proxy;
 import java.util.Collections;
@@ -26,15 +27,7 @@ public class HertsBroadCasterImpl implements HertsBroadCaster {
 
     @Override
     public <K> K broadcast(String clientId) {
-        HertsReceiver hertsReceiver;
-        var proxyReceiver = this.reactiveStreamingCache.getHertsReceiver(clientId);
-        if (proxyReceiver == null) {
-            hertsReceiver = createReceiver(clientId);
-        } else {
-            proxyReceiver.getInvoker().setTarget(clientId);
-            hertsReceiver = proxyReceiver.getReceiver();
-        }
-        return (K) hertsReceiver;
+        return (K) createReceiver(clientId);
     }
 
     @Override
@@ -77,25 +70,27 @@ public class HertsBroadCasterImpl implements HertsBroadCaster {
     }
 
     private HertsReceiver createReceiver(String clientId) {
+        HertsReceiverInfo hertsReceiverInfo = this.reactiveStreamingCache.getHertsReceiver(clientId);
+        if (hertsReceiverInfo != null) {
+            return hertsReceiverInfo.getReceiver();
+        }
         StreamObserver<Object> observer = this.reactiveStreamingCache.getObserver(clientId);
         if (observer == null) {
             return null;
         }
 
-        HertsReactiveStreamingInvoker handler = new HertsReactiveStreamingInvoker(this.broker);
-        handler.setTarget(clientId);
-        HertsReceiver hertsReceiver;
+        var handler = new HertsReactiveStreamingInvoker(this.broker, clientId);
         try {
-            hertsReceiver = (HertsReceiver) Proxy.newProxyInstance(
+            HertsReceiver hertsReceiver = (HertsReceiver) Proxy.newProxyInstance(
                     this.receiver.getClassLoader(),
                     new Class<?>[]{this.receiver},
                     handler);
+
+            this.reactiveStreamingCache.setHertsReceiver(clientId, hertsReceiver, handler);
+            return hertsReceiver;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
         }
-
-        this.reactiveStreamingCache.setHertsReceiver(clientId, hertsReceiver, handler);
-        return hertsReceiver;
     }
 }

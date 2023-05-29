@@ -33,11 +33,6 @@ public class HertsReactiveStreamingServiceBase<T, K> implements HertsReactiveSer
     }
 
     @Override
-    public Class<?> getInterface() {
-        return null;
-    }
-
-    @Override
     public Class<?> getService() {
         return this.broadCaster.getService();
     }
