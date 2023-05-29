@@ -1,20 +1,15 @@
-package org.herts.common.service;
+package org.herts.common.reactive;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import io.grpc.stub.StreamObserver;
-import org.herts.common.context.HertsSystemContext;
-import org.herts.common.loadbalancing.HertsInternalPayload;
-import org.herts.common.loadbalancing.HertsMessageBroker;
+import org.herts.common.exception.HertsJsonProcessingException;
+import org.herts.common.modelx.HertsReactivePayload;
+import org.herts.common.loadbalancing.HertsBroker;
 import org.herts.common.serializer.HertsSerializer;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Herts reactive invocation handler for server side
@@ -23,11 +18,11 @@ import java.util.Map;
  * @version 1.0.0
  */
 public class HertsReactiveStreamingInvoker implements InvocationHandler {
-    private final HertsMessageBroker hertsMessageBroker;
+    private final HertsBroker hertsMessageBroker;
     private final HertsSerializer hertsSerializer;
     private String clientId;
 
-    public HertsReactiveStreamingInvoker(HertsMessageBroker hertsMessageBroker) {
+    public HertsReactiveStreamingInvoker(HertsBroker hertsMessageBroker) {
         this.hertsMessageBroker = hertsMessageBroker;
         this.hertsSerializer = new HertsSerializer();
     }
@@ -51,7 +46,7 @@ public class HertsReactiveStreamingInvoker implements InvocationHandler {
             return proxy;
         }
 
-        var hertsPayload = new HertsInternalPayload();
+        var hertsPayload = new HertsReactivePayload();
         hertsPayload.setClientId(this.clientId);
         hertsPayload.setMethodName(method.getName());
         hertsPayload.setParameters(parameters);
@@ -59,7 +54,7 @@ public class HertsReactiveStreamingInvoker implements InvocationHandler {
 
         try {
             this.hertsMessageBroker.getHertsMessageProducer().produce(this.hertsSerializer.serialize(hertsPayload));
-        } catch (JsonProcessingException ex) {
+        } catch (HertsJsonProcessingException ex) {
             ex.printStackTrace();
         }
         return proxy;

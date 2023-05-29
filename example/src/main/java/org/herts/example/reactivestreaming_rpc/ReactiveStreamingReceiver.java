@@ -1,7 +1,7 @@
 package org.herts.example.reactivestreaming_rpc;
 
 import org.herts.common.annotation.HertsRpcReceiver;
-import org.herts.common.service.HertsReceiver;
+import org.herts.common.reactive.HertsReceiver;
 import org.herts.example.common.HelloRequest;
 
 import java.util.List;

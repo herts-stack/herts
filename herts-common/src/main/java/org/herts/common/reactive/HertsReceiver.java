@@ -1,4 +1,4 @@
-package org.herts.common.service;
+package org.herts.common.reactive;
 
 /**
  * Herts receiver interface

@@ -1,14 +1,9 @@
-package org.herts.common.service;
+package org.herts.common.reactive;
 
 import io.grpc.stub.StreamObserver;
-import org.herts.common.cache.ReactiveStreamingCache;
-import org.herts.common.cache.ReactiveStreamingLocalCacheImpl;
-import org.herts.common.cache.ReactiveStreamingReceiverCache;
-import org.herts.common.cache.ReactiveStreamingReceiverCacheImpl;
-import org.herts.common.context.HertsClientInfo;
+import org.herts.common.modelx.HertsClientInfo;
 import org.herts.common.context.HertsSystemContext;
-import org.herts.common.loadbalancing.HertsMessageBroker;
-import org.herts.common.loadbalancing.local.ConcurrentLocalBroker;
+import org.herts.common.loadbalancing.HertsBroker;
 
 import java.lang.reflect.Proxy;
 import java.util.Collections;
@@ -20,21 +15,19 @@ import java.util.Collections;
  * @version 1.0.0
  */
 public class HertsBroadCasterImpl implements HertsBroadCaster {
-    private final ReactiveStreamingCache reactiveStreamingCache = ReactiveStreamingLocalCacheImpl.getInstance();
-    private final ReactiveStreamingReceiverCache reactiveStreamingReceiverCache;
-    private HertsMessageBroker broker;
+    private final ReactiveStreamingCache reactiveStreamingCache = ReactiveStreamingCacheImpl.getInstance();
+    private HertsBroker broker;
     private Class<?> service;
     private Class<?> receiver;
     private String clientId;
 
     public HertsBroadCasterImpl() {
-        this.reactiveStreamingReceiverCache = new ReactiveStreamingReceiverCacheImpl();
     }
 
     @Override
     public <K> K broadcast(String clientId) {
         HertsReceiver hertsReceiver;
-        var proxyReceiver = this.reactiveStreamingReceiverCache.getHertsReceiver(clientId);
+        var proxyReceiver = this.reactiveStreamingCache.getHertsReceiver(clientId);
         if (proxyReceiver == null) {
             hertsReceiver = createReceiver(clientId);
         } else {
@@ -47,7 +40,7 @@ public class HertsBroadCasterImpl implements HertsBroadCaster {
     @Override
     public void registerReceiver(HertsClientInfo clientInfo, StreamObserver<Object> objectStreamObservers) {
         this.reactiveStreamingCache.setClientInfo(clientInfo);
-        this.reactiveStreamingCache.registerObserverToServer(clientInfo.id, objectStreamObservers);
+        this.reactiveStreamingCache.setObserver(clientInfo.id, objectStreamObservers);
         objectStreamObservers.onNext(Collections.singletonList(HertsSystemContext.Rpc.REGISTERED_METHOD_NAME));
         this.clientId = clientInfo.id;
         createReceiver(clientInfo.id);
@@ -69,7 +62,7 @@ public class HertsBroadCasterImpl implements HertsBroadCaster {
     }
 
     @Override
-    public void setBroker(HertsMessageBroker broker) {
+    public void setBroker(HertsBroker broker) {
         this.broker = broker;
     }
 
@@ -102,7 +95,7 @@ public class HertsBroadCasterImpl implements HertsBroadCaster {
             return null;
         }
 
-        this.reactiveStreamingReceiverCache.setHertsReceiver(clientId, hertsReceiver, handler);
+        this.reactiveStreamingCache.setHertsReceiver(clientId, hertsReceiver, handler);
         return hertsReceiver;
     }
 }

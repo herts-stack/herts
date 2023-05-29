@@ -1,25 +1,27 @@
-package org.herts.common.context;
+package org.herts.common.modelx;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.herts.common.modelx.HertsHttpMsg;
 
 import java.io.Serializable;
 
 /**
  * Herts http response for internal message
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
 public class HertsHttpResponse implements Serializable {
     @JsonProperty
-    private Payload payload;
+    private HertsHttpMsg payload;
     @JsonProperty
     private String exceptionCauseMessage;
 
-    public Payload getPayload() {
+    public HertsHttpMsg getPayload() {
         return payload;
     }
 
-    public void setPayload(Payload payload) {
+    public void setPayload(HertsHttpMsg payload) {
         this.payload = payload;
     }
 

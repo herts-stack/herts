@@ -1,4 +1,4 @@
-package org.herts.common.context;
+package org.herts.common.modelx;
 
 import org.msgpack.annotation.Message;
 
@@ -6,26 +6,27 @@ import java.io.Serializable;
 
 /**
  * Herts rpc message of internal
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
 @Message
-public class HertsMsg implements Serializable {
+public class HertsRpcMsg implements Serializable {
     private Object[] messageParameters;
     private Class<?>[] classTypes;
 
-    public HertsMsg() {
+    public HertsRpcMsg() {
     }
 
-    public HertsMsg(Object[] messageParameters) {
+    public HertsRpcMsg(Object[] messageParameters) {
         this.messageParameters = messageParameters;
     }
 
-    public HertsMsg(Class<?>[] classTypes) {
+    public HertsRpcMsg(Class<?>[] classTypes) {
         this.classTypes = classTypes;
     }
 
-    public HertsMsg(Object[] messageParameters, Class<?>[] classTypes) {
+    public HertsRpcMsg(Object[] messageParameters, Class<?>[] classTypes) {
         this.messageParameters = messageParameters;
         this.classTypes = classTypes;
     }

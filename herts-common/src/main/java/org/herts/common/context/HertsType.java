@@ -6,6 +6,7 @@ import io.grpc.MethodDescriptor;
 
 /**
  * Herts support type
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
@@ -29,6 +30,7 @@ public enum HertsType {
 
     /**
      * Convert from enum to io.grpc.MethodDescriptor if exist
+     *
      * @return MethodDescriptor.MethodType
      */
     public MethodDescriptor.MethodType convertToMethodType() {

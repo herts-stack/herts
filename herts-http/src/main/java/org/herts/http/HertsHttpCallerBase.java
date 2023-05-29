@@ -1,9 +1,9 @@
 package org.herts.http;
 
 import org.herts.common.context.HertsSystemContext;
-import org.herts.common.context.HertsHttpRequest;
-import org.herts.common.context.HertsHttpResponse;
-import org.herts.common.context.Payload;
+import org.herts.common.modelx.HertsHttpRequest;
+import org.herts.common.modelx.HertsHttpResponse;
+import org.herts.common.modelx.HertsHttpMsg;
 import org.herts.common.exception.HertsInvalidBodyException;
 import org.herts.common.serializer.HertsSerializer;
 import org.herts.metrics.server.HertsMetricsServer;
@@ -72,10 +72,10 @@ public class HertsHttpCallerBase {
             hertsRequest.setPayloads(new ArrayList<>());
         }
 
-        List<Payload> payloads = hertsRequest.getPayloads();
+        List<HertsHttpMsg> payloads = hertsRequest.getPayloads();
         Object[] args = new Object[payloads.size()];
         int idx = 0;
-        for (Payload payload : payloads) {
+        for (HertsHttpMsg payload : payloads) {
             Object castedArg;
             try {
                 Class<?> aClass = Class.forName(payload.getClassInfo());
@@ -94,7 +94,7 @@ public class HertsHttpCallerBase {
         }
 
         var hertsResponse = new HertsHttpResponse();
-        var payload = new Payload();
+        var payload = new HertsHttpMsg();
         payload.setValue(res);
         payload.setClassInfo(hertsMethod.getReturnType().getName());
         hertsResponse.setPayload(payload);

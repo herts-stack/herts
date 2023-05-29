@@ -2,7 +2,7 @@ package org.herts.rpcclient.receiver;
 
 import io.grpc.stub.StreamObserver;
 import org.herts.common.context.HertsSystemContext;
-import org.herts.common.service.HertsReceiver;
+import org.herts.common.reactive.HertsReceiver;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

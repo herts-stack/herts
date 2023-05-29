@@ -2,7 +2,7 @@ package org.herts.rpcclient;
 
 import io.grpc.Channel;
 import io.grpc.ClientInterceptor;
-import org.herts.common.service.HertsReceiver;
+import org.herts.common.reactive.HertsReceiver;
 
 /**
  * Herts core client builder interface

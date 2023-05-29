@@ -1,14 +1,20 @@
 package org.herts.common.loadbalancing.local;
 
-import org.herts.common.loadbalancing.HertsMessageProducer;
-import org.herts.common.loadbalancing.MessageObserver;
+import org.herts.common.loadbalancing.HertsConsumer;
+import org.herts.common.loadbalancing.HertsProducer;
 import org.herts.common.serializer.HertsSerializer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConcurrentLocalProducer implements HertsMessageProducer {
-    private final List<MessageObserver> observers;
+/**
+ * Concurrent local producer
+ *
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
+public class ConcurrentLocalProducer implements HertsProducer {
+    private final List<HertsConsumer> observers;
     private final HertsSerializer serializer;
     private final String producerName;
 
@@ -24,12 +30,12 @@ public class ConcurrentLocalProducer implements HertsMessageProducer {
     }
 
     @Override
-    public void addObserver(MessageObserver observer) {
+    public void addObserver(HertsConsumer observer) {
         this.observers.add(observer);
     }
 
     private void notifyObservers(byte[] payload) {
-        for (MessageObserver observer : this.observers) {
+        for (HertsConsumer observer : this.observers) {
             observer.receive(payload);
         }
     }

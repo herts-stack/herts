@@ -1,6 +1,6 @@
 package org.herts.rpc.handler;
 
-import org.herts.common.context.HertsMsg;
+import org.herts.common.modelx.HertsRpcMsg;
 import org.herts.common.serializer.HertsSerializer;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class BaseCaller {
      */
     protected <T> void setMethodRequests(T request) throws IOException {
         if (((byte[]) request).length > 0) {
-            HertsMsg deserialized = this.hertsSerializer.deserialize((byte[]) request, HertsMsg.class);
+            HertsRpcMsg deserialized = this.hertsSerializer.deserialize((byte[]) request, HertsRpcMsg.class);
             var index = 0;
             for (Object obj : deserialized.getMessageParameters()) {
                 var castType = deserialized.getClassTypes()[index];

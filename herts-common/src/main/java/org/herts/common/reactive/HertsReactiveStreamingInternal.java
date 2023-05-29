@@ -1,7 +1,7 @@
-package org.herts.common.service;
+package org.herts.common.reactive;
 
 import io.grpc.stub.StreamObserver;
-import org.herts.common.context.HertsClientInfo;
+import org.herts.common.modelx.HertsClientInfo;
 
 /**
  * Herts reactive streaming internal interface

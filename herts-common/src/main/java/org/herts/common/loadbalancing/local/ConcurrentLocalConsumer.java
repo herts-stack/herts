@@ -1,31 +1,37 @@
 package org.herts.common.loadbalancing.local;
 
-import org.herts.common.cache.ReactiveStreamingCache;
-import org.herts.common.cache.ReactiveStreamingLocalCacheImpl;
-import org.herts.common.loadbalancing.HertsInternalPayload;
-import org.herts.common.loadbalancing.HertsMessageConsumer;
+import org.herts.common.reactive.ReactiveStreamingCache;
+import org.herts.common.reactive.ReactiveStreamingCacheImpl;
+import org.herts.common.modelx.HertsReactivePayload;
+import org.herts.common.loadbalancing.HertsConsumer;
 import org.herts.common.serializer.HertsSerializer;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConcurrentLocalConsumer implements HertsMessageConsumer {
+/**
+ * Concurrent local consumer
+ *
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
+public class ConcurrentLocalConsumer implements HertsConsumer {
     private final HertsSerializer serializer;
     private final ReactiveStreamingCache reactiveStreamingCache;
     private final String consumerName;
 
     public ConcurrentLocalConsumer(String consumerName) {
         this.serializer = new HertsSerializer();
-        this.reactiveStreamingCache = ReactiveStreamingLocalCacheImpl.getInstance();
+        this.reactiveStreamingCache = ReactiveStreamingCacheImpl.getInstance();
         this.consumerName = consumerName;
     }
 
     @Override
     public void receive(byte[] payload) {
-        HertsInternalPayload hertsPayload;
+        HertsReactivePayload hertsPayload;
         try {
-            hertsPayload = this.serializer.deserialize(payload, HertsInternalPayload.class);
+            hertsPayload = this.serializer.deserialize(payload, HertsReactivePayload.class);
         } catch (IOException ex) {
             ex.printStackTrace();
             return;

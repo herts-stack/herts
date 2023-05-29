@@ -2,6 +2,7 @@ package org.herts.common.context;
 
 /**
  * HertsMetricsSetting
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
@@ -32,7 +33,8 @@ public class HertsMetricsSetting {
         private boolean isServerResourceEnabled = false;
         private boolean isJvmEnabled = false;
 
-        public Builder() {}
+        public Builder() {
+        }
 
         public Builder isRpsEnabled(boolean isRpsEnabled) {
             this.isRpsEnabled = isRpsEnabled;

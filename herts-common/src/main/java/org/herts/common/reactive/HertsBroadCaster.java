@@ -1,8 +1,8 @@
-package org.herts.common.service;
+package org.herts.common.reactive;
 
 import io.grpc.stub.StreamObserver;
-import org.herts.common.context.HertsClientInfo;
-import org.herts.common.loadbalancing.HertsMessageBroker;
+import org.herts.common.modelx.HertsClientInfo;
+import org.herts.common.loadbalancing.HertsBroker;
 
 /**
  * HertsBroadCaster for internal reactive streaming.
@@ -42,7 +42,7 @@ public interface HertsBroadCaster {
      *
      * @param broker HertsMessageBroker
      */
-    void setBroker(HertsMessageBroker broker);
+    void setBroker(HertsBroker broker);
 
     /**
      * Get HertsService

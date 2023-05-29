@@ -2,7 +2,7 @@ package org.herts.common.descriptor;
 
 import org.herts.common.marshaller.HertsMarshaller;
 import org.herts.common.context.HertsType;
-import org.herts.common.context.HertsMethod;
+import org.herts.common.modelx.HertsMethod;
 import org.herts.common.marshaller.HertsStramingMarshaller;
 
 import io.grpc.MethodDescriptor;
@@ -15,6 +15,7 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
 
 /**
  * Herts gRPC custom static descriptor.
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
@@ -25,9 +26,10 @@ public class HertsGrpcDescriptor {
 
     /**
      * Generate method descriptor.
-     * @param coreType HertsCoreType
+     *
+     * @param coreType    HertsCoreType
      * @param serviceName Interface service name
-     * @param methodName Rpc name
+     * @param methodName  Rpc name
      * @return MethodDescriptor
      */
     public static MethodDescriptor<byte[], byte[]> generateMethodDescriptor(
@@ -48,9 +50,10 @@ public class HertsGrpcDescriptor {
 
     /**
      * Generate straeming method descriptor
-     * @param coreType HertsType
+     *
+     * @param coreType    HertsType
      * @param serviceName Service name
-     * @param methodName Method name
+     * @param methodName  Method name
      * @return MethodDescriptor
      */
     public static MethodDescriptor<Object, Object> generateStramingMethodDescriptor(
@@ -71,7 +74,8 @@ public class HertsGrpcDescriptor {
 
     /**
      * Generate gRPC unary descriptor.
-     * @param serviceName Interface service name
+     *
+     * @param serviceName  Interface service name
      * @param hertsMethods HertMethod class list
      * @return HertsDescriptor
      */
@@ -92,7 +96,8 @@ public class HertsGrpcDescriptor {
 
     /**
      * Generate gRPC client, server, bidirectional streaming descriptor.
-     * @param serviceName Interface service name
+     *
+     * @param serviceName  Interface service name
      * @param hertsMethods HertMethod class list
      * @return HertsStreamingDescriptor
      */

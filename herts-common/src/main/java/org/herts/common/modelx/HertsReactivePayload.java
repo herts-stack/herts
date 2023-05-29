@@ -1,10 +1,14 @@
-package org.herts.common.loadbalancing;
-
-import org.herts.common.context.HertsMsg;
+package org.herts.common.modelx;
 
 import java.util.List;
 
-public class HertsInternalPayload extends HertsMsg {
+/**
+ * Herts reactive payload for load balancing
+ *
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
+public class HertsReactivePayload extends HertsRpcMsg {
     private String methodName;
     private String clientId;
     private List<Object> parameters;

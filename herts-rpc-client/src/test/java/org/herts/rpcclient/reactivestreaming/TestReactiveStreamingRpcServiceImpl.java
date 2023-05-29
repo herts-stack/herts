@@ -1,6 +1,6 @@
 package org.herts.rpcclient.reactivestreaming;
 
-import org.herts.common.service.HertsReactiveStreamingService;
+import org.herts.common.reactive.HertsReactiveStreamingService;
 import org.herts.rpcclient.TestFoo;
 import org.herts.rpcclient.TestHoo;
 

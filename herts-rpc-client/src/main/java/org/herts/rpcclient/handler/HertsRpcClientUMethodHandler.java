@@ -4,7 +4,7 @@ import io.grpc.StatusRuntimeException;
 import org.herts.common.descriptor.HertsGrpcDescriptor;
 import org.herts.common.context.HertsType;
 import org.herts.common.exception.HertsServiceNotFoundException;
-import org.herts.common.context.HertsMsg;
+import org.herts.common.modelx.HertsRpcMsg;
 import org.herts.common.exception.rpc.HertsRpcErrorException;
 import org.herts.common.serializer.HertsSerializer;
 import org.herts.common.service.HertsService;
@@ -66,7 +66,7 @@ public class HertsRpcClientUMethodHandler extends io.grpc.stub.AbstractBlockingS
         byte[] bytes = new byte[]{};
         if (args != null) {
             Class<?>[] parameterTypes = cachedMethod.getParameterTypes();
-            bytes = this.serializer.serialize(new HertsMsg(args, parameterTypes));
+            bytes = this.serializer.serialize(new HertsRpcMsg(args, parameterTypes));
         }
 
         byte[] res;

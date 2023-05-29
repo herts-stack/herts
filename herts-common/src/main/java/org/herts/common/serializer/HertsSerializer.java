@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.herts.common.exception.HertsInvalidBodyException;
+import org.herts.common.exception.HertsJsonProcessingException;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 
 import java.io.ByteArrayOutputStream;
@@ -14,6 +15,7 @@ import java.io.Reader;
 
 /**
  * Herts message serializer
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
@@ -27,6 +29,7 @@ public class HertsSerializer {
 
     /**
      * Constructor
+     *
      * @param serializeType Supported type. Json or MessagePack
      */
     public HertsSerializer(HertsSerializeType serializeType) {
@@ -35,6 +38,7 @@ public class HertsSerializer {
 
     /**
      * Get HertsSerializeType
+     *
      * @return HertsSerializeType
      */
     public HertsSerializeType getSerializeType() {
@@ -43,39 +47,50 @@ public class HertsSerializer {
 
     /**
      * Serialize from Class to byte array
+     *
      * @param messageClass Class tyoe
+     * @param <T>          Generics
      * @return Byte array
-     * @param <T> Generics
-     * @throws JsonProcessingException Invalid message
+     * @throws HertsJsonProcessingException Invalid message
      */
-    public <T> byte[] serialize(T messageClass) throws JsonProcessingException {
-        if (this.serializeType == HertsSerializeType.Json) {
-            return objectMapper.writeValueAsBytes(messageClass);
-        } else {
-            return msgPackMapper.writeValueAsBytes(messageClass);
+    public <T> byte[] serialize(T messageClass) throws HertsJsonProcessingException {
+        try {
+            if (this.serializeType == HertsSerializeType.Json) {
+                return objectMapper.writeValueAsBytes(messageClass);
+            } else {
+                return msgPackMapper.writeValueAsBytes(messageClass);
+            }
+        } catch (JsonProcessingException ex) {
+            throw new HertsJsonProcessingException(ex);
         }
     }
 
     /**
      * Serialize from Object to String
+     *
      * @param value Oject
      * @return String data
-     * @throws JsonProcessingException Invalid message
+     * @throws HertsJsonProcessingException Invalid message
      */
-    public String serializeAsStr(Object value) throws JsonProcessingException {
-        if (this.serializeType == HertsSerializeType.Json) {
-            return objectMapper.writeValueAsString(value);
-        } else {
-            return msgPackMapper.writeValueAsString(value);
+    public String serializeAsStr(Object value) throws HertsJsonProcessingException {
+        try {
+            if (this.serializeType == HertsSerializeType.Json) {
+                return objectMapper.writeValueAsString(value);
+            } else {
+                return msgPackMapper.writeValueAsString(value);
+            }
+        } catch (JsonProcessingException ex) {
+            throw new HertsJsonProcessingException(ex);
         }
     }
 
     /**
      * Deserialize from byte array to Class type
-     * @param message Message byte
+     *
+     * @param message   Message byte
      * @param classType Class type
+     * @param <T>       Generics
      * @return Deserialize class type
-     * @param <T> Generics
      * @throws IOException Invalid message
      */
     public <T> T deserialize(byte[] message, Class<T> classType) throws IOException {
@@ -88,10 +103,11 @@ public class HertsSerializer {
 
     /**
      * Deserialize from byte array
-     * @param message Message byte
+     *
+     * @param message       Message byte
      * @param typeReference TypeReference
+     * @param <T>           Generics
      * @return Deserialize class type
-     * @param <T> Generics
      * @throws IOException Invalid message
      */
     public <T> T deserialize(byte[] message, TypeReference typeReference) throws IOException {
@@ -104,10 +120,11 @@ public class HertsSerializer {
 
     /**
      * Deserialize from Reader
-     * @param src Reader data
+     *
+     * @param src       Reader data
      * @param classType Class type
+     * @param <T>       Generics
      * @return Deserialize class type
-     * @param <T> Generics
      * @throws IOException Invalid message
      */
     public <T> T deserialize(Reader src, Class<T> classType) throws IOException {
@@ -120,10 +137,11 @@ public class HertsSerializer {
 
     /**
      * Convert from Object to Class type
-     * @param message Message object
+     *
+     * @param message   Message object
      * @param classType Class type
+     * @param <T>       Generics
      * @return Converted data
-     * @param <T> Generics
      */
     public <T> T convert(Object message, Class<T> classType) {
         if (this.serializeType == HertsSerializeType.Json) {
@@ -135,8 +153,9 @@ public class HertsSerializer {
 
     /**
      * Convert to Object from value of HertsHttpRequest.Payload
+     *
      * @param hertsHttpPayloadValue Value of HertsHttpRequest.Payload
-     * @param aClass Class type
+     * @param aClass                Class type
      * @return Object
      * @throws IOException If fail deserialize
      */

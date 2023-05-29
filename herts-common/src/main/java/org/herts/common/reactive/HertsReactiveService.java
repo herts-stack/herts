@@ -1,7 +1,8 @@
-package org.herts.common.service;
+package org.herts.common.reactive;
 
 import io.grpc.MethodDescriptor;
 import org.herts.common.context.HertsType;
+import org.herts.common.service.HertsService;
 
 /**
  * Herts reactive service interface

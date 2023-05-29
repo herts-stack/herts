@@ -1,11 +1,13 @@
-package org.herts.common.cache;
+package org.herts.common.reactive;
 
 import io.grpc.stub.StreamObserver;
-import org.herts.common.context.HertsClientInfo;
+import org.herts.common.modelx.HertsClientInfo;
+import org.herts.common.modelx.HertsReceiverInfo;
 
 /**
  * HertsReactive cache interface.
  * This class is internal cache service.
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
@@ -14,13 +16,15 @@ public interface ReactiveStreamingCache {
     /**
      * Register StreamingObserver to server cache service.
      * Object parameter is same as Receiver method paramaters
+     *
      * @param hertsClientId ClientId
-     * @param observer StreamObserver
+     * @param observer      StreamObserver
      */
-    void registerObserverToServer(String hertsClientId, StreamObserver<Object> observer);
+    void setObserver(String hertsClientId, StreamObserver<Object> observer);
 
     /**
      * Get observer
+     *
      * @param hertsClientId ClientId
      * @return StreamObserver
      */
@@ -28,6 +32,7 @@ public interface ReactiveStreamingCache {
 
     /**
      * Remove Observer.
+     *
      * @param hertsClientId ClientId
      * @return Result
      */
@@ -35,14 +40,33 @@ public interface ReactiveStreamingCache {
 
     /**
      * Set ClientInfo.
+     *
      * @param clientInfo ClientInfo
      */
     void setClientInfo(HertsClientInfo clientInfo);
 
     /**
      * Get ClientInfo
+     *
      * @param clientId ClientId
      * @return ClientInfo
      */
     HertsClientInfo getClientInfo(String clientId);
+
+    /**
+     * Set Herts receiver.
+     *
+     * @param clientId      ClientId
+     * @param hertsReceiver HertsReceiver
+     * @param invoker       HertsReactiveStreamingInvoker
+     */
+    void setHertsReceiver(String clientId, HertsReceiver hertsReceiver, HertsReactiveStreamingInvoker invoker);
+
+    /**
+     * Get Herts receiver.
+     *
+     * @param clientId ClientId
+     * @return HertsReceiverInfo
+     */
+    HertsReceiverInfo getHertsReceiver(String clientId);
 }

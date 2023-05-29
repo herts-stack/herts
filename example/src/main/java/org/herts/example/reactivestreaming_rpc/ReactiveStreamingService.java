@@ -2,7 +2,7 @@ package org.herts.example.reactivestreaming_rpc;
 
 import org.herts.common.annotation.HertsRpcService;
 import org.herts.common.context.HertsType;
-import org.herts.common.service.HertsReactiveService;
+import org.herts.common.reactive.HertsReactiveService;
 import org.herts.example.common.HelloRequest;
 import org.herts.example.common.HelloResponse01;
 

@@ -1,7 +1,7 @@
 package org.herts.example.reactivestreaming_rpc;
 
 import org.herts.common.logger.HertsLogger;
-import org.herts.common.service.HertsReactiveStreamingService;
+import org.herts.common.reactive.HertsReactiveStreamingService;
 import org.herts.example.common.HelloRequest;
 import org.herts.example.common.HelloResponse01;
 

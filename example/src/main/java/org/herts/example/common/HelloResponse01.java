@@ -1,8 +1,8 @@
 package org.herts.example.common;
 
-import org.herts.common.context.HertsMsg;
+import org.herts.common.modelx.HertsRpcMsg;
 
-public class HelloResponse01 extends HertsMsg {
+public class HelloResponse01 extends HertsRpcMsg {
     private int code;
     private long timestamp;
     private String test;

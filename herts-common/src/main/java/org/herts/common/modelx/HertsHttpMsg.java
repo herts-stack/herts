@@ -1,11 +1,12 @@
-package org.herts.common.context;
+package org.herts.common.modelx;
 
 /**
  * Internal Payload.
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
-public class Payload {
+public class HertsHttpMsg {
     private String keyName;
     private Object value;
     private String classInfo;

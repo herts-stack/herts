@@ -1,7 +1,5 @@
 package org.herts.rpcclient.receiver;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import io.grpc.CallOptions;
 import io.grpc.Channel;
 import io.grpc.MethodDescriptor;
@@ -9,12 +7,13 @@ import io.grpc.stub.AbstractStub;
 import io.grpc.stub.ClientCalls;
 import io.grpc.stub.StreamObserver;
 
-import org.herts.common.context.HertsClientInfo;
-import org.herts.common.context.HertsMsg;
+import org.herts.common.exception.HertsJsonProcessingException;
+import org.herts.common.modelx.HertsClientInfo;
+import org.herts.common.modelx.HertsRpcMsg;
 import org.herts.common.context.HertsType;
 import org.herts.common.descriptor.HertsGrpcDescriptor;
 import org.herts.common.serializer.HertsSerializer;
-import org.herts.common.service.HertsReceiver;
+import org.herts.common.reactive.HertsReceiver;
 
 import java.lang.reflect.Method;
 import java.util.UUID;
@@ -68,7 +67,7 @@ public class InternalReactiveReceiver {
          * Register receiver to server.
          * @param streaming Class
          */
-        public void registerReceiver(Class<?> streaming) throws JsonProcessingException {
+        public void registerReceiver(Class<?> streaming) throws HertsJsonProcessingException {
             var serviceName = streaming.getName();
             Method method = streaming.getDeclaredMethods()[0];
 
@@ -85,7 +84,7 @@ public class InternalReactiveReceiver {
             Class<?>[] parameterTypes = new Class<?>[1];
             parameterTypes[0] = method.getParameterTypes()[0];
 
-            byte[] requestBytes = this.serializer.serialize(new HertsMsg(methodParameters, parameterTypes));
+            byte[] requestBytes = this.serializer.serialize(new HertsRpcMsg(methodParameters, parameterTypes));
 
             ClientCalls.asyncServerStreamingCall(this.channel.newCall(methodDescriptor, this.callOptions), requestBytes, responseObserver);
         }

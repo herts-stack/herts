@@ -1,7 +1,10 @@
-package org.herts.common.context;
+package org.herts.common.modelx;
+
+import org.herts.common.context.HertsType;
 
 /**
  * Herts rpc method for internal registration
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
@@ -81,8 +84,8 @@ public class HertsMethod {
     @Override
     public String toString() {
         return "HertsCoreType=" + this.hertsType + ", " +
-                "CoreServiceName=" + this.coreServiceName  + ", " +
-                "MethodName=" + this.methodName  + ", " +
+                "CoreServiceName=" + this.coreServiceName + ", " +
+                "MethodName=" + this.methodName + ", " +
                 "MethodReturnType=" + this.methodReturnType;
     }
 }

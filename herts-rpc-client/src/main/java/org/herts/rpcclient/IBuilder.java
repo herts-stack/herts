@@ -1,12 +1,12 @@
 package org.herts.rpcclient;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.herts.common.annotation.HertsRpcService;
 import org.herts.common.context.HertsType;
+import org.herts.common.exception.HertsJsonProcessingException;
 import org.herts.common.exception.HertsNotSupportParameterTypeException;
 import org.herts.common.exception.HertsRpcClientBuildException;
-import org.herts.common.service.HertsReactiveStreamingInternal;
-import org.herts.common.service.HertsReceiver;
+import org.herts.common.reactive.HertsReactiveStreamingInternal;
+import org.herts.common.reactive.HertsReceiver;
 import org.herts.rpcclient.receiver.InternalReactiveReceiver;
 import org.herts.rpcclient.validator.HertsRpcClientValidator;
 
@@ -122,7 +122,7 @@ public class IBuilder implements HertsRpcClientIBuilder {
                 try {
                     new InternalReactiveReceiver(receiver).newHertsClientStreamingService(this.channel).registerReceiver(HertsReactiveStreamingInternal.class);
                     Thread.sleep(500);
-                } catch (JsonProcessingException | InterruptedException e) {
+                } catch (HertsJsonProcessingException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }

@@ -2,6 +2,7 @@ package org.herts.common.exception;
 
 /**
  * Herts message failure exception class.
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */

@@ -1,11 +1,12 @@
-package org.herts.common.context;
+package org.herts.common.modelx;
 
 /**
  * HertsClientInfo
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
-public class HertsClientInfo extends HertsMsg {
+public class HertsClientInfo extends HertsRpcMsg {
     public String id;
     public String globalIp;
     public String userAgent;

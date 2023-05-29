@@ -1,23 +1,30 @@
 package org.herts.common.loadbalancing.local;
 
-import org.herts.common.loadbalancing.HertsMessageBroker;
-import org.herts.common.loadbalancing.HertsMessageConsumer;
-import org.herts.common.loadbalancing.HertsMessageProducer;
+import org.herts.common.loadbalancing.HertsBroker;
+import org.herts.common.loadbalancing.HertsConsumer;
+import org.herts.common.loadbalancing.HertsProducer;
 
 import java.util.UUID;
 
-public class ConcurrentLocalBroker implements HertsMessageBroker {
+/**
+ * Concurrent local broker for broadcast load balancing.
+ * This class recommends single server structure.
+ *
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
+public class ConcurrentLocalBroker implements HertsBroker {
 
-    private static HertsMessageBroker broker;
-    private final HertsMessageProducer producer;
-    private final HertsMessageConsumer consumer;
+    private static HertsBroker broker;
+    private final HertsProducer producer;
+    private final HertsConsumer consumer;
 
-    private ConcurrentLocalBroker(HertsMessageProducer producer, HertsMessageConsumer consumer) {
+    private ConcurrentLocalBroker(HertsProducer producer, HertsConsumer consumer) {
         this.producer = producer;
         this.consumer = consumer;
     }
 
-    public static HertsMessageBroker getInstance() {
+    public static HertsBroker getInstance() {
         if (broker != null) {
             return broker;
         }
@@ -29,12 +36,12 @@ public class ConcurrentLocalBroker implements HertsMessageBroker {
     }
 
     @Override
-    public HertsMessageProducer getHertsMessageProducer() {
+    public HertsProducer getHertsMessageProducer() {
         return this.producer;
     }
 
     @Override
-    public HertsMessageConsumer getHertsMessageConsumer() {
+    public HertsConsumer getHertsMessageConsumer() {
         return this.consumer;
     }
 }

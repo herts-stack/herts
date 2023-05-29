@@ -1,4 +1,4 @@
-package org.herts.common.context;
+package org.herts.common.modelx;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 /**
  * Herts http error response for internal message
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */

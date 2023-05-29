@@ -1,8 +1,8 @@
 package org.herts.example.common;
 
-import org.herts.common.context.HertsMsg;
+import org.herts.common.modelx.HertsRpcMsg;
 
-public class HelloRequest extends HertsMsg {
+public class HelloRequest extends HertsRpcMsg {
     private String key;
     private boolean isOk;
     private int number;
