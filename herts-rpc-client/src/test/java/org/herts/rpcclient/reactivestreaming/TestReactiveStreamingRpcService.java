@@ -2,7 +2,7 @@ package org.herts.rpcclient.reactivestreaming;
 
 import org.herts.common.annotation.HertsRpcService;
 import org.herts.common.context.HertsType;
-import org.herts.common.service.HertsReactiveService;
+import org.herts.common.reactive.HertsReactiveService;
 import org.herts.rpcclient.TestFoo;
 import org.herts.rpcclient.TestHoo;
 

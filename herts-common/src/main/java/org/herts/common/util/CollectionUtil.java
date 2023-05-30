@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 /**
  * Herts collection utility
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
@@ -14,9 +15,10 @@ public class CollectionUtil {
 
     /**
      * Find duplicate entry.
+     *
      * @param list List collection
+     * @param <T>  Generics
      * @return Set collection
-     * @param <T> Generics
      */
     public static <T> Set<T> findDuplicates(List<T> list) {
         Set<T> seen = new HashSet<>();

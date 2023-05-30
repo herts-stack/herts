@@ -1,7 +1,7 @@
 package org.herts.http;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.herts.common.context.HertsHttpErrorResponse;
+import org.herts.common.modelx.HertsHttpErrorResponse;
 import org.herts.common.exception.HertsInstanceException;
 import org.herts.common.exception.HertsInvalidBodyException;
 import org.herts.common.exception.http.HertsHttpErrorException;

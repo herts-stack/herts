@@ -10,7 +10,8 @@ import java.lang.annotation.Target;
 
 /**
  * Herts HertsRpcReceiver annotation.
- * If use HertsReactiveStreaming receiver, please set this annotation to interface
+ * If you use HertsReactiveStreaming receiver, please set this annotation to interface
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
@@ -21,6 +22,7 @@ public @interface HertsRpcReceiver {
 
     /**
      * HertsType. Default is Reactive
+     *
      * @return HertsType
      */
     HertsType value() default HertsType.Reactive;

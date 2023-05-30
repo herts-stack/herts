@@ -1,8 +1,8 @@
 package org.herts.rpcclient.reactivestreaming;
 
 import org.herts.rpc.engine.GrpcServerOption;
-import org.herts.rpc.engine.HertsRpcBuilder;
-import org.herts.rpc.engine.HertsRpcEngine;
+import org.herts.rpc.engine.HertsRpcServerEngineBuilder;
+import org.herts.rpc.engine.HertsRpcServerEngine;
 import org.herts.rpcclient.HertsRpcClient;
 import org.herts.rpcclient.HertsRpcClientBuilder;
 import org.herts.rpcclient.TestHoo;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class HertsReactiveStreamingRpcTest {
     private static final int port = 9999;
 
-    private static HertsRpcEngine engine;
+    private static HertsRpcServerEngine engine;
     private static HertsRpcClient client;
 
     @BeforeAll
@@ -27,7 +27,7 @@ public class HertsReactiveStreamingRpcTest {
                 TestReactiveStreamingRpcService service = new TestReactiveStreamingRpcServiceImpl();
                 GrpcServerOption option = new GrpcServerOption();
                 option.setPort(port);
-                engine = HertsRpcBuilder.builder(option)
+                engine = HertsRpcServerEngineBuilder.builder(option)
                         .registerHertsRpcService(service)
                         .build();
                 engine.start();

@@ -5,6 +5,7 @@ import java.util.logging.LogManager;
 /**
  * Herts logger
  * Wrapped java.util.logging.Logger
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
@@ -18,6 +19,7 @@ public class HertsLogger {
 
     /**
      * Get java.util.logging.Logger
+     *
      * @param loggerName logger name
      * @return java.util.logging.Logger
      */
@@ -30,6 +32,7 @@ public class HertsLogger {
      */
     public static class HertsLogManager extends LogManager {
         static HertsLogManager instance;
+
         public HertsLogManager() {
             instance = this;
         }

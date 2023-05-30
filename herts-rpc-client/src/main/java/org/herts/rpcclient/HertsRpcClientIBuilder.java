@@ -2,10 +2,12 @@ package org.herts.rpcclient;
 
 import io.grpc.Channel;
 import io.grpc.ClientInterceptor;
-import org.herts.common.service.HertsReceiver;
+import org.herts.common.reactive.HertsReceiver;
+import org.herts.rpcclient.modelx.GrpcClientOption;
 
 /**
  * Herts core client builder interface
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
@@ -13,6 +15,7 @@ public interface HertsRpcClientIBuilder {
 
     /**
      * Serure connection
+     *
      * @param isSecureConnection Secure
      * @return HertsCoreClientBuilder
      */
@@ -21,15 +24,23 @@ public interface HertsRpcClientIBuilder {
     /**
      * Herts interface service
      * Not implementation class. Required @HertsRpc annotation
+     *
      * @param serviceClass HertsService
      * @return HertsCoreClientBuilder
      */
     <T> HertsRpcClientIBuilder registerHertsRpcServiceInterface(Class<T> serviceClass);
 
+    /**
+     * Herts receiver service
+     *
+     * @param hertsReceiver HertsReceiver
+     * @return HertsRpcClientIBuilder
+     */
     HertsRpcClientIBuilder registerHertsRpcReceiver(HertsReceiver hertsReceiver);
 
     /**
      * Channel for gRPC
+     *
      * @param channel Channel
      * @return HertsCoreClientBuilder
      */
@@ -37,6 +48,7 @@ public interface HertsRpcClientIBuilder {
 
     /**
      * Herts interceptor
+     *
      * @param interceptor ClientInterceptor
      * @return HertsCoreClientBuilder
      */
@@ -44,6 +56,7 @@ public interface HertsRpcClientIBuilder {
 
     /**
      * gRPC option
+     *
      * @param option GrpcClientOption
      * @return HertsCoreClientBuilder
      */
@@ -51,6 +64,7 @@ public interface HertsRpcClientIBuilder {
 
     /**
      * Connect to server
+     *
      * @return HertsRpcClient
      */
     HertsRpcClient connect();

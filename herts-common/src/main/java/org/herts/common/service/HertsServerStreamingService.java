@@ -4,6 +4,7 @@ import org.herts.common.context.HertsType;
 
 /**
  * Herts server streaming service
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */

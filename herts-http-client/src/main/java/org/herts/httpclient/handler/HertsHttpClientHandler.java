@@ -1,12 +1,11 @@
 package org.herts.httpclient.handler;
 
-import org.herts.common.context.HertsHttpErrorResponse;
-import org.herts.common.context.HertsHttpRequest;
-import org.herts.common.context.HertsHttpResponse;
-import org.herts.common.context.Payload;
+import org.herts.common.modelx.HertsHttpErrorResponse;
+import org.herts.common.modelx.HertsHttpRequest;
+import org.herts.common.modelx.HertsHttpResponse;
+import org.herts.common.modelx.HertsHttpMsg;
 import org.herts.common.exception.HertsMessageException;
 import org.herts.common.exception.HertsServiceNotFoundException;
-import org.herts.common.exception.http.HertsHttpErrorException;
 import org.herts.common.serializer.HertsSerializeType;
 import org.herts.common.serializer.HertsSerializer;
 import org.herts.common.service.HertsService;
@@ -89,11 +88,11 @@ public class HertsHttpClientHandler implements InvocationHandler {
                 throw new HertsMessageException("Invalid herts method.");
             }
 
-            var payloads = new ArrayList<Payload>();
+            var payloads = new ArrayList<HertsHttpMsg>();
             IntStream.range(0, args.length).forEach(idx -> {
                 Object requestArg = args[idx];
                 Class<?> aClass = parameterTypes.get(idx);
-                var payload = new Payload();
+                var payload = new HertsHttpMsg();
                 payload.setKeyName("arg" + idx);
                 payload.setValue(requestArg);
                 payload.setClassInfo(aClass.getName());

@@ -4,13 +4,9 @@ import io.grpc.CallOptions;
 import io.grpc.Channel;
 import io.grpc.ClientCall;
 import io.grpc.ClientInterceptor;
-import io.grpc.ForwardingClientCallListener;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import io.grpc.ForwardingClientCall.SimpleForwardingClientCall;
-
-import static org.herts.common.context.HertsSystemContext.Header.CODE_VERSION;
-import static org.herts.common.context.HertsSystemContext.Header.HERTS_HEADER_KEY;
 
 public class HertsRpcClientInterceptBuilder implements ClientInterceptor {
     private final HertsRpcClientInterceptor interceptor;
@@ -54,13 +50,7 @@ public class HertsRpcClientInterceptBuilder implements ClientInterceptor {
                 if (interceptor != null) {
                     interceptor.setRequestMetadata(headers);
                 }
-                headers.put(HERTS_HEADER_KEY, CODE_VERSION);
-                super.start(new ForwardingClientCallListener.SimpleForwardingClientCallListener<>(responseListener) {
-                    @Override
-                    public void onHeaders(Metadata headers) {
-                        super.onHeaders(headers);
-                    }
-                }, headers);
+                super.start(responseListener, headers);
             }
         };
     }

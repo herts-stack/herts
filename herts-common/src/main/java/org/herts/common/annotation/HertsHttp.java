@@ -10,7 +10,8 @@ import java.lang.annotation.Target;
 
 /**
  * Herts HertsHttp annotation.
- * If use HertsHttp service, please set this annotation to interface
+ * If you use HertsHttp service, please set this annotation to interface
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
@@ -21,6 +22,7 @@ public @interface HertsHttp {
 
     /**
      * HertsType. Default is Http
+     *
      * @return HertsType
      */
     HertsType value() default HertsType.Http;

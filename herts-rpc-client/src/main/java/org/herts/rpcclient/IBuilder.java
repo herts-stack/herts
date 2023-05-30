@@ -1,12 +1,14 @@
 package org.herts.rpcclient;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.herts.common.annotation.HertsRpcService;
 import org.herts.common.context.HertsType;
+import org.herts.common.exception.HertsJsonProcessingException;
 import org.herts.common.exception.HertsNotSupportParameterTypeException;
 import org.herts.common.exception.HertsRpcClientBuildException;
-import org.herts.common.service.HertsReactiveStreamingInternal;
-import org.herts.common.service.HertsReceiver;
+import org.herts.common.reactive.HertsReactiveStreamingInternal;
+import org.herts.common.reactive.HertsReceiver;
+import org.herts.rpcclient.modelx.ClientConnection;
+import org.herts.rpcclient.modelx.GrpcClientOption;
 import org.herts.rpcclient.receiver.InternalReactiveReceiver;
 import org.herts.rpcclient.validator.HertsRpcClientValidator;
 
@@ -23,6 +25,7 @@ public class IBuilder implements HertsRpcClientIBuilder {
     private final List<HertsReceiver> hertsRpcReceivers = new ArrayList<>();
     private final String connectedHost;
     private final int serverPort;
+    private final ClientConnection clientConnection;
 
     private HertsType hertsType;
     private boolean isSecureConnection;
@@ -33,6 +36,7 @@ public class IBuilder implements HertsRpcClientIBuilder {
     public IBuilder(String connectedHost, int serverPort) {
         this.connectedHost = connectedHost;
         this.serverPort = serverPort;
+        this.clientConnection = ClientConnection.create();
     }
 
     @Override
@@ -120,9 +124,12 @@ public class IBuilder implements HertsRpcClientIBuilder {
         if (this.hertsType == HertsType.Reactive && this.hertsRpcReceivers.size() > 0) {
             for (HertsReceiver receiver : this.hertsRpcReceivers) {
                 try {
-                    new InternalReactiveReceiver(receiver).newHertsClientStreamingService(this.channel).registerReceiver(HertsReactiveStreamingInternal.class);
+                    InternalReactiveReceiver.create(receiver, this.clientConnection)
+                            .newHertsReactiveStreamingService(this.channel)
+                            .registerReceiver(HertsReactiveStreamingInternal.class);
+
                     Thread.sleep(500);
-                } catch (JsonProcessingException | InterruptedException e) {
+                } catch (HertsJsonProcessingException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -208,5 +215,9 @@ public class IBuilder implements HertsRpcClientIBuilder {
 
     public GrpcClientOption getOption() {
         return option;
+    }
+
+    public ClientConnection getClientConnection() {
+        return clientConnection;
     }
 }

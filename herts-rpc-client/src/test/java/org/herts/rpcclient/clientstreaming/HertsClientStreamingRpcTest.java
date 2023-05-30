@@ -3,8 +3,8 @@ package org.herts.rpcclient.clientstreaming;
 import io.grpc.stub.StreamObserver;
 
 import org.herts.rpc.engine.GrpcServerOption;
-import org.herts.rpc.engine.HertsRpcBuilder;
-import org.herts.rpc.engine.HertsRpcEngine;
+import org.herts.rpc.engine.HertsRpcServerEngineBuilder;
+import org.herts.rpc.engine.HertsRpcServerEngine;
 import org.herts.rpcclient.HertsRpcClient;
 import org.herts.rpcclient.HertsRpcClientBuilder;
 import org.herts.rpcclient.TestFoo;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class HertsClientStreamingRpcTest {
     private static final int port = 9999;
 
-    private static HertsRpcEngine engine;
+    private static HertsRpcServerEngine engine;
     private static HertsRpcClient client;
 
     @BeforeAll
@@ -32,7 +32,7 @@ public class HertsClientStreamingRpcTest {
             var t = new Thread(() -> {
                 GrpcServerOption option = new GrpcServerOption();
                 option.setPort(port);
-                engine = HertsRpcBuilder.builder(option)
+                engine = HertsRpcServerEngineBuilder.builder(option)
                         .registerHertsRpcService(new TestClientStreamingRpcServiceImpl())
                         .build();
                 engine.start();

@@ -26,9 +26,4 @@ public class HertsServiceBase<T> implements HertsService {
     public String[] getConnections() {
         return new String[0];
     }
-
-    @Override
-    public Class<?> getInterface() {
-        return (Class<?>) this.t;
-    }
 }

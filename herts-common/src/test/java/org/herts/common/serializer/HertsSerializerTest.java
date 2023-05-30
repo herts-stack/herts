@@ -1,17 +1,12 @@
 package org.herts.common.serializer;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.herts.common.context.HertsHttpRequest;
-import org.herts.common.context.Payload;
+import org.herts.common.modelx.HertsHttpRequest;
+import org.herts.common.modelx.HertsHttpMsg;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,8 +22,8 @@ public class HertsSerializerTest {
 
     @Test
     public void serializeAsStr() throws IOException {
-        List<Payload> payloads = new ArrayList<>();
-        Payload payload = new Payload();
+        List<HertsHttpMsg> payloads = new ArrayList<>();
+        HertsHttpMsg payload = new HertsHttpMsg();
         float value = 0.01f;
         payload.setClassInfo(float.class.getName());
         payload.setValue(value);

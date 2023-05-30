@@ -4,7 +4,7 @@ import org.herts.common.context.HertsType;
 import org.herts.common.descriptor.HertsGrpcDescriptor;
 import org.herts.common.exception.HertsServiceNotFoundException;
 import org.herts.common.exception.HertsStreamingResBodyException;
-import org.herts.common.context.HertsMsg;
+import org.herts.common.modelx.HertsRpcMsg;
 import org.herts.common.serializer.HertsSerializer;
 import org.herts.common.service.HertsService;
 
@@ -79,7 +79,7 @@ public class HertsRpcClientSStreamingMethodHandler extends io.grpc.stub.Abstract
             throw new HertsStreamingResBodyException("Streaming response observer body data is null");
         }
 
-        byte[] requestBytes = this.serializer.serialize(new HertsMsg(methodParameters, parameterTypes));
+        byte[] requestBytes = this.serializer.serialize(new HertsRpcMsg(methodParameters, parameterTypes));
         StreamObserver<Object> responseObserver = (StreamObserver<Object>) methodObservers.get(0);
         ClientCalls.asyncServerStreamingCall(getChannel().newCall(methodDescriptor, getCallOptions()), requestBytes, responseObserver);
         return proxy;

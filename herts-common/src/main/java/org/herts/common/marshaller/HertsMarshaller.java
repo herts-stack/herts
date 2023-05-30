@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 /**
  * Herts grpc marshaller
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */

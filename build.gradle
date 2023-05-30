@@ -8,6 +8,7 @@ subprojects {
     dependencies {
         // gprc
         implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+        implementation "io.grpc:grpc-services:${grpcVersion}"
         implementation "io.grpc:grpc-stub:${grpcVersion}"
         runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
 

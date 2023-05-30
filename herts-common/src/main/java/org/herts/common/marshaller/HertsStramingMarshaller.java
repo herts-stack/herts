@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 /**
  * Herts grpc steaming marshaller
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */

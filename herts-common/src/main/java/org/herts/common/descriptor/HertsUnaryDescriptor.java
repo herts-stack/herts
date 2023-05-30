@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * Herts gRPC unary descriptor.
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
@@ -24,6 +25,7 @@ public class HertsUnaryDescriptor {
 
     /**
      * Factory method.
+     *
      * @param serviceDescriptor HertsService descriptor
      * @param methodDescriptors HertsService method descriptor
      * @return HertsUnaryDescriptor

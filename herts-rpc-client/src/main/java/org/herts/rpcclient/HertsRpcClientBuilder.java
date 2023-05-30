@@ -5,6 +5,7 @@ import org.herts.rpcclient.handler.HertsRpcClientRStreamingMethodHandler;
 import org.herts.rpcclient.handler.HertsRpcClientUMethodHandler;
 import org.herts.rpcclient.handler.HertsRpcClientBStreamingMethodHandler;
 import org.herts.rpcclient.handler.HertsRpcClientSStreamingMethodHandler;
+import org.herts.rpcclient.modelx.ClientConnection;
 import org.herts.common.context.HertsType;
 import org.herts.common.exception.HertsChannelIsNullException;
 import org.herts.common.exception.HertsRpcClientBuildException;
@@ -24,6 +25,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
     private final boolean isSecureConnection;
     private final List<Class<?>> registeredIfServices;
     private final Channel channel;
+    private final ClientConnection clientConnection;
 
     public HertsRpcClientBuilder(IBuilder builder) {
         this.connectedHost = builder.getConnectedHost();
@@ -31,6 +33,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
         this.channel = builder.getChannel();
         this.registeredIfServices = builder.getHertsRpcServices();
         this.hertsType = builder.getHertsType();
+        this.clientConnection = builder.getClientConnection();
     }
 
     public static IBuilder builder(String connectedHost, int serverPort) {
@@ -61,6 +64,11 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
     }
 
     @Override
+    public ClientConnection getClientConnection() {
+        return this.clientConnection;
+    }
+
+    @Override
     public <T extends HertsService> T createHertsRpcService(Class<T> interfaceType) {
         if (!interfaceType.isInterface()) {
             throw new HertsRpcClientBuildException(interfaceType.getSimpleName() + " is not interface. You can create client by interface");
@@ -81,38 +89,45 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
 
         switch (this.hertsType) {
             case Unary -> {
-                var unary = newHertsBlockingService(channel, interfaceType);
+                var unary = newHertsBlockingService(this.channel, interfaceType, this.clientConnection);
                 return (T) generateService(unary, interfaceType);
             }
             case BidirectionalStreaming -> {
-                var streaming = newHertsBidirectionalStreamingService(channel, interfaceType);
+                var streaming = newHertsBidirectionalStreamingService(this.channel, interfaceType, this.clientConnection);
                 return (T) generateService(streaming, interfaceType);
             }
             case ServerStreaming -> {
-                var serverStreaming = newHertsServerStreamingService(channel, interfaceType);
+                var serverStreaming = newHertsServerStreamingService(this.channel, interfaceType, this.clientConnection);
                 return (T) generateService(serverStreaming, interfaceType);
             }
             case ClientStreaming -> {
-                var clientStreaming = newHertsClientStreamingService(channel, interfaceType);
+                var clientStreaming = newHertsClientStreamingService(this.channel, interfaceType, this.clientConnection);
                 return (T) generateService(clientStreaming, interfaceType);
             }
             case Reactive -> {
-                var reactiveStreaming = newHertsBlockingService(channel, interfaceType);
+                var reactiveStreaming = newHertsBlockingService(this.channel, interfaceType, this.clientConnection);
                 return (T) generateService(reactiveStreaming, interfaceType);
             }
-            default ->
-                    throw new HertsTypeInvalidException("Undefined Hert core type. HertsCoreType" + this.hertsType);
+            default -> throw new HertsTypeInvalidException("Undefined Hert core type. HertsCoreType" + this.hertsType);
         }
     }
 
     private HertsService generateService(InvocationHandler handler, Class<?> classType) {
         return (HertsService) Proxy.newProxyInstance(
                 classType.getClassLoader(),
-                new Class<?>[]{ classType },
+                new Class<?>[]{classType},
                 handler);
     }
 
-    private static HertsRpcClientUMethodHandler newHertsBlockingService(Channel channel, Class<?> hertsRpcService) {
+    /**
+     * Herts stub creation.
+     * Herts Rpc Unary Method Handler
+     *
+     * @param channel Channel
+     * @param hertsRpcService HertsService
+     * @return HertsRpcClientUMethodHandler
+     */
+    private static HertsRpcClientUMethodHandler newHertsBlockingService(Channel channel, Class<?> hertsRpcService, ClientConnection clientConnection) {
         io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientUMethodHandler> factory =
                 new io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientUMethodHandler>() {
                     @java.lang.Override
@@ -120,10 +135,20 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
                         return new HertsRpcClientUMethodHandler(channel, callOptions, hertsRpcService);
                     }
                 };
-        return HertsRpcClientUMethodHandler.newStub(factory, channel);
+        return HertsRpcClientUMethodHandler.newStub(factory, channel).withCallCredentials(clientConnection);
     }
 
-    private static HertsRpcClientBStreamingMethodHandler newHertsBidirectionalStreamingService(Channel channel, Class<?> hertsRpcService) {
+    /**
+     * Herts stub creation.
+     * Herts Rpc Bidirectional Streaming Method Handler
+     *
+     * @param channel Channel
+     * @param hertsRpcService HertsService
+     * @return HertsRpcClientBStreamingMethodHandler
+     */
+    private static HertsRpcClientBStreamingMethodHandler newHertsBidirectionalStreamingService(
+            Channel channel, Class<?> hertsRpcService, ClientConnection clientConnection) {
+
         io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientBStreamingMethodHandler> factory =
                 new io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientBStreamingMethodHandler>() {
                     @java.lang.Override
@@ -131,10 +156,20 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
                         return new HertsRpcClientBStreamingMethodHandler(channel, callOptions, hertsRpcService);
                     }
                 };
-        return HertsRpcClientBStreamingMethodHandler.newStub(factory, channel);
+        return HertsRpcClientBStreamingMethodHandler.newStub(factory, channel).withCallCredentials(clientConnection);
     }
 
-    private static HertsRpcClientSStreamingMethodHandler newHertsServerStreamingService(Channel channel, Class<?> hertsRpcService) {
+    /**
+     * Herts stub creation.
+     * Herts Rpc Server Streaming Method Handler
+     *
+     * @param channel Channel
+     * @param hertsRpcService HertsService
+     * @return HertsRpcClientSStreamingMethodHandler
+     */
+    private static HertsRpcClientSStreamingMethodHandler newHertsServerStreamingService(
+            Channel channel, Class<?> hertsRpcService, ClientConnection clientConnection) {
+
         io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientSStreamingMethodHandler> factory =
                 new io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientSStreamingMethodHandler>() {
                     @java.lang.Override
@@ -142,10 +177,20 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
                         return new HertsRpcClientSStreamingMethodHandler(channel, callOptions, hertsRpcService);
                     }
                 };
-        return HertsRpcClientSStreamingMethodHandler.newStub(factory, channel);
+        return HertsRpcClientSStreamingMethodHandler.newStub(factory, channel).withCallCredentials(clientConnection);
     }
 
-    private static HertsRpcClientCStreamingMethodHandler newHertsClientStreamingService(Channel channel, Class<?> hertsRpcService) {
+    /**
+     * Herts stub creation.
+     * Herts Rpc Client Streaming Method Handler
+     *
+     * @param channel Channel
+     * @param hertsRpcService HertsService
+     * @return HertsRpcClientRStreamingMethodHandler
+     */
+    private static HertsRpcClientCStreamingMethodHandler newHertsClientStreamingService(
+            Channel channel, Class<?> hertsRpcService, ClientConnection clientConnection) {
+
         io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientCStreamingMethodHandler> factory =
                 new io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientCStreamingMethodHandler>() {
                     @java.lang.Override
@@ -153,10 +198,20 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
                         return new HertsRpcClientCStreamingMethodHandler(channel, callOptions, hertsRpcService);
                     }
                 };
-        return HertsRpcClientCStreamingMethodHandler.newStub(factory, channel);
+        return HertsRpcClientCStreamingMethodHandler.newStub(factory, channel).withCallCredentials(clientConnection);
     }
 
-    private static HertsRpcClientRStreamingMethodHandler newHertsReactiveStreamingService(Channel channel, Class<?> hertsRpcService) {
+    /**
+     * Herts stub creation.
+     * Herts Rpc Client Reactive Streaming Method Handler
+     *
+     * @param channel Channel
+     * @param hertsRpcService HertsService
+     * @return HertsRpcClientRStreamingMethodHandler
+     */
+    private static HertsRpcClientRStreamingMethodHandler newHertsReactiveStreamingService(
+            Channel channel, Class<?> hertsRpcService, ClientConnection clientConnection) {
+
         io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientRStreamingMethodHandler> factory =
                 new io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientRStreamingMethodHandler>() {
                     @java.lang.Override
@@ -164,6 +219,6 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
                         return new HertsRpcClientRStreamingMethodHandler(channel, callOptions, hertsRpcService);
                     }
                 };
-        return HertsRpcClientRStreamingMethodHandler.newStub(factory, channel);
+        return HertsRpcClientRStreamingMethodHandler.newStub(factory, channel).withCallCredentials(clientConnection);
     }
 }

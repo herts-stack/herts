@@ -2,6 +2,7 @@ package org.herts.common.exception.http;
 
 /**
  * Herts http error
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
@@ -64,6 +65,7 @@ public class HertsHttpErrorException extends RuntimeException {
         Status511("511");
 
         private final String value;
+
         StatusCode(final String value) {
             this.value = value;
         }

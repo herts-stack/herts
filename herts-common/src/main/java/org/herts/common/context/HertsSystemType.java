@@ -1,7 +1,8 @@
 package org.herts.common.context;
 
 /**
- *  Herts system type
+ * Herts system type
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
