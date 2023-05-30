@@ -1,4 +1,4 @@
-package org.herts.rpcclient;
+package org.herts.rpcclient.modelx;
 
 /**
  * Herts core client gRPC option

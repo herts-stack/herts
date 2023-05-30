@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 @HertsRpcReceiver
-public interface ReactiveStreamingReceiver extends HertsReceiver {
+public interface IntegrationTestRsReceiver extends HertsReceiver {
     void onReceivedHello01();
 
     void onReceivedHello02(String a, int b);

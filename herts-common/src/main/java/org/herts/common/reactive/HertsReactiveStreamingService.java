@@ -52,7 +52,7 @@ public class HertsReactiveStreamingService<T, K> extends HertsReactiveStreamingS
     }
 
     @Override
-    public void registerReceiver(HertsClientInfo clientInfo, StreamObserver<Object> objectStreamObservers) {
-        this.getBroadCaster().registerReceiver(clientInfo, objectStreamObservers);
+    public void registerReceiver(StreamObserver<Object> objectStreamObservers) {
+        this.getBroadCaster().registerReceiver(objectStreamObservers);
     }
 }

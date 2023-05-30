@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class ReactiveStreamingReceiverImpl implements ReactiveStreamingReceiver {
-    private static final Logger logger = HertsLogger.getLogger(ReactiveStreamingReceiverImpl.class.getSimpleName());
+public class IntegrationTestRsReceiverImpl implements IntegrationTestRsReceiver {
+    private static final Logger logger = HertsLogger.getLogger(IntegrationTestRsReceiverImpl.class.getSimpleName());
 
     @Override
     public void onReceivedHello01() {

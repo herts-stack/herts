@@ -5,8 +5,8 @@ import org.herts.common.context.HertsMetricsSetting;
 import org.herts.e2etest.common.Constant;
 import org.herts.e2etest.common.GrpcServerInterceptor;
 import org.herts.rpc.HertsRpcInterceptBuilder;
-import org.herts.rpc.engine.HertsRpcBuilder;
-import org.herts.rpc.engine.HertsRpcEngineBuilder;
+import org.herts.rpc.engine.HertsRpcServerEngineBuilder;
+import org.herts.rpc.engine.HertsRpcServer;
 
 public class BiStreamingServer {
 
@@ -15,7 +15,7 @@ public class BiStreamingServer {
         var interceptor = HertsRpcInterceptBuilder.builder(new GrpcServerInterceptor()).build();
         var service = new BidirectionalStreamingServiceImpl();
 
-        HertsRpcEngineBuilder engineBuilder = HertsRpcBuilder.builder(Constant.getGrpcServerOption())
+        HertsRpcServer engineBuilder = HertsRpcServerEngineBuilder.builder(Constant.getGrpcServerOption())
                 .registerHertsRpcService(service, interceptor)
                 .enableMetrics(metrics);
 

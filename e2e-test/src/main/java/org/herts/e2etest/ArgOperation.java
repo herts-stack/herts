@@ -30,6 +30,16 @@ public class ArgOperation {
         }
         return true;
     }
+    public static String[] testTypes = new String[]{
+            "integration", "reactive_queue"
+    };
+    public static boolean isTestTypeOk(String arg) {
+        if (!arg.equals(testTypes[0]) &&
+                !arg.equals(testTypes[1])) {
+            return false;
+        }
+        return true;
+    }
 
     public static HertsType convert(String arg) {
         if (arg.equals(allowedHertsTypes[0])) {

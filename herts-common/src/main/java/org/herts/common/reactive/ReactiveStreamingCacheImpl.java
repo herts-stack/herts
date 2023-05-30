@@ -16,13 +16,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ReactiveStreamingCacheImpl implements ReactiveStreamingCache {
     private volatile ConcurrentHashMap<String, HertsReceiverInfo> receivers;
     private volatile ConcurrentHashMap<String, StreamObserver<Object>> observers;
-    private volatile ConcurrentHashMap<String, HertsClientInfo> clientInfo;
+    private volatile ConcurrentHashMap<String, String> clientId;
     private static ReactiveStreamingCacheImpl thisClass;
 
     private ReactiveStreamingCacheImpl() {
         this.receivers = new ConcurrentHashMap<>();
         this.observers = new ConcurrentHashMap<>();
-        this.clientInfo = new ConcurrentHashMap<>();
+        this.clientId = new ConcurrentHashMap<>();
     }
 
     /**
@@ -55,18 +55,18 @@ public class ReactiveStreamingCacheImpl implements ReactiveStreamingCache {
     }
 
     @Override
-    public void setClientInfo(HertsClientInfo clientInfo) {
-        this.clientInfo.put(clientInfo.id, clientInfo);
+    public void setClientId(String clientId) {
+        this.clientId.put(clientId, clientId);
     }
 
     @Override
-    public HertsClientInfo getClientInfo(String clientId) {
-        return this.clientInfo.get(clientId);
+    public String getClientId(String clientId) {
+        return this.clientId.get(clientId);
     }
 
     @Override
     public String[] getClientIds() {
-        return this.clientInfo.keySet().toArray(new String[0]);
+        return this.clientId.keySet().toArray(new String[0]);
     }
 
     @Override

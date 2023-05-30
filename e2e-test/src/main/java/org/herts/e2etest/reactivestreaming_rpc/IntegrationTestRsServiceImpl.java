@@ -9,10 +9,10 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class ReactiveStreamingServiceImpl extends HertsReactiveStreamingService<ReactiveStreamingService, ReactiveStreamingReceiver> implements ReactiveStreamingService {
-    private static final Logger logger = HertsLogger.getLogger(ReactiveStreamingServiceImpl.class.getSimpleName());
+public class IntegrationTestRsServiceImpl extends HertsReactiveStreamingService<IntegrationTestRsService, IntegrationTestRsReceiver> implements IntegrationTestRsService {
+    private static final Logger logger = HertsLogger.getLogger(IntegrationTestRsServiceImpl.class.getSimpleName());
 
-    public ReactiveStreamingServiceImpl() {
+    public IntegrationTestRsServiceImpl() {
     }
 
     @Override

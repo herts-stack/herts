@@ -9,11 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class HertsRpcBuilderTest {
-    private static HertsRpcEngine engine;
+    private static HertsRpcServerEngine engine;
 
     @BeforeAll
     static void init() {
-        engine = HertsRpcBuilder.builder()
+        engine = HertsRpcServerEngineBuilder.builder()
                 .registerHertsRpcService(new TestUnaryServiceImpl())
                 .build();
     }

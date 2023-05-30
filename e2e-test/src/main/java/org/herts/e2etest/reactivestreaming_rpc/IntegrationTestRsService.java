@@ -9,7 +9,7 @@ import org.herts.e2etest.common.HelloResponse01;
 import java.util.Map;
 
 @HertsRpcService(value = HertsType.Reactive)
-public interface ReactiveStreamingService extends HertsReactiveService {
+public interface IntegrationTestRsService extends HertsReactiveService {
     void hello01();
     void hello02(String id);
     Map<String, String> hello03(HelloRequest req);

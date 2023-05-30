@@ -50,7 +50,7 @@ public class HertsHttpCallerBase {
     }
 
     public void setHertsHeader(HttpServletResponse response) {
-        response.setHeader(HertsSystemContext.Header.HERTS_CONTEXT_KEY, HertsSystemContext.Header.CODE_VERSION);
+        response.setHeader(HertsSystemContext.Header.HERTS_CONTEXT_VERSION, HertsSystemContext.Header.CODE_VERSION);
         response.setHeader(HertsSystemContext.Header.HERTS_SERVER_KEY, HertsSystemContext.Header.HERTS_SERVER_VAL);
     }
 

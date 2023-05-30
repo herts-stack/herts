@@ -3,19 +3,19 @@ package org.herts.e2etest.reactivestreaming_rpc.server;
 import org.herts.common.context.HertsMetricsSetting;
 import org.herts.e2etest.common.Constant;
 import org.herts.e2etest.common.GrpcServerInterceptor;
-import org.herts.e2etest.reactivestreaming_rpc.ReactiveStreamingServiceImpl;
+import org.herts.e2etest.reactivestreaming_rpc.IntegrationTestRsServiceImpl;
 import org.herts.rpc.HertsRpcInterceptBuilder;
-import org.herts.rpc.engine.HertsRpcBuilder;
-import org.herts.rpc.engine.HertsRpcEngineBuilder;
+import org.herts.rpc.engine.HertsRpcServerEngineBuilder;
+import org.herts.rpc.engine.HertsRpcServer;
 
-public class ReactiveStreamingServer {
+public class IntegrationTestRsServer {
 
     public static void run() {
         var metrics = HertsMetricsSetting.builder().isRpsEnabled(true).isLatencyEnabled(true).build();
         var interceptor = HertsRpcInterceptBuilder.builder(new GrpcServerInterceptor()).build();
-        var service = new ReactiveStreamingServiceImpl();
+        var service = new IntegrationTestRsServiceImpl();
 
-        HertsRpcEngineBuilder engineBuilder = HertsRpcBuilder.builder(Constant.getGrpcServerOption())
+        HertsRpcServer engineBuilder = HertsRpcServerEngineBuilder.builder(Constant.getGrpcServerOption())
                 .registerHertsRpcService(service, interceptor)
                 .enableMetrics(metrics);
 

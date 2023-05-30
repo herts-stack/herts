@@ -6,6 +6,7 @@ import org.herts.common.loadbalancing.HertsBroker;
 
 /**
  * HertsBroadCaster for internal reactive streaming.
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
@@ -13,6 +14,7 @@ public interface HertsBroadCaster {
     /**
      * Get Broadcast receiver interface.
      * The receiver is what you add K in HertsReactiveStreamingService
+     *
      * @param clientId ClientId
      * @return Receiver interface
      */
@@ -20,19 +22,21 @@ public interface HertsBroadCaster {
 
     /**
      * Register receiver for internal processing.
-     * @param clientInfo ClientInfo
+     *
      * @param objectStreamObservers StreamObserver
      */
-    void registerReceiver(HertsClientInfo clientInfo, StreamObserver<Object> objectStreamObservers);
+    void registerReceiver(StreamObserver<Object> objectStreamObservers);
 
     /**
      * Set HertsService.
+     *
      * @param service HertsService implementation
      */
     void setService(Class<?> service);
 
     /**
      * Set HertsReceiver
+     *
      * @param receiver HertsReceiver implementation
      */
     void setReceiver(Class<?> receiver);
@@ -46,18 +50,21 @@ public interface HertsBroadCaster {
 
     /**
      * Get HertsService
+     *
      * @return HertsService
      */
     Class<?> getService();
 
     /**
      * Get HertsReceiver
+     *
      * @return HertsReceiver
      */
     Class<?> getReceiver();
 
     /**
      * Get Client id
+     *
      * @return ClientId
      */
     String getClientId();

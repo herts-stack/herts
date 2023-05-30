@@ -8,7 +8,7 @@ import org.herts.e2etest.unary_rpc.UnaryServiceImpl01;
 import org.herts.e2etest.unary_rpc.UnaryServiceImpl02;
 import org.herts.common.context.HertsMetricsSetting;
 import org.herts.rpc.HertsRpcInterceptBuilder;
-import org.herts.rpc.engine.HertsRpcBuilder;
+import org.herts.rpc.engine.HertsRpcServerEngineBuilder;
 
 public class UnaryServer {
     public static void run() {
@@ -21,7 +21,7 @@ public class UnaryServer {
         UnaryRpcService01 service01 = new UnaryServiceImpl01();
         UnaryRpcService02 service02 = new UnaryServiceImpl02();
 
-        var engine = HertsRpcBuilder.builder(Constant.getGrpcServerOption())
+        var engine = HertsRpcServerEngineBuilder.builder(Constant.getGrpcServerOption())
                 .registerHertsRpcService(service01, interceptor)
                 .registerHertsRpcService(service02, interceptor)
                 .enableMetrics(metrics)

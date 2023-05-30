@@ -35,10 +35,12 @@ public class BaseCaller {
         if (((byte[]) request).length > 0) {
             HertsRpcMsg deserialized = this.hertsSerializer.deserialize((byte[]) request, HertsRpcMsg.class);
             var index = 0;
-            for (Object obj : deserialized.getMessageParameters()) {
-                var castType = deserialized.getClassTypes()[index];
-                this.requests[index] = this.hertsSerializer.convert(obj, castType);
-                index++;
+            if (deserialized.getMessageParameters() != null) {
+                for (Object obj : deserialized.getMessageParameters()) {
+                    var castType = deserialized.getClassTypes()[index];
+                    this.requests[index] = this.hertsSerializer.convert(obj, castType);
+                    index++;
+                }
             }
         }
     }

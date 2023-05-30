@@ -27,8 +27,8 @@ import java.util.logging.Logger;
  * @author Herts Contributer
  * @version 1.0.0
  */
-public class HertsRpcBuilder implements HertsRpcEngine {
-    private static final Logger logger = HertsLogger.getLogger(HertsRpcBuilder.class.getSimpleName());
+public class HertsRpcServerEngineBuilder implements HertsRpcServerEngine {
+    private static final Logger logger = HertsLogger.getLogger(HertsRpcServerEngineBuilder.class.getSimpleName());
 
     private final Map<BindableService, ServerInterceptor> services;
     private final List<HertsType> hertsTypes;
@@ -39,7 +39,7 @@ public class HertsRpcBuilder implements HertsRpcEngine {
 
     private Server server;
 
-    public HertsRpcBuilder(ServerBuildInfo serverBuildInfo) {
+    public HertsRpcServerEngineBuilder(ServerBuildInfo serverBuildInfo) {
         this.option = serverBuildInfo.getOption();
         this.credentials = serverBuildInfo.getCredentials();
         this.hertsTypes = serverBuildInfo.getHertsTypes();
@@ -48,12 +48,12 @@ public class HertsRpcBuilder implements HertsRpcEngine {
         this.hertsShutdownHook = serverBuildInfo.getHook();
     }
 
-    public static HertsRpcEngineBuilder builder() {
-        return new org.herts.rpc.engine.ServerBuilder();
+    public static HertsRpcServer builder() {
+        return new HertsRpcServerBuilder();
     }
 
-    public static HertsRpcEngineBuilder builder(GrpcServerOption option) {
-        return new org.herts.rpc.engine.ServerBuilder(option);
+    public static HertsRpcServer builder(GrpcServerOption option) {
+        return new HertsRpcServerBuilder(option);
     }
 
     @Override
@@ -96,6 +96,9 @@ public class HertsRpcBuilder implements HertsRpcEngine {
             if (this.option.getMaxConnectionIdleMilliSec() != null) {
                 serverBuilder = serverBuilder.maxConnectionIdle(this.option.getMaxConnectionIdleMilliSec(), TimeUnit.MILLISECONDS);
             }
+
+            serverBuilder = serverBuilder.maxInboundMessageSize(12000000);
+            serverBuilder = serverBuilder.maxInboundMetadataSize(12000000);
 
             CompletableFuture.supplyAsync(() -> {
                 try {

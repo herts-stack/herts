@@ -8,42 +8,49 @@ import io.grpc.stub.ClientCalls;
 import io.grpc.stub.StreamObserver;
 
 import org.herts.common.exception.HertsJsonProcessingException;
-import org.herts.common.modelx.HertsClientInfo;
 import org.herts.common.modelx.HertsRpcMsg;
 import org.herts.common.context.HertsType;
 import org.herts.common.descriptor.HertsGrpcDescriptor;
 import org.herts.common.serializer.HertsSerializer;
 import org.herts.common.reactive.HertsReceiver;
+import org.herts.rpcclient.modelx.ClientConnection;
 
 import java.lang.reflect.Method;
-import java.util.UUID;
 
 /**
  * Internal reactive receiver
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
 public class InternalReactiveReceiver {
 
     private final HertsReceiver hertsReceiver;
+    private final ClientConnection clientConnection;
 
-    public InternalReactiveReceiver(HertsReceiver hertsReceiver) {
+    private InternalReactiveReceiver(HertsReceiver hertsReceiver, ClientConnection clientConnection) {
         this.hertsReceiver = hertsReceiver;
+        this.clientConnection = clientConnection;
+    }
+
+    public static InternalReactiveReceiver create(HertsReceiver hertsReceiver, ClientConnection clientConnection) {
+        return new InternalReactiveReceiver(hertsReceiver, clientConnection);
     }
 
     /**
      * Create InternalReceiverStub.
+     *
      * @param channel Grpc Channel
      * @return InternalReceiverStub
      */
-    public InternalReceiverStub newHertsClientStreamingService(Channel channel) {
+    public InternalReceiverStub newHertsReactiveStreamingService(Channel channel) {
         io.grpc.stub.AbstractStub.StubFactory<InternalReceiverStub> factory = new AbstractStub.StubFactory<>() {
             @Override
             public InternalReceiverStub newStub(Channel channel, CallOptions callOptions) {
                 return new InternalReceiverStub(channel, callOptions, hertsReceiver);
             }
         };
-        return InternalReceiverStub.newStub(factory, channel);
+        return InternalReceiverStub.newStub(factory, channel).withCallCredentials(this.clientConnection);
     }
 
     /**
@@ -65,6 +72,7 @@ public class InternalReactiveReceiver {
 
         /**
          * Register receiver to server.
+         *
          * @param streaming Class
          */
         public void registerReceiver(Class<?> streaming) throws HertsJsonProcessingException {
@@ -74,13 +82,9 @@ public class InternalReactiveReceiver {
             MethodDescriptor<Object, Object> methodDescriptor = HertsGrpcDescriptor
                     .generateStramingMethodDescriptor(HertsType.ServerStreaming, serviceName, method.getName());
 
-            var clientInfo = new HertsClientInfo();
-            clientInfo.setId(UUID.randomUUID().toString());
             StreamObserver<Object> responseObserver = new InternalReactiveObserver(this.hertsReceiver);
 
-            Object[] methodParameters = new Object[1];
-            methodParameters[0] = clientInfo;
-
+            Object[] methodParameters = new Object[0];
             Class<?>[] parameterTypes = new Class<?>[1];
             parameterTypes[0] = method.getParameterTypes()[0];
 

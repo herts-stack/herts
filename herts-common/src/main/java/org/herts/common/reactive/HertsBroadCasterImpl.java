@@ -1,7 +1,6 @@
 package org.herts.common.reactive;
 
 import io.grpc.stub.StreamObserver;
-import org.herts.common.modelx.HertsClientInfo;
 import org.herts.common.context.HertsSystemContext;
 import org.herts.common.loadbalancing.HertsBroker;
 import org.herts.common.modelx.HertsReceiverInfo;
@@ -23,7 +22,6 @@ public class HertsBroadCasterImpl implements HertsBroadCaster {
     private HertsBroker broker;
     private Class<?> service;
     private Class<?> receiver;
-    private String clientId;
 
     public HertsBroadCasterImpl() {
     }
@@ -34,17 +32,17 @@ public class HertsBroadCasterImpl implements HertsBroadCaster {
     }
 
     @Override
-    public void registerReceiver(HertsClientInfo clientInfo, StreamObserver<Object> objectStreamObservers) {
-        this.reactiveStreamingCache.setClientInfo(clientInfo);
-        this.reactiveStreamingCache.setObserver(clientInfo.id, objectStreamObservers);
+    public void registerReceiver(StreamObserver<Object> objectStreamObservers) {
+        var clientId = HertsSystemContext.Header.HERTS_CONNECTION_ID_CTX.get();
+        this.reactiveStreamingCache.setClientId(clientId);
+        this.reactiveStreamingCache.setObserver(clientId, objectStreamObservers);
         objectStreamObservers.onNext(Collections.singletonList(HertsSystemContext.Rpc.REGISTERED_METHOD_NAME));
-        this.clientId = clientInfo.id;
-        createReceiver(clientInfo.id);
+        createReceiver(clientId);
     }
 
     @Override
     public String getClientId() {
-        return this.clientId;
+        return HertsSystemContext.Header.HERTS_CONNECTION_ID_CTX.get();
     }
 
     @Override

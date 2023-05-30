@@ -53,7 +53,7 @@ import java.util.logging.Logger;
  * @author Herts Contributer
  * @version 1.0.0
  */
-public class ServerBuilder implements HertsRpcEngineBuilder {
+public class HertsRpcServerBuilder implements HertsRpcServer {
     private final Map<BindableService, ServerInterceptor> services = new HashMap<>();
     private final List<HertsType> hertsTypes = new ArrayList<>();
     private final List<HertsService> hertsRpcServices = new ArrayList<>();
@@ -65,11 +65,11 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
     private HertsMetrics hertsMetrics;
     private HertsRpcServerShutdownHook hook;
 
-    public ServerBuilder() {
+    public HertsRpcServerBuilder() {
         this.option = new GrpcServerOption();
     }
 
-    public ServerBuilder(GrpcServerOption option) {
+    public HertsRpcServerBuilder(GrpcServerOption option) {
         this.option = option;
     }
 
@@ -91,7 +91,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
     }
 
     @Override
-    public HertsRpcEngineBuilder registerHertsRpcService(HertsReactiveService hertsReactiveService, @Nullable ServerInterceptor interceptor) {
+    public HertsRpcServer registerHertsRpcService(HertsReactiveService hertsReactiveService, @Nullable ServerInterceptor interceptor) {
         if (hertsReactiveService.getClass().getInterfaces().length == 0) {
             throw new HertsRpcBuildException("You need to define interface on " + hertsReactiveService.getClass().getName());
         }
@@ -110,7 +110,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
     }
 
     @Override
-    public HertsRpcEngineBuilder registerHertsRpcService(HertsReactiveService hertsReactiveService) {
+    public HertsRpcServer registerHertsRpcService(HertsReactiveService hertsReactiveService) {
         if (hertsReactiveService.getClass().getInterfaces().length == 0) {
             throw new HertsRpcBuildException("You need to define interface on " + hertsReactiveService.getClass().getName());
         }
@@ -123,7 +123,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
     }
 
     @Override
-    public HertsRpcEngineBuilder registerHertsRpcService(HertsService hertsRpcService, @Nullable ServerInterceptor interceptor) {
+    public HertsRpcServer registerHertsRpcService(HertsService hertsRpcService, @Nullable ServerInterceptor interceptor) {
         this.hertsRpcServices.add(hertsRpcService);
         BindableService bindableService = createBindableService(hertsRpcService);
         if (interceptor == null) {
@@ -135,7 +135,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
     }
 
     @Override
-    public HertsRpcEngineBuilder registerHertsRpcService(HertsService hertsRpcService) {
+    public HertsRpcServer registerHertsRpcService(HertsService hertsRpcService) {
         this.hertsRpcServices.add(hertsRpcService);
         BindableService bindableService = createBindableService(hertsRpcService);
         this.services.put(bindableService, HertsRpcInterceptBuilder.builder(HertsEmptyRpcInterceptor.create()).build());
@@ -143,26 +143,26 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
     }
 
     @Override
-    public HertsRpcEngineBuilder addShutdownHook(HertsRpcServerShutdownHook hook) {
+    public HertsRpcServer addShutdownHook(HertsRpcServerShutdownHook hook) {
         this.hook = hook;
         return this;
     }
 
     @Override
-    public HertsRpcEngineBuilder loadBalancingType(LoadBalancingType loadBalancingType, @Nullable String connectionInfo) {
+    public HertsRpcServer loadBalancingType(LoadBalancingType loadBalancingType, @Nullable String connectionInfo) {
         this.loadBalancingType = loadBalancingType;
         this.connectionInfo = connectionInfo;
         return this;
     }
 
     @Override
-    public HertsRpcEngineBuilder secure(ServerCredentials credentials) {
+    public HertsRpcServer secure(ServerCredentials credentials) {
         this.credentials = credentials;
         return this;
     }
 
     @Override
-    public HertsRpcEngineBuilder enableMetrics(HertsMetricsSetting metricsSetting) {
+    public HertsRpcServer enableMetrics(HertsMetricsSetting metricsSetting) {
         if (this.hertsRpcServices.size() == 0) {
             throw new HertsRpcBuildException("Please call addService before call enableMetrics");
         }
@@ -173,7 +173,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
     }
 
     @Override
-    public HertsRpcEngineBuilder addCustomService(BindableService grpcService, HertsType hertsType, @Nullable ServerInterceptor interceptor) {
+    public HertsRpcServer addCustomService(BindableService grpcService, HertsType hertsType, @Nullable ServerInterceptor interceptor) {
         if (grpcService == null) {
             throw new HertsRpcBuildException("HertsService arg is null");
         }
@@ -183,7 +183,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
     }
 
     @Override
-    public HertsRpcEngine build() {
+    public HertsRpcServerEngine build() {
         if (this.hertsTypes.size() == 0 || this.services.size() == 0) {
             throw new HertsRpcBuildException("Please register HertsCoreService");
         }
@@ -228,7 +228,7 @@ public class ServerBuilder implements HertsRpcEngineBuilder {
         }
 
         var buildInfo = new ServerBuildInfo(this.services, this.hertsTypes, this.option, this.credentials, this.hertsMetricsServer, this.hook);
-        return new HertsRpcBuilder(buildInfo);
+        return new HertsRpcServerEngineBuilder(buildInfo);
     }
 
     private BindableService createBindableReceiver(HertsReactiveService hertsReactiveService) {

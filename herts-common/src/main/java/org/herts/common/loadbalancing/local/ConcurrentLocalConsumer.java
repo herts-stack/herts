@@ -28,7 +28,7 @@ public class ConcurrentLocalConsumer implements HertsConsumer {
     }
 
     @Override
-    public void receive(byte[] payload) {
+    public synchronized void receive(byte[] payload) {
         HertsReactivePayload hertsPayload;
         try {
             hertsPayload = this.serializer.deserialize(payload, HertsReactivePayload.class);

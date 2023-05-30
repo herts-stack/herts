@@ -1,7 +1,6 @@
 package org.herts.common.reactive;
 
 import io.grpc.stub.StreamObserver;
-import org.herts.common.modelx.HertsClientInfo;
 import org.herts.common.modelx.HertsReceiverInfo;
 
 /**
@@ -39,19 +38,19 @@ public interface ReactiveStreamingCache {
     boolean removeObserver(String hertsClientId);
 
     /**
-     * Set ClientInfo.
+     * Set clientId.
      *
-     * @param clientInfo ClientInfo
+     * @param clientId clientId
      */
-    void setClientInfo(HertsClientInfo clientInfo);
+    void setClientId(String clientId);
 
     /**
-     * Get ClientInfo
+     * Get ClientId
      *
      * @param clientId ClientId
      * @return ClientInfo
      */
-    HertsClientInfo getClientInfo(String clientId);
+    String getClientId(String clientId);
 
     /**
      * Get all client ids.

@@ -19,7 +19,7 @@ import javax.annotation.Nullable;
  * @author Herts Contributer
  * @version 1.0.0
  */
-public interface HertsRpcEngineBuilder {
+public interface HertsRpcServer {
 
     /**
      * Register HertsReactiveService with Interceptor.
@@ -28,7 +28,7 @@ public interface HertsRpcEngineBuilder {
      * @param interceptor          Interceptor
      * @return HertsCoreEngineBuilder
      */
-    HertsRpcEngineBuilder registerHertsRpcService(HertsReactiveService hertsReactiveService, @Nullable ServerInterceptor interceptor);
+    HertsRpcServer registerHertsRpcService(HertsReactiveService hertsReactiveService, @Nullable ServerInterceptor interceptor);
 
     /**
      * Register HertsReactiveService with Interceptor.
@@ -36,7 +36,7 @@ public interface HertsRpcEngineBuilder {
      * @param hertsReactiveService HertsReactiveService
      * @return HertsRpcEngineBuilder
      */
-    HertsRpcEngineBuilder registerHertsRpcService(HertsReactiveService hertsReactiveService);
+    HertsRpcServer registerHertsRpcService(HertsReactiveService hertsReactiveService);
 
     /**
      * Register Herts service
@@ -45,7 +45,7 @@ public interface HertsRpcEngineBuilder {
      * @param interceptor     Interceptor
      * @return HertsCoreEngineBuilder
      */
-    HertsRpcEngineBuilder registerHertsRpcService(HertsService hertsRpcService, @Nullable ServerInterceptor interceptor);
+    HertsRpcServer registerHertsRpcService(HertsService hertsRpcService, @Nullable ServerInterceptor interceptor);
 
     /**
      * Register Herts service
@@ -53,14 +53,14 @@ public interface HertsRpcEngineBuilder {
      * @param hertsRpcService HertsCoreService
      * @return HertsCoreEngineBuilder
      */
-    HertsRpcEngineBuilder registerHertsRpcService(HertsService hertsRpcService);
+    HertsRpcServer registerHertsRpcService(HertsService hertsRpcService);
 
     /**
      * Add server shutdown hook.
      *
      * @return HertsRpcEngineBuilder
      */
-    HertsRpcEngineBuilder addShutdownHook(HertsRpcServerShutdownHook hook);
+    HertsRpcServer addShutdownHook(HertsRpcServerShutdownHook hook);
 
     /**
      * Load balancing type.
@@ -70,7 +70,7 @@ public interface HertsRpcEngineBuilder {
      * @param connectionInfo ConnectionInfo
      * @return HertsRpcEngineBuilder
      */
-    HertsRpcEngineBuilder loadBalancingType(LoadBalancingType loadBalancingType, @Nullable String connectionInfo);
+    HertsRpcServer loadBalancingType(LoadBalancingType loadBalancingType, @Nullable String connectionInfo);
 
     /**
      * Secure connection
@@ -78,7 +78,7 @@ public interface HertsRpcEngineBuilder {
      * @param credentials ServerCredentials for gRPC
      * @return HertsCoreEngineBuilder
      */
-    HertsRpcEngineBuilder secure(ServerCredentials credentials);
+    HertsRpcServer secure(ServerCredentials credentials);
 
     /**
      * Metrics setting
@@ -86,7 +86,7 @@ public interface HertsRpcEngineBuilder {
      * @param metricsSetting HertsMetricsSetting
      * @return HertsCoreEngineBuilder
      */
-    HertsRpcEngineBuilder enableMetrics(HertsMetricsSetting metricsSetting);
+    HertsRpcServer enableMetrics(HertsMetricsSetting metricsSetting);
 
     /**
      * Add custom gRPC service
@@ -96,12 +96,12 @@ public interface HertsRpcEngineBuilder {
      * @param interceptor Interceptor
      * @return HertsCoreEngineBuilder
      */
-    HertsRpcEngineBuilder addCustomService(BindableService grpcService, HertsType hertsType, @Nullable ServerInterceptor interceptor);
+    HertsRpcServer addCustomService(BindableService grpcService, HertsType hertsType, @Nullable ServerInterceptor interceptor);
 
     /**
      * Build HertsCoreEngine
      *
      * @return HertsCoreEngine
      */
-    HertsRpcEngine build();
+    HertsRpcServerEngine build();
 }

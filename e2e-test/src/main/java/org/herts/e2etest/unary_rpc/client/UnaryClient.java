@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 public class UnaryClient {
     private static final Logger logger = HertsLogger.getLogger(UnaryClient.class.getSimpleName());
 
-    public static void run() throws InterruptedException {
+    public static void run() {
         GrpcClientInterceptor grpcClientInterceptor = new GrpcClientInterceptor();
 
         HertsRpcClient client = HertsRpcClientBuilder
@@ -68,6 +68,6 @@ public class UnaryClient {
         UnaryRpcService02 service_02 = client.createHertsRpcService(UnaryRpcService02.class);
         var res0201 = service_02.hello01("ID", "Hello!");
         logger.info(res0201);
-        client.getChannel().shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
+        client.getChannel().shutdown();
     }
 }

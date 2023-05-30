@@ -9,7 +9,7 @@ import io.grpc.Server;
  * @author Herts Contributer
  * @version 1.0.0
  */
-public interface HertsRpcEngine {
+public interface HertsRpcServerEngine {
 
     /**
      * Start Herts rpc server

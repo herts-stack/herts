@@ -1,15 +1,15 @@
 package org.herts.rpc;
 
-import io.grpc.ForwardingServerCall;
+import io.grpc.Context;
+import io.grpc.Contexts;
 import io.grpc.Metadata;
 import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
 
-import java.util.logging.Logger;
+import org.herts.common.context.HertsSystemContext;
 
-import static org.herts.common.context.HertsSystemContext.Header.CODE_VERSION;
-import static org.herts.common.context.HertsSystemContext.Header.HERTS_HEADER_KEY;
+import java.util.logging.Logger;
 
 /**
  * Herts intercept builder
@@ -42,6 +42,7 @@ public class HertsRpcInterceptBuilder implements ServerInterceptor {
         }
     }
 
+
     @Override
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(
             ServerCall<ReqT, RespT> call, final Metadata requestHeaders, ServerCallHandler<ReqT, RespT> next) {
@@ -50,16 +51,8 @@ public class HertsRpcInterceptBuilder implements ServerInterceptor {
             this.interceptor.beforeCallMethod(call, requestHeaders);
         }
 
-        var listener = next.startCall(new ForwardingServerCall.SimpleForwardingServerCall<>(call) {
-            @Override
-            public void sendHeaders(Metadata responseHeaders) {
-                if (interceptor != null) {
-                    interceptor.setResponseMetadata(responseHeaders);
-                }
-                responseHeaders.put(HERTS_HEADER_KEY, CODE_VERSION);
-                super.sendHeaders(responseHeaders);
-            }
-        }, requestHeaders);
-        return listener;
+        String sessionId = requestHeaders.get(HertsSystemContext.Header.HERTS_CONNECTION_ID);
+        Context ctx = Context.current().withValue(HertsSystemContext.Header.HERTS_CONNECTION_ID_CTX, sessionId);
+        return Contexts.interceptCall(ctx, call, requestHeaders, next);
     }
 }

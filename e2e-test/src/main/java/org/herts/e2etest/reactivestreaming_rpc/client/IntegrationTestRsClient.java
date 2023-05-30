@@ -5,8 +5,8 @@ import org.herts.common.logger.HertsLogger;
 import org.herts.e2etest.common.Constant;
 import org.herts.e2etest.common.GrpcClientInterceptor;
 import org.herts.e2etest.common.HelloRequest;
-import org.herts.e2etest.reactivestreaming_rpc.ReactiveStreamingReceiverImpl;
-import org.herts.e2etest.reactivestreaming_rpc.ReactiveStreamingService;
+import org.herts.e2etest.reactivestreaming_rpc.IntegrationTestRsReceiverImpl;
+import org.herts.e2etest.reactivestreaming_rpc.IntegrationTestRsService;
 import org.herts.rpcclient.HertsRpcClient;
 import org.herts.rpcclient.HertsRpcClientBuilder;
 import org.herts.rpcclient.HertsRpcClientInterceptBuilder;
@@ -14,19 +14,19 @@ import org.herts.rpcclient.HertsRpcClientInterceptBuilder;
 import java.util.Collections;
 import java.util.logging.Logger;
 
-public class ReactiveStreamingClient {
-    private static final Logger logger = HertsLogger.getLogger(ReactiveStreamingClient.class.getSimpleName());
+public class IntegrationTestRsClient {
+    private static final Logger logger = HertsLogger.getLogger(IntegrationTestRsClient.class.getSimpleName());
 
-    public static void run() throws InterruptedException {
+    public static void run() {
         HertsRpcClient client = HertsRpcClientBuilder
                 .builder("localhost", Constant.port)
                 .secure(false)
-                .registerHertsRpcServiceInterface(ReactiveStreamingService.class)
-                .registerHertsRpcReceiver(new ReactiveStreamingReceiverImpl())
+                .registerHertsRpcServiceInterface(IntegrationTestRsService.class)
+                .registerHertsRpcReceiver(new IntegrationTestRsReceiverImpl())
                 .interceptor(HertsRpcClientInterceptBuilder.builder(new GrpcClientInterceptor()).build())
                 .connect();
 
-        ReactiveStreamingService service = client.createHertsRpcService(ReactiveStreamingService.class);
+        IntegrationTestRsService service = client.createHertsRpcService(IntegrationTestRsService.class);
         service.hello01();
         service.hello02(null);
         service.hello03(genRq());
