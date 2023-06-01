@@ -8,4 +8,5 @@ include 'herts-codegen'
 include 'herts-http'
 include 'herts-http-client'
 include 'benchmark-test'
+include 'example'
 

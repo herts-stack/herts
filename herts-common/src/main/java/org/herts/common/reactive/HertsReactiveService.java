@@ -21,7 +21,7 @@ public interface HertsReactiveService extends HertsService {
      * Get connections
      * @return Connection ids
      */
-    String[] getConnections();
+    String getConnection();
 
     /**
      * Get grpc method

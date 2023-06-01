@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * Herts http intercept
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */

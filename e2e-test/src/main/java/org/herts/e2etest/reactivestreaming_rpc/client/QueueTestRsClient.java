@@ -17,16 +17,11 @@ public class QueueTestRsClient {
     public static void run() {
         HertsRpcClient client = createClient();
         QueueTestRsService service = createService(client);
-        for (var i = 1; i < 180; i++) {
+        for (var i = 1; i < 100000; i++) {
             var uniqId = UUID.randomUUID().toString();
             var milliseconds = timestamp();
             System.out.println("rpc_call," + uniqId + "," + milliseconds);
             service.callFoo(uniqId);
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
         }
 
         client.getChannel().shutdown();
