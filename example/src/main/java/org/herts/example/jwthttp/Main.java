@@ -1,9 +1,12 @@
 package org.herts.example.jwthttp;
 
+import org.herts.common.exception.http.HertsHttpErrorException;
 import org.herts.http.engine.HertsHttpEngine;
 import org.herts.http.engine.HertsHttpServer;
 import org.herts.httpclient.HertsHttpClient;
 import org.herts.httpclient.HertsHttpClientBase;
+
+import java.util.Collections;
 
 public class Main {
     public static void main(String[] args) {
@@ -14,7 +17,8 @@ public class Main {
 
     private static void startServer() {
         HertsHttpEngine engine = HertsHttpServer.builder()
-                .registerHertsHttpService(new HttpServiceImpl())
+                .registerHertsHttpService(new HttpServiceImpl(), new JwtServerInterceptor())
+                .registerHertsHttpService(new AuthServiceImpl())
                 .build();
 
         Thread t = new Thread(engine::start);
@@ -25,11 +29,24 @@ public class Main {
         HertsHttpClientBase client = HertsHttpClient
                 .builder("localhost")
                 .registerHertService(HttpService.class)
+                .registerHertService(AuthService.class)
                 .secure(false)
                 .build();
 
         var service = client.createHertsService(HttpService.class);
+        try {
+            service.hellowWorld();
+        } catch (HertsHttpErrorException ex) {
+            System.out.println("Error on client: " + ex.getMessage());
+        }
+
+        // Authentication
+        var authService = client.createHertsService(AuthService.class);
+        var token = authService.signIn("email", "password");
+
+        // Recreate service with token
+        service = client.recreateHertsService(HttpService.class, Collections.singletonMap("Authorization", token));
         var res = service.hellowWorld();
-        System.out.println(res);
+        System.out.println("Received data on client: " + res);
     }
 }

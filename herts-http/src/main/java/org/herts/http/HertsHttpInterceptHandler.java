@@ -8,6 +8,11 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 
+import jakarta.servlet.http.HttpServletResponse;
+import org.herts.common.exception.http.HertsHttpErrorException;
+import org.herts.common.modelx.HertsHttpErrorResponse;
+import org.herts.common.serializer.HertsSerializeType;
+import org.herts.common.serializer.HertsSerializer;
 import org.herts.http.http.HertsHttpRequestImpl;
 
 import java.io.IOException;
@@ -23,9 +28,11 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class HertsHttpInterceptHandler implements Filter {
     private final ConcurrentMap<String, HertsHttpInterceptor> interceptors;
+    private final HertsSerializer hertsSerializer;
 
     public HertsHttpInterceptHandler(Map<String, HertsHttpInterceptor> interceptorMap) {
         this.interceptors = new ConcurrentHashMap<>(interceptorMap);
+        this.hertsSerializer = new HertsSerializer(HertsSerializeType.Json);
     }
 
     @Override
@@ -39,12 +46,26 @@ public class HertsHttpInterceptHandler implements Filter {
         String serviceName = parseUri(httpReq.getRequestURI());
         HertsHttpInterceptor intercept = this.interceptors.get(serviceName);
         if (intercept != null) {
-            intercept.beforeHandle(new HertsHttpRequestImpl(request, httpReq));
+            try {
+                intercept.beforeHandle(new HertsHttpRequestImpl(request, httpReq));
+            } catch (HertsHttpErrorException ex) {
+                setError(ex.getMessage(), ex.getStatusCode().getIntegerCode(), ex.getStatusCode(), (HttpServletResponse) response);
+                return;
+            } catch (Exception ex) {
+                setError(ex.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, HertsHttpErrorException.StatusCode.Status500, (HttpServletResponse) response);
+                return;
+            }
         }
         chain.doFilter(request, response);
         if (intercept != null) {
             intercept.afterHandle();
         }
+    }
+
+    private void setError(String message, int statusCode, HertsHttpErrorException.StatusCode statusCodeEnum, HttpServletResponse response) throws IOException {
+        var errorResponse = HertsHttpServerCore.genErrorResponse(statusCodeEnum, message);
+        response.setStatus(statusCode);
+        HertsHttpCallerBase.setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(errorResponse));
     }
 
     @Override
