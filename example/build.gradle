@@ -48,9 +48,39 @@ shadowJar {
     mergeServiceFiles()
 }
 
-tasks.register('runExampleTls', JavaExec) {
+tasks.register('runExampleHttp', JavaExec) {
     dependsOn 'classes'
-    main = 'org.herts.example.tls.Main'
+    main = 'org.herts.example.http.Main'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+tasks.register('runExampleRpcUnary', JavaExec) {
+    dependsOn 'classes'
+    main = 'org.herts.example.unary.Main'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+tasks.register('runExampleRpcServerStreaming', JavaExec) {
+    dependsOn 'classes'
+    main = 'org.herts.example.serversteaming.Main'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+tasks.register('runExampleRpcClientStreaming', JavaExec) {
+    dependsOn 'classes'
+    main = 'org.herts.example.clientsteaming.Main'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+tasks.register('runExampleRpcBidStreaming', JavaExec) {
+    dependsOn 'classes'
+    main = 'org.herts.example.bidsteaming.Main'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+tasks.register('runExampleRpcReactimeStreaming', JavaExec) {
+    dependsOn 'classes'
+    main = 'org.herts.example.reactivesteaming.Main'
     classpath = sourceSets.main.runtimeClasspath
 }
 

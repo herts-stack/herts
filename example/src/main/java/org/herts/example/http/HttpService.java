@@ -1,9 +1,9 @@
-package org.herts.example.tlshttp;
+package org.herts.example.http;
 
 import org.herts.common.annotation.HertsHttp;
 import org.herts.common.service.HertsService;
 
 @HertsHttp
 public interface HttpService extends HertsService {
-    void hello();
+    String hellowWorld();
 }

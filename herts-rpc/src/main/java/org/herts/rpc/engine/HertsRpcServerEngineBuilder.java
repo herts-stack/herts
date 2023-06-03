@@ -102,7 +102,9 @@ public class HertsRpcServerEngineBuilder implements HertsRpcServerEngine {
 
             CompletableFuture.supplyAsync(() -> {
                 try {
-                    this.hertsMetricsServer.start();
+                    if (this.hertsMetricsServer != null) {
+                        this.hertsMetricsServer.start();
+                    }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -118,7 +120,10 @@ public class HertsRpcServerEngineBuilder implements HertsRpcServerEngine {
                             hertsShutdownHook.hookShutdown();
                         }
                         _logger.info("Shutdown Herts RPC server");
-                        hertsMetricsServer.stop();
+                        if (hertsMetricsServer != null) {
+                            hertsMetricsServer.stop();
+                        }
+
                         server.shutdown();
                     } finally {
                         HertsLogger.HertsLogManager.resetFinally();

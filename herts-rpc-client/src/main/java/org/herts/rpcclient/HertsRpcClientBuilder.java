@@ -40,6 +40,12 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
         return new IBuilder(connectedHost, serverPort);
     }
 
+    public static IBuilder builder(String connectedHost) {
+        int defaultPort = 9000;
+        return new IBuilder(connectedHost, defaultPort);
+    }
+
+
     @Override
     public String getConnectedHost() {
         return connectedHost;
