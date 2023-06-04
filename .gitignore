@@ -7,6 +7,7 @@ herts-codegen/build/
 herts-http/build/
 herts-http-client/build/
 tools/build/
+example/build/
 e2e-test/build/
 benchmark-test/build/
 grpc-proto-example/build/

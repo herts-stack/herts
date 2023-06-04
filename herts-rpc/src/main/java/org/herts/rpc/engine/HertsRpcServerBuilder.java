@@ -91,7 +91,7 @@ public class HertsRpcServerBuilder implements HertsRpcServer {
     }
 
     @Override
-    public HertsRpcServer registerHertsRpcService(HertsReactiveService hertsReactiveService, @Nullable ServerInterceptor interceptor) {
+    public HertsRpcServer registerHertsReactiveRpcService(HertsReactiveService hertsReactiveService, @Nullable ServerInterceptor interceptor) {
         if (hertsReactiveService.getClass().getInterfaces().length == 0) {
             throw new HertsRpcBuildException("You need to define interface on " + hertsReactiveService.getClass().getName());
         }
@@ -110,7 +110,7 @@ public class HertsRpcServerBuilder implements HertsRpcServer {
     }
 
     @Override
-    public HertsRpcServer registerHertsRpcService(HertsReactiveService hertsReactiveService) {
+    public HertsRpcServer registerHertsReactiveRpcService(HertsReactiveService hertsReactiveService) {
         if (hertsReactiveService.getClass().getInterfaces().length == 0) {
             throw new HertsRpcBuildException("You need to define interface on " + hertsReactiveService.getClass().getName());
         }

@@ -16,7 +16,7 @@ public class QueueTestRsServer {
         var service = new QueueTestRsServiceImpl();
 
         HertsRpcServer engineBuilder = HertsRpcServerEngineBuilder.builder(Constant.getGrpcServerOption())
-                .registerHertsRpcService(service, interceptor)
+                .registerHertsReactiveRpcService(service, interceptor)
                 .enableMetrics(metrics);
 
         var engine = engineBuilder.build();

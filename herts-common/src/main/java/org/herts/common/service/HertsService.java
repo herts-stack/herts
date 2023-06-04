@@ -28,8 +28,9 @@ public interface HertsService {
 
     /**
      * Get rpc connection id list
+     * If you are using HertsHttp, always null
      *
      * @return Connection list
      */
-    String[] getConnections();
+    String getConnection();
 }

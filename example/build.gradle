@@ -1,0 +1,107 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'org.graalvm.buildtools.native' version '0.9.21'
+}
+apply plugin: 'application'
+
+group 'org.herts.example'
+version '1.0.0'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+}
+
+dependencies {
+    implementation project(':herts-common')
+    implementation project(':herts-rpc')
+    implementation project(':herts-rpc-client')
+    implementation project(':herts-http')
+    implementation project(':herts-http-client')
+
+    implementation ('org.eclipse.jetty:jetty-server:11.0.10') {
+        exclude group: "org.slf4j", module: "slf4j-api"
+    }
+    implementation ('org.eclipse.jetty:jetty-webapp:11.0.14') {
+        exclude group: "org.slf4j", module: "slf4j-api"
+    }
+}
+
+def mainClassPath = 'org.herts.example.Main'
+application {
+    mainClass = mainClassPath
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassPath
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+tasks.register('runExampleHttp', JavaExec) {
+    dependsOn 'classes'
+    main = 'org.herts.example.http.Main'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+tasks.register('runExampleRpcUnary', JavaExec) {
+    dependsOn 'classes'
+    main = 'org.herts.example.unary.Main'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+tasks.register('runExampleRpcServerStreaming', JavaExec) {
+    dependsOn 'classes'
+    main = 'org.herts.example.serversteaming.Main'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+tasks.register('runExampleRpcClientStreaming', JavaExec) {
+    dependsOn 'classes'
+    main = 'org.herts.example.clientsteaming.Main'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+tasks.register('runExampleRpcBidStreaming', JavaExec) {
+    dependsOn 'classes'
+    main = 'org.herts.example.bidsteaming.Main'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+tasks.register('runExampleRpcReactimeStreaming', JavaExec) {
+    dependsOn 'classes'
+    main = 'org.herts.example.reactivesteaming.Main'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+tasks.register('runExampleJwtHttp', JavaExec) {
+    dependsOn 'classes'
+    main = 'org.herts.example.jwthttp.Main'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+tasks.register('runExampleJwtRpc', JavaExec) {
+    dependsOn 'classes'
+    main = 'org.herts.example.jwtrpc.Main'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+graalvmNative {
+    binaries {
+        main {
+            javaLauncher = javaToolchains.launcherFor {
+                languageVersion = JavaLanguageVersion.of(17)
+            }
+        }
+    }
+}

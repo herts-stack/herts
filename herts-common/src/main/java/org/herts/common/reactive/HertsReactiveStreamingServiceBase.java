@@ -1,6 +1,7 @@
 package org.herts.common.reactive;
 
 import io.grpc.MethodDescriptor;
+import org.herts.common.context.HertsSystemContext;
 import org.herts.common.context.HertsType;
 
 /**
@@ -28,8 +29,8 @@ public class HertsReactiveStreamingServiceBase<T, K> implements HertsReactiveSer
     }
 
     @Override
-    public String[] getConnections() {
-        return new String[0];
+    public String getConnection() {
+        return HertsSystemContext.Header.HERTS_CONNECTION_ID_CTX.get();
     }
 
     @Override

@@ -40,7 +40,7 @@ public class HertsHttpCallerBase {
         this.parameters = parameters;
     }
 
-    public void setWriter(PrintWriter out, String msg) {
+    public static void setWriter(PrintWriter out, String msg) {
         out.print(msg);
         out.flush();
     }

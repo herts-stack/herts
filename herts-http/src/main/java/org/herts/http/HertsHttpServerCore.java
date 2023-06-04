@@ -108,18 +108,22 @@ public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer 
         try {
             this.hertsHttpCaller.post(hertsMethod, request, response);
         } catch (HertsInvalidBodyException | JsonProcessingException ex) {
-            setError(ex.getMessage(), HttpServletResponse.SC_BAD_REQUEST, HertsHttpErrorException.StatusCode.Status400, response);
+            var err = genErrorResponse(HertsHttpErrorException.StatusCode.Status400, ex.getMessage());
+            setError(HttpServletResponse.SC_BAD_REQUEST, response, err);
         } catch (InvocationTargetException ex) {
             Throwable cause = ex.getCause();
             if (cause instanceof HertsHttpErrorException exception) {
-                setError(exception.getMessage(), exception.getStatusCode().getIntegerCode(), exception.getStatusCode(), response);
+                var err = genErrorResponse(exception.getStatusCode(), ex.getMessage());
+                setError(exception.getStatusCode().getIntegerCode(), response, err);
             } else {
                 ex.printStackTrace();
-                setError(ex.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, HertsHttpErrorException.StatusCode.Status500, response);
+                var err = genErrorResponse(HertsHttpErrorException.StatusCode.Status500, ex.getMessage());
+                setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response, err);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            setError(ex.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, HertsHttpErrorException.StatusCode.Status500, response);
+            var err = genErrorResponse(HertsHttpErrorException.StatusCode.Status500, ex.getMessage());
+            setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response, err);
         }
     }
 
@@ -133,11 +137,15 @@ public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer 
         return this.methods.keySet().toArray(new String[0]);
     }
 
-    private void setError(String message, int statusCode, HertsHttpErrorException.StatusCode statusCodeEnum, HttpServletResponse response) throws IOException {
-        response.setStatus(statusCode);
+    public static HertsHttpErrorResponse genErrorResponse(HertsHttpErrorException.StatusCode statusCodeEnum, String message) {
         var hertsResponse = new HertsHttpErrorResponse();
         hertsResponse.setStatusCode(statusCodeEnum);
         hertsResponse.setMessage(message);
-        this.hertsHttpCaller.setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(hertsResponse));
+        return hertsResponse;
+    }
+
+    private void setError(int statusCode, HttpServletResponse response, HertsHttpErrorResponse errorResponse) throws IOException {
+        response.setStatus(statusCode);
+        HertsHttpCallerBase.setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(errorResponse));
     }
 }

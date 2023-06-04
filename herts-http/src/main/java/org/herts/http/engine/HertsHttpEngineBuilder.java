@@ -4,8 +4,6 @@ import org.herts.common.context.HertsMetricsSetting;
 import org.herts.common.service.HertsService;
 import org.herts.http.HertsHttpInterceptor;
 
-import org.eclipse.jetty.util.ssl.SslContextFactory;
-
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +45,7 @@ public interface HertsHttpEngineBuilder {
      * @param port Port
      * @return HertHttpEngineBuilder
      */
-    HertsHttpEngineBuilder setSsl(SslContextFactory sslContextFactory, int port);
+    HertsHttpEngineBuilder setSsl(org.eclipse.jetty.util.ssl.SslContextFactory sslContextFactory, int port);
 
     /**
      * Set metrics setting information
@@ -78,7 +76,7 @@ public interface HertsHttpEngineBuilder {
      * Get ssl context
      * @return SslContextFactory
      */
-    SslContextFactory getSslContextFactory();
+    org.eclipse.jetty.util.ssl.SslContextFactory getSslContextFactory();
 
     /**
      * Get port number
