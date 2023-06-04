@@ -1,5 +1,6 @@
 package org.herts.rpcclient;
 
+import io.grpc.CallCredentials;
 import org.herts.common.context.HertsType;
 import org.herts.common.service.HertsService;
 
@@ -47,9 +48,19 @@ public interface HertsRpcClient {
      *
      * @param interfaceClass Class type
      * @param <T>            Generics
-     * @return HertsCoreService
+     * @return HertsService
      */
     <T extends HertsService> T createHertsRpcService(Class<T> interfaceClass);
+
+    /**
+     * Create herts core interface
+     *
+     * @param interfaceClass Class type
+     * @param credentials    CallCredentials if you want set authentication
+     * @param <T>            Generics
+     * @return HertsService
+     */
+    <T extends HertsService> T createHertsRpcService(Class<T> interfaceClass, CallCredentials credentials);
 
     /**
      * Get registered herts type

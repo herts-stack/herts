@@ -15,7 +15,7 @@ public class Main {
 
     private static void startServer() {
         HertsRpcServerEngine engine = HertsRpcServerEngineBuilder.builder()
-                .registerHertsRpcService(new ReactiveServiceImpl())
+                .registerHertsReactiveRpcService(new ReactiveServiceImpl())
                 .build();
 
         Thread t = new Thread(engine::start);

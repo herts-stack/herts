@@ -4,7 +4,7 @@ import org.herts.common.annotation.HertsHttp;
 import org.herts.common.service.HertsService;
 
 @HertsHttp
-public interface AuthService extends HertsService {
+public interface AuthHttpService extends HertsService {
     String signUp(String email, String password);
     String signIn(String email, String password);
 }

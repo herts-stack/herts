@@ -18,7 +18,7 @@ public class Main {
     private static void startServer() {
         HertsHttpEngine engine = HertsHttpServer.builder()
                 .registerHertsHttpService(new HttpServiceImpl(), new JwtServerInterceptor())
-                .registerHertsHttpService(new AuthServiceImpl())
+                .registerHertsHttpService(new AuthHttpServiceImpl())
                 .build();
 
         Thread t = new Thread(engine::start);
@@ -29,7 +29,7 @@ public class Main {
         HertsHttpClientBase client = HertsHttpClient
                 .builder("localhost")
                 .registerHertService(HttpService.class)
-                .registerHertService(AuthService.class)
+                .registerHertService(AuthHttpService.class)
                 .secure(false)
                 .build();
 
@@ -41,7 +41,7 @@ public class Main {
         }
 
         // Authentication
-        var authService = client.createHertsService(AuthService.class);
+        var authService = client.createHertsService(AuthHttpService.class);
         var token = authService.signIn("email", "password");
 
         // Recreate service with token

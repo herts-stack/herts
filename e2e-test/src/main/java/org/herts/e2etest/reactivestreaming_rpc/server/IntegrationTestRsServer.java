@@ -16,7 +16,7 @@ public class IntegrationTestRsServer {
         var service = new IntegrationTestRsServiceImpl();
 
         HertsRpcServer engineBuilder = HertsRpcServerEngineBuilder.builder(Constant.getGrpcServerOption())
-                .registerHertsRpcService(service, interceptor)
+                .registerHertsReactiveRpcService(service, interceptor)
                 .enableMetrics(metrics);
 
         var engine = engineBuilder.build();

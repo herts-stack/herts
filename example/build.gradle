@@ -90,6 +90,12 @@ tasks.register('runExampleJwtHttp', JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
+tasks.register('runExampleJwtRpc', JavaExec) {
+    dependsOn 'classes'
+    main = 'org.herts.example.jwtrpc.Main'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
 graalvmNative {
     binaries {
         main {

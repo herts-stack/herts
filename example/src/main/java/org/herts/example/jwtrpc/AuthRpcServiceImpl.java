@@ -1,8 +1,8 @@
-package org.herts.example.jwthttp;
+package org.herts.example.jwtrpc;
 
-import org.herts.common.service.HertsHttpService;
+import org.herts.common.service.HertsUnaryService;
 
-public class AuthServiceImpl extends HertsHttpService<AuthService> implements AuthService {
+public class AuthRpcServiceImpl extends HertsUnaryService<AuthRpcService> implements AuthRpcService {
     @Override
     public String signUp(String email, String password) {
         return "ok";

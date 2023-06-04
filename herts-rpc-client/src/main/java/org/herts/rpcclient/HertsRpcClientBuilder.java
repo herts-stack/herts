@@ -1,5 +1,6 @@
 package org.herts.rpcclient;
 
+import io.grpc.CallCredentials;
 import org.herts.rpcclient.handler.HertsRpcClientCStreamingMethodHandler;
 import org.herts.rpcclient.handler.HertsRpcClientRStreamingMethodHandler;
 import org.herts.rpcclient.handler.HertsRpcClientUMethodHandler;
@@ -76,6 +77,15 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
 
     @Override
     public <T extends HertsService> T createHertsRpcService(Class<T> interfaceType) {
+        return hertsRpcService(interfaceType, null);
+    }
+
+    @Override
+    public <T extends HertsService> T createHertsRpcService(Class<T> interfaceClass, CallCredentials credentials) {
+        return hertsRpcService(interfaceClass, credentials);
+    }
+
+    private <T extends HertsService> T hertsRpcService(Class<T> interfaceType, CallCredentials credentials) {
         if (!interfaceType.isInterface()) {
             throw new HertsRpcClientBuildException(interfaceType.getSimpleName() + " is not interface. You can create client by interface");
         }
@@ -95,23 +105,23 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
 
         switch (this.hertsType) {
             case Unary -> {
-                var unary = newHertsBlockingService(this.channel, interfaceType, this.clientConnection);
+                var unary = newHertsBlockingService(this.channel, interfaceType, this.clientConnection, credentials);
                 return (T) generateService(unary, interfaceType);
             }
             case BidirectionalStreaming -> {
-                var streaming = newHertsBidirectionalStreamingService(this.channel, interfaceType, this.clientConnection);
+                var streaming = newHertsBidirectionalStreamingService(this.channel, interfaceType, this.clientConnection, credentials);
                 return (T) generateService(streaming, interfaceType);
             }
             case ServerStreaming -> {
-                var serverStreaming = newHertsServerStreamingService(this.channel, interfaceType, this.clientConnection);
+                var serverStreaming = newHertsServerStreamingService(this.channel, interfaceType, this.clientConnection, credentials);
                 return (T) generateService(serverStreaming, interfaceType);
             }
             case ClientStreaming -> {
-                var clientStreaming = newHertsClientStreamingService(this.channel, interfaceType, this.clientConnection);
+                var clientStreaming = newHertsClientStreamingService(this.channel, interfaceType, this.clientConnection, credentials);
                 return (T) generateService(clientStreaming, interfaceType);
             }
             case Reactive -> {
-                var reactiveStreaming = newHertsBlockingService(this.channel, interfaceType, this.clientConnection);
+                var reactiveStreaming = newHertsBlockingService(this.channel, interfaceType, this.clientConnection, credentials);
                 return (T) generateService(reactiveStreaming, interfaceType);
             }
             default -> throw new HertsTypeInvalidException("Undefined Hert core type. HertsCoreType" + this.hertsType);
@@ -133,7 +143,9 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
      * @param hertsRpcService HertsService
      * @return HertsRpcClientUMethodHandler
      */
-    private static HertsRpcClientUMethodHandler newHertsBlockingService(Channel channel, Class<?> hertsRpcService, ClientConnection clientConnection) {
+    private static HertsRpcClientUMethodHandler newHertsBlockingService(
+            Channel channel, Class<?> hertsRpcService, ClientConnection clientConnection, CallCredentials credentials) {
+
         io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientUMethodHandler> factory =
                 new io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientUMethodHandler>() {
                     @java.lang.Override
@@ -141,7 +153,15 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
                         return new HertsRpcClientUMethodHandler(channel, callOptions, hertsRpcService);
                     }
                 };
-        return HertsRpcClientUMethodHandler.newStub(factory, channel).withCallCredentials(clientConnection);
+
+        if (credentials == null) {
+            return HertsRpcClientUMethodHandler.newStub(factory, channel)
+                    .withCallCredentials(clientConnection);
+        } else {
+            return HertsRpcClientUMethodHandler.newStub(factory, channel)
+                    .withCallCredentials(clientConnection)
+                    .withCallCredentials(credentials);
+        }
     }
 
     /**
@@ -153,7 +173,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
      * @return HertsRpcClientBStreamingMethodHandler
      */
     private static HertsRpcClientBStreamingMethodHandler newHertsBidirectionalStreamingService(
-            Channel channel, Class<?> hertsRpcService, ClientConnection clientConnection) {
+            Channel channel, Class<?> hertsRpcService, ClientConnection clientConnection, CallCredentials credentials) {
 
         io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientBStreamingMethodHandler> factory =
                 new io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientBStreamingMethodHandler>() {
@@ -162,7 +182,15 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
                         return new HertsRpcClientBStreamingMethodHandler(channel, callOptions, hertsRpcService);
                     }
                 };
-        return HertsRpcClientBStreamingMethodHandler.newStub(factory, channel).withCallCredentials(clientConnection);
+
+        if (credentials == null) {
+            return HertsRpcClientUMethodHandler.newStub(factory, channel)
+                    .withCallCredentials(clientConnection);
+        } else {
+            return HertsRpcClientUMethodHandler.newStub(factory, channel)
+                    .withCallCredentials(clientConnection)
+                    .withCallCredentials(credentials);
+        }
     }
 
     /**
@@ -174,7 +202,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
      * @return HertsRpcClientSStreamingMethodHandler
      */
     private static HertsRpcClientSStreamingMethodHandler newHertsServerStreamingService(
-            Channel channel, Class<?> hertsRpcService, ClientConnection clientConnection) {
+            Channel channel, Class<?> hertsRpcService, ClientConnection clientConnection, CallCredentials credentials) {
 
         io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientSStreamingMethodHandler> factory =
                 new io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientSStreamingMethodHandler>() {
@@ -183,7 +211,15 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
                         return new HertsRpcClientSStreamingMethodHandler(channel, callOptions, hertsRpcService);
                     }
                 };
-        return HertsRpcClientSStreamingMethodHandler.newStub(factory, channel).withCallCredentials(clientConnection);
+
+        if (credentials == null) {
+            return HertsRpcClientUMethodHandler.newStub(factory, channel)
+                    .withCallCredentials(clientConnection);
+        } else {
+            return HertsRpcClientUMethodHandler.newStub(factory, channel)
+                    .withCallCredentials(clientConnection)
+                    .withCallCredentials(credentials);
+        }
     }
 
     /**
@@ -195,7 +231,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
      * @return HertsRpcClientRStreamingMethodHandler
      */
     private static HertsRpcClientCStreamingMethodHandler newHertsClientStreamingService(
-            Channel channel, Class<?> hertsRpcService, ClientConnection clientConnection) {
+            Channel channel, Class<?> hertsRpcService, ClientConnection clientConnection, CallCredentials credentials) {
 
         io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientCStreamingMethodHandler> factory =
                 new io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientCStreamingMethodHandler>() {
@@ -204,7 +240,15 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
                         return new HertsRpcClientCStreamingMethodHandler(channel, callOptions, hertsRpcService);
                     }
                 };
-        return HertsRpcClientCStreamingMethodHandler.newStub(factory, channel).withCallCredentials(clientConnection);
+
+        if (credentials == null) {
+            return HertsRpcClientUMethodHandler.newStub(factory, channel)
+                    .withCallCredentials(clientConnection);
+        } else {
+            return HertsRpcClientUMethodHandler.newStub(factory, channel)
+                    .withCallCredentials(clientConnection)
+                    .withCallCredentials(credentials);
+        }
     }
 
     /**
@@ -216,7 +260,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
      * @return HertsRpcClientRStreamingMethodHandler
      */
     private static HertsRpcClientRStreamingMethodHandler newHertsReactiveStreamingService(
-            Channel channel, Class<?> hertsRpcService, ClientConnection clientConnection) {
+            Channel channel, Class<?> hertsRpcService, ClientConnection clientConnection, CallCredentials credentials) {
 
         io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientRStreamingMethodHandler> factory =
                 new io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientRStreamingMethodHandler>() {
@@ -225,6 +269,14 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
                         return new HertsRpcClientRStreamingMethodHandler(channel, callOptions, hertsRpcService);
                     }
                 };
-        return HertsRpcClientRStreamingMethodHandler.newStub(factory, channel).withCallCredentials(clientConnection);
+
+        if (credentials == null) {
+            return HertsRpcClientUMethodHandler.newStub(factory, channel)
+                    .withCallCredentials(clientConnection);
+        } else {
+            return HertsRpcClientUMethodHandler.newStub(factory, channel)
+                    .withCallCredentials(clientConnection)
+                    .withCallCredentials(credentials);
+        }
     }
 }

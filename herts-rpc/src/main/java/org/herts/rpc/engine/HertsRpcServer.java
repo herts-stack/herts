@@ -28,7 +28,7 @@ public interface HertsRpcServer {
      * @param interceptor          Interceptor
      * @return HertsCoreEngineBuilder
      */
-    HertsRpcServer registerHertsRpcService(HertsReactiveService hertsReactiveService, @Nullable ServerInterceptor interceptor);
+    HertsRpcServer registerHertsReactiveRpcService(HertsReactiveService hertsReactiveService, @Nullable ServerInterceptor interceptor);
 
     /**
      * Register HertsReactiveService with Interceptor.
@@ -36,7 +36,7 @@ public interface HertsRpcServer {
      * @param hertsReactiveService HertsReactiveService
      * @return HertsRpcEngineBuilder
      */
-    HertsRpcServer registerHertsRpcService(HertsReactiveService hertsReactiveService);
+    HertsRpcServer registerHertsReactiveRpcService(HertsReactiveService hertsReactiveService);
 
     /**
      * Register Herts service
