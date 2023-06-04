@@ -28,7 +28,7 @@ public class HertsReactiveStreamingRpcTest {
                 GrpcServerOption option = new GrpcServerOption();
                 option.setPort(port);
                 engine = HertsRpcServerEngineBuilder.builder(option)
-                        .registerHertsRpcService(service)
+                        .registerHertsReactiveRpcService(service)
                         .build();
                 engine.start();
             });

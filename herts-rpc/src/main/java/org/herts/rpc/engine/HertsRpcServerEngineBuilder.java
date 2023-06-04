@@ -123,10 +123,12 @@ public class HertsRpcServerEngineBuilder implements HertsRpcServerEngine {
                         if (hertsMetricsServer != null) {
                             hertsMetricsServer.stop();
                         }
-
                         server.shutdown();
                     } finally {
-                        HertsLogger.HertsLogManager.resetFinally();
+                        try {
+                            HertsLogger.HertsLogManager.resetFinally();
+                        } catch (Exception ignore) {
+                        }
                     }
                 }
             });
