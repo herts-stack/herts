@@ -1,0 +1,29 @@
+name: build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  skipci:
+    runs-on: ubuntu-latest
+    if: "! contains(github.event.head_commit.message, '[ci skip]')"
+    steps:
+      - run: echo "${{ github.event.head_commit.message }}"
+
+  build-java17:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: 'Set up Java17'
+        uses: actions/setup-java@v1
+        with:
+          java-version: '17'
+
+      - name: 'Checkout'
+        uses: actions/checkout@v1
+
+      - name: 'Build Herts project'
+        run: ./gradlew clean build
