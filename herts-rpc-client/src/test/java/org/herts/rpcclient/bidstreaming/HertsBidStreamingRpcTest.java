@@ -156,7 +156,7 @@ public class HertsBidStreamingRpcTest {
 
         assertEquals(100, data.size());
 
-        List<String> uniqValues = data.values().stream().toList();
+        List<String> uniqValues = new ArrayList<>(data.values());
         Set<String> duplicates = CollectionUtil.findDuplicates(uniqValues);
         assertEquals(0, duplicates.size());
     }

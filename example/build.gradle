@@ -5,9 +5,12 @@ plugins {
 }
 apply plugin: 'application'
 
+def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '17'
+
 group 'org.herts.example'
 version '1.0.0'
-sourceCompatibility = '17'
+sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
 
 repositories {
     mavenCentral()
@@ -21,10 +24,10 @@ dependencies {
     implementation project(':herts-http')
     implementation project(':herts-http-client')
 
-    implementation ('org.eclipse.jetty:jetty-server:11.0.10') {
+    implementation ('org.eclipse.jetty:jetty-server:10.0.15') {
         exclude group: "org.slf4j", module: "slf4j-api"
     }
-    implementation ('org.eclipse.jetty:jetty-webapp:11.0.14') {
+    implementation ('org.eclipse.jetty:jetty-webapp:10.0.0') {
         exclude group: "org.slf4j", module: "slf4j-api"
     }
 }

@@ -8,8 +8,8 @@ import org.herts.common.exception.HertsInvalidBodyException;
 import org.herts.common.serializer.HertsSerializer;
 import org.herts.metrics.server.HertsMetricsServer;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;

@@ -27,6 +27,7 @@ public class HertsBroadCasterImpl implements HertsBroadCaster {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <K> K broadcast(String clientId) {
         return (K) createReceiver(clientId);
     }

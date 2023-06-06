@@ -11,8 +11,6 @@ import org.herts.metrics.HertsMetrics;
 import org.herts.metrics.handler.HertsMetricsHandler;
 import org.herts.metrics.server.HertsMetricsServer;
 
-import jakarta.servlet.DispatcherType;
-
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -21,6 +19,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
+import javax.servlet.DispatcherType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;

@@ -5,9 +5,12 @@ plugins {
 }
 apply plugin: 'application'
 
+def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '17'
+
 group 'org.herts.benchmarktest'
 version '1.0.0'
-sourceCompatibility = '17'
+sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
 
 repositories {
     mavenCentral()

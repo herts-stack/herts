@@ -6,7 +6,7 @@ apply plugin: 'application'
 
 def pkgName = 'org.herts.http'
 def pkgVersion = '1.0.0'
-def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '8'
+def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '11'
 
 group pkgName
 version pkgVersion
@@ -23,10 +23,10 @@ dependencies {
     implementation project(':herts-metrics')
 
     implementation 'javax.servlet:servlet-api:3.0-alpha-1'
-    implementation ('org.eclipse.jetty:jetty-server:11.0.10') {
+    implementation ('org.eclipse.jetty:jetty-server:10.0.15') {
         exclude group: "org.slf4j", module: "slf4j-api"
     }
-    implementation ('org.eclipse.jetty:jetty-webapp:11.0.14') {
+    implementation ('org.eclipse.jetty:jetty-webapp:10.0.0') {
         exclude group: "org.slf4j", module: "slf4j-api"
     }
 

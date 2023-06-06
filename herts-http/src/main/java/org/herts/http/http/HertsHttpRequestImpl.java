@@ -1,7 +1,7 @@
 package org.herts.http.http;
 
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import java.util.Enumeration;
 
@@ -10,6 +10,7 @@ public class HertsHttpRequestImpl implements HertsHttpRequest {
     private HttpServletRequest httpRequest;
     private Enumeration<String> headerNames;
 
+    @SuppressWarnings("unchecked")
     public HertsHttpRequestImpl(ServletRequest request, HttpServletRequest httpRequest) {
         this.request = request;
         this.httpRequest = httpRequest;
@@ -43,7 +44,7 @@ public class HertsHttpRequestImpl implements HertsHttpRequest {
     public Cookie[] getCookies() {
         Cookie[] cookie = new Cookie[this.httpRequest.getCookies().length];
         int index = 0;
-        for (jakarta.servlet.http.Cookie c : this.httpRequest.getCookies()) {
+        for (javax.servlet.http.Cookie c : this.httpRequest.getCookies()) {
             cookie[index] = new Cookie(
                     c.getName(),
                     c.getValue(),
@@ -52,8 +53,7 @@ public class HertsHttpRequestImpl implements HertsHttpRequest {
                     c.getMaxAge(),
                     c.getPath(),
                     c.getSecure(),
-                    c.getVersion(),
-                    c.isHttpOnly()
+                    c.getVersion()
             );
             index++;
         }
@@ -69,10 +69,9 @@ public class HertsHttpRequestImpl implements HertsHttpRequest {
         private String path;                // ;Path=VALUE ... URLs that see the cookie
         private boolean secure;             // ;Secure ... e.g. use SSL
         private int version = 0;            // ;Version=1 ... means RFC 2109++ style
-        private boolean isHttpOnly = false;
 
         public Cookie(String name, String value, String comment, String domain, int maxAge,
-                      String path, boolean secure, int version, boolean isHttpOnly) {
+                      String path, boolean secure, int version) {
             this.name = name;
             this.value = value;
             this.comment = comment;
@@ -81,7 +80,6 @@ public class HertsHttpRequestImpl implements HertsHttpRequest {
             this.path = path;
             this.secure = secure;
             this.version = version;
-            this.isHttpOnly = isHttpOnly;
         }
 
         public String getName() {
@@ -114,10 +112,6 @@ public class HertsHttpRequestImpl implements HertsHttpRequest {
 
         public int getVersion() {
             return version;
-        }
-
-        public boolean isHttpOnly() {
-            return isHttpOnly;
         }
     }
 }

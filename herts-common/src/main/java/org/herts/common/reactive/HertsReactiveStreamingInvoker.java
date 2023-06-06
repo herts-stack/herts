@@ -5,9 +5,11 @@ import org.herts.common.modelx.HertsReactivePayload;
 import org.herts.common.loadbalancing.HertsBroker;
 import org.herts.common.serializer.HertsSerializer;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,7 +38,7 @@ public class HertsReactiveStreamingInvoker implements InvocationHandler {
             Collections.addAll(parameters, args);
         }
         if (method.getParameterTypes().length > 0) {
-            parameterTypes = List.of(method.getParameterTypes());
+            parameterTypes = Arrays.asList(method.getParameterTypes());
         }
 
         if (this.clientId == null || this.clientId.isEmpty()) {

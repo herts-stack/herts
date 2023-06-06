@@ -10,7 +10,7 @@ import org.herts.http.engine.HertsHttpServer;
 public class HttpServer {
 
     public static void run() {
-        var metrics = HertsMetricsSetting.builder().isRpsEnabled(true).isLatencyEnabled(true).build();
+        HertsMetricsSetting metrics = HertsMetricsSetting.builder().isRpsEnabled(true).isLatencyEnabled(true).build();
 
         HertsHttpEngine engine = HertsHttpServer.builder()
                 .registerHertsHttpService(new HttpServiceImpl01(), new HttpServerInterceptor())

@@ -45,11 +45,18 @@ public class IntegrationTestRsClient {
                 logger.info("Disconnected");
             }
         });
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         client.getChannel().shutdown();
     }
 
     private static HelloRequest genRq() {
-        var rq = new HelloRequest();
+        HelloRequest rq = new HelloRequest();
         rq.setKey("test");
         return rq;
     }

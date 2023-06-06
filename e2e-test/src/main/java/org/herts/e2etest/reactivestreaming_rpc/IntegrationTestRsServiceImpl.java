@@ -18,7 +18,7 @@ public class IntegrationTestRsServiceImpl extends HertsReactiveStreamingService<
     @Override
     public void hello01() {
         logger.info("------------ ReactiveStreamingService hello01 RPC broadcast onReceivedHello01, 02, 03");
-        var clientId = getClientId();
+        String clientId = getClientId();
         broadcast(clientId).onReceivedHello01();
         broadcast(clientId).onReceivedHello02("TEST!", 9999);
         broadcast(clientId).onReceivedHello03(Collections.singletonMap("key", "value"));
@@ -27,7 +27,7 @@ public class IntegrationTestRsServiceImpl extends HertsReactiveStreamingService<
     @Override
     public void hello02(String id) {
         logger.info("------------ ReactiveStreamingService hello02 RPC broadcast onReceivedHello02");
-        var clientId = getClientId();
+        String clientId = getClientId();
         try {
             broadcast(clientId).onReceivedHello02(null, 1);
         } catch (Exception e) {
@@ -45,7 +45,7 @@ public class IntegrationTestRsServiceImpl extends HertsReactiveStreamingService<
     @Override
     public HelloResponse01 hello04(String id, Map<String, String> data01) {
         logger.info("------------ ReactiveStreamingService hello04 RPC broadcast onReceivedHello05");
-        var res = new HelloResponse01();
+        HelloResponse01 res = new HelloResponse01();
         res.setCode(999);
         res.setTest("test");
         broadcast(getClientId()).onReceivedHello05(null, null);

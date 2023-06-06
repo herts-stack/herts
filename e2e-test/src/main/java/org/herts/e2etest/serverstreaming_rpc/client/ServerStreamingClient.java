@@ -23,9 +23,9 @@ public class ServerStreamingClient {
                 .connect();
 
         ServerStreamingRpcService service = client.createHertsRpcService(ServerStreamingRpcService.class);
-        var req = new HelloRequest();
+        HelloRequest req = new HelloRequest();
         req.setNumber(7777);
-        service.test05("ABC_id", req, new StreamObserver<>() {
+        service.test05("ABC_id", req, new StreamObserver<HelloResponse01>() {
             @Override
             public void onNext(HelloResponse01 res) {
                 logger.info(String.format("Got message at %d, %d", res.getCode(), res.getTimestamp()));
@@ -77,5 +77,10 @@ public class ServerStreamingClient {
             }
         });
 
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -12,9 +12,9 @@ import org.herts.common.service.HertsService;
 import org.herts.metrics.HertsMetrics;
 import org.herts.metrics.server.HertsMetricsServer;
 
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 
 /**
  * Herts http server core
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
@@ -62,18 +63,11 @@ public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer 
             methodParameters.put(method.getName(), parameters);
         }
 
-        Object coreObject;
-        try {
-            coreObject = thisClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new HertsInstanceException(e);
-        }
-
         if (this.hertsHttpMetrics.isMetricsEnabled()) {
-            this.hertsHttpCaller = new HertsHttpMetricsCaller(coreObject, this.hertsHttpMetrics,
+            this.hertsHttpCaller = new HertsHttpMetricsCaller(hertsRpcService, this.hertsHttpMetrics,
                     this.hertsSerializer, metricsServer, methodParameters, serviceName);
         } else {
-            this.hertsHttpCaller = new HertsHttpSimpleCaller(coreObject, this.hertsHttpMetrics,
+            this.hertsHttpCaller = new HertsHttpSimpleCaller(hertsRpcService, this.hertsHttpMetrics,
                     this.hertsSerializer, methodParameters);
         }
     }

@@ -12,6 +12,8 @@ import org.herts.rpcclient.HertsRpcClientBuilder;
 import org.herts.rpcclient.HertsRpcClientInterceptBuilder;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -30,19 +32,19 @@ public class UnaryClient {
                 .connect();
 
         UnaryRpcService01 service_01 = client.createHertsRpcService(UnaryRpcService01.class);
-        var res01 = service_01.test01("TEST01", "VALUE01");
+        String res01 = service_01.test01("TEST01", "VALUE01");
         logger.info(res01);
 
-        var res02 = service_01.test02();
+        boolean res02 = service_01.test02();
         logger.info("" + res02);
 
-        var res03 = service_01.test03();
+        Map<String, String> res03 = service_01.test03();
         logger.info(res03.get("Key"));
 
-        var res100 = service_01.test100(new HelloRequest());
+        boolean res100 = service_01.test100(new HelloRequest());
         logger.info(""  + res100);
 
-        var res101 = service_01.test101(Collections.singletonMap("key", "map_val"), Collections.singletonList("hello"));
+        List<String> res101 = service_01.test101(Collections.singletonMap("key", "map_val"), Collections.singletonList("hello"));
         logger.info(""  + res101);
 
         service_01.test102();
@@ -66,7 +68,7 @@ public class UnaryClient {
         }
 
         UnaryRpcService02 service_02 = client.createHertsRpcService(UnaryRpcService02.class);
-        var res0201 = service_02.hello01("ID", "Hello!");
+        String res0201 = service_02.hello01("ID", "Hello!");
         logger.info(res0201);
         client.getChannel().shutdown();
     }

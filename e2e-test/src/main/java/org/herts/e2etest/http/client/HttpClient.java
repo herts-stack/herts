@@ -12,6 +12,7 @@ import org.herts.httpclient.HertsHttpClient;
 import org.herts.httpclient.HertsHttpClientBase;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class HttpClient {
@@ -27,43 +28,43 @@ public class HttpClient {
                 .port(Constant.port)
                 .build();
 
-        var service = client.createHertsService(HttpService01.class, Collections.singletonMap("Authorization", "Bearer XXXXXXX"));
+        HttpService01 service = client.createHertsService(HttpService01.class, Collections.singletonMap("Authorization", "Bearer XXXXXXX"));
 
         try {
             for (int i = 0; i < 100; i++) {
-                var res01 = service.httpTest01("ID", "VALUE bu client");
+                Map<String, String> res01 = service.httpTest01("ID", "VALUE bu client");
                 logger.info(serializer.serializeAsStr(res01));
 
-                var res02 = service.httpTest02();
+                boolean res02 = service.httpTest02();
                 logger.info(serializer.serializeAsStr(res02));
             }
 
             service = client.recreateHertsService(HttpService01.class);
             for (int i = 0; i < 100; i++) {
-                var res = service.httpTest01("ID", "Recreate!");
+                Map<String, String> res = service.httpTest01("ID", "Recreate!");
                 logger.info(serializer.serializeAsStr(res));
             }
-            var testData = new TestData();
+            TestData testData = new TestData();
             testData.setBar("bar");
             testData.setFoo("foo");
-            var res04 = service.httpTest04(testData);
+            TestData res04 = service.httpTest04(testData);
             logger.info(serializer.serializeAsStr(res04));
 
-            var res05 = service.httpTest05(Collections.singletonList("hello"), Collections.singletonMap("test10", "value"));
+            String res05 = service.httpTest05(Collections.singletonList("hello"), Collections.singletonMap("test10", "value"));
             logger.info(res05);
 
-            var res06 = service.httpTest06("hello", true, 100, 200, 1.4);
+            String res06 = service.httpTest06("hello", true, 100, 200, 1.4);
             logger.info(res06);
 
             try {
-                var res07 = service.httpTest07();
+                String res07 = service.httpTest07();
             } catch (HertsHttpErrorException ex) {
                 logger.info(ex.getStatusCode() + " " + ex.getMessage());
             }
 
-            var service02 = client.createHertsService(HttpService02.class);
+            HttpService02 service02 = client.createHertsService(HttpService02.class);
             for (int i = 0; i < 100; i++) {
-                var res = service02.httpTest10();
+                String res = service02.httpTest10();
                 logger.info(serializer.serializeAsStr(res));
             }
         } catch (Exception ex) {

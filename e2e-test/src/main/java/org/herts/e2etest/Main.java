@@ -85,26 +85,52 @@ public class Main {
         HertsType coreType = ArgOperation.convert(herts_type);
         if (exec_type.equals(ArgOperation.SERVER) && test_type.equals(ArgOperation.testTypes[0])) {
             switch (coreType) {
-                case Unary -> UnaryServer.run();
-                case ClientStreaming -> ClientStreamingServer.run();
-                case ServerStreaming -> ServerStreamingServer.run();
-                case BidirectionalStreaming -> BiStreamingServer.run();
-                case Reactive -> IntegrationTestRsServer.run();
-                case Http -> HttpServer.run();
+                case Unary:
+                    UnaryServer.run();
+                    break;
+                case ClientStreaming:
+                    ClientStreamingServer.run();
+                    break;
+                case ServerStreaming:
+                    ServerStreamingServer.run();
+                    break;
+                case BidirectionalStreaming:
+                    BiStreamingServer.run();
+                    break;
+                case Reactive:
+                    IntegrationTestRsServer.run();
+                    break;
+                case Http:
+                    HttpServer.run();
+                    break;
             }
         } else if (exec_type.equals(ArgOperation.SERVER) && test_type.equals(ArgOperation.testTypes[1])) {
             switch (coreType) {
-                case Reactive -> QueueTestRsServer.run();
+                case Reactive:
+                    QueueTestRsServer.run();
+                    break;
             }
         } else if (exec_type.equals(ArgOperation.CLIENT) && test_type.equals(ArgOperation.testTypes[0])) {
             Thread thread = new Thread(() -> {
                 switch (coreType) {
-                    case Unary -> UnaryClient.run();
-                    case ClientStreaming -> ClientStreamingClient.run();
-                    case ServerStreaming -> ServerStreamingClient.run();
-                    case BidirectionalStreaming -> BiStreamingClient.run();
-                    case Reactive -> IntegrationTestRsClient.run();
-                    case Http -> HttpClient.run();
+                    case Unary:
+                        UnaryClient.run();
+                        break;
+                    case ClientStreaming:
+                        ClientStreamingClient.run();
+                        break;
+                    case ServerStreaming:
+                        ServerStreamingClient.run();
+                        break;
+                    case BidirectionalStreaming:
+                        BiStreamingClient.run();
+                        break;
+                    case Reactive:
+                        IntegrationTestRsClient.run();
+                        break;
+                    case Http:
+                        HttpClient.run();
+                        break;
                 }
 
             });
@@ -117,7 +143,9 @@ public class Main {
         } else if (exec_type.equals(ArgOperation.CLIENT) && test_type.equals(ArgOperation.testTypes[1])) {
             Thread thread = new Thread(() -> {
                 switch (coreType) {
-                    case Reactive -> QueueTestRsClient.run();
+                    case Reactive:
+                        QueueTestRsClient.run();
+                        break;
                 }
             });
             thread.start();

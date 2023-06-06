@@ -2,6 +2,8 @@
 
 set -e
 
+java_version=$1
+
 function run_test {
     herts_type=$1
     echo "==================================="
@@ -33,8 +35,16 @@ function kill {
 }
 
 function build {
-    ./gradlew :e2e-test:clean :e2e-test:shadowJar
+    ./gradlew clean
+    ./gradlew :e2e-test:clean :e2e-test:shadowJar -P javaVersion=$java_version
 }
+
+if [ "${java_version}" == "" ]; then
+  echo "Please se java version on first arg"
+  exit 1
+fi
+
+build
 
 run_test "http"
 kill

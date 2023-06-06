@@ -6,7 +6,7 @@ apply plugin: 'application'
 
 def pkgName = 'org.herts.common'
 def pkgVersion = '1.0.0'
-def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '8'
+def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '11'
 
 group pkgName
 version pkgVersion
