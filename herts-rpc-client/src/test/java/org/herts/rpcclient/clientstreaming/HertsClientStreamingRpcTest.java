@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -29,7 +30,7 @@ public class HertsClientStreamingRpcTest {
     @BeforeAll
     static void init() throws InterruptedException {
         try {
-            var t = new Thread(() -> {
+            Thread t = new Thread(() -> {
                 GrpcServerOption option = new GrpcServerOption();
                 option.setPort(port);
                 engine = HertsRpcServerEngineBuilder.builder(option)
@@ -60,10 +61,10 @@ public class HertsClientStreamingRpcTest {
     public void test01() throws InterruptedException {
         TestClientStreamingRpcService clientService = client.createHertsRpcService(TestClientStreamingRpcService.class);
         List<String> receivedData = new ArrayList<>();
-        var observer = clientService.test01(new StreamObserver<String>() {
+        StreamObserver<String> observer = clientService.test01(new StreamObserver<String>() {
             @Override
             public void onNext(String value) {
-                var splitData = value.split("\n");
+                String[] splitData = value.split("\n");
                 receivedData.addAll(Arrays.asList(splitData));
             }
 
@@ -90,10 +91,10 @@ public class HertsClientStreamingRpcTest {
     public void test02() throws InterruptedException {
         TestClientStreamingRpcService clientService = client.createHertsRpcService(TestClientStreamingRpcService.class);
         List<String> receivedData = new ArrayList<>();
-        var observer = clientService.test02(new StreamObserver<TestFoo>() {
+        StreamObserver<TestHoo> observer = clientService.test02(new StreamObserver<TestFoo>() {
             @Override
             public void onNext(TestFoo value) {
-                var splitData = value.getA01().split("\n");
+                String[] splitData = value.getA01().split("\n");
                 receivedData.addAll(Arrays.asList(splitData));
             }
 
@@ -121,10 +122,10 @@ public class HertsClientStreamingRpcTest {
     public void test03() throws InterruptedException {
         TestClientStreamingRpcService clientService = client.createHertsRpcService(TestClientStreamingRpcService.class);
         List<String> receivedData = new ArrayList<>();
-        var observer = clientService.test03(new StreamObserver<String>() {
+        StreamObserver<Map<String, String>> observer = clientService.test03(new StreamObserver<String>() {
             @Override
             public void onNext(String value) {
-                var splitData = value.split("\n");
+                String[] splitData = value.split("\n");
                 receivedData.addAll(Arrays.asList(splitData));
             }
 

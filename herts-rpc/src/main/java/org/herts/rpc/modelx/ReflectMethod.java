@@ -38,8 +38,8 @@ public class ReflectMethod {
     }
 
     public void printMethodName() {
-        var rpcPaths = this.serviceName.split("\\.");
-        var rpcPath = rpcPaths[rpcPaths.length-1];
+        String[] rpcPaths = this.serviceName.split("\\.");
+        String rpcPath = rpcPaths[rpcPaths.length-1];
         logger.info(rpcPath + " stats");
         for (Method method : this.methods) {
             logger.info(rpcPath + "/" + method.getName());

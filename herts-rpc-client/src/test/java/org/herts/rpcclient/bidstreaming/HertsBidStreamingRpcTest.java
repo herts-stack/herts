@@ -33,7 +33,7 @@ public class HertsBidStreamingRpcTest {
     @BeforeAll
     static void init() throws InterruptedException {
         try {
-            var t = new Thread(() -> {
+            Thread t = new Thread(() -> {
                 GrpcServerOption option = new GrpcServerOption();
                 option.setPort(port);
                 engine = HertsRpcServerEngineBuilder.builder(option)
@@ -65,7 +65,7 @@ public class HertsBidStreamingRpcTest {
         TestBidStreamingRpcService clientService = client.createHertsRpcService(TestBidStreamingRpcService.class);
         List<String> ping = new ArrayList<>();
         List<String> data = new ArrayList<>();
-        var observer = clientService.test01(new StreamObserver<String>() {
+        StreamObserver<String> observer = clientService.test01(new StreamObserver<String>() {
             @Override
             public void onNext(String value) {
                 if (value.contains("ping")) {
@@ -103,7 +103,7 @@ public class HertsBidStreamingRpcTest {
     public void test02() throws InterruptedException {
         TestBidStreamingRpcService clientService = client.createHertsRpcService(TestBidStreamingRpcService.class);
         List<TestHoo> data = new ArrayList<>();
-        var observer = clientService.test02(new StreamObserver<TestHoo>() {
+        StreamObserver<TestFoo> observer = clientService.test02(new StreamObserver<TestHoo>() {
             @Override
             public void onNext(TestHoo value) {
                 data.add(value);
@@ -131,7 +131,7 @@ public class HertsBidStreamingRpcTest {
     public void test03() throws InterruptedException {
         TestBidStreamingRpcService clientService = client.createHertsRpcService(TestBidStreamingRpcService.class);
         Map<String, String> data = new HashMap<>();
-        var observer = clientService.test03(new StreamObserver<Map<String, String>>() {
+        StreamObserver<Map<String, String>> observer = clientService.test03(new StreamObserver<Map<String, String>>() {
             @Override
             public void onNext(Map<String, String> value) {
                 data.put(UUID.randomUUID().toString(), value.get("key"));
@@ -156,7 +156,7 @@ public class HertsBidStreamingRpcTest {
 
         assertEquals(100, data.size());
 
-        var uniqValues = data.values().stream().toList();
+        List<String> uniqValues = data.values().stream().toList();
         Set<String> duplicates = CollectionUtil.findDuplicates(uniqValues);
         assertEquals(0, duplicates.size());
     }
@@ -165,7 +165,7 @@ public class HertsBidStreamingRpcTest {
     public void error01() throws InterruptedException {
         TestBidStreamingRpcService clientService = client.createHertsRpcService(TestBidStreamingRpcService.class);
         final boolean[] isErr = {false};
-        var observer = clientService.error01(new StreamObserver<byte[]>() {
+        StreamObserver<byte[]> observer = clientService.error01(new StreamObserver<byte[]>() {
             @Override
             public void onNext(byte[] value) {
             }
@@ -191,7 +191,7 @@ public class HertsBidStreamingRpcTest {
     public void error02() throws InterruptedException {
         TestBidStreamingRpcService clientService = client.createHertsRpcService(TestBidStreamingRpcService.class);
         final boolean[] isErr = {false};
-        var observer = clientService.error02(new StreamObserver<byte[]>() {
+        StreamObserver<byte[]> observer = clientService.error02(new StreamObserver<byte[]>() {
             @Override
             public void onNext(byte[] value) {
                 throw new RuntimeException("unexpected");

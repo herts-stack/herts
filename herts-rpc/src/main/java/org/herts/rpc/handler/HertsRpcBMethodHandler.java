@@ -54,7 +54,7 @@ public class HertsRpcBMethodHandler<Req, Resp> implements
     @Override
     public StreamObserver<Req> invoke(StreamObserver<Resp> responseObserver) {
         try {
-            var response = this.hertsRpcCaller.invokeStreaming(this.coreObject, responseObserver);
+            StreamObserver<Resp> response = this.hertsRpcCaller.invokeStreaming(this.coreObject, responseObserver);
             return (StreamObserver<Req>) response;
         } catch (IllegalAccessException | InvocationTargetException ex) {
             throw new HertsMessageException(ex);

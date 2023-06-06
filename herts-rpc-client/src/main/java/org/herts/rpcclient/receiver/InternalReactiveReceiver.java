@@ -44,7 +44,7 @@ public class InternalReactiveReceiver {
      * @return InternalReceiverStub
      */
     public InternalReceiverStub newHertsReactiveStreamingService(Channel channel) {
-        io.grpc.stub.AbstractStub.StubFactory<InternalReceiverStub> factory = new AbstractStub.StubFactory<>() {
+        io.grpc.stub.AbstractStub.StubFactory<InternalReceiverStub> factory = new AbstractStub.StubFactory<InternalReceiverStub>() {
             @Override
             public InternalReceiverStub newStub(Channel channel, CallOptions callOptions) {
                 return new InternalReceiverStub(channel, callOptions, hertsReceiver);
@@ -76,7 +76,7 @@ public class InternalReactiveReceiver {
          * @param streaming Class
          */
         public void registerReceiver(Class<?> streaming) throws HertsJsonProcessingException {
-            var serviceName = streaming.getName();
+            String serviceName = streaming.getName();
             Method method = streaming.getDeclaredMethods()[0];
 
             MethodDescriptor<Object, Object> methodDescriptor = HertsGrpcDescriptor

@@ -8,9 +8,9 @@ public class DateTimeUtilTest {
 
     @Test
     public void getCurrentTimeMilliSec() throws InterruptedException {
-        var start = DateTimeUtil.getCurrentTimeMilliSec();
+        long start = DateTimeUtil.getCurrentTimeMilliSec();
         Thread.sleep(1000);
-        var end = DateTimeUtil.getCurrentTimeMilliSec();
+        long end = DateTimeUtil.getCurrentTimeMilliSec();
         assertTrue((end-start) > 800);
     }
 }

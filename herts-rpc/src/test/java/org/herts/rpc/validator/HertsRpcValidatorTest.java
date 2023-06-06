@@ -17,7 +17,7 @@ public class HertsRpcValidatorTest {
         @Test
         public void ok() {
             List<HertsService> hertsServices = Collections.singletonList(new TestServerStreamingService());
-            var res = HertsRpcValidator.isAllReturnVoid(hertsServices);
+            boolean res = HertsRpcValidator.isAllReturnVoid(hertsServices);
             assertTrue(res);
         }
 
@@ -27,7 +27,7 @@ public class HertsRpcValidatorTest {
                     new TestServerStreamingService(),
                     new TestServerStreamingServiceInvalid());
 
-            var res = HertsRpcValidator.isAllReturnVoid(hertsServices);
+            boolean res = HertsRpcValidator.isAllReturnVoid(hertsServices);
             assertFalse(res);
         }
     }
@@ -37,7 +37,7 @@ public class HertsRpcValidatorTest {
         @Test
         public void ok() {
             List<HertsService> hertsServices = Collections.singletonList(new TestClientStreamingService());
-            var res = HertsRpcValidator.isAllReturnStreamObserver(hertsServices);
+            boolean res = HertsRpcValidator.isAllReturnStreamObserver(hertsServices);
             assertTrue(res);
         }
 
@@ -47,7 +47,7 @@ public class HertsRpcValidatorTest {
                     new TestClientStreamingService(),
                     new TestClientStreamingServiceInvalid());
 
-            var res = HertsRpcValidator.isAllReturnStreamObserver(hertsServices);
+            boolean res = HertsRpcValidator.isAllReturnStreamObserver(hertsServices);
             assertFalse(res);
         }
     }
@@ -57,7 +57,7 @@ public class HertsRpcValidatorTest {
         @Test
         public void ok() {
             List<HertsService> hertsServices = Collections.singletonList(new TestReactiveStreamingService());
-            var res = HertsRpcValidator.isAllReceiverVoid(hertsServices);
+            boolean res = HertsRpcValidator.isAllReceiverVoid(hertsServices);
             assertTrue(res);
         }
     }

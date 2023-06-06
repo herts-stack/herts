@@ -37,7 +37,7 @@ public class HertsGrpcDescriptor {
             String serviceName,
             String methodName) {
 
-        var methodType = coreType.convertToMethodType();
+        MethodDescriptor.MethodType methodType = coreType.convertToMethodType();
         MethodDescriptor.Builder<byte[], byte[]> builder = MethodDescriptor.<byte[], byte[]>newBuilder()
                 .setType(methodType)
                 .setFullMethodName(generateFullMethodName(serviceName, methodName))
@@ -61,7 +61,7 @@ public class HertsGrpcDescriptor {
             String serviceName,
             String methodName) {
 
-        var methodType = coreType.convertToMethodType();
+        MethodDescriptor.MethodType methodType = coreType.convertToMethodType();
         MethodDescriptor.Builder<Object, Object> builder = MethodDescriptor.<Object, Object>newBuilder()
                 .setType(methodType)
                 .setFullMethodName(generateFullMethodName(serviceName, methodName))
@@ -83,7 +83,7 @@ public class HertsGrpcDescriptor {
         ServiceDescriptor.Builder builder = ServiceDescriptor.newBuilder(serviceName);
         List<MethodDescriptor<byte[], byte[]>> methodDescriptors = new ArrayList<>();
 
-        for (var hertsMethod : hertsMethods) {
+        for (HertsMethod hertsMethod : hertsMethods) {
             MethodDescriptor<byte[], byte[]> method = generateMethodDescriptor(
                     hertsMethod.getHertsCoreType(), serviceName, hertsMethod.getMethodName());
 
@@ -105,7 +105,7 @@ public class HertsGrpcDescriptor {
         ServiceDescriptor.Builder builder = ServiceDescriptor.newBuilder(serviceName);
         List<MethodDescriptor<Object, Object>> methodDescriptors = new ArrayList<>();
 
-        for (var hertsMethod : hertsMethods) {
+        for (HertsMethod hertsMethod : hertsMethods) {
             MethodDescriptor<Object, Object> method = generateStramingMethodDescriptor(
                     hertsMethod.getHertsCoreType(), serviceName, hertsMethod.getMethodName());
 
@@ -115,5 +115,4 @@ public class HertsGrpcDescriptor {
 
         return HertsStreamingDescriptor.createGrpcDescriptor(builder.build(), methodDescriptors);
     }
-
 }

@@ -80,7 +80,7 @@ public class IBuilder implements HertsRpcClientIBuilder {
 
     @Override
     public HertsRpcClient connect() {
-        var serviceHertsTypes = getRegisteredServiceHertsTypes();
+        List<HertsType> serviceHertsTypes = getRegisteredServiceHertsTypes();
         if (!HertsRpcClientValidator.isSameHertsCoreType(serviceHertsTypes)) {
             throw new HertsRpcClientBuildException("Please register same HertsService. Not supported multiple different services");
         }
@@ -141,7 +141,7 @@ public class IBuilder implements HertsRpcClientIBuilder {
         List<HertsType> hertsTypes = new ArrayList<>();
         for (Class<?> c : this.hertsRpcServices) {
             try {
-                var annotation = c.getAnnotation(HertsRpcService.class);
+                HertsRpcService annotation = c.getAnnotation(HertsRpcService.class);
                 hertsTypes.add(annotation.value());
             } catch (Exception ex) {
                 throw new HertsRpcClientBuildException("Could not find @HertsRpcService annotation in " + c.getName(), ex);
@@ -155,7 +155,7 @@ public class IBuilder implements HertsRpcClientIBuilder {
             throw new HertsRpcClientBuildException("Please register HertsService and host");
         }
 
-        var validateMsg = HertsRpcClientValidator.validateMethod(this.hertsRpcServices);
+        String validateMsg = HertsRpcClientValidator.validateMethod(this.hertsRpcServices);
         if (!validateMsg.isEmpty()) {
             throw new HertsRpcClientBuildException(validateMsg);
         }
@@ -172,7 +172,7 @@ public class IBuilder implements HertsRpcClientIBuilder {
             throw new HertsRpcClientBuildException("Please register HertsService and host");
         }
 
-        var validateMsg = HertsRpcClientValidator.validateMethod(this.hertsRpcServices);
+        String validateMsg = HertsRpcClientValidator.validateMethod(this.hertsRpcServices);
         if (!validateMsg.isEmpty()) {
             throw new HertsRpcClientBuildException(validateMsg);
         }

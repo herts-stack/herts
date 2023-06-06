@@ -43,7 +43,7 @@ public class HertsReactiveStreamingInvoker implements InvocationHandler {
             return proxy;
         }
 
-        var hertsPayload = new HertsReactivePayload();
+        HertsReactivePayload hertsPayload = new HertsReactivePayload();
         hertsPayload.setClientId(this.clientId);
         hertsPayload.setMethodName(method.getName());
         hertsPayload.setParameters(parameters);

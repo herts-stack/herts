@@ -1,5 +1,6 @@
 package org.herts.rpc.engine;
 
+import org.herts.common.loadbalancing.HertsBroker;
 import org.herts.common.modelx.HertsMethod;
 import org.herts.common.context.HertsMetricsSetting;
 import org.herts.common.context.HertsSystemContext;
@@ -99,7 +100,7 @@ public class HertsRpcServerBuilder implements HertsRpcServer {
 
         BindableService bindableReceiver = createBindableReceiver(hertsReactiveService);
         BindableService bindableService = createBindableService(hertsReactiveService);
-        var defaultInterceptor = HertsEmptyRpcInterceptor.create();
+        HertsEmptyRpcInterceptor defaultInterceptor = HertsEmptyRpcInterceptor.create();
         this.services.put(bindableReceiver, HertsRpcInterceptBuilder.builder(defaultInterceptor).build());
         if (interceptor == null) {
             this.services.put(bindableService, HertsRpcInterceptBuilder.builder(defaultInterceptor).build());
@@ -116,7 +117,7 @@ public class HertsRpcServerBuilder implements HertsRpcServer {
         }
         this.hertsRpcServices.add(hertsReactiveService);
 
-        var defaultInterceptor = HertsEmptyRpcInterceptor.create();
+        HertsEmptyRpcInterceptor defaultInterceptor = HertsEmptyRpcInterceptor.create();
         this.services.put(createBindableReceiver(hertsReactiveService), HertsRpcInterceptBuilder.builder(defaultInterceptor).build());
         this.services.put(createBindableService(hertsReactiveService), HertsRpcInterceptBuilder.builder(defaultInterceptor).build());
         return this;
@@ -192,8 +193,8 @@ public class HertsRpcServerBuilder implements HertsRpcServer {
                     "Please register same HertsCoreService. Not supported multiple different services");
         }
 
-        var hertsType = this.hertsTypes.get(0);
-        var validateMsg = HertsRpcValidator.validateRegisteredServices(this.hertsRpcServices);
+        HertsType hertsType = this.hertsTypes.get(0);
+        String validateMsg = HertsRpcValidator.validateRegisteredServices(this.hertsRpcServices);
         if (!validateMsg.isEmpty()) {
             throw new HertsRpcBuildException(validateMsg);
         }
@@ -215,7 +216,7 @@ public class HertsRpcServerBuilder implements HertsRpcServer {
                     "Receiver supports void method only");
         }
 
-        var broker = BrokerTypeBuilder.builder()
+        HertsBroker broker = BrokerTypeBuilder.builder()
                 .loadBalancingType(this.loadBalancingType)
                 .connectionInfo(this.connectionInfo)
                 .build();
@@ -227,7 +228,7 @@ public class HertsRpcServerBuilder implements HertsRpcServer {
             }
         }
 
-        var buildInfo = new ServerBuildInfo(this.services, this.hertsTypes, this.option, this.credentials, this.hertsMetricsServer, this.hook);
+        ServerBuildInfo buildInfo = new ServerBuildInfo(this.services, this.hertsTypes, this.option, this.credentials, this.hertsMetricsServer, this.hook);
         return new HertsRpcServerEngineBuilder(buildInfo);
     }
 
@@ -240,7 +241,6 @@ public class HertsRpcServerBuilder implements HertsRpcServer {
         reflectMethod.printMethodName();
 
         return new BindableService() {
-            private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
             private ServerServiceDefinition bindableService = null;
 
             @Override
@@ -345,7 +345,6 @@ public class HertsRpcServerBuilder implements HertsRpcServer {
         reflectMethod.printMethodName();
 
         return new BindableService() {
-            private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
             private ServerServiceDefinition serverServiceDefinition = null;
 
             @Override
@@ -379,7 +378,6 @@ public class HertsRpcServerBuilder implements HertsRpcServer {
         reflectMethod.printMethodName();
 
         return new BindableService() {
-            private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
             private ServerServiceDefinition serverServiceDefinition = null;
 
             @Override
@@ -414,7 +412,6 @@ public class HertsRpcServerBuilder implements HertsRpcServer {
         reflectMethod.printMethodName();
 
         return new BindableService() {
-            private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
             private ServerServiceDefinition serverServiceDefinition = null;
 
             @Override
@@ -447,7 +444,6 @@ public class HertsRpcServerBuilder implements HertsRpcServer {
         reflectMethod.printMethodName();
 
         return new BindableService() {
-            private static final Logger logger = HertsLogger.getLogger(BindableService.class.getSimpleName());
             private ServerServiceDefinition serverServiceDefinition = null;
 
             @Override

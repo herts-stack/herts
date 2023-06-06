@@ -39,7 +39,7 @@ public class InternalReactiveObserver implements StreamObserver<Object> {
         if (methodName.equals(HertsSystemContext.Rpc.REGISTERED_METHOD_NAME)) {
             return;
         }
-        var reflectMethod = this.reflectMethods.get(methodName);
+        Method reflectMethod = this.reflectMethods.get(methodName);
         if (reflectMethod == null) {
             return;
         }

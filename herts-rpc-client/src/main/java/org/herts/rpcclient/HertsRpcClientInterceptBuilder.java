@@ -44,7 +44,7 @@ public class HertsRpcClientInterceptBuilder implements ClientInterceptor {
             this.interceptor.beforeCallMethod(methodDescriptor, callOptions, channel);
         }
 
-        return new SimpleForwardingClientCall<>(channel.newCall(methodDescriptor, callOptions)) {
+        return new SimpleForwardingClientCall<ReqT, RespT>(channel.newCall(methodDescriptor, callOptions)) {
             @Override
             public void start(Listener<RespT> responseListener, Metadata headers) {
                 if (interceptor != null) {

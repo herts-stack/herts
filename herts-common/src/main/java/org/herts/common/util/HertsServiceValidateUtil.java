@@ -8,6 +8,7 @@ import org.herts.common.exception.HertsServiceNotFoundException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Herts service validation utility
@@ -39,7 +40,7 @@ public class HertsServiceValidateUtil {
         List<String> serviceNames = new ArrayList<>();
         Method[] methods = null;
         for (HertsService hertsRpcService : services) {
-            var serviceName = hertsRpcService.getClass().getName();
+            String serviceName = hertsRpcService.getClass().getName();
             serviceNames.add(serviceName);
 
             Class<?> thisClass;
@@ -67,7 +68,7 @@ public class HertsServiceValidateUtil {
         Method[] methods = null;
         for (Class<?> c : classes) {
             try {
-                var serviceName = c.getName();
+                String serviceName = c.getName();
                 serviceNames.add(serviceName);
                 methods = c.getDeclaredMethods();
             } catch (Exception ex) {
@@ -96,7 +97,7 @@ public class HertsServiceValidateUtil {
             return "Method name is duplicated. Herts supports uniq method name only.";
         }
 
-        var dupServiceNames = CollectionUtil.findDuplicates(serviceNames);
+        Set<String> dupServiceNames = CollectionUtil.findDuplicates(serviceNames);
         if (dupServiceNames.size() > 0) {
             return "HertsService name is duplicated.";
         }
@@ -199,7 +200,7 @@ public class HertsServiceValidateUtil {
     public static boolean isAllReturnVoid(List<HertsService> hertsServices) {
         for (HertsService hertsService : hertsServices) {
             for (Method method : hertsService.getClass().getDeclaredMethods()) {
-                var methodReturnType = method.getReturnType().getName();
+                String methodReturnType = method.getReturnType().getName();
                 if (!methodReturnType.equals(voidReturnName)) {
                     return false;
                 }
@@ -218,7 +219,7 @@ public class HertsServiceValidateUtil {
     public static boolean isAllReturnVoidBy(List<HertsReceiver> hertsReceivers) {
         for (HertsReceiver herts : hertsReceivers) {
             for (Method method : herts.getClass().getDeclaredMethods()) {
-                var methodReturnType = method.getReturnType().getName();
+                String methodReturnType = method.getReturnType().getName();
                 if (!methodReturnType.equals(voidReturnName)) {
                     return false;
                 }

@@ -55,13 +55,13 @@ public class HertsHttpCallerBase {
     }
 
     protected void call(Method hertsMethod, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        var parameters = this.parameters.get(hertsMethod.getName());
+        List<Parameter> parameters = this.parameters.get(hertsMethod.getName());
         HertsHttpRequest hertsRequest;
 
         if (parameters.size() > 0) {
             hertsRequest = this.hertsSerializer.deserialize(request.getReader(), HertsHttpRequest.class);
 
-            var keyNames = hertsRequest.getKeyNames();
+            List<String> keyNames = hertsRequest.getKeyNames();
             for (Parameter param : parameters) {
                 if (!keyNames.contains(param.getName())) {
                     throw new HertsInvalidBodyException("Invalid body");
@@ -93,8 +93,8 @@ public class HertsHttpCallerBase {
             return;
         }
 
-        var hertsResponse = new HertsHttpResponse();
-        var payload = new HertsHttpMsg();
+        HertsHttpResponse hertsResponse = new HertsHttpResponse();
+        HertsHttpMsg payload = new HertsHttpMsg();
         payload.setValue(res);
         payload.setClassInfo(hertsMethod.getReturnType().getName());
         hertsResponse.setPayload(payload);

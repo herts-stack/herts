@@ -59,7 +59,8 @@ public class HertsMetricsHandler implements HertsMetrics {
         this.isJvmEnabled = builder.isJvmEnabled;
 
         switch (this.metricsType) {
-            default -> this.prometheusMeterRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+            default:
+                this.prometheusMeterRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
         }
     }
 
@@ -141,7 +142,7 @@ public class HertsMetricsHandler implements HertsMetrics {
             }
 
             for (Method method : methods) {
-                var tag = new ImmutableTag(HertsMetricsContext.METRICS_KEY, method.getName());
+                ImmutableTag tag = new ImmutableTag(HertsMetricsContext.METRICS_KEY, method.getName());
                 this.tagNames.put(method.getName(), tag);
 
                 if (this.hertsType == HertsType.Http) {
@@ -241,7 +242,7 @@ public class HertsMetricsHandler implements HertsMetrics {
 
     @Override
     public HertsTimer startLatencyTimer(String method) {
-        var timer = new HertsTimer();
+        HertsTimer timer = new HertsTimer();
         timer.setType(HertsTimer.Type.Clock);
         timer.setMethod(method);
         timer.setSample(Timer.start(Clock.SYSTEM));

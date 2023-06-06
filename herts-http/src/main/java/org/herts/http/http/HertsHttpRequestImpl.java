@@ -21,7 +21,7 @@ public class HertsHttpRequestImpl implements HertsHttpRequest {
     }
 
     public String getHeader(String headerName) {
-        var val = this.httpRequest.getHeader(headerName);
+        String val = this.httpRequest.getHeader(headerName);
         if (val != null && !val.equals("")) {
             return val;
         }
@@ -42,7 +42,7 @@ public class HertsHttpRequestImpl implements HertsHttpRequest {
 
     public Cookie[] getCookies() {
         Cookie[] cookie = new Cookie[this.httpRequest.getCookies().length];
-        var index = 0;
+        int index = 0;
         for (jakarta.servlet.http.Cookie c : this.httpRequest.getCookies()) {
             cookie[index] = new Cookie(
                     c.getName(),

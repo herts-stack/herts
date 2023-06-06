@@ -26,7 +26,7 @@ public class TestUnaryRpcServiceImpl extends HertsUnaryService<TestUnaryRpcServi
 
     @Override
     public Map<String, String> test03(int a, double b) {
-        var result = String.format("a=%d, b=%f", a, b);
+        String result = String.format("a=%d, b=%f", a, b);
         return Collections.singletonMap("key", result);
     }
 

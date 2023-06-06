@@ -20,14 +20,14 @@ public class HertsHttpCallerBaseTest {
 
     @Test
     public void call_WithVoid() throws Exception {
-        var test = new TestClass();
+        TestClass test = new TestClass();
         Class<?> c = Class.forName(test.getClass().getName());
-        var req = new StubRequest();
-        var res = new StubResponse();
+        StubRequest req = new StubRequest();
+        StubResponse res = new StubResponse();
         HertsMetricsServer metricsServer = new HertsMetricsServer(null);
         HertsSerializer serializer = new HertsSerializer(HertsSerializeType.Json);
-        var callerConstructor = new CallerConstructor(c, req, res, metricsServer, serializer);
-        var caller = new HertsHttpCallerBase(test, metricsServer, serializer, callerConstructor.getParameters());
+        CallerConstructor callerConstructor = new CallerConstructor(c, req, res, metricsServer, serializer);
+        HertsHttpCallerBase caller = new HertsHttpCallerBase(test, metricsServer, serializer, callerConstructor.getParameters());
 
         for (Method m : callerConstructor.getMethods()) {
             caller.call(m, req, res);

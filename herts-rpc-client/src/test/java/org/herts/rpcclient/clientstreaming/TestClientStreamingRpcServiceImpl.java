@@ -12,7 +12,7 @@ import java.util.Map;
 public class TestClientStreamingRpcServiceImpl extends HertsClientStreamingService<TestClientStreamingRpcService> implements TestClientStreamingRpcService {
     @Override
     public StreamObserver<String> test01(StreamObserver<String> responseObserver) {
-        return new StreamObserver<>() {
+        return new StreamObserver<String>() {
             private final List<String> data = new ArrayList<>();
 
             @Override

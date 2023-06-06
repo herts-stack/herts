@@ -61,15 +61,15 @@ public class HertsRpcMetricsCaller extends BaseCaller implements HertsRpcCaller 
 
     @Override
     public <T> StreamObserver<T> invokeStreaming(Object obj, StreamObserver<T> responseObserver) throws InvocationTargetException, IllegalAccessException {
-        var timer = before();
-        var res = this.reflectMethod.invoke(obj, responseObserver);
+        HertsTimer timer = before();
+        Object res = this.reflectMethod.invoke(obj, responseObserver);
         after(timer);
         return (StreamObserver<T>) res;
     }
 
     @Override
     public <T, K> Object invokeServerStreaming(T request, StreamObserver<K> responseObserver) throws InvocationTargetException, IllegalAccessException, IOException {
-        var timer = before();
+        HertsTimer timer = before();
         Object res;
         setMethodRequests(request);
         if (((byte[]) request).length > 0) {
@@ -84,7 +84,7 @@ public class HertsRpcMetricsCaller extends BaseCaller implements HertsRpcCaller 
 
     @Override
     public <T, K> Object invokeUnary(T request, StreamObserver<K> responseObserver) throws InvocationTargetException, IllegalAccessException, IOException {
-        var timer = before();
+        HertsTimer timer = before();
         Object res;
         setMethodRequests(request);
         if (this.requests != null && this.requests.length > 0) {

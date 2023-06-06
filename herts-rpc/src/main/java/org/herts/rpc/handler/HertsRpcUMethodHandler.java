@@ -66,7 +66,7 @@ public class HertsRpcUMethodHandler<Req, Resp> implements
                 responseObserver.onNext((Resp) new byte[]{});
                 responseObserver.onCompleted();
             } else {
-                var responseBytes = this.serializer.serialize(response);
+                byte[] responseBytes = this.serializer.serialize(response);
                 responseObserver.onNext((Resp) responseBytes);
                 responseObserver.onCompleted();
             }
@@ -74,7 +74,8 @@ public class HertsRpcUMethodHandler<Req, Resp> implements
             responseObserver.onError(new HertsRpcErrorException(HertsRpcErrorException.StatusCode.Status13, ex.getMessage()).createStatusException());
         } catch (InvocationTargetException ex) {
             Throwable cause = ex.getCause();
-            if (cause instanceof HertsRpcErrorException exception) {
+            if (cause instanceof HertsRpcErrorException) {
+                HertsRpcErrorException exception = (HertsRpcErrorException) cause;
                 responseObserver.onError(exception.createStatusException());
             } else {
                 responseObserver.onError(new HertsRpcErrorException(HertsRpcErrorException.StatusCode.Status13, "Unexpected error occurred. " + ex.getMessage()).createStatusException());

@@ -90,7 +90,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
             throw new HertsRpcClientBuildException(interfaceType.getSimpleName() + " is not interface. You can create client by interface");
         }
 
-        var serviceName = interfaceType.getName();
+        String serviceName = interfaceType.getName();
         Class<?> target = null;
         for (Class<?> registeredService : this.registeredIfServices) {
             if (!serviceName.equals(registeredService.getName())) {
@@ -104,27 +104,28 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
         }
 
         switch (this.hertsType) {
-            case Unary -> {
-                var unary = newHertsBlockingService(this.channel, interfaceType, this.clientConnection, credentials);
+            case Unary:
+                HertsRpcClientUMethodHandler unary = newHertsBlockingService(this.channel, interfaceType, this.clientConnection, credentials);
                 return (T) generateService(unary, interfaceType);
-            }
-            case BidirectionalStreaming -> {
-                var streaming = newHertsBidirectionalStreamingService(this.channel, interfaceType, this.clientConnection, credentials);
+
+            case BidirectionalStreaming:
+                HertsRpcClientBStreamingMethodHandler streaming = newHertsBidirectionalStreamingService(this.channel, interfaceType, this.clientConnection, credentials);
                 return (T) generateService(streaming, interfaceType);
-            }
-            case ServerStreaming -> {
-                var serverStreaming = newHertsServerStreamingService(this.channel, interfaceType, this.clientConnection, credentials);
+
+            case ServerStreaming:
+                HertsRpcClientSStreamingMethodHandler serverStreaming = newHertsServerStreamingService(this.channel, interfaceType, this.clientConnection, credentials);
                 return (T) generateService(serverStreaming, interfaceType);
-            }
-            case ClientStreaming -> {
-                var clientStreaming = newHertsClientStreamingService(this.channel, interfaceType, this.clientConnection, credentials);
+
+            case ClientStreaming:
+                HertsRpcClientCStreamingMethodHandler clientStreaming = newHertsClientStreamingService(this.channel, interfaceType, this.clientConnection, credentials);
                 return (T) generateService(clientStreaming, interfaceType);
-            }
-            case Reactive -> {
-                var reactiveStreaming = newHertsBlockingService(this.channel, interfaceType, this.clientConnection, credentials);
+
+            case Reactive:
+                HertsRpcClientUMethodHandler reactiveStreaming = newHertsBlockingService(this.channel, interfaceType, this.clientConnection, credentials);
                 return (T) generateService(reactiveStreaming, interfaceType);
-            }
-            default -> throw new HertsTypeInvalidException("Undefined Hert core type. HertsCoreType" + this.hertsType);
+
+            default:
+                throw new HertsTypeInvalidException("Undefined Hert core type. HertsCoreType" + this.hertsType);
         }
     }
 

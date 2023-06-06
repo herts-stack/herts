@@ -4,7 +4,7 @@ import org.herts.common.reactive.HertsReactiveStreamingService;
 
 public class TestReactiveStreamingService extends HertsReactiveStreamingService<TestReactiveStreamingService, TestReceiver> {
     public void foo(){
-        var clientId = "";
+        String clientId = "";
         broadcast(clientId).test01();;
     }
 }

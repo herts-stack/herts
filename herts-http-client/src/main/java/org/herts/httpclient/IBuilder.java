@@ -5,6 +5,7 @@ import org.herts.common.context.HertsType;
 import org.herts.common.exception.HertsHttpBuildException;
 import org.herts.httpclient.validator.HertsHttpClientValidator;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,7 +73,7 @@ public class IBuilder implements HertsHttpClientBuilder {
         List<HertsType> hertsTypes = new ArrayList<>();
         for (Class<?> c : this.hertsRpcServices) {
             try {
-                var annotation = c.getAnnotation(HertsHttp.class);
+                HertsHttp annotation = c.getAnnotation(HertsHttp.class);
                 hertsTypes.add(annotation.value());
             } catch (Exception ex) {
                 throw new HertsHttpBuildException("Could not find @HertsHttp annotation in " + c.getName(), ex);
@@ -82,7 +83,7 @@ public class IBuilder implements HertsHttpClientBuilder {
         if (!HertsHttpClientValidator.isAllHttpType(hertsTypes)) {
             throw new HertsHttpBuildException("Please register Http HertService");
         }
-        var validateMsg = HertsHttpClientValidator.validateMethod(this.hertsRpcServices);
+        String validateMsg = HertsHttpClientValidator.validateMethod(this.hertsRpcServices);
         if (!validateMsg.isEmpty()) {
             throw new HertsHttpBuildException(validateMsg);
         }

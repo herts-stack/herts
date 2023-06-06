@@ -33,7 +33,7 @@ public class HertsBroadCasterImpl implements HertsBroadCaster {
 
     @Override
     public void registerReceiver(StreamObserver<Object> objectStreamObservers) {
-        var clientId = HertsSystemContext.Header.HERTS_CONNECTION_ID_CTX.get();
+        String clientId = HertsSystemContext.Header.HERTS_CONNECTION_ID_CTX.get();
         this.reactiveStreamingCache.setClientId(clientId);
         this.reactiveStreamingCache.setObserver(clientId, objectStreamObservers);
         objectStreamObservers.onNext(Collections.singletonList(HertsSystemContext.Rpc.REGISTERED_METHOD_NAME));
@@ -87,7 +87,7 @@ public class HertsBroadCasterImpl implements HertsBroadCaster {
             return null;
         }
 
-        var handler = new HertsReactiveStreamingInvoker(this.broker, clientId);
+        HertsReactiveStreamingInvoker handler = new HertsReactiveStreamingInvoker(this.broker, clientId);
         try {
             HertsReceiver hertsReceiver = (HertsReceiver) Proxy.newProxyInstance(
                     this.receiver.getClassLoader(),

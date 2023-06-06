@@ -1,5 +1,6 @@
 package org.herts.common.loadbalancing.local;
 
+import io.grpc.stub.StreamObserver;
 import org.herts.common.reactive.ReactiveStreamingCache;
 import org.herts.common.reactive.ReactiveStreamingCacheImpl;
 import org.herts.common.modelx.HertsReactivePayload;
@@ -37,7 +38,7 @@ public class ConcurrentLocalConsumer implements HertsConsumer {
             return;
         }
 
-        var observer = this.reactiveStreamingCache.getObserver(hertsPayload.getClientId());
+        StreamObserver<Object> observer = this.reactiveStreamingCache.getObserver(hertsPayload.getClientId());
         if (observer == null) {
             return;
         }
@@ -45,9 +46,9 @@ public class ConcurrentLocalConsumer implements HertsConsumer {
         parameters.add(hertsPayload.getMethodName());
 
         try {
-            for (var idx = 0; idx < hertsPayload.getParameters().size(); idx++) {
-                var parameter = hertsPayload.getParameters().get(idx);
-                var parameterType = hertsPayload.getParameterTypes().get(idx);
+            for (int idx = 0; idx < hertsPayload.getParameters().size(); idx++) {
+                Object parameter = hertsPayload.getParameters().get(idx);
+                Class<?> parameterType = hertsPayload.getParameterTypes().get(idx);
                 if (parameter != null) {
                     parameters.add(this.serializer.convert(parameter, parameterType));
                 } else {

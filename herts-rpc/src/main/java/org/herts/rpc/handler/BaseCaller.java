@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 /**
  * Base caller class.
  * If implement caller, extends this
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
@@ -28,16 +29,17 @@ public class BaseCaller {
 
     /**
      * Set method request stats.
+     *
      * @param request Generics
      * @throws IOException Fail data parsing
      */
     protected <T> void setMethodRequests(T request) throws IOException {
         if (((byte[]) request).length > 0) {
             HertsRpcMsg deserialized = this.hertsSerializer.deserialize((byte[]) request, HertsRpcMsg.class);
-            var index = 0;
+            int index = 0;
             if (deserialized.getMessageParameters() != null) {
                 for (Object obj : deserialized.getMessageParameters()) {
-                    var castType = deserialized.getClassTypes()[index];
+                    Class<?> castType = deserialized.getClassTypes()[index];
                     this.requests[index] = this.hertsSerializer.convert(obj, castType);
                     index++;
                 }
@@ -47,6 +49,7 @@ public class BaseCaller {
 
     /**
      * Call method
+     *
      * @param requestParameters Object[]
      * @return Object
      */

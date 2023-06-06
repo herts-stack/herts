@@ -9,7 +9,7 @@ def pkgVersion = '1.0.0'
 
 group pkgName
 version pkgVersion
-sourceCompatibility = '17'
+sourceCompatibility = '1.8'
 
 repositories {
     mavenCentral()

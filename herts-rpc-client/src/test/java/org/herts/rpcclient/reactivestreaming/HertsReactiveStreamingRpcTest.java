@@ -5,12 +5,14 @@ import org.herts.rpc.engine.HertsRpcServerEngineBuilder;
 import org.herts.rpc.engine.HertsRpcServerEngine;
 import org.herts.rpcclient.HertsRpcClient;
 import org.herts.rpcclient.HertsRpcClientBuilder;
+import org.herts.rpcclient.TestFoo;
 import org.herts.rpcclient.TestHoo;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,7 +25,7 @@ public class HertsReactiveStreamingRpcTest {
     @BeforeAll
     static void init() throws InterruptedException {
         try {
-            var t = new Thread(() -> {
+            Thread t = new Thread(() -> {
                 TestReactiveStreamingRpcService service = new TestReactiveStreamingRpcServiceImpl();
                 GrpcServerOption option = new GrpcServerOption();
                 option.setPort(port);
@@ -55,14 +57,14 @@ public class HertsReactiveStreamingRpcTest {
     @Test
     public void test01() {
         TestReactiveStreamingRpcService clientService = client.createHertsRpcService(TestReactiveStreamingRpcService.class);
-        var id = clientService.test01();
+        String id = clientService.test01();
         assertNotNull(id);
     }
 
     @Test
     public void test02() {
         TestReactiveStreamingRpcService clientService = client.createHertsRpcService(TestReactiveStreamingRpcService.class);
-        var res = clientService.test02(999, "dataa");
+        boolean res = clientService.test02(999, "dataa");
         assertTrue(res);
     }
 
@@ -72,17 +74,17 @@ public class HertsReactiveStreamingRpcTest {
 
         String key = "hoo_key";
         String val = "hoo_val";
-        var hoo = new TestHoo();
+        TestHoo hoo = new TestHoo();
         hoo.setD01(Collections.singletonMap(key, val));
 
-        var res = clientService.test03(hoo);
+        Map<String, String> res = clientService.test03(hoo);
         assertEquals(res.get(key), val);
     }
 
     @Test
     public void test04() {
         TestReactiveStreamingRpcService clientService = client.createHertsRpcService(TestReactiveStreamingRpcService.class);
-        var res = clientService.test04(null, null);
+        TestFoo res = clientService.test04(null, null);
         assertEquals(res.getA01(), "OK!");
     }
 }

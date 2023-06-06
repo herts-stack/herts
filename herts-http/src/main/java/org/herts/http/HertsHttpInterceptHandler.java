@@ -63,7 +63,7 @@ public class HertsHttpInterceptHandler implements Filter {
     }
 
     private void setError(String message, int statusCode, HertsHttpErrorException.StatusCode statusCodeEnum, HttpServletResponse response) throws IOException {
-        var errorResponse = HertsHttpServerCore.genErrorResponse(statusCodeEnum, message);
+        HertsHttpErrorResponse errorResponse = HertsHttpServerCore.genErrorResponse(statusCodeEnum, message);
         response.setStatus(statusCode);
         HertsHttpCallerBase.setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(errorResponse));
     }
@@ -75,7 +75,7 @@ public class HertsHttpInterceptHandler implements Filter {
 
     private String parseUri(String uri) {
         try {
-            var splitUris = uri.split("/");
+            String[] splitUris = uri.split("/");
             if (splitUris.length < 2) {
                 return "";
             } else {
