@@ -37,7 +37,7 @@ public class HertsStramingMarshaller implements MethodDescriptor.Marshaller<Obje
             oos = new ObjectOutputStream(byteArrayOutputStream);
             oos.writeObject(value);
             oos.close();
-            var data = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            ByteArrayInputStream data = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
             byteArrayOutputStream.close();
             return data;
         } catch (Exception ex) {

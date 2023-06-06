@@ -29,8 +29,8 @@ public class CallerConstructor {
     }
 
     public ConcurrentMap<String, List<Parameter>> getParameters() {
-        var map = new ConcurrentHashMap<String, List<Parameter>>();
-        var methods = getMethods();
+        ConcurrentMap<String, List<Parameter>> map = new ConcurrentHashMap<>();
+        Method[] methods = getMethods();
         for (Method m : methods) {
             map.put(m.getName(), Arrays.asList(m.getParameters()));
         }

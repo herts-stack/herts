@@ -72,7 +72,7 @@ public class ServerBuilder implements HertsHttpEngineBuilder {
             throw new HertsHttpBuildException("Please register Http HertcoreService");
         }
 
-        var validateMsg = HertsHttpValidator.validateRegisteredServices(this.hertsRpcServices);
+        String validateMsg = HertsHttpValidator.validateRegisteredServices(this.hertsRpcServices);
         if (!validateMsg.isEmpty()) {
             throw new HertsHttpBuildException(validateMsg);
         }

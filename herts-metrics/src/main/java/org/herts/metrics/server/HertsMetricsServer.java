@@ -7,6 +7,7 @@ import org.eclipse.jetty.server.Server;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.logging.Logger;
 
 /**
@@ -74,7 +75,7 @@ public class HertsMetricsServer {
     public static void setMetricsResponse(HertsMetrics metrics, HttpServletResponse response) throws IOException {
         response.setContentType(metrics.getPrometheusFormat());
         response.setStatus(HttpServletResponse.SC_OK);
-        var w = response.getWriter();
+        PrintWriter w = response.getWriter();
         w.print(metrics.scrape());
         w.flush();
     }

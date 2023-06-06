@@ -5,9 +5,12 @@ plugins {
 }
 apply plugin: 'application'
 
+def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '17'
+
 group 'org.herts.e2etest'
 version '1.0.0'
-sourceCompatibility = '17'
+sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
 
 repositories {
     mavenCentral()
@@ -31,7 +34,16 @@ application {
 
 jar {
     manifest {
-        attributes 'Main-Class': mainClassPath
+        attributes(
+                [
+                        'Main-Class'            : mainClassPath,
+                        'Built-By'              : System.getProperty('user.name'),
+                        'Built-Date'            : new Date(),
+                        'Built-JDK'             : System.getProperty('java.version'),
+                        'Implementation-Version': version,
+                        'Implementation-Title'  : project.name,
+                ]
+        )
     }
 }
 

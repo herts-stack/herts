@@ -30,12 +30,13 @@ import java.util.logging.Logger;
 
 /**
  * Herts http server implementation
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
 public class HertsHttpServer implements HertsHttpEngine {
     private static final Logger logger = HertsLogger.getLogger(HertsHttpEngine.class.getSimpleName());
-    private static final String[] HETRS_HTTP_METHODS = new String[] { "POST", "OPTIONS" };
+    private static final String[] HETRS_HTTP_METHODS = new String[]{"POST", "OPTIONS"};
 
     private final List<HertsService> hertsRpcServices;
     private final Map<String, HertsHttpInterceptor> interceptors;
@@ -84,17 +85,17 @@ public class HertsHttpServer implements HertsHttpEngine {
                             .build();
                 }
 
-                var metricsServer = new HertsMetricsServer(metrics, server);
-                var hertsServer = new HertsHttpServerCore(coreService, metrics, metricsServer);
+                HertsMetricsServer metricsServer = new HertsMetricsServer(metrics, server);
+                HertsHttpServerCore hertsServer = new HertsHttpServerCore(coreService, metrics, metricsServer);
 
                 endpointLogs.add(coreService.getClass().getSimpleName() + " endpoint.");
                 for (String endpoint : hertsServer.getEndpoints()) {
                     for (String m : HETRS_HTTP_METHODS) {
-                        var logM = m.equals(HETRS_HTTP_METHODS[0]) ? "[" + m + "]    " : "[" + m + "] ";
+                        String logM = m.equals(HETRS_HTTP_METHODS[0]) ? "[" + m + "]    " : "[" + m + "] ";
                         endpointLogs.add(logM + endpoint);
                     }
                 }
-                context.addServlet(new ServletHolder(hertsServer),hertsServer.getBaseEndpoint() + "/*");
+                context.addServlet(new ServletHolder(hertsServer), hertsServer.getBaseEndpoint() + "/*");
             }
 
             if (this.interceptors != null && this.interceptors.size() > 0) {
@@ -105,7 +106,7 @@ public class HertsHttpServer implements HertsHttpEngine {
             if (this.sslContextFactory != null) {
                 final ServerConnector httpsConnector = new ServerConnector(server, (SslContextFactory.Server) this.sslContextFactory);
                 httpsConnector.setPort(this.port);
-                server.setConnectors(new Connector[] { httpsConnector });
+                server.setConnectors(new Connector[]{httpsConnector});
             }
 
             for (String log : endpointLogs) {

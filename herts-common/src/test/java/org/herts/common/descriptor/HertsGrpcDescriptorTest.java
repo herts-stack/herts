@@ -1,5 +1,6 @@
 package org.herts.common.descriptor;
 
+import io.grpc.MethodDescriptor;
 import org.herts.common.context.HertsType;
 import org.junit.jupiter.api.Test;
 
@@ -9,20 +10,20 @@ public class HertsGrpcDescriptorTest {
 
     @Test
     public void generateMethodDescriptor() {
-        var coreType = HertsType.Unary;
-        var serviceName = "testRpcService";
-        var methodName = "getFoo";
-        var descriptor = HertsGrpcDescriptor.generateMethodDescriptor(coreType, serviceName, methodName);
+        HertsType coreType = HertsType.Unary;
+        String serviceName = "testRpcService";
+        String methodName = "getFoo";
+        MethodDescriptor<byte[], byte[]> descriptor = HertsGrpcDescriptor.generateMethodDescriptor(coreType, serviceName, methodName);
 
         assertEquals(serviceName + "/" + methodName, descriptor.getFullMethodName());
     }
 
     @Test
     public void generateStreamingMethodDescriptor() {
-        var coreType = HertsType.Unary;
-        var serviceName = "testRpcService";
-        var methodName = "getFoo";
-        var descriptor = HertsGrpcDescriptor.generateStramingMethodDescriptor(coreType, serviceName, methodName);
+        HertsType coreType = HertsType.Unary;
+        String serviceName = "testRpcService";
+        String methodName = "getFoo";
+        MethodDescriptor<Object, Object> descriptor = HertsGrpcDescriptor.generateStramingMethodDescriptor(coreType, serviceName, methodName);
 
         assertEquals(serviceName + "/" + methodName, descriptor.getFullMethodName());
     }

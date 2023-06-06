@@ -6,10 +6,12 @@ apply plugin: 'application'
 
 def pkgName = 'org.herts.metrics'
 def pkgVersion = '1.0.0'
+def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '8'
 
 group pkgName
 version pkgVersion
-sourceCompatibility = '17'
+sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
 
 repositories {
     mavenCentral()
@@ -38,6 +40,20 @@ test {
     testLogging {
         events 'started', 'skipped', 'passed', 'failed'
         exceptionFormat = 'full'
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+                [
+                        'Built-By'              : System.getProperty('user.name'),
+                        'Built-Date'            : new Date(),
+                        'Built-JDK'             : System.getProperty('java.version'),
+                        'Implementation-Version': version,
+                        'Implementation-Title'  : project.name,
+                ]
+        )
     }
 }
 

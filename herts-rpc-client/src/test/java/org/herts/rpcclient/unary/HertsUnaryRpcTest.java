@@ -13,6 +13,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,7 +27,7 @@ public class HertsUnaryRpcTest {
     @BeforeAll
     static void init() throws InterruptedException {
         try {
-            var t = new Thread(() -> {
+            Thread t = new Thread(() -> {
                 GrpcServerOption option = new GrpcServerOption();
                 option.setPort(port);
                 engine = HertsRpcServerEngineBuilder.builder(option)
@@ -54,7 +56,7 @@ public class HertsUnaryRpcTest {
     @Test
     public void test01() {
         TestUnaryRpcService rpc = client.createHertsRpcService(TestUnaryRpcService.class);
-        var result = rpc.test01("test_id", "test_value");
+        String  result = rpc.test01("test_id", "test_value");
 
         assertTrue(result.contains("test_id"));
         assertTrue(result.contains("test_value"));
@@ -63,7 +65,7 @@ public class HertsUnaryRpcTest {
     @Test
     public void test02() {
         TestUnaryRpcService rpc = client.createHertsRpcService(TestUnaryRpcService.class);
-        var result = rpc.test02();
+        boolean result = rpc.test02();
 
         assertTrue(result);
     }
@@ -71,8 +73,8 @@ public class HertsUnaryRpcTest {
     @Test
     public void test03() {
         TestUnaryRpcService rpc = client.createHertsRpcService(TestUnaryRpcService.class);
-        var result = rpc.test03(100, 0.99);
-        var value = result.get("key");
+        Map<String, String> result = rpc.test03(100, 0.99);
+        String value = result.get("key");
 
         assertTrue(value.contains("100"));
         assertTrue(value.contains("0.99"));
@@ -81,7 +83,7 @@ public class HertsUnaryRpcTest {
     @Test
     public void test04() {
         TestUnaryRpcService rpc = client.createHertsRpcService(TestUnaryRpcService.class);
-        var result = rpc.test04(Collections.singletonMap("key", "map_val"), Collections.singletonList("hello"));
+        List<String> result = rpc.test04(Collections.singletonMap("key", "map_val"), Collections.singletonList("hello"));
 
         assertTrue(result.contains("map_val"));
         assertTrue(result.contains("hello"));
@@ -98,7 +100,7 @@ public class HertsUnaryRpcTest {
         foo.setE01(Collections.singletonList("list"));
         foo.setF01(Collections.emptySet());
 
-        var result = rpc.test05(foo);
+        TestFoo result = rpc.test05(foo);
         assertNotNull(result);
     }
 

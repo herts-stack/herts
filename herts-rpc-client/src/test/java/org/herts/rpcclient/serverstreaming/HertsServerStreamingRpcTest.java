@@ -25,7 +25,7 @@ public class HertsServerStreamingRpcTest {
     @BeforeAll
     static void init() throws InterruptedException {
         try {
-            var t = new Thread(() -> {
+            Thread t = new Thread(() -> {
                 GrpcServerOption option = new GrpcServerOption();
                 option.setPort(port);
                 engine = HertsRpcServerEngineBuilder.builder(option)

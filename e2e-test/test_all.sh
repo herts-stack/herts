@@ -32,7 +32,9 @@ function kill {
     echo "Killed Java process"
 }
 
-./gradlew :e2e-test:clean :e2e-test:shadowJar
+function build {
+    ./gradlew :e2e-test:clean :e2e-test:shadowJar
+}
 
 run_test "http"
 kill

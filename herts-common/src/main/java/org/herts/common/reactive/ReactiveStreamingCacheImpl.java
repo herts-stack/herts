@@ -71,7 +71,7 @@ public class ReactiveStreamingCacheImpl implements ReactiveStreamingCache {
 
     @Override
     public void setHertsReceiver(String hertsClientId, HertsReceiver hertsReceiver, HertsReactiveStreamingInvoker invoker) {
-        var receiver = new HertsReceiverInfo(hertsReceiver, invoker);
+        HertsReceiverInfo receiver = new HertsReceiverInfo(hertsReceiver, invoker);
         this.receivers.put(hertsClientId, receiver);
     }
 

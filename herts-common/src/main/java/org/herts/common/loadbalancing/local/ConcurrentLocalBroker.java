@@ -28,8 +28,8 @@ public class ConcurrentLocalBroker implements HertsBroker {
         if (broker != null) {
             return broker;
         }
-        var producerName = "producer-" + UUID.randomUUID();
-        var consumerName = "consumer-" + UUID.randomUUID();
+        String producerName = "producer-" + UUID.randomUUID();
+        String consumerName = "consumer-" + UUID.randomUUID();
         broker = new ConcurrentLocalBroker(new ConcurrentLocalProducer(producerName), new ConcurrentLocalConsumer(consumerName));
         broker.getHertsMessageProducer().addObserver(broker.getHertsMessageConsumer());
         return broker;

@@ -33,8 +33,8 @@ public class HertsSerializerTest {
         HertsHttpRequest hertsHttpRequest = new HertsHttpRequest();
         hertsHttpRequest.setPayloads(payloads);
 
-        var serializedData = this.hertsJsonSerializer.serializeAsStr(hertsHttpRequest);
-        var expect = "{\"payloads\":[{\"keyName\":\"key\",\"value\":0.01,\"classInfo\":\"float\"}]}";
+        String serializedData = this.hertsJsonSerializer.serializeAsStr(hertsHttpRequest);
+        String expect = "{\"payloads\":[{\"keyName\":\"key\",\"value\":0.01,\"classInfo\":\"float\"}]}";
         assertEquals(expect, serializedData);
     }
 }

@@ -14,6 +14,7 @@ import java.lang.reflect.Method;
 
 /**
  * Herts rpc Client streaming Method Handler
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
@@ -54,7 +55,7 @@ public class HertsRpcCStreamingMethodHandler<Req, Resp> implements
     @Override
     public StreamObserver<Req> invoke(StreamObserver<Resp> responseObserver) {
         try {
-            var response = this.hertsRpcCaller.invokeStreaming(this.coreObject, responseObserver);
+            StreamObserver<Resp> response = this.hertsRpcCaller.invokeStreaming(this.coreObject, responseObserver);
             return (StreamObserver<Req>) response;
         } catch (IllegalAccessException | InvocationTargetException ex) {
             throw new HertsMessageException(ex);

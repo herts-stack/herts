@@ -21,12 +21,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.IntStream;
 
 /**
  * Herts http client handler
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
@@ -63,7 +65,7 @@ public class HertsHttpClientHandler implements InvocationHandler {
 
         Method[] methods = hertsServiceClass.getDeclaredMethods();
         for (Method method : methods) {
-            var paramTypes = new ArrayList<>(Arrays.asList(method.getParameterTypes()));
+            List<Class<?>> paramTypes = new ArrayList<>(Arrays.asList(method.getParameterTypes()));
             this.methodParameters.put(method.getName(), paramTypes);
         }
     }
@@ -75,24 +77,24 @@ public class HertsHttpClientHandler implements InvocationHandler {
                 .header("Content-Type", "application/json");
 
         if (this.customHeaders != null) {
-            for (var entry : this.customHeaders.entrySet()) {
+            for (Map.Entry<String, String> entry : this.customHeaders.entrySet()) {
                 builder = builder.header(entry.getKey(), entry.getValue());
             }
         }
 
         HttpRequest httpRequest;
-        var body = new HertsHttpRequest();
+        HertsHttpRequest body = new HertsHttpRequest();
         if (args != null) {
-            var parameterTypes = this.methodParameters.get(method.getName());
+            List<Class<?>> parameterTypes = this.methodParameters.get(method.getName());
             if (parameterTypes == null || args.length != parameterTypes.size()) {
                 throw new HertsMessageException("Invalid herts method.");
             }
 
-            var payloads = new ArrayList<HertsHttpMsg>();
+            List<HertsHttpMsg> payloads = new ArrayList<>();
             IntStream.range(0, args.length).forEach(idx -> {
                 Object requestArg = args[idx];
                 Class<?> aClass = parameterTypes.get(idx);
-                var payload = new HertsHttpMsg();
+                HertsHttpMsg payload = new HertsHttpMsg();
                 payload.setKeyName("arg" + idx);
                 payload.setValue(requestArg);
                 payload.setClassInfo(aClass.getName());
@@ -120,7 +122,7 @@ public class HertsHttpClientHandler implements InvocationHandler {
             return null;
         }
 
-        var payload = deserialize.getPayload();
+        HertsHttpMsg payload = deserialize.getPayload();
         try {
             Class<?> aClass = Class.forName(payload.getClassInfo());
             return serializer.convertFromHertHttpPayload(payload.getValue(), aClass);

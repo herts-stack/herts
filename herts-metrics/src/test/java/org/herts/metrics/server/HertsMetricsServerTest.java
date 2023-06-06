@@ -1,6 +1,7 @@
 package org.herts.metrics.server;
 
 import org.herts.common.service.HertsService;
+import org.herts.metrics.HertsMetrics;
 import org.herts.metrics.TestHertsServiceImpl;
 import org.herts.metrics.handler.HertsMetricsHandler;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,7 +15,7 @@ public class HertsMetricsServerTest {
     @BeforeAll
     static void init() {
         List<HertsService> services = Collections.singletonList(new TestHertsServiceImpl());
-        var hertsMetrics = HertsMetricsHandler.builder()
+        HertsMetrics hertsMetrics = HertsMetricsHandler.builder()
                 .registerHertsServices(services)
                 .isJvmEnabled(true)
                 .isLatencyEnabled(true)

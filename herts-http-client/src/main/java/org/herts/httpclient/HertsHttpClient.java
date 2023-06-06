@@ -43,12 +43,12 @@ public class HertsHttpClient implements HertsHttpClientBase {
 
     @Override
     public <T extends HertsService> T createHertsService(Class<T> classType) {
-        var targetService = createService(classType);
+        Class<?> targetService = createService(classType);
         if (targetService == null) {
             throw new HertsServiceNotFoundException("Not found service on registered service");
         }
 
-        var handler = new HertsHttpClientHandler(schema, targetService);
+        HertsHttpClientHandler handler = new HertsHttpClientHandler(schema, targetService);
         return (T) Proxy.newProxyInstance(
                 classType.getClassLoader(),
                 new Class<?>[]{ classType },
@@ -57,11 +57,11 @@ public class HertsHttpClient implements HertsHttpClientBase {
 
     @Override
     public <T extends HertsService> T createHertsService(Class<T> classType, Map<String, String> customHeaders) {
-        var targetService = createService(classType);
+        Class<?> targetService = createService(classType);
         if (targetService == null) {
             throw new HertsServiceNotFoundException("Not found service on registered service");
         }
-        var handler = new HertsHttpClientHandler(schema, targetService, customHeaders);
+        HertsHttpClientHandler handler = new HertsHttpClientHandler(schema, targetService, customHeaders);
         return (T) Proxy.newProxyInstance(
                 classType.getClassLoader(),
                 new Class<?>[]{ classType },

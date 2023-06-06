@@ -108,21 +108,22 @@ public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer 
         try {
             this.hertsHttpCaller.post(hertsMethod, request, response);
         } catch (HertsInvalidBodyException | JsonProcessingException ex) {
-            var err = genErrorResponse(HertsHttpErrorException.StatusCode.Status400, ex.getMessage());
+            HertsHttpErrorResponse err = genErrorResponse(HertsHttpErrorException.StatusCode.Status400, ex.getMessage());
             setError(HttpServletResponse.SC_BAD_REQUEST, response, err);
         } catch (InvocationTargetException ex) {
             Throwable cause = ex.getCause();
-            if (cause instanceof HertsHttpErrorException exception) {
-                var err = genErrorResponse(exception.getStatusCode(), ex.getMessage());
+            if (cause instanceof HertsHttpErrorException) {
+                HertsHttpErrorException exception = (HertsHttpErrorException) cause;
+                HertsHttpErrorResponse err = genErrorResponse(exception.getStatusCode(), ex.getMessage());
                 setError(exception.getStatusCode().getIntegerCode(), response, err);
             } else {
                 ex.printStackTrace();
-                var err = genErrorResponse(HertsHttpErrorException.StatusCode.Status500, ex.getMessage());
+                HertsHttpErrorResponse err = genErrorResponse(HertsHttpErrorException.StatusCode.Status500, ex.getMessage());
                 setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response, err);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            var err = genErrorResponse(HertsHttpErrorException.StatusCode.Status500, ex.getMessage());
+            HertsHttpErrorResponse err = genErrorResponse(HertsHttpErrorException.StatusCode.Status500, ex.getMessage());
             setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response, err);
         }
     }
@@ -138,7 +139,7 @@ public class HertsHttpServerCore extends HttpServlet implements HertsHttpServer 
     }
 
     public static HertsHttpErrorResponse genErrorResponse(HertsHttpErrorException.StatusCode statusCodeEnum, String message) {
-        var hertsResponse = new HertsHttpErrorResponse();
+        HertsHttpErrorResponse hertsResponse = new HertsHttpErrorResponse();
         hertsResponse.setStatusCode(statusCodeEnum);
         hertsResponse.setMessage(message);
         return hertsResponse;
