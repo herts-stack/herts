@@ -42,6 +42,7 @@ public class HertsHttpClient implements HertsHttpClientBase {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends HertsService> T createHertsService(Class<T> classType) {
         Class<?> targetService = createService(classType);
         if (targetService == null) {
@@ -56,6 +57,7 @@ public class HertsHttpClient implements HertsHttpClientBase {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends HertsService> T createHertsService(Class<T> classType, Map<String, String> customHeaders) {
         Class<?> targetService = createService(classType);
         if (targetService == null) {

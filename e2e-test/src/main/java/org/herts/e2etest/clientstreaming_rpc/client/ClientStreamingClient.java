@@ -26,7 +26,7 @@ public class ClientStreamingClient {
                 .connect();
 
         ClientStreamingRpcService service = client.createHertsRpcService(ClientStreamingRpcService.class);
-        var res = service.test10(new StreamObserver<>() {
+        StreamObserver<HelloRequest> res = service.test10(new StreamObserver<HelloResponse01>() {
             @Override
             public void onNext(HelloResponse01 req) {
                 logger.info(String.format("Got message at %d, %d", req.getCode(), req.getTimestamp()));
@@ -43,14 +43,18 @@ public class ClientStreamingClient {
         });
 
         for (int i = 0; i < 10; i++) {
-            var r = new HelloRequest();
+            HelloRequest r = new HelloRequest();
             r.setNumber(10000);
             res.onNext(r);
         }
 
         res.onCompleted();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         logger.info("Done");
         client.getChannel().shutdown();
     }
-
 }

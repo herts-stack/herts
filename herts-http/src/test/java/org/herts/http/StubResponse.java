@@ -1,8 +1,8 @@
 package org.herts.http;
 
-import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -97,26 +97,6 @@ public class StubResponse implements HttpServletResponse {
     }
 
     @Override
-    public int getStatus() {
-        return 0;
-    }
-
-    @Override
-    public String getHeader(String name) {
-        return null;
-    }
-
-    @Override
-    public Collection<String> getHeaders(String name) {
-        return null;
-    }
-
-    @Override
-    public Collection<String> getHeaderNames() {
-        return null;
-    }
-
-    @Override
     public String getCharacterEncoding() {
         return null;
     }
@@ -144,11 +124,6 @@ public class StubResponse implements HttpServletResponse {
 
     @Override
     public void setContentLength(int len) {
-
-    }
-
-    @Override
-    public void setContentLengthLong(long len) {
 
     }
 

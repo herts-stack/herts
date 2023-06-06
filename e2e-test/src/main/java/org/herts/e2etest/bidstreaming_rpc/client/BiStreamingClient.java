@@ -23,7 +23,7 @@ public class BiStreamingClient {
                 .connect();
 
         BidirectionalStreamingRpcService service = client.createHertsRpcService(BidirectionalStreamingRpcService.class);
-        var res1 = service.test04(new StreamObserver<>() {
+        StreamObserver<HelloResponse01> res1 = service.test04(new StreamObserver<HelloResponse01>() {
             @Override
             public void onNext(HelloResponse01 req) {
                 logger.info(String.format("Got message at %d, %d", req.getCode(), req.getTimestamp()));
@@ -41,9 +41,15 @@ public class BiStreamingClient {
             }
         });
 
-        var r = new HelloResponse01();
+        HelloResponse01 r = new HelloResponse01();
         r.setCode(10000);
         res1.onNext(r);
         res1.onCompleted();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

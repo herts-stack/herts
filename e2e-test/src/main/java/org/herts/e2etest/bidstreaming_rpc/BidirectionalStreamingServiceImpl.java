@@ -17,10 +17,10 @@ public class BidirectionalStreamingServiceImpl extends HertsBidirectionalStreami
 
     public StreamObserver<HelloResponse01> test04(final StreamObserver<HelloResponse01> responseObserver) {
         logger.info("------------ BidirectionalStreaming test04 RPC");
-        return new StreamObserver<>() {
+        return new StreamObserver<HelloResponse01>() {
             @Override
             public void onNext(HelloResponse01 response) {
-                var req = new HelloResponse01();
+                HelloResponse01 req = new HelloResponse01();
                 req.setCode(99);
                 req.setTimestamp(DateTimeUtil.getCurrentTimeMilliSec());
                 responseObserver.onNext(req);

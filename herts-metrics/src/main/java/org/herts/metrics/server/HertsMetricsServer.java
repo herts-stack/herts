@@ -1,11 +1,10 @@
 package org.herts.metrics.server;
 
+import org.eclipse.jetty.server.Server;
 import org.herts.common.logger.HertsLogger;
 import org.herts.metrics.HertsMetrics;
 
-import org.eclipse.jetty.server.Server;
-
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Logger;

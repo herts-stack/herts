@@ -6,8 +6,8 @@ import org.herts.metrics.context.HertsMetricsContext;
 import org.herts.metrics.context.HertsTimer;
 
 import org.herts.metrics.server.HertsMetricsServer;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
