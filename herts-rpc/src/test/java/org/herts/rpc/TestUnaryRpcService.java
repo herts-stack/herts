@@ -1,8 +1,8 @@
 package org.herts.rpc;
 
-import org.herts.common.annotation.HertsRpcService;
-import org.herts.common.context.HertsType;
-import org.herts.common.service.HertsService;
+import org.herts.core.annotation.HertsRpcService;
+import org.herts.core.context.HertsType;
+import org.herts.core.service.HertsService;
 
 import java.util.Map;
 

@@ -3,7 +3,7 @@ package org.herts.e2etest.bidstreaming_rpc.client;
 import org.herts.e2etest.bidstreaming_rpc.BidirectionalStreamingRpcService;
 import org.herts.e2etest.common.Constant;
 import org.herts.e2etest.common.HelloResponse01;
-import org.herts.common.logger.HertsLogger;
+import org.herts.core.logger.HertsLogger;
 import org.herts.rpcclient.HertsRpcClient;
 import org.herts.rpcclient.HertsRpcClientBuilder;
 

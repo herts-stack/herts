@@ -1,11 +1,10 @@
 package org.herts.rpcclient;
 
 import io.grpc.CallCredentials;
-import org.herts.common.context.HertsType;
-import org.herts.common.service.HertsService;
+import org.herts.core.context.HertsType;
+import org.herts.core.service.HertsService;
 
 import io.grpc.ManagedChannel;
-import org.herts.rpcclient.modelx.ClientConnection;
 
 /**
  * Herts core client

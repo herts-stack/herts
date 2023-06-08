@@ -1,8 +1,8 @@
 package org.herts.e2etest.unary_rpc;
 
-import org.herts.common.annotation.HertsRpcService;
-import org.herts.common.context.HertsType;
-import org.herts.common.service.HertsService;
+import org.herts.core.annotation.HertsRpcService;
+import org.herts.core.context.HertsType;
+import org.herts.core.service.HertsService;
 import org.herts.e2etest.common.HelloRequest;
 
 import java.util.List;

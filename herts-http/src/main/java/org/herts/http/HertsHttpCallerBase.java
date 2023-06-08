@@ -1,12 +1,12 @@
 package org.herts.http;
 
-import org.herts.common.context.HertsSystemContext;
-import org.herts.common.modelx.HertsHttpRequest;
-import org.herts.common.modelx.HertsHttpResponse;
-import org.herts.common.modelx.HertsHttpMsg;
-import org.herts.common.exception.HertsInvalidBodyException;
-import org.herts.common.serializer.HertsSerializer;
-import org.herts.metrics.server.HertsMetricsServer;
+import org.herts.core.context.HertsSystemContext;
+import org.herts.core.modelx.HertsHttpRequest;
+import org.herts.core.modelx.HertsHttpResponse;
+import org.herts.core.modelx.HertsHttpMsg;
+import org.herts.core.exception.HertsInvalidBodyException;
+import org.herts.core.serializer.HertsSerializer;
+import org.herts.metrics.HertsMetricsServer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentMap;
  * @author Herts Contributer
  * @version 1.0.0
  */
-public class HertsHttpCallerBase {
+class HertsHttpCallerBase {
     private final Object coreObject;
     private final HertsMetricsServer hertsMetricsServer;
     private final HertsSerializer hertsSerializer;

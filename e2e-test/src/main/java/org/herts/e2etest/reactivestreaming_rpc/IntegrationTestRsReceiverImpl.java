@@ -1,6 +1,6 @@
 package org.herts.e2etest.reactivestreaming_rpc;
 
-import org.herts.common.logger.HertsLogger;
+import org.herts.core.logger.HertsLogger;
 import org.herts.e2etest.common.HelloRequest;
 
 import java.util.List;

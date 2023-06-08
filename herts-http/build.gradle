@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation project(':herts-common')
+    implementation project(':herts-core')
     implementation project(':herts-metrics')
 
     implementation 'javax.servlet:servlet-api:3.0-alpha-1'

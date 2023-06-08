@@ -1,8 +1,8 @@
 package org.herts.e2etest.http.server;
 
-import org.herts.common.logger.HertsLogger;
+import org.herts.core.logger.HertsLogger;
 import org.herts.http.HertsHttpInterceptor;
-import org.herts.http.http.HertsHttpRequest;
+import org.herts.http.HertsHttpRequest;
 
 import java.util.logging.Logger;
 

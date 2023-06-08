@@ -1,6 +1,6 @@
 package org.herts.rpcclient;
 
-import org.herts.common.modelx.HertsRpcMsg;
+import org.herts.core.modelx.HertsRpcMsg;
 
 import java.util.List;
 import java.util.Map;

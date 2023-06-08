@@ -1,6 +1,6 @@
 package org.herts.httpclient;
 
-import org.herts.common.exception.http.HertsHttpErrorException;
+import org.herts.core.exception.http.HertsHttpErrorException;
 
 public class BadRequest extends HertsHttpErrorException {
     public BadRequest(String msg){

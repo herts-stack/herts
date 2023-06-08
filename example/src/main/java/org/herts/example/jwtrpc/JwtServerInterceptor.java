@@ -3,7 +3,7 @@ package org.herts.example.jwtrpc;
 import io.grpc.Metadata;
 import io.grpc.ServerCall;
 import io.grpc.Status;
-import org.herts.common.exception.rpc.HertsRpcErrorException;
+import org.herts.core.exception.rpc.HertsRpcErrorException;
 import org.herts.example.jwthttp.JwtVerifier;
 import org.herts.rpc.HertsRpcInterceptor;
 

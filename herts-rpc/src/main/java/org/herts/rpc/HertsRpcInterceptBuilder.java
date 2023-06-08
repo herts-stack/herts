@@ -7,7 +7,7 @@ import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
 
-import org.herts.common.context.HertsSystemContext;
+import org.herts.core.context.HertsSystemContext;
 
 import java.util.logging.Logger;
 

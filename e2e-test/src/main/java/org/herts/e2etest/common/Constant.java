@@ -1,7 +1,7 @@
 package org.herts.e2etest.common;
 
 import io.grpc.Metadata;
-import org.herts.rpc.engine.GrpcServerOption;
+import org.herts.rpc.GrpcServerOption;
 
 public class Constant {
     public static Metadata.Key<String> HEADER_TEST01 = Metadata.Key.of("TEST", Metadata.ASCII_STRING_MARSHALLER);

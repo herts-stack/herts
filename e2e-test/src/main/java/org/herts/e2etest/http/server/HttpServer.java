@@ -2,10 +2,10 @@ package org.herts.e2etest.http.server;
 
 import org.herts.e2etest.common.Constant;
 import org.herts.e2etest.http.HttpServiceImpl01;
-import org.herts.common.context.HertsMetricsSetting;
+import org.herts.core.context.HertsMetricsSetting;
 import org.herts.e2etest.http.HttpServiceImpl02;
-import org.herts.http.engine.HertsHttpEngine;
-import org.herts.http.engine.HertsHttpServer;
+import org.herts.http.HertsHttpEngine;
+import org.herts.http.HertsHttpServer;
 
 public class HttpServer {
 

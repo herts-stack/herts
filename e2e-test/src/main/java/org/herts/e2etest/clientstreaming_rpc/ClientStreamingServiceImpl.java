@@ -1,14 +1,14 @@
 package org.herts.e2etest.clientstreaming_rpc;
 
-import org.herts.common.logger.HertsLogger;
-import org.herts.common.service.HertsClientStreamingService;
+import org.herts.core.logger.HertsLogger;
+import org.herts.core.service.HertsServiceClientStreaming;
 import io.grpc.stub.StreamObserver;
 import org.herts.e2etest.common.HelloRequest;
 import org.herts.e2etest.common.HelloResponse01;
 
 import java.util.logging.Logger;
 
-public class ClientStreamingServiceImpl extends HertsClientStreamingService<ClientStreamingRpcService> implements ClientStreamingRpcService {
+public class ClientStreamingServiceImpl extends HertsServiceClientStreaming<ClientStreamingRpcService> implements ClientStreamingRpcService {
     private static final Logger logger = HertsLogger.getLogger(ClientStreamingServiceImpl.class.getSimpleName());
 
     public ClientStreamingServiceImpl() {

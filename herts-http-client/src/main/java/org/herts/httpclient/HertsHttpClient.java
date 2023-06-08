@@ -1,8 +1,7 @@
 package org.herts.httpclient;
 
-import org.herts.common.exception.HertsServiceNotFoundException;
-import org.herts.common.service.HertsService;
-import org.herts.httpclient.handler.HertsHttpClientHandler;
+import org.herts.core.exception.HertsServiceNotFoundException;
+import org.herts.core.service.HertsService;
 
 import java.lang.reflect.Proxy;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.Map;
 
 /**
  * Herts http client
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
@@ -52,7 +52,7 @@ public class HertsHttpClient implements HertsHttpClientBase {
         HertsHttpClientHandler handler = new HertsHttpClientHandler(schema, targetService);
         return (T) Proxy.newProxyInstance(
                 classType.getClassLoader(),
-                new Class<?>[]{ classType },
+                new Class<?>[]{classType},
                 handler);
     }
 
@@ -66,7 +66,7 @@ public class HertsHttpClient implements HertsHttpClientBase {
         HertsHttpClientHandler handler = new HertsHttpClientHandler(schema, targetService, customHeaders);
         return (T) Proxy.newProxyInstance(
                 classType.getClassLoader(),
-                new Class<?>[]{ classType },
+                new Class<?>[]{classType},
                 handler);
     }
 

@@ -1,6 +1,6 @@
 package org.herts.e2etest.common;
 
-import org.herts.common.modelx.HertsRpcMsg;
+import org.herts.core.modelx.HertsRpcMsg;
 
 public class HelloRequest extends HertsRpcMsg {
     private String key;

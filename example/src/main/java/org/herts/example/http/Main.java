@@ -1,9 +1,8 @@
 package org.herts.example.http;
 
-import org.herts.http.engine.HertsHttpEngine;
-import org.herts.http.engine.HertsHttpServer;
+import org.herts.http.HertsHttpEngine;
+import org.herts.http.HertsHttpServer;
 import org.herts.httpclient.HertsHttpClient;
-import org.herts.httpclient.HertsHttpClientBase;
 
 public class Main {
     public static void main(String[] args) {
@@ -22,7 +21,7 @@ public class Main {
     }
 
     private static void startClient() {
-        HertsHttpClientBase client = HertsHttpClient
+        HertsHttpClient client = HertsHttpClient
                 .builder("localhost")
                 .registerHertService(HttpService.class)
                 .secure(false)

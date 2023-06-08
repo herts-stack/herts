@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    implementation project(':herts-common')
+    implementation project(':herts-core')
     implementation project(':herts-rpc')
     implementation project(':herts-http')
 

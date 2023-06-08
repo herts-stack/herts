@@ -1,7 +1,7 @@
 package org.herts.e2etest.common;
 
 import org.herts.rpcclient.HertsRpcClientInterceptor;
-import org.herts.common.logger.HertsLogger;
+import org.herts.core.logger.HertsLogger;
 import io.grpc.CallOptions;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;

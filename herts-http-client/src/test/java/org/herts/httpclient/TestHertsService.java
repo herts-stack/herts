@@ -1,7 +1,7 @@
 package org.herts.httpclient;
 
-import org.herts.common.annotation.HertsHttp;
-import org.herts.common.service.HertsService;
+import org.herts.core.annotation.HertsHttp;
+import org.herts.core.service.HertsService;
 
 import java.util.List;
 import java.util.Map;

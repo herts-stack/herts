@@ -5,7 +5,7 @@ import io.grpc.Channel;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 
-public class HertsRpcClientEmptyInterceptor implements HertsRpcClientInterceptor {
+class HertsRpcClientEmptyInterceptor implements HertsRpcClientInterceptor {
     @Override
     public void setRequestMetadata(Metadata metadata) {
     }

@@ -1,9 +1,9 @@
 package org.herts.example.clientsteaming;
 
 import io.grpc.stub.StreamObserver;
-import org.herts.common.service.HertsClientStreamingService;
+import org.herts.core.service.HertsServiceClientStreaming;
 
-public class ClientStreamingServiceImpl extends HertsClientStreamingService<ClientStreamingService> implements ClientStreamingService {
+public class ClientStreamingServiceImpl extends HertsServiceClientStreaming<ClientStreamingService> implements ClientStreamingService {
     @Override
     public StreamObserver<String> helloWorld(StreamObserver<String> streamObserver) {
         return new StreamObserver<>() {

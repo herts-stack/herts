@@ -1,6 +1,6 @@
 package org.herts.e2etest.reactivestreaming_rpc.client;
 
-import org.herts.common.logger.HertsLogger;
+import org.herts.core.logger.HertsLogger;
 import org.herts.e2etest.common.Constant;
 import org.herts.e2etest.reactivestreaming_rpc.QueueTestRsReceiverImpl;
 import org.herts.e2etest.reactivestreaming_rpc.QueueTestRsService;

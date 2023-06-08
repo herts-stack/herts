@@ -1,6 +1,6 @@
 package org.herts.http;
 
-import org.herts.common.serializer.HertsSerializer;
+import org.herts.core.serializer.HertsSerializer;
 import org.herts.metrics.HertsMetrics;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,10 +13,11 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * Herts http simple class
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
-public class HertsHttpSimpleCaller extends HertsHttpCallerBase implements HertsHttpCaller {
+class HertsHttpSimpleCaller extends HertsHttpCallerBase implements HertsHttpCaller {
 
     public HertsHttpSimpleCaller(Object coreObject, HertsMetrics hertsHttpMetrics,
                                  HertsSerializer hertsSerializer, ConcurrentMap<String, List<Parameter>> parameters) {

@@ -1,12 +1,12 @@
 package org.herts.httpclient;
 
-import org.herts.common.service.HertsHttpService;
+import org.herts.core.service.HertsServiceHttp;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class TestHertsServiceImpl extends HertsHttpService<TestHertsService> implements TestHertsService {
+public class TestHertsServiceImpl extends HertsServiceHttp<TestHertsService> implements TestHertsService {
     @Override
     public String test01() {
         return "test01";

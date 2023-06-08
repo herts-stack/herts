@@ -1,6 +1,6 @@
 package org.herts.example.reactivesteaming;
 
-import org.herts.common.reactive.HertsReactiveStreamingService;
+import org.herts.core.service.HertsReactiveStreamingService;
 
 public class ReactiveServiceImpl extends HertsReactiveStreamingService<ReactiveService, ReactiveReceiver> implements ReactiveService {
     @Override
