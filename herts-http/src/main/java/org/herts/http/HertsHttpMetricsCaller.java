@@ -1,11 +1,11 @@
 package org.herts.http;
 
-import org.herts.common.serializer.HertsSerializer;
+import org.herts.core.serializer.HertsSerializer;
 import org.herts.metrics.HertsMetrics;
-import org.herts.metrics.context.HertsMetricsContext;
-import org.herts.metrics.context.HertsTimer;
+import org.herts.metrics.HertsMetricsContext;
+import org.herts.metrics.HertsTimer;
+import org.herts.metrics.HertsMetricsServer;
 
-import org.herts.metrics.server.HertsMetricsServer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,10 +16,11 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * Herts http with measurer metrics class
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
-public class HertsHttpMetricsCaller extends HertsHttpCallerBase implements HertsHttpCaller {
+class HertsHttpMetricsCaller extends HertsHttpCallerBase implements HertsHttpCaller {
 
     private final Object coreObject;
     private final String serviceName;

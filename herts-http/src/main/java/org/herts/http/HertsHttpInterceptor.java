@@ -1,9 +1,8 @@
 package org.herts.http;
 
-import org.herts.http.http.HertsHttpRequest;
-
 /**
  * Herts http server interceptor
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */

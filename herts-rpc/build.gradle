@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation project(':herts-common')
+    implementation project(':herts-core')
     implementation project(':herts-metrics')
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'

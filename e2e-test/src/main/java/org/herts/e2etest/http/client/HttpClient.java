@@ -1,15 +1,14 @@
 package org.herts.e2etest.http.client;
 
-import org.herts.common.exception.http.HertsHttpErrorException;
+import org.herts.core.exception.http.HertsHttpErrorException;
 import org.herts.e2etest.common.Constant;
 import org.herts.e2etest.http.HttpService01;
-import org.herts.common.logger.HertsLogger;
-import org.herts.common.serializer.HertsSerializeType;
-import org.herts.common.serializer.HertsSerializer;
+import org.herts.core.logger.HertsLogger;
+import org.herts.core.serializer.HertsSerializeType;
+import org.herts.core.serializer.HertsSerializer;
 import org.herts.e2etest.http.HttpService02;
 import org.herts.e2etest.common.TestData;
 import org.herts.httpclient.HertsHttpClient;
-import org.herts.httpclient.HertsHttpClientBase;
 
 import java.util.Collections;
 import java.util.Map;
@@ -20,7 +19,7 @@ public class HttpClient {
     private static final HertsSerializer serializer = new HertsSerializer(HertsSerializeType.Json);
 
     public static void run() {
-        HertsHttpClientBase client = HertsHttpClient
+        HertsHttpClient client = HertsHttpClient
                 .builder("localhost")
                 .registerHertService(HttpService01.class)
                 .registerHertService(HttpService02.class)

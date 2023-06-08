@@ -8,7 +8,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.herts.e2etest.bidstreaming_rpc.client.BiStreamingClient;
 import org.herts.e2etest.clientstreaming_rpc.client.ClientStreamingClient;
-import org.herts.common.context.HertsType;
+import org.herts.core.context.HertsType;
 import org.herts.e2etest.bidstreaming_rpc.server.BiStreamingServer;
 import org.herts.e2etest.clientstreaming_rpc.server.ClientStreamingServer;
 import org.herts.e2etest.reactivestreaming_rpc.client.IntegrationTestRsClient;

@@ -1,7 +1,7 @@
 package org.herts.e2etest.serverstreaming_rpc;
 
-import org.herts.common.logger.HertsLogger;
-import org.herts.common.service.HertsServerStreamingService;
+import org.herts.core.logger.HertsLogger;
+import org.herts.core.service.HertsServiceServerStreaming;
 import io.grpc.stub.StreamObserver;
 import org.herts.e2etest.common.HelloRequest;
 import org.herts.e2etest.common.HelloResponse01;
@@ -9,7 +9,7 @@ import org.herts.e2etest.common.HelloResponse02;
 
 import java.util.logging.Logger;
 
-public class ServerStreamingServiceImpl extends HertsServerStreamingService<ServerStreamingRpcService> implements ServerStreamingRpcService {
+public class ServerStreamingServiceImpl extends HertsServiceServerStreaming<ServerStreamingRpcService> implements ServerStreamingRpcService {
     private static final Logger logger = HertsLogger.getLogger(ServerStreamingServiceImpl.class.getSimpleName());
 
     public ServerStreamingServiceImpl() {

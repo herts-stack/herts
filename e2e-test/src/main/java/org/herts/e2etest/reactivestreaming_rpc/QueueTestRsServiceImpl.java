@@ -1,6 +1,6 @@
 package org.herts.e2etest.reactivestreaming_rpc;
 
-import org.herts.common.reactive.HertsReactiveStreamingService;
+import org.herts.core.service.HertsReactiveStreamingService;
 
 public class QueueTestRsServiceImpl extends HertsReactiveStreamingService<QueueTestRsService, QueueTestRsReceiver> implements QueueTestRsService {
     @Override

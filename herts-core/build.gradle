@@ -1,0 +1,84 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+apply plugin: 'application'
+
+def pkgName = 'org.herts.core'
+def pkgVersion = '1.0.0'
+def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '11'
+
+group pkgName
+version pkgVersion
+sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'started', 'skipped', 'passed', 'failed'
+        exceptionFormat = 'full'
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+                [
+                        'Built-By'              : System.getProperty('user.name'),
+                        'Built-Date'            : new Date(),
+                        'Built-JDK'             : System.getProperty('java.version'),
+                        'Implementation-Version': version,
+                        'Implementation-Title'  : project.name,
+                ]
+        )
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = pkgName
+            artifactId = 'library'
+            version = pkgVersion
+
+            from components.java
+
+            pom {
+                name = 'Herts framework'
+                description = 'tmp'
+                url = 'https://www.example.com/'
+                properties = [
+                        myProp: "value",
+                ]
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'tomoyane'
+                        name = 'tomoyane'
+                        email = 'tomoyane111@gmail.com'
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url 'file://Users/tomohito.oyane/Developers/maven-herts-repo'
+        }
+    }
+}

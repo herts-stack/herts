@@ -1,8 +1,8 @@
 package org.herts.example.jwthttp;
 
-import org.herts.common.exception.http.HertsHttpErrorException;
+import org.herts.core.exception.http.HertsHttpErrorException;
 import org.herts.http.HertsHttpInterceptor;
-import org.herts.http.http.HertsHttpRequest;
+import org.herts.http.HertsHttpRequest;
 
 public class JwtServerInterceptor implements HertsHttpInterceptor {
     private final JwtVerifier jwtProcessor;

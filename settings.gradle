@@ -1,7 +1,7 @@
 rootProject.name = 'herts'
 include 'herts-rpc'
 include 'herts-rpc-client'
-include 'herts-common'
+include 'herts-core'
 include 'e2e-test'
 include 'herts-metrics'
 include 'herts-codegen'

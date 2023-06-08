@@ -1,8 +1,8 @@
 package org.herts.e2etest.unary_rpc;
 
-import org.herts.common.exception.rpc.HertsRpcErrorException;
-import org.herts.common.logger.HertsLogger;
-import org.herts.common.service.HertsUnaryService;
+import org.herts.core.exception.rpc.HertsRpcErrorException;
+import org.herts.core.logger.HertsLogger;
+import org.herts.core.service.HertsServiceUnary;
 import org.herts.e2etest.common.HelloRequest;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class UnaryServiceImpl01 extends HertsUnaryService<UnaryRpcService01> implements UnaryRpcService01 {
+public class UnaryServiceImpl01 extends HertsServiceUnary<UnaryRpcService01> implements UnaryRpcService01 {
     private static final Logger logger = HertsLogger.getLogger(UnaryServiceImpl01.class.getSimpleName());
 
     public UnaryServiceImpl01() {

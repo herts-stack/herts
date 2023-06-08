@@ -1,15 +1,13 @@
 package org.herts.httpclient;
 
-import org.herts.common.annotation.HertsHttp;
-import org.herts.common.context.HertsType;
-import org.herts.common.exception.HertsHttpBuildException;
-import org.herts.httpclient.validator.HertsHttpClientValidator;
+import org.herts.core.annotation.HertsHttp;
+import org.herts.core.context.HertsType;
+import org.herts.core.exception.HertsHttpBuildException;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IBuilder implements HertsHttpClientBuilder {
+class IBuilder implements HertsHttpClientBuilder {
     private final List<Class<?>> hertsRpcServices = new ArrayList<>();
     private final String host;
     private int serverPort = 8080;
@@ -65,7 +63,7 @@ public class IBuilder implements HertsHttpClientBuilder {
     }
 
     @Override
-    public HertsHttpClientBase build() {
+    public HertsHttpClient build() {
         if (this.hertsRpcServices.size() == 0 || this.host == null || this.host.isEmpty()) {
             throw new HertsHttpBuildException("Please register HertsService and host");
         }

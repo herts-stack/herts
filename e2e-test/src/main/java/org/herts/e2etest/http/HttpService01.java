@@ -1,7 +1,7 @@
 package org.herts.e2etest.http;
 
-import org.herts.common.annotation.HertsHttp;
-import org.herts.common.service.HertsService;
+import org.herts.core.annotation.HertsHttp;
+import org.herts.core.service.HertsService;
 import org.herts.e2etest.common.TestData;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package org.herts.e2etest;
 
-import org.herts.common.context.HertsType;
+import org.herts.core.context.HertsType;
 
 public class ArgOperation {
     public static final String SERVER = "server";

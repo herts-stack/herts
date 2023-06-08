@@ -1,11 +1,9 @@
 package org.herts.example.bidsteaming;
 
 import io.grpc.stub.StreamObserver;
-import org.herts.common.service.HertsBidirectionalStreamingService;
-import org.herts.common.service.HertsClientStreamingService;
-import org.herts.example.clientsteaming.ClientStreamingService;
+import org.herts.core.service.HertsServiceBidirectionalStreaming;
 
-public class BidStreamingServiceImpl extends HertsBidirectionalStreamingService<BidStreamingService> implements BidStreamingService {
+public class BidStreamingServiceImpl extends HertsServiceBidirectionalStreaming<BidStreamingService> implements BidStreamingService {
     @Override
     public StreamObserver<String> helloWorld(StreamObserver<String> streamObserver) {
         return new StreamObserver<>() {

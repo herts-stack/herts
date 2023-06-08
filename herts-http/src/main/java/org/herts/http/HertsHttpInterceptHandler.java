@@ -7,13 +7,12 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-
 import javax.servlet.http.HttpServletResponse;
-import org.herts.common.exception.http.HertsHttpErrorException;
-import org.herts.common.modelx.HertsHttpErrorResponse;
-import org.herts.common.serializer.HertsSerializeType;
-import org.herts.common.serializer.HertsSerializer;
-import org.herts.http.http.HertsHttpRequestImpl;
+
+import org.herts.core.exception.http.HertsHttpErrorException;
+import org.herts.core.modelx.HertsHttpErrorResponse;
+import org.herts.core.serializer.HertsSerializeType;
+import org.herts.core.serializer.HertsSerializer;
 
 import java.io.IOException;
 import java.util.Map;
@@ -26,7 +25,7 @@ import java.util.concurrent.ConcurrentMap;
  * @author Herts Contributer
  * @version 1.0.0
  */
-public class HertsHttpInterceptHandler implements Filter {
+class HertsHttpInterceptHandler implements Filter {
     private final ConcurrentMap<String, HertsHttpInterceptor> interceptors;
     private final HertsSerializer hertsSerializer;
 
@@ -62,7 +61,7 @@ public class HertsHttpInterceptHandler implements Filter {
     }
 
     private void setError(String message, int statusCode, HertsHttpErrorException.StatusCode statusCodeEnum, HttpServletResponse response) throws IOException {
-        HertsHttpErrorResponse errorResponse = HertsHttpServerCore.genErrorResponse(statusCodeEnum, message);
+        HertsHttpErrorResponse errorResponse = HertsHttpServerCoreImpl.genErrorResponse(statusCodeEnum, message);
         response.setStatus(statusCode);
         HertsHttpCallerBase.setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(errorResponse));
     }

@@ -4,7 +4,7 @@ import org.herts.e2etest.common.Constant;
 import org.herts.e2etest.common.HelloRequest;
 import org.herts.e2etest.common.HelloResponse01;
 import org.herts.e2etest.serverstreaming_rpc.ServerStreamingRpcService;
-import org.herts.common.logger.HertsLogger;
+import org.herts.core.logger.HertsLogger;
 import org.herts.e2etest.common.HelloResponse02;
 import org.herts.rpcclient.HertsRpcClient;
 import org.herts.rpcclient.HertsRpcClientBuilder;

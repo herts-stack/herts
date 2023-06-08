@@ -1,9 +1,9 @@
 package org.herts.example.jwthttp;
 
-import org.herts.common.service.HertsHttpService;
-import org.herts.common.service.HertsService;
+import org.herts.core.service.HertsServiceHttp;
+import org.herts.core.service.HertsService;
 
-public class HttpServiceImpl extends HertsHttpService<HertsService> implements HttpService {
+public class HttpServiceImpl extends HertsServiceHttp<HertsService> implements HttpService {
     @Override
     public String hellowWorld() {
         return "hello world";

@@ -1,6 +1,6 @@
 package org.herts.e2etest.common;
 
-import org.herts.common.logger.HertsLogger;
+import org.herts.core.logger.HertsLogger;
 import org.herts.rpc.HertsRpcInterceptor;
 import io.grpc.Metadata;
 import io.grpc.ServerCall;

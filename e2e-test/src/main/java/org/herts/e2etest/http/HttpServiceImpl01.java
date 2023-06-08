@@ -1,8 +1,8 @@
 package org.herts.e2etest.http;
 
-import org.herts.common.exception.http.HertsHttpErrorException;
-import org.herts.common.logger.HertsLogger;
-import org.herts.common.service.HertsHttpService;
+import org.herts.core.exception.http.HertsHttpErrorException;
+import org.herts.core.logger.HertsLogger;
+import org.herts.core.service.HertsServiceHttp;
 import org.herts.e2etest.common.TestData;
 
 import java.util.Collections;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class HttpServiceImpl01 extends HertsHttpService<HttpService01> implements HttpService01 {
+public class HttpServiceImpl01 extends HertsServiceHttp<HttpService01> implements HttpService01 {
     private static final Logger logger = HertsLogger.getLogger(HttpServiceImpl01.class.getSimpleName());
 
     public HttpServiceImpl01() {

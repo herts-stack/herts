@@ -1,8 +1,8 @@
 package org.herts.httpclient;
 
-import org.herts.common.exception.http.HertsHttpErrorException;
-import org.herts.http.engine.HertsHttpEngine;
-import org.herts.http.engine.HertsHttpServer;
+import org.herts.core.exception.http.HertsHttpErrorException;
+import org.herts.http.HertsHttpEngine;
+import org.herts.http.HertsHttpServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

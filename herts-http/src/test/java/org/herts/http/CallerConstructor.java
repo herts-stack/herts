@@ -2,8 +2,8 @@ package org.herts.http;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.herts.common.serializer.HertsSerializer;
-import org.herts.metrics.server.HertsMetricsServer;
+import org.herts.core.serializer.HertsSerializer;
+import org.herts.metrics.HertsMetricsServer;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;

@@ -5,13 +5,19 @@ import io.grpc.ServerCall;
 
 /**
  * Herts empty  interceptor
+ *
  * @author Herts Contributer
  * @version 1.0.0
  */
-public class HertsEmptyRpcInterceptor implements HertsRpcInterceptor {
+class HertsEmptyRpcInterceptor implements HertsRpcInterceptor {
     private HertsEmptyRpcInterceptor() {
     }
 
+    /**
+     * Create factory.
+     *
+     * @return HertsEmptyRpcInterceptor
+     */
     public static HertsEmptyRpcInterceptor create() {
         return new HertsEmptyRpcInterceptor();
     }

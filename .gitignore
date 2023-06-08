@@ -1,7 +1,7 @@
 .idea/
 herts-rpc/build/
 herts-rpc-client/build/
-herts-common/build/
+herts-core/build/
 herts-metrics/build/
 herts-codegen/build/
 herts-http/build/

@@ -1,8 +1,8 @@
 package org.herts.example.serversteaming;
 
 import io.grpc.stub.StreamObserver;
-import org.herts.rpc.engine.HertsRpcServerEngine;
-import org.herts.rpc.engine.HertsRpcServerEngineBuilder;
+import org.herts.rpc.HertsRpcServerEngine;
+import org.herts.rpc.HertsRpcServerEngineBuilder;
 import org.herts.rpcclient.HertsRpcClient;
 import org.herts.rpcclient.HertsRpcClientBuilder;
 
