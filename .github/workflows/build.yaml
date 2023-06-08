@@ -24,7 +24,7 @@ jobs:
       - name: 'Build Herts project with Java17'
         run: |
           ./gradlew clean build -P javaVersion=17
-          cat herts-common/build/tmp/jar/MANIFEST.MF
+          cat herts-core/build/tmp/jar/MANIFEST.MF
 
   build-java16:
     runs-on: ubuntu-latest
@@ -42,7 +42,7 @@ jobs:
       - name: 'Build Herts project with Java16'
         run: |
           ./gradlew clean build -P javaVersion=16
-          cat herts-common/build/tmp/jar/MANIFEST.MF
+          cat herts-core/build/tmp/jar/MANIFEST.MF
 
   build-java11:
     runs-on: ubuntu-latest
@@ -60,4 +60,4 @@ jobs:
       - name: 'Build Herts project with Java11'
         run: |
           ./gradlew clean build -P javaVersion=11
-          cat herts-common/build/tmp/jar/MANIFEST.MF
+          cat herts-core/build/tmp/jar/MANIFEST.MF
