@@ -2,7 +2,7 @@ package org.herts.core.service;
 
 import io.grpc.stub.StreamObserver;
 import org.herts.core.modelx.InternalReactivePayload;
-import org.herts.core.serializer.MessageSerializer;
+import org.herts.serializer.MessageSerializer;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package org.herts.core.serializer;
+package org.herts.serializer;
 
 /**
  * Herts serialize class

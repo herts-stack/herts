@@ -1,6 +1,6 @@
 package org.herts.core.service;
 
-import org.herts.core.serializer.MessageSerializer;
+import org.herts.serializer.MessageSerializer;
 
 import java.util.ArrayList;
 import java.util.List;

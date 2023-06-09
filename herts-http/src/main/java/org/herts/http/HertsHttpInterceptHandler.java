@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.herts.core.exception.http.HttpErrorException;
 import org.herts.core.modelx.InternalHttpErrorResponse;
-import org.herts.core.serializer.MessageSerializeType;
-import org.herts.core.serializer.MessageSerializer;
+import org.herts.serializer.MessageSerializeType;
+import org.herts.serializer.MessageSerializer;
 
 import java.io.IOException;
 import java.util.Map;

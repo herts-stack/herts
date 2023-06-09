@@ -1,7 +1,7 @@
 package org.herts.rpc;
 
 import org.herts.core.modelx.InternalRpcMsg;
-import org.herts.core.serializer.MessageSerializer;
+import org.herts.serializer.MessageSerializer;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

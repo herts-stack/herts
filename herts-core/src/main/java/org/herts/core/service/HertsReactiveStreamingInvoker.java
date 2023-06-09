@@ -1,8 +1,8 @@
 package org.herts.core.service;
 
-import org.herts.core.exception.MessageJsonParsingException;
+import org.herts.serializer.MessageJsonParsingException;
 import org.herts.core.modelx.InternalReactivePayload;
-import org.herts.core.serializer.MessageSerializer;
+import org.herts.serializer.MessageSerializer;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

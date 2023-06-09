@@ -1,4 +1,4 @@
-package org.herts.core.exception;
+package org.herts.serializer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 

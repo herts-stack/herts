@@ -6,8 +6,8 @@ import org.herts.core.modelx.InternalHttpRequest;
 import org.herts.core.modelx.InternalHttpResponse;
 import org.herts.core.modelx.InternalHttpMsg;
 import org.herts.core.exception.ServiceNotFoundException;
-import org.herts.core.serializer.MessageSerializeType;
-import org.herts.core.serializer.MessageSerializer;
+import org.herts.serializer.MessageSerializeType;
+import org.herts.serializer.MessageSerializer;
 import org.herts.core.service.HertsService;
 
 import java.io.IOException;

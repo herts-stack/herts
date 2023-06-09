@@ -1,10 +1,9 @@
-package org.herts.core.serializer;
+package org.herts.serializer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.herts.core.exception.MessageJsonParsingException;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 
 import java.io.IOException;

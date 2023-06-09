@@ -1,6 +1,6 @@
 package org.herts.http;
 
-import org.herts.core.serializer.MessageSerializer;
+import org.herts.serializer.MessageSerializer;
 import org.herts.metrics.HertsMetrics;
 
 import javax.servlet.http.HttpServletRequest;

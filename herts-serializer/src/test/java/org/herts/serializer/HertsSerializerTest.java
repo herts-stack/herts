@@ -1,7 +1,5 @@
-package org.herts.core.serializer;
+package org.herts.serializer;
 
-import org.herts.core.modelx.InternalHttpRequest;
-import org.herts.core.modelx.InternalHttpMsg;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -9,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HertsSerializerTest {
     public final MessageSerializer hertsJsonSerializer;
@@ -22,15 +19,15 @@ public class HertsSerializerTest {
 
     @Test
     public void serializeAsStr() throws IOException {
-        List<InternalHttpMsg> payloads = new ArrayList<>();
-        InternalHttpMsg payload = new InternalHttpMsg();
+        List<TestMsg> payloads = new ArrayList<>();
+        TestMsg payload = new TestMsg();
         float value = 0.01f;
         payload.setClassInfo(float.class.getName());
         payload.setValue(value);
         payload.setKeyName("key");
         payloads.add(payload);
 
-        InternalHttpRequest hertsHttpRequest = new InternalHttpRequest();
+        TestRequest hertsHttpRequest = new TestRequest();
         hertsHttpRequest.setPayloads(payloads);
 
         String serializedData = this.hertsJsonSerializer.serializeAsStr(hertsHttpRequest);

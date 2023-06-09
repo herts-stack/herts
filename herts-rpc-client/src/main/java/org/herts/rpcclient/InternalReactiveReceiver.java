@@ -7,11 +7,11 @@ import io.grpc.stub.AbstractStub;
 import io.grpc.stub.ClientCalls;
 import io.grpc.stub.StreamObserver;
 
-import org.herts.core.exception.MessageJsonParsingException;
+import org.herts.serializer.MessageJsonParsingException;
 import org.herts.core.modelx.InternalRpcMsg;
 import org.herts.core.context.HertsType;
 import org.herts.core.descriptor.CustomGrpcDescriptor;
-import org.herts.core.serializer.MessageSerializer;
+import org.herts.serializer.MessageSerializer;
 import org.herts.core.service.HertsReceiver;
 
 import java.lang.reflect.Method;

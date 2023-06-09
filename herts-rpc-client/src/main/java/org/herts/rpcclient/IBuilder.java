@@ -2,7 +2,7 @@ package org.herts.rpcclient;
 
 import org.herts.core.annotation.HertsRpcService;
 import org.herts.core.context.HertsType;
-import org.herts.core.exception.MessageJsonParsingException;
+import org.herts.serializer.MessageJsonParsingException;
 import org.herts.core.exception.NotSupportParameterTypeException;
 import org.herts.core.exception.RpcClientBuildException;
 import org.herts.core.service.ReactiveStreaming;

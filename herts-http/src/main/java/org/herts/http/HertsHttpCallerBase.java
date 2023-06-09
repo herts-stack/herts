@@ -5,7 +5,7 @@ import org.herts.core.modelx.InternalHttpRequest;
 import org.herts.core.modelx.InternalHttpResponse;
 import org.herts.core.modelx.InternalHttpMsg;
 import org.herts.core.exception.InvalidMessageException;
-import org.herts.core.serializer.MessageSerializer;
+import org.herts.serializer.MessageSerializer;
 import org.herts.metrics.HertsMetricsServer;
 
 import javax.servlet.http.HttpServletRequest;

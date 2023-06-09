@@ -1,12 +1,12 @@
 package org.herts.http;
 
-import org.herts.core.exception.MessageJsonParsingException;
+import org.herts.serializer.MessageJsonParsingException;
 import org.herts.core.modelx.InternalHttpErrorResponse;
 import org.herts.core.exception.InvalidMessageException;
 import org.herts.core.exception.http.HttpErrorException;
 import org.herts.core.logger.Logging;
-import org.herts.core.serializer.MessageSerializeType;
-import org.herts.core.serializer.MessageSerializer;
+import org.herts.serializer.MessageSerializeType;
+import org.herts.serializer.MessageSerializer;
 import org.herts.core.service.HertsService;
 import org.herts.metrics.HertsMetrics;
 import org.herts.metrics.HertsMetricsServer;

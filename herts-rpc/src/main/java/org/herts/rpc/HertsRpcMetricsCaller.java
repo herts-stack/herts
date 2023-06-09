@@ -1,6 +1,6 @@
 package org.herts.rpc;
 
-import org.herts.core.serializer.MessageSerializer;
+import org.herts.serializer.MessageSerializer;
 import org.herts.metrics.HertsMetrics;
 import org.herts.metrics.HertsMetricsContext;
 import org.herts.metrics.HertsTimer;

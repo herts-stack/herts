@@ -1,7 +1,7 @@
 package org.herts.http;
 
-import org.herts.core.serializer.MessageSerializeType;
-import org.herts.core.serializer.MessageSerializer;
+import org.herts.serializer.MessageSerializeType;
+import org.herts.serializer.MessageSerializer;
 import org.herts.metrics.HertsMetricsServer;
 import org.junit.jupiter.api.Test;
 

@@ -2,7 +2,7 @@ package org.herts.rpc;
 
 import org.herts.core.exception.ServiceMethodNotfoundException;
 import org.herts.core.modelx.RegisteredMethod;
-import org.herts.core.serializer.MessageSerializer;
+import org.herts.serializer.MessageSerializer;
 
 import io.grpc.stub.StreamObserver;
 import org.herts.core.service.HertsService;

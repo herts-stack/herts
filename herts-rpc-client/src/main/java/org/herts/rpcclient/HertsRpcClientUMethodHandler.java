@@ -6,7 +6,7 @@ import org.herts.core.context.HertsType;
 import org.herts.core.exception.ServiceNotFoundException;
 import org.herts.core.modelx.InternalRpcMsg;
 import org.herts.core.exception.rpc.RpcErrorException;
-import org.herts.core.serializer.MessageSerializer;
+import org.herts.serializer.MessageSerializer;
 import org.herts.core.service.HertsService;
 
 import io.grpc.CallOptions;

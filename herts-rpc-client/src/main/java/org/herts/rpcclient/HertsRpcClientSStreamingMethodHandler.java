@@ -5,7 +5,7 @@ import org.herts.core.descriptor.CustomGrpcDescriptor;
 import org.herts.core.exception.ServiceNotFoundException;
 import org.herts.core.exception.StreamResBodyException;
 import org.herts.core.modelx.InternalRpcMsg;
-import org.herts.core.serializer.MessageSerializer;
+import org.herts.serializer.MessageSerializer;
 import org.herts.core.service.HertsService;
 
 import io.grpc.CallOptions;

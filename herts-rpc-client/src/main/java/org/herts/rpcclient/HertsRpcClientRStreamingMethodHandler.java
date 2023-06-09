@@ -10,7 +10,7 @@ import org.herts.core.context.HertsType;
 import org.herts.core.descriptor.CustomGrpcDescriptor;
 import org.herts.core.exception.ServiceNotFoundException;
 import org.herts.core.exception.rpc.RpcErrorException;
-import org.herts.core.serializer.MessageSerializer;
+import org.herts.serializer.MessageSerializer;
 import org.herts.core.service.HertsService;
 
 import java.lang.reflect.InvocationHandler;

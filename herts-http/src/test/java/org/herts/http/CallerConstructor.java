@@ -2,7 +2,7 @@ package org.herts.http;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.herts.core.serializer.MessageSerializer;
+import org.herts.serializer.MessageSerializer;
 import org.herts.metrics.HertsMetricsServer;
 
 import java.lang.reflect.Method;
