@@ -2,7 +2,7 @@ package org.herts.example.jwtrpc;
 
 import io.grpc.CallCredentials;
 import io.grpc.Metadata;
-import org.herts.core.exception.rpc.HertsRpcErrorException;
+import org.herts.core.exception.rpc.RpcErrorException;
 import org.herts.rpc.HertsRpcInterceptBuilder;
 import org.herts.rpc.HertsRpcServerEngine;
 import org.herts.rpc.HertsRpcServerEngineBuilder;
@@ -39,7 +39,7 @@ public class Main {
         UnaryService service = client.createHertsRpcService(UnaryService.class);
         try {
             service.helloWorld();
-        } catch (HertsRpcErrorException ex) {
+        } catch (RpcErrorException ex) {
             System.out.println("Error on client: " + ex.getMessage());
         }
 

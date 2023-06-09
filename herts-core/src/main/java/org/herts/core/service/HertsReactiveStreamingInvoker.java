@@ -1,8 +1,8 @@
 package org.herts.core.service;
 
-import org.herts.core.exception.HertsJsonProcessingException;
-import org.herts.core.modelx.HertsReactivePayload;
-import org.herts.core.serializer.HertsSerializer;
+import org.herts.core.exception.MessageJsonParsingException;
+import org.herts.core.modelx.InternalReactivePayload;
+import org.herts.core.serializer.MessageSerializer;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -19,12 +19,12 @@ import java.util.List;
  */
 class HertsReactiveStreamingInvoker implements InvocationHandler {
     private final HertsReactiveBroker hertsMessageBroker;
-    private final HertsSerializer hertsSerializer;
+    private final MessageSerializer hertsSerializer;
     private String clientId;
 
     public HertsReactiveStreamingInvoker(HertsReactiveBroker hertsMessageBroker, String clientId) {
         this.hertsMessageBroker = hertsMessageBroker;
-        this.hertsSerializer = new HertsSerializer();
+        this.hertsSerializer = new MessageSerializer();
         this.clientId = clientId;
     }
 
@@ -43,7 +43,7 @@ class HertsReactiveStreamingInvoker implements InvocationHandler {
             return proxy;
         }
 
-        HertsReactivePayload hertsPayload = new HertsReactivePayload();
+        InternalReactivePayload hertsPayload = new InternalReactivePayload();
         hertsPayload.setClientId(this.clientId);
         hertsPayload.setMethodName(method.getName());
         hertsPayload.setParameters(parameters);
@@ -51,7 +51,7 @@ class HertsReactiveStreamingInvoker implements InvocationHandler {
 
         try {
             this.hertsMessageBroker.getHertsMessageProducer().produce(this.hertsSerializer.serialize(hertsPayload));
-        } catch (HertsJsonProcessingException ex) {
+        } catch (MessageJsonParsingException ex) {
             ex.printStackTrace();
         }
         return proxy;

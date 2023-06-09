@@ -1,14 +1,13 @@
 package org.herts.e2etest.reactivestreaming_rpc;
 
-import org.herts.core.logger.HertsLogger;
+import org.herts.core.logger.Logging;
 import org.herts.e2etest.common.HelloRequest;
 
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class IntegrationTestRsReceiverImpl implements IntegrationTestRsReceiver {
-    private static final Logger logger = HertsLogger.getLogger(IntegrationTestRsReceiverImpl.class.getSimpleName());
+    private static final java.util.logging.Logger logger = Logging.getLogger(IntegrationTestRsReceiverImpl.class.getSimpleName());
 
     @Override
     public void onReceivedHello01() {

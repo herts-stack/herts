@@ -1,7 +1,7 @@
 package org.herts.http;
 
-import org.herts.core.serializer.HertsSerializeType;
-import org.herts.core.serializer.HertsSerializer;
+import org.herts.core.serializer.MessageSerializeType;
+import org.herts.core.serializer.MessageSerializer;
 import org.herts.metrics.HertsMetricsServer;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +25,7 @@ public class HertsHttpCallerBaseTest {
         StubRequest req = new StubRequest();
         StubResponse res = new StubResponse();
         HertsMetricsServer metricsServer = new HertsMetricsServer(null);
-        HertsSerializer serializer = new HertsSerializer(HertsSerializeType.Json);
+        MessageSerializer serializer = new MessageSerializer(MessageSerializeType.Json);
         CallerConstructor callerConstructor = new CallerConstructor(c, req, res, metricsServer, serializer);
         HertsHttpCallerBase caller = new HertsHttpCallerBase(test, metricsServer, serializer, callerConstructor.getParameters());
 

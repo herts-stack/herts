@@ -1,7 +1,7 @@
 package org.herts.rpcclient;
 
 import io.grpc.stub.StreamObserver;
-import org.herts.core.context.HertsSystemContext;
+import org.herts.core.context.SharedServiceContext;
 import org.herts.core.service.HertsReceiver;
 
 import java.lang.reflect.InvocationTargetException;
@@ -37,7 +37,7 @@ class InternalReactiveObserver implements StreamObserver<Object> {
             return;
         }
         String methodName = (String) receivedData.get(0);
-        if (methodName.equals(HertsSystemContext.Rpc.REGISTERED_METHOD_NAME)) {
+        if (methodName.equals(SharedServiceContext.Rpc.REGISTERED_METHOD_NAME)) {
             return;
         }
         Method reflectMethod = this.reflectMethods.get(methodName);

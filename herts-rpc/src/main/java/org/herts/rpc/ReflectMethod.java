@@ -1,12 +1,11 @@
 package org.herts.rpc;
 
-import org.herts.core.logger.HertsLogger;
+import org.herts.core.logger.Logging;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Herts refection method
@@ -14,7 +13,7 @@ import java.util.logging.Logger;
  * @version 1.0.0
  */
 public class ReflectMethod {
-    private static final Logger logger = HertsLogger.getLogger(ReflectMethod.class.getSimpleName());
+    private static final java.util.logging.Logger logger = Logging.getLogger(ReflectMethod.class.getSimpleName());
 
     private final String serviceName;
     private final String serviceImplName;

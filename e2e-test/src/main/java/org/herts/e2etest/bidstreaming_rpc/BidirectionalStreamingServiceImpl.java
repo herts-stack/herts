@@ -1,16 +1,14 @@
 package org.herts.e2etest.bidstreaming_rpc;
 
-import org.herts.core.logger.HertsLogger;
+import org.herts.core.logger.Logging;
 import org.herts.core.util.DateTimeUtil;
 import org.herts.core.service.HertsServiceBidirectionalStreaming;
 
 import io.grpc.stub.StreamObserver;
 import org.herts.e2etest.common.HelloResponse01;
 
-import java.util.logging.Logger;
-
 public class BidirectionalStreamingServiceImpl extends HertsServiceBidirectionalStreaming<BidirectionalStreamingRpcService> implements BidirectionalStreamingRpcService {
-    private static final Logger logger = HertsLogger.getLogger(BidirectionalStreamingServiceImpl.class.getSimpleName());
+    private static final java.util.logging.Logger logger = Logging.getLogger(BidirectionalStreamingServiceImpl.class.getSimpleName());
 
     public BidirectionalStreamingServiceImpl() {
     }

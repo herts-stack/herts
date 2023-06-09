@@ -13,7 +13,7 @@ public class HertsGrpcDescriptorTest {
         HertsType coreType = HertsType.Unary;
         String serviceName = "testRpcService";
         String methodName = "getFoo";
-        MethodDescriptor<byte[], byte[]> descriptor = HertsGrpcDescriptor.generateMethodDescriptor(coreType, serviceName, methodName);
+        MethodDescriptor<byte[], byte[]> descriptor = CustomGrpcDescriptor.generateMethodDescriptor(coreType, serviceName, methodName);
 
         assertEquals(serviceName + "/" + methodName, descriptor.getFullMethodName());
     }
@@ -23,7 +23,7 @@ public class HertsGrpcDescriptorTest {
         HertsType coreType = HertsType.Unary;
         String serviceName = "testRpcService";
         String methodName = "getFoo";
-        MethodDescriptor<Object, Object> descriptor = HertsGrpcDescriptor.generateStramingMethodDescriptor(coreType, serviceName, methodName);
+        MethodDescriptor<Object, Object> descriptor = CustomGrpcDescriptor.generateStramingMethodDescriptor(coreType, serviceName, methodName);
 
         assertEquals(serviceName + "/" + methodName, descriptor.getFullMethodName());
     }

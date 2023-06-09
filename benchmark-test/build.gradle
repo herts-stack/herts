@@ -20,9 +20,6 @@ repositories {
 dependencies {
     implementation project(':herts-core')
     implementation project(':herts-rpc')
-    implementation project(':herts-rpc-client')
-    implementation project(':herts-http')
-    implementation project(':herts-http-client')
 
     implementation 'commons-cli:commons-cli:1.5.0'
 }

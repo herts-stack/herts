@@ -2,10 +2,10 @@ package org.herts.rpcclient;
 
 import org.herts.core.annotation.HertsRpcService;
 import org.herts.core.context.HertsType;
-import org.herts.core.exception.HertsJsonProcessingException;
-import org.herts.core.exception.HertsNotSupportParameterTypeException;
-import org.herts.core.exception.HertsRpcClientBuildException;
-import org.herts.core.service.HertsReactiveStreamingInternal;
+import org.herts.core.exception.MessageJsonParsingException;
+import org.herts.core.exception.NotSupportParameterTypeException;
+import org.herts.core.exception.RpcClientBuildException;
+import org.herts.core.service.ReactiveStreaming;
 import org.herts.core.service.HertsReceiver;
 
 import io.grpc.Channel;
@@ -50,7 +50,7 @@ public class IBuilder implements HertsRpcClientIBuilder {
     @Override
     public <T> HertsRpcClientIBuilder registerHertsRpcServiceInterface(Class<T> serviceClass) {
         if (!serviceClass.isInterface()) {
-            throw new HertsRpcClientBuildException("Please register Interface with extends HertsService");
+            throw new RpcClientBuildException("Please register Interface with extends HertsService");
         }
         this.hertsRpcServices.add(serviceClass);
         return this;
@@ -84,7 +84,7 @@ public class IBuilder implements HertsRpcClientIBuilder {
     public HertsRpcClient connect() {
         List<HertsType> serviceHertsTypes = getRegisteredServiceHertsTypes();
         if (!RpcClientValidator.isSameHertsCoreType(serviceHertsTypes)) {
-            throw new HertsRpcClientBuildException("Please register same HertsService. Not supported multiple different services");
+            throw new RpcClientBuildException("Please register same HertsService. Not supported multiple different services");
         }
         this.hertsType = serviceHertsTypes.get(0);
 
@@ -128,10 +128,10 @@ public class IBuilder implements HertsRpcClientIBuilder {
                 try {
                     InternalReactiveReceiver.create(receiver, this.clientConnection)
                             .newHertsReactiveStreamingService(this.channel)
-                            .registerReceiver(HertsReactiveStreamingInternal.class);
+                            .registerReceiver(ReactiveStreaming.class);
 
                     Thread.sleep(500);
-                } catch (HertsJsonProcessingException | InterruptedException e) {
+                } catch (MessageJsonParsingException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -146,7 +146,7 @@ public class IBuilder implements HertsRpcClientIBuilder {
                 HertsRpcService annotation = c.getAnnotation(HertsRpcService.class);
                 hertsTypes.add(annotation.value());
             } catch (Exception ex) {
-                throw new HertsRpcClientBuildException("Could not find @HertsRpcService annotation in " + c.getName(), ex);
+                throw new RpcClientBuildException("Could not find @HertsRpcService annotation in " + c.getName(), ex);
             }
         }
         return hertsTypes;
@@ -154,32 +154,32 @@ public class IBuilder implements HertsRpcClientIBuilder {
 
     private void validateHertsService() {
         if (this.hertsRpcServices.size() == 0 || this.connectedHost == null || this.connectedHost.isEmpty()) {
-            throw new HertsRpcClientBuildException("Please register HertsService and host");
+            throw new RpcClientBuildException("Please register HertsService and host");
         }
 
         String validateMsg = RpcClientValidator.validateMethod(this.hertsRpcServices);
         if (!validateMsg.isEmpty()) {
-            throw new HertsRpcClientBuildException(validateMsg);
+            throw new RpcClientBuildException(validateMsg);
         }
 
         if (this.hertsType != HertsType.Unary && this.hertsType != HertsType.ServerStreaming) {
             if (!RpcClientValidator.isStreamingRpc(this.hertsRpcServices)) {
-                throw new HertsNotSupportParameterTypeException("Support StreamObserver<T> parameter only of BidirectionalStreaming and ClientStreaming. Please remove other method parameter.");
+                throw new NotSupportParameterTypeException("Support StreamObserver<T> parameter only of BidirectionalStreaming and ClientStreaming. Please remove other method parameter.");
             }
         }
     }
 
     private void validateHertsReceiver() {
         if (this.hertsRpcReceivers.size() == 0 || this.connectedHost == null || this.connectedHost.isEmpty()) {
-            throw new HertsRpcClientBuildException("Please register HertsService and host");
+            throw new RpcClientBuildException("Please register HertsService and host");
         }
 
         String validateMsg = RpcClientValidator.validateMethod(this.hertsRpcServices);
         if (!validateMsg.isEmpty()) {
-            throw new HertsRpcClientBuildException(validateMsg);
+            throw new RpcClientBuildException(validateMsg);
         }
         if (!RpcClientValidator.isAllReturnVoidBy(this.hertsRpcReceivers)) {
-            throw new HertsRpcClientBuildException("Please register void method only");
+            throw new RpcClientBuildException("Please register void method only");
         }
     }
 

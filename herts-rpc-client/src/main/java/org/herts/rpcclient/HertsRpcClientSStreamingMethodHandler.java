@@ -1,11 +1,11 @@
 package org.herts.rpcclient;
 
 import org.herts.core.context.HertsType;
-import org.herts.core.descriptor.HertsGrpcDescriptor;
-import org.herts.core.exception.HertsServiceNotFoundException;
-import org.herts.core.exception.HertsStreamingResBodyException;
-import org.herts.core.modelx.HertsRpcMsg;
-import org.herts.core.serializer.HertsSerializer;
+import org.herts.core.descriptor.CustomGrpcDescriptor;
+import org.herts.core.exception.ServiceNotFoundException;
+import org.herts.core.exception.StreamResBodyException;
+import org.herts.core.modelx.InternalRpcMsg;
+import org.herts.core.serializer.MessageSerializer;
 import org.herts.core.service.HertsService;
 
 import io.grpc.CallOptions;
@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentMap;
  * @version 1.0.0
  */
 class HertsRpcClientSStreamingMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsRpcClientSStreamingMethodHandler> implements InvocationHandler {
-    private final HertsSerializer serializer = new HertsSerializer();
+    private final MessageSerializer serializer = new MessageSerializer();
     private final ConcurrentMap<String, Method> methodInfos = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, MethodDescriptor<Object, Object>> descriptors = new ConcurrentHashMap<>();
     private final Class<?> hertsRpcService;
@@ -44,7 +44,7 @@ class HertsRpcClientSStreamingMethodHandler extends io.grpc.stub.AbstractBlockin
         try {
             hertsServiceClass = Class.forName(this.serviceName);
         } catch (ClassNotFoundException ignore) {
-            throw new HertsServiceNotFoundException("Unknown class name. Allowed class is " + HertsService.class.getName());
+            throw new ServiceNotFoundException("Unknown class name. Allowed class is " + HertsService.class.getName());
         }
 
         Method[] methods = hertsServiceClass.getDeclaredMethods();
@@ -58,7 +58,7 @@ class HertsRpcClientSStreamingMethodHandler extends io.grpc.stub.AbstractBlockin
         String methodName = method.getName();
         MethodDescriptor<Object, Object> methodDescriptor = this.descriptors.get(methodName);
         if (methodDescriptor == null) {
-            methodDescriptor = HertsGrpcDescriptor
+            methodDescriptor = CustomGrpcDescriptor
                     .generateStramingMethodDescriptor(HertsType.ServerStreaming, this.serviceName, methodName);
             this.descriptors.put(methodName, methodDescriptor);
         }
@@ -77,10 +77,10 @@ class HertsRpcClientSStreamingMethodHandler extends io.grpc.stub.AbstractBlockin
         }
 
         if (methodObservers.size() != 1) {
-            throw new HertsStreamingResBodyException("Streaming response observer body data is null");
+            throw new StreamResBodyException("Streaming response observer body data is null");
         }
 
-        byte[] requestBytes = this.serializer.serialize(new HertsRpcMsg(methodParameters, parameterTypes));
+        byte[] requestBytes = this.serializer.serialize(new InternalRpcMsg(methodParameters, parameterTypes));
         StreamObserver<Object> responseObserver = (StreamObserver<Object>) methodObservers.get(0);
         ClientCalls.asyncServerStreamingCall(getChannel().newCall(methodDescriptor, getCallOptions()), requestBytes, responseObserver);
         return proxy;

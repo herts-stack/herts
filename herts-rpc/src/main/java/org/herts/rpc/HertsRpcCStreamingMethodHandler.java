@@ -1,9 +1,9 @@
 package org.herts.rpc;
 
-import org.herts.core.exception.HertsInstanceException;
-import org.herts.core.exception.HertsMessageException;
-import org.herts.core.modelx.HertsMethod;
-import org.herts.core.serializer.HertsSerializer;
+import org.herts.core.exception.InvokeException;
+import org.herts.core.exception.ServiceMethodNotfoundException;
+import org.herts.core.modelx.RegisteredMethod;
+import org.herts.core.serializer.MessageSerializer;
 import org.herts.core.service.HertsService;
 import org.herts.metrics.HertsMetrics;
 
@@ -27,10 +27,10 @@ class HertsRpcCStreamingMethodHandler<Req, Resp> implements
     private final Object coreObject;
     private final Object[] requests;
     private final Method reflectMethod;
-    private final HertsMethod hertsMethod;
+    private final RegisteredMethod hertsMethod;
     private final HertsRpcCaller hertsRpcCaller;
 
-    public HertsRpcCStreamingMethodHandler(HertsMethod hertsMethod, HertsMetrics hertsMetrics, HertsService hertsService) {
+    public HertsRpcCStreamingMethodHandler(RegisteredMethod hertsMethod, HertsMetrics hertsMetrics, HertsService hertsService) {
         this.hertsMethod = hertsMethod;
         this.requests = new Object[this.hertsMethod.getParameters().length];
         this.coreObject = hertsService;
@@ -40,11 +40,11 @@ class HertsRpcCStreamingMethodHandler<Req, Resp> implements
         try {
             method = coreClass.getDeclaredMethod(hertsMethod.getMethodName(), hertsMethod.getParameters());
         } catch (NoSuchMethodException ex) {
-            throw new HertsInstanceException(ex);
+            throw new ServiceMethodNotfoundException(ex);
         }
 
         this.reflectMethod = method;
-        HertsSerializer serializer = new HertsSerializer();
+        MessageSerializer serializer = new MessageSerializer();
         if (hertsMetrics != null && hertsMetrics.isMetricsEnabled()) {
             this.hertsRpcCaller = new HertsRpcMetricsCaller(this.reflectMethod, hertsMetrics, serializer, coreObject, requests);
         } else {
@@ -58,7 +58,7 @@ class HertsRpcCStreamingMethodHandler<Req, Resp> implements
             StreamObserver<Resp> response = this.hertsRpcCaller.invokeStreaming(this.coreObject, responseObserver);
             return (StreamObserver<Req>) response;
         } catch (IllegalAccessException | InvocationTargetException ex) {
-            throw new HertsMessageException(ex);
+            throw new InvokeException(ex);
         }
     }
 

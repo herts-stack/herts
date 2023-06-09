@@ -1,6 +1,6 @@
 package org.herts.http;
 
-import org.herts.core.serializer.HertsSerializer;
+import org.herts.core.serializer.MessageSerializer;
 import org.herts.metrics.HertsMetrics;
 import org.herts.metrics.HertsMetricsContext;
 import org.herts.metrics.HertsTimer;
@@ -25,10 +25,10 @@ class HertsHttpMetricsCaller extends HertsHttpCallerBase implements HertsHttpCal
     private final Object coreObject;
     private final String serviceName;
     private final HertsMetrics hertsMetrics;
-    private final HertsSerializer hertsSerializer;
+    private final MessageSerializer hertsSerializer;
 
     public HertsHttpMetricsCaller(Object coreObject, HertsMetrics hertsMetrics,
-                                  HertsSerializer hertsSerializer, HertsMetricsServer hertsMetricsServer,
+                                  MessageSerializer hertsSerializer, HertsMetricsServer hertsMetricsServer,
                                   ConcurrentMap<String, List<Parameter>> parameters, String serviceName) {
 
         super(coreObject, hertsMetricsServer, hertsSerializer, parameters);

@@ -1,11 +1,11 @@
 package org.herts.e2etest.unary_rpc.client;
 
-import org.herts.core.exception.rpc.HertsRpcErrorException;
+import org.herts.core.exception.rpc.RpcErrorException;
 import org.herts.e2etest.common.Constant;
 import org.herts.e2etest.common.GrpcClientInterceptor;
 import org.herts.e2etest.common.HelloRequest;
 import org.herts.e2etest.unary_rpc.UnaryRpcService01;
-import org.herts.core.logger.HertsLogger;
+import org.herts.core.logger.Logging;
 import org.herts.e2etest.unary_rpc.UnaryRpcService02;
 import org.herts.rpcclient.HertsRpcClient;
 import org.herts.rpcclient.HertsRpcClientBuilder;
@@ -14,10 +14,9 @@ import org.herts.rpcclient.HertsRpcClientInterceptBuilder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class UnaryClient {
-    private static final Logger logger = HertsLogger.getLogger(UnaryClient.class.getSimpleName());
+    private static final java.util.logging.Logger logger = Logging.getLogger(UnaryClient.class.getSimpleName());
 
     public static void run() {
         GrpcClientInterceptor grpcClientInterceptor = new GrpcClientInterceptor();
@@ -50,19 +49,19 @@ public class UnaryClient {
 
         try {
             service_01.error01();
-        } catch (HertsRpcErrorException ex) {
+        } catch (RpcErrorException ex) {
             logger.info(ex.getMessage() + " " + ex.getStatusCode() + " " + ex.getStatus());
         }
 
         try {
             service_01.error02();
-        } catch (HertsRpcErrorException ex) {
+        } catch (RpcErrorException ex) {
             logger.info(ex.getMessage() + " " + ex.getStatusCode() + " " + ex.getStatus());
         }
 
         try {
             service_01.error03();
-        } catch (HertsRpcErrorException ex) {
+        } catch (RpcErrorException ex) {
             logger.info(ex.getMessage() + " " + ex.getStatusCode() + " " + ex.getStatus());
         }
 

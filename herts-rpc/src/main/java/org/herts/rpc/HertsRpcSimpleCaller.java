@@ -1,6 +1,6 @@
 package org.herts.rpc;
 
-import org.herts.core.serializer.HertsSerializer;
+import org.herts.core.serializer.MessageSerializer;
 
 import io.grpc.stub.StreamObserver;
 
@@ -20,7 +20,7 @@ class HertsRpcSimpleCaller extends BaseCaller implements HertsRpcCaller {
     private final Object coreObject;
     private final Object[] requests;
 
-    public HertsRpcSimpleCaller(Method reflectMethod, HertsSerializer hertsSerializer, Object coreObject, Object[] requests) {
+    public HertsRpcSimpleCaller(Method reflectMethod, MessageSerializer hertsSerializer, Object coreObject, Object[] requests) {
         super(reflectMethod, hertsSerializer, coreObject, requests);
         this.reflectMethod = reflectMethod;
         this.coreObject = coreObject;

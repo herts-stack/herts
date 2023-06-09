@@ -1,7 +1,7 @@
 package org.herts.metrics;
 
 import org.herts.core.context.HertsType;
-import org.herts.core.exception.HertsTypeInvalidException;
+import org.herts.core.exception.TypeInvalidException;
 import org.herts.core.service.HertsService;
 
 import io.micrometer.core.instrument.Clock;
@@ -113,7 +113,7 @@ public class HertsMetricsHandler implements HertsMetrics {
         @Override
         public HertsMetrics build() {
             if (this.hertsRpcServices == null || this.hertsRpcServices.size() == 0) {
-                throw new HertsTypeInvalidException("Required HertsCoreService");
+                throw new TypeInvalidException("Required HertsCoreService");
             }
             return new HertsMetricsHandler(this);
         }
@@ -133,7 +133,7 @@ public class HertsMetricsHandler implements HertsMetrics {
                 Class<?> thisClass = Class.forName(serviceName);
                 methods = thisClass.getDeclaredMethods();
             } catch (Exception ex) {
-                throw new HertsTypeInvalidException("Herts service is invalid", ex);
+                throw new TypeInvalidException("Herts service is invalid", ex);
             }
 
             for (Method method : methods) {

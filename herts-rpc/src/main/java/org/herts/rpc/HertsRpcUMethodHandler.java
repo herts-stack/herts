@@ -1,9 +1,9 @@
 package org.herts.rpc;
 
-import org.herts.core.exception.HertsInstanceException;
-import org.herts.core.modelx.HertsMethod;
-import org.herts.core.exception.rpc.HertsRpcErrorException;
-import org.herts.core.serializer.HertsSerializer;
+import org.herts.core.exception.ServiceMethodNotfoundException;
+import org.herts.core.modelx.RegisteredMethod;
+import org.herts.core.exception.rpc.RpcErrorException;
+import org.herts.core.serializer.MessageSerializer;
 
 import org.herts.core.service.HertsService;
 import org.herts.metrics.HertsMetrics;
@@ -25,14 +25,14 @@ class HertsRpcUMethodHandler<Req, Resp> implements
         io.grpc.stub.ServerCalls.ClientStreamingMethod<Req, Resp>,
         io.grpc.stub.ServerCalls.BidiStreamingMethod<Req, Resp> {
 
-    private final HertsSerializer serializer = new HertsSerializer();
+    private final MessageSerializer serializer = new MessageSerializer();
     private final Object coreObject;
     private final Object[] requests;
     private final Method reflectMethod;
-    private final HertsMethod hertsMethod;
+    private final RegisteredMethod hertsMethod;
     private final HertsRpcCaller hertsRpcCaller;
 
-    public HertsRpcUMethodHandler(HertsMethod hertsMethod, HertsMetrics hertsMetrics, HertsService hertsService) {
+    public HertsRpcUMethodHandler(RegisteredMethod hertsMethod, HertsMetrics hertsMetrics, HertsService hertsService) {
         this.hertsMethod = hertsMethod;
         this.requests = new Object[this.hertsMethod.getParameters().length];
 
@@ -42,7 +42,7 @@ class HertsRpcUMethodHandler<Req, Resp> implements
         try {
             method = coreClass.getDeclaredMethod(hertsMethod.getMethodName(), hertsMethod.getParameters());
         } catch (NoSuchMethodException ex) {
-            throw new HertsInstanceException(ex);
+            throw new ServiceMethodNotfoundException(ex);
         }
 
         this.reflectMethod = method;
@@ -71,14 +71,14 @@ class HertsRpcUMethodHandler<Req, Resp> implements
                 responseObserver.onCompleted();
             }
         } catch (IllegalAccessException | IOException ex) {
-            responseObserver.onError(new HertsRpcErrorException(HertsRpcErrorException.StatusCode.Status13, ex.getMessage()).createStatusException());
+            responseObserver.onError(new RpcErrorException(RpcErrorException.StatusCode.Status13, ex.getMessage()).createStatusException());
         } catch (InvocationTargetException ex) {
             Throwable cause = ex.getCause();
-            if (cause instanceof HertsRpcErrorException) {
-                HertsRpcErrorException exception = (HertsRpcErrorException) cause;
+            if (cause instanceof RpcErrorException) {
+                RpcErrorException exception = (RpcErrorException) cause;
                 responseObserver.onError(exception.createStatusException());
             } else {
-                responseObserver.onError(new HertsRpcErrorException(HertsRpcErrorException.StatusCode.Status13, "Unexpected error occurred. " + ex.getMessage()).createStatusException());
+                responseObserver.onError(new RpcErrorException(RpcErrorException.StatusCode.Status13, "Unexpected error occurred. " + ex.getMessage()).createStatusException());
             }
         }
     }

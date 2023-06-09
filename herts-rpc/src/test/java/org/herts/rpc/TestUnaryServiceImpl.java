@@ -1,14 +1,13 @@
 package org.herts.rpc;
 
-import org.herts.core.logger.HertsLogger;
+import org.herts.core.logger.Logging;
 import org.herts.core.service.HertsServiceUnary;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class TestUnaryServiceImpl extends HertsServiceUnary<TestUnaryRpcService> implements TestUnaryRpcService {
-    private static final Logger logger = HertsLogger.getLogger(TestUnaryServiceImpl.class.getSimpleName());
+    private static final java.util.logging.Logger logger = Logging.getLogger(TestUnaryServiceImpl.class.getSimpleName());
 
     public TestUnaryServiceImpl() {
     }

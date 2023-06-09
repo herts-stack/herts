@@ -1,6 +1,6 @@
 package org.herts.rpcclient;
 
-import org.herts.core.util.HertsServiceValidateUtil;
+import org.herts.core.util.ServiceValidateUtil;
 
 /**
  * Herts core client validator
@@ -8,5 +8,5 @@ import org.herts.core.util.HertsServiceValidateUtil;
  * @author Herts Contributer
  * @version 1.0.0
  */
-class RpcClientValidator extends HertsServiceValidateUtil {
+class RpcClientValidator extends ServiceValidateUtil {
 }

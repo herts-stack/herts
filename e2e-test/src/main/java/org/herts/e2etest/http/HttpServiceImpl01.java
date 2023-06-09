@@ -1,17 +1,16 @@
 package org.herts.e2etest.http;
 
-import org.herts.core.exception.http.HertsHttpErrorException;
-import org.herts.core.logger.HertsLogger;
+import org.herts.core.exception.http.HttpErrorException;
+import org.herts.core.logger.Logging;
 import org.herts.core.service.HertsServiceHttp;
 import org.herts.e2etest.common.TestData;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class HttpServiceImpl01 extends HertsServiceHttp<HttpService01> implements HttpService01 {
-    private static final Logger logger = HertsLogger.getLogger(HttpServiceImpl01.class.getSimpleName());
+    private static final java.util.logging.Logger logger = Logging.getLogger(HttpServiceImpl01.class.getSimpleName());
 
     public HttpServiceImpl01() {
     }
@@ -52,6 +51,6 @@ public class HttpServiceImpl01 extends HertsServiceHttp<HttpService01> implement
 
     @Override
     public String httpTest07() {
-       throw new HertsHttpErrorException(HertsHttpErrorException.StatusCode.Status400, "badrequest") ;
+       throw new HttpErrorException(HttpErrorException.StatusCode.Status400, "badrequest") ;
     }
 }

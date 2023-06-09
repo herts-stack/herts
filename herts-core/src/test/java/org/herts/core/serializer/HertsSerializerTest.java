@@ -1,7 +1,7 @@
 package org.herts.core.serializer;
 
-import org.herts.core.modelx.HertsHttpRequest;
-import org.herts.core.modelx.HertsHttpMsg;
+import org.herts.core.modelx.InternalHttpRequest;
+import org.herts.core.modelx.InternalHttpMsg;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -12,25 +12,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HertsSerializerTest {
-    public final HertsSerializer hertsJsonSerializer;
-    public final HertsSerializer hertsMsgSerializer;
+    public final MessageSerializer hertsJsonSerializer;
+    public final MessageSerializer hertsMsgSerializer;
 
     public HertsSerializerTest() {
-        this.hertsJsonSerializer = new HertsSerializer(HertsSerializeType.Json);
-        this.hertsMsgSerializer = new HertsSerializer(HertsSerializeType.MessagePack);
+        this.hertsJsonSerializer = new MessageSerializer(MessageSerializeType.Json);
+        this.hertsMsgSerializer = new MessageSerializer(MessageSerializeType.MessagePack);
     }
 
     @Test
     public void serializeAsStr() throws IOException {
-        List<HertsHttpMsg> payloads = new ArrayList<>();
-        HertsHttpMsg payload = new HertsHttpMsg();
+        List<InternalHttpMsg> payloads = new ArrayList<>();
+        InternalHttpMsg payload = new InternalHttpMsg();
         float value = 0.01f;
         payload.setClassInfo(float.class.getName());
         payload.setValue(value);
         payload.setKeyName("key");
         payloads.add(payload);
 
-        HertsHttpRequest hertsHttpRequest = new HertsHttpRequest();
+        InternalHttpRequest hertsHttpRequest = new InternalHttpRequest();
         hertsHttpRequest.setPayloads(payloads);
 
         String serializedData = this.hertsJsonSerializer.serializeAsStr(hertsHttpRequest);

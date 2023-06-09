@@ -12,7 +12,7 @@ import java.lang.reflect.Type;
  * @author Herts Contributer
  * @version 1.0.0
  */
-public class HertsReactiveStreamingService<T, K> extends HertsReactiveStreamingServiceBase<T, K> implements HertsReactiveStreamingInternal {
+public class HertsReactiveStreamingService<T, K> extends HertsReactiveStreamingServiceBase<T, K> implements ReactiveStreaming {
 
     public HertsReactiveStreamingService() {
         super(HertsType.Reactive);

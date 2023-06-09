@@ -3,16 +3,14 @@ package org.herts.e2etest.bidstreaming_rpc.client;
 import org.herts.e2etest.bidstreaming_rpc.BidirectionalStreamingRpcService;
 import org.herts.e2etest.common.Constant;
 import org.herts.e2etest.common.HelloResponse01;
-import org.herts.core.logger.HertsLogger;
+import org.herts.core.logger.Logging;
 import org.herts.rpcclient.HertsRpcClient;
 import org.herts.rpcclient.HertsRpcClientBuilder;
 
 import io.grpc.stub.StreamObserver;
 
-import java.util.logging.Logger;
-
 public class BiStreamingClient {
-    private static final Logger logger = HertsLogger.getLogger(BiStreamingClient.class.getSimpleName());
+    private static final java.util.logging.Logger logger = Logging.getLogger(BiStreamingClient.class.getSimpleName());
 
     public static void run() {
 

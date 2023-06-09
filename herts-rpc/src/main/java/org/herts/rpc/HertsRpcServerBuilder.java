@@ -1,15 +1,15 @@
 package org.herts.rpc;
 
-import org.herts.core.modelx.HertsMethod;
+import org.herts.core.modelx.RegisteredMethod;
 import org.herts.core.context.HertsMetricsSetting;
-import org.herts.core.context.HertsSystemContext;
+import org.herts.core.context.SharedServiceContext;
 import org.herts.core.context.HertsType;
-import org.herts.core.descriptor.HertsGrpcDescriptor;
-import org.herts.core.descriptor.HertsStreamingDescriptor;
-import org.herts.core.descriptor.HertsUnaryDescriptor;
-import org.herts.core.exception.HertsNotSupportParameterTypeException;
-import org.herts.core.exception.HertsRpcBuildException;
-import org.herts.core.exception.HertsServiceNotFoundException;
+import org.herts.core.descriptor.CustomGrpcDescriptor;
+import org.herts.core.descriptor.CustomGrpcStreamingDescriptor;
+import org.herts.core.descriptor.CustomGrpcUnaryDescriptor;
+import org.herts.core.exception.NotSupportParameterTypeException;
+import org.herts.core.exception.RpcServerBuildException;
+import org.herts.core.exception.ServiceNotFoundException;
 import org.herts.core.service.LoadBalancingType;
 import org.herts.core.service.HertsServiceBidirectionalStreaming;
 import org.herts.core.service.HertsServiceClientStreaming;
@@ -41,7 +41,7 @@ import java.util.Map;
  * @author Herts Contributer
  * @version 1.0.0
  */
-class HertsRpcServerBuilder implements HertsRpcServer {
+class HertsRpcServerBuilder implements RpcServer {
     private final Map<BindableService, ServerInterceptor> services = new HashMap<>();
     private final List<HertsType> hertsTypes = new ArrayList<>();
     private final List<HertsService> hertsRpcServices = new ArrayList<>();
@@ -79,9 +79,9 @@ class HertsRpcServerBuilder implements HertsRpcServer {
     }
 
     @Override
-    public HertsRpcServer registerHertsReactiveRpcService(HertsReactiveService hertsReactiveService, @Nullable ServerInterceptor interceptor) {
+    public RpcServer registerHertsReactiveRpcService(HertsReactiveService hertsReactiveService, @Nullable ServerInterceptor interceptor) {
         if (hertsReactiveService.getClass().getInterfaces().length == 0) {
-            throw new HertsRpcBuildException("You need to define interface on " + hertsReactiveService.getClass().getName());
+            throw new RpcServerBuildException("You need to define interface on " + hertsReactiveService.getClass().getName());
         }
         this.hertsRpcServices.add(hertsReactiveService);
 
@@ -98,9 +98,9 @@ class HertsRpcServerBuilder implements HertsRpcServer {
     }
 
     @Override
-    public HertsRpcServer registerHertsReactiveRpcService(HertsReactiveService hertsReactiveService) {
+    public RpcServer registerHertsReactiveRpcService(HertsReactiveService hertsReactiveService) {
         if (hertsReactiveService.getClass().getInterfaces().length == 0) {
-            throw new HertsRpcBuildException("You need to define interface on " + hertsReactiveService.getClass().getName());
+            throw new RpcServerBuildException("You need to define interface on " + hertsReactiveService.getClass().getName());
         }
         this.hertsRpcServices.add(hertsReactiveService);
 
@@ -111,7 +111,7 @@ class HertsRpcServerBuilder implements HertsRpcServer {
     }
 
     @Override
-    public HertsRpcServer registerHertsRpcService(HertsService hertsRpcService, @Nullable ServerInterceptor interceptor) {
+    public RpcServer registerHertsRpcService(HertsService hertsRpcService, @Nullable ServerInterceptor interceptor) {
         this.hertsRpcServices.add(hertsRpcService);
         BindableService bindableService = createBindableService(hertsRpcService);
         if (interceptor == null) {
@@ -123,7 +123,7 @@ class HertsRpcServerBuilder implements HertsRpcServer {
     }
 
     @Override
-    public HertsRpcServer registerHertsRpcService(HertsService hertsRpcService) {
+    public RpcServer registerHertsRpcService(HertsService hertsRpcService) {
         this.hertsRpcServices.add(hertsRpcService);
         BindableService bindableService = createBindableService(hertsRpcService);
         this.services.put(bindableService, HertsRpcInterceptBuilder.builder(HertsEmptyRpcInterceptor.create()).build());
@@ -131,28 +131,28 @@ class HertsRpcServerBuilder implements HertsRpcServer {
     }
 
     @Override
-    public HertsRpcServer addShutdownHook(HertsRpcServerShutdownHook hook) {
+    public RpcServer addShutdownHook(HertsRpcServerShutdownHook hook) {
         this.hook = hook;
         return this;
     }
 
     @Override
-    public HertsRpcServer loadBalancingType(LoadBalancingType loadBalancingType, @Nullable String connectionInfo) {
+    public RpcServer loadBalancingType(LoadBalancingType loadBalancingType, @Nullable String connectionInfo) {
         this.loadBalancingType = loadBalancingType;
         this.connectionInfo = connectionInfo;
         return this;
     }
 
     @Override
-    public HertsRpcServer secure(ServerCredentials credentials) {
+    public RpcServer secure(ServerCredentials credentials) {
         this.credentials = credentials;
         return this;
     }
 
     @Override
-    public HertsRpcServer enableMetrics(HertsMetricsSetting metricsSetting) {
+    public RpcServer enableMetrics(HertsMetricsSetting metricsSetting) {
         if (this.hertsRpcServices.size() == 0) {
-            throw new HertsRpcBuildException("Please call addService before call enableMetrics");
+            throw new RpcServerBuildException("Please call addService before call enableMetrics");
         }
         this.hertsMetrics = getHertsMetrics(this.hertsRpcServices, metricsSetting);
         this.hertsMetrics.register();
@@ -161,9 +161,9 @@ class HertsRpcServerBuilder implements HertsRpcServer {
     }
 
     @Override
-    public HertsRpcServer addCustomService(BindableService grpcService, HertsType hertsType, @Nullable ServerInterceptor interceptor) {
+    public RpcServer addCustomService(BindableService grpcService, HertsType hertsType, @Nullable ServerInterceptor interceptor) {
         if (grpcService == null) {
-            throw new HertsRpcBuildException("HertsService arg is null");
+            throw new RpcServerBuildException("HertsService arg is null");
         }
         this.hertsTypes.add(hertsType);
         this.services.put(grpcService, interceptor);
@@ -173,33 +173,33 @@ class HertsRpcServerBuilder implements HertsRpcServer {
     @Override
     public HertsRpcServerEngine build() {
         if (this.hertsTypes.size() == 0 || this.services.size() == 0) {
-            throw new HertsRpcBuildException("Please register HertsCoreService");
+            throw new RpcServerBuildException("Please register HertsCoreService");
         }
         if (!RpcValidator.isSameHertsCoreType(this.hertsTypes)) {
-            throw new HertsRpcBuildException(
+            throw new RpcServerBuildException(
                     "Please register same HertsCoreService. Not supported multiple different services");
         }
 
         HertsType hertsType = this.hertsTypes.get(0);
         String validateMsg = RpcValidator.validateRegisteredServices(this.hertsRpcServices);
         if (!validateMsg.isEmpty()) {
-            throw new HertsRpcBuildException(validateMsg);
+            throw new RpcServerBuildException(validateMsg);
         }
         if (!RpcValidator.isValidStreamingRpc(this.hertsRpcServices)) {
-            throw new HertsNotSupportParameterTypeException(
+            throw new NotSupportParameterTypeException(
                     "Support StreamObserver<T> parameter only of BidirectionalStreaming and ClientStreaming. Please remove other method parameter.");
         }
         if (hertsType == HertsType.ServerStreaming && !RpcValidator.isAllReturnVoid(this.hertsRpcServices)) {
-            throw new HertsNotSupportParameterTypeException(
+            throw new NotSupportParameterTypeException(
                     "Support `void` return method only on ServerStreaming");
         }
         if ((hertsType == HertsType.ClientStreaming || hertsType == HertsType.BidirectionalStreaming)
                 && !RpcValidator.isAllReturnStreamObserver(this.hertsRpcServices)) {
-            throw new HertsNotSupportParameterTypeException(
+            throw new NotSupportParameterTypeException(
                     "Support `StreamObserver` return method if use ClientStreaming or BidirectionalStreaming");
         }
         if (hertsType == HertsType.Reactive && !RpcValidator.isAllReceiverVoid(this.hertsRpcServices)) {
-            throw new HertsNotSupportParameterTypeException(
+            throw new NotSupportParameterTypeException(
                     "Receiver supports void method only");
         }
 
@@ -231,10 +231,10 @@ class HertsRpcServerBuilder implements HertsRpcServer {
                     return this.bindableService;
                 }
 
-                List<HertsMethod> hertsMethods = generateHertsMethod(
+                List<RegisteredMethod> hertsMethods = generateHertsMethod(
                         HertsType.ServerStreaming, reflectMethod.getMethods(), reflectMethod.getServiceName(), reflectMethod.getServiceImplName());
 
-                HertsStreamingDescriptor descriptor = HertsGrpcDescriptor.generateStreamingGrpcDescriptor(reflectMethod.getServiceName(), hertsMethods);
+                CustomGrpcStreamingDescriptor descriptor = CustomGrpcDescriptor.generateStreamingGrpcDescriptor(reflectMethod.getServiceName(), hertsMethods);
                 ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
 
                 int index = 0;
@@ -252,7 +252,7 @@ class HertsRpcServerBuilder implements HertsRpcServer {
 
     private BindableService createBindableService(HertsService hertsRpcService) {
         if (hertsRpcService == null) {
-            throw new HertsRpcBuildException("HertsService arg is null");
+            throw new RpcServerBuildException("HertsService arg is null");
         }
 
         this.hertsTypes.add(hertsRpcService.getHertsType());
@@ -274,7 +274,7 @@ class HertsRpcServerBuilder implements HertsRpcServer {
                 bindableService = registerUnaryService(hertsRpcService);
                 break;
             default:
-                throw new HertsRpcBuildException("HertsCoreType is invalid");
+                throw new RpcServerBuildException("HertsCoreType is invalid");
         }
         return bindableService;
     }
@@ -284,7 +284,7 @@ class HertsRpcServerBuilder implements HertsRpcServer {
         try {
             thisClass = Class.forName(serviceName);
         } catch (ClassNotFoundException ignore) {
-            throw new HertsServiceNotFoundException("Unknown class name. Allowed class is " + serviceName);
+            throw new ServiceNotFoundException("Unknown class name. Allowed class is " + serviceName);
         }
 
         Method[] targetMethods;
@@ -294,22 +294,22 @@ class HertsRpcServerBuilder implements HertsRpcServer {
         } else {
             targetMethods = new Method[1];
             for (Method method : definedMethods) {
-                if (method.getName().equals(HertsSystemContext.Rpc.RECEIVER_METHOD_NAME)) {
+                if (method.getName().equals(SharedServiceContext.Rpc.RECEIVER_METHOD_NAME)) {
                     targetMethods[0] = method;
                     break;
                 }
             }
             if (targetMethods[0] == null) {
-                throw new HertsServiceNotFoundException("Unrecognized Receiver class");
+                throw new ServiceNotFoundException("Unrecognized Receiver class");
             }
         }
         return ReflectMethod.create(serviceName, serviceImplName, targetMethods);
     }
 
-    private static List<HertsMethod> generateHertsMethod(HertsType coreType, Method[] methods, String serviceName, String serviceImplName) {
-        List<HertsMethod> hertsMethods = new ArrayList<>();
+    private static List<RegisteredMethod> generateHertsMethod(HertsType coreType, Method[] methods, String serviceName, String serviceImplName) {
+        List<RegisteredMethod> hertsMethods = new ArrayList<>();
         for (Method method : methods) {
-            HertsMethod hertsMethod = new HertsMethod();
+            RegisteredMethod hertsMethod = new RegisteredMethod();
             hertsMethod.setHertsCoreType(coreType);
             hertsMethod.setCoreServiceName(serviceName);
             hertsMethod.setCoreImplServiceName(serviceImplName);
@@ -335,10 +335,10 @@ class HertsRpcServerBuilder implements HertsRpcServer {
                     return this.serverServiceDefinition;
                 }
 
-                List<HertsMethod> hertsMethods = generateHertsMethod(
+                List<RegisteredMethod> hertsMethods = generateHertsMethod(
                         HertsType.BidirectionalStreaming, reflectMethod.getMethods(), reflectMethod.getServiceName(), reflectMethod.getServiceImplName());
 
-                HertsStreamingDescriptor descriptor = HertsGrpcDescriptor.generateStreamingGrpcDescriptor(reflectMethod.getServiceName(), hertsMethods);
+                CustomGrpcStreamingDescriptor descriptor = CustomGrpcDescriptor.generateStreamingGrpcDescriptor(reflectMethod.getServiceName(), hertsMethods);
                 ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
 
                 int index = 0;
@@ -368,10 +368,10 @@ class HertsRpcServerBuilder implements HertsRpcServer {
                     return this.serverServiceDefinition;
                 }
 
-                List<HertsMethod> hertsMethods = generateHertsMethod(
+                List<RegisteredMethod> hertsMethods = generateHertsMethod(
                         HertsType.ClientStreaming, reflectMethod.getMethods(), reflectMethod.getServiceName(), reflectMethod.getServiceImplName());
 
-                HertsStreamingDescriptor descriptor = HertsGrpcDescriptor.generateStreamingGrpcDescriptor(reflectMethod.getServiceName(), hertsMethods);
+                CustomGrpcStreamingDescriptor descriptor = CustomGrpcDescriptor.generateStreamingGrpcDescriptor(reflectMethod.getServiceName(), hertsMethods);
                 ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
 
                 int index = 0;
@@ -401,10 +401,10 @@ class HertsRpcServerBuilder implements HertsRpcServer {
                 if (this.serverServiceDefinition != null) {
                     return this.serverServiceDefinition;
                 }
-                List<HertsMethod> hertsMethods = generateHertsMethod(
+                List<RegisteredMethod> hertsMethods = generateHertsMethod(
                         HertsType.ServerStreaming, reflectMethod.getMethods(), reflectMethod.getServiceName(), reflectMethod.getServiceImplName());
 
-                HertsStreamingDescriptor descriptor = HertsGrpcDescriptor.generateStreamingGrpcDescriptor(reflectMethod.getServiceName(), hertsMethods);
+                CustomGrpcStreamingDescriptor descriptor = CustomGrpcDescriptor.generateStreamingGrpcDescriptor(reflectMethod.getServiceName(), hertsMethods);
                 ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
 
                 int index = 0;
@@ -434,10 +434,10 @@ class HertsRpcServerBuilder implements HertsRpcServer {
                     return this.serverServiceDefinition;
                 }
 
-                List<HertsMethod> hertsMethods = generateHertsMethod(
+                List<RegisteredMethod> hertsMethods = generateHertsMethod(
                         HertsType.Unary, reflectMethod.getMethods(), reflectMethod.getServiceName(), reflectMethod.getServiceImplName());
 
-                HertsUnaryDescriptor descriptor = HertsGrpcDescriptor.generateGrpcDescriptor(reflectMethod.getServiceName(), hertsMethods);
+                CustomGrpcUnaryDescriptor descriptor = CustomGrpcDescriptor.generateGrpcDescriptor(reflectMethod.getServiceName(), hertsMethods);
                 ServerServiceDefinition.Builder builder = io.grpc.ServerServiceDefinition.builder(descriptor.getServiceDescriptor());
 
                 int index = 0;

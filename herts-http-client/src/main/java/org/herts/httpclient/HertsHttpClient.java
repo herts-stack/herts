@@ -1,6 +1,6 @@
 package org.herts.httpclient;
 
-import org.herts.core.exception.HertsServiceNotFoundException;
+import org.herts.core.exception.ServiceNotFoundException;
 import org.herts.core.service.HertsService;
 
 import java.lang.reflect.Proxy;
@@ -46,7 +46,7 @@ public class HertsHttpClient implements HertsHttpClientBase {
     public <T extends HertsService> T createHertsService(Class<T> classType) {
         Class<?> targetService = createService(classType);
         if (targetService == null) {
-            throw new HertsServiceNotFoundException("Not found service on registered service");
+            throw new ServiceNotFoundException("Not found service on registered service");
         }
 
         HertsHttpClientHandler handler = new HertsHttpClientHandler(schema, targetService);
@@ -61,7 +61,7 @@ public class HertsHttpClient implements HertsHttpClientBase {
     public <T extends HertsService> T createHertsService(Class<T> classType, Map<String, String> customHeaders) {
         Class<?> targetService = createService(classType);
         if (targetService == null) {
-            throw new HertsServiceNotFoundException("Not found service on registered service");
+            throw new ServiceNotFoundException("Not found service on registered service");
         }
         HertsHttpClientHandler handler = new HertsHttpClientHandler(schema, targetService, customHeaders);
         return (T) Proxy.newProxyInstance(

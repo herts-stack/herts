@@ -72,5 +72,5 @@ interface ReactiveStreamingCache {
      * @param clientId ClientId
      * @return HertsReceiverInfo
      */
-    HertsReceiverInfo getHertsReceiver(String clientId);
+    ReceiverInfo getHertsReceiver(String clientId);
 }

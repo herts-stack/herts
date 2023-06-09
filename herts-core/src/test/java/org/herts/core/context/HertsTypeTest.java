@@ -1,7 +1,7 @@
 package org.herts.core.context;
 
 import io.grpc.MethodDescriptor;
-import org.herts.core.exception.HertsTypeInvalidException;
+import org.herts.core.exception.TypeInvalidException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,6 +28,6 @@ public class HertsTypeTest {
 
         hertsType = HertsType.Http;
         HertsType finalHertsType = hertsType;
-        assertThrows(HertsTypeInvalidException.class, finalHertsType::convertToMethodType);
+        assertThrows(TypeInvalidException.class, finalHertsType::convertToMethodType);
     }
 }

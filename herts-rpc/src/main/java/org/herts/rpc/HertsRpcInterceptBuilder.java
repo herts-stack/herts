@@ -7,7 +7,7 @@ import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
 
-import org.herts.core.context.HertsSystemContext;
+import org.herts.core.context.SharedServiceContext;
 
 import java.util.logging.Logger;
 
@@ -52,8 +52,8 @@ public class HertsRpcInterceptBuilder implements ServerInterceptor {
             this.interceptor.beforeCallMethod(call, requestHeaders);
         }
 
-        String sessionId = requestHeaders.get(HertsSystemContext.Header.HERTS_CONNECTION_ID);
-        Context ctx = Context.current().withValue(HertsSystemContext.Header.HERTS_CONNECTION_ID_CTX, sessionId);
+        String sessionId = requestHeaders.get(SharedServiceContext.Header.HERTS_CONNECTION_ID);
+        Context ctx = Context.current().withValue(SharedServiceContext.Header.HERTS_CONNECTION_ID_CTX, sessionId);
         return Contexts.interceptCall(ctx, call, requestHeaders, next);
     }
 }

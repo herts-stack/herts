@@ -9,7 +9,7 @@ import org.herts.e2etest.reactivestreaming_rpc.QueueTestRsServiceImpl;
 import org.herts.rpc.HertsRpcInterceptBuilder;
 import org.herts.rpc.HertsRpcServerEngine;
 import org.herts.rpc.HertsRpcServerEngineBuilder;
-import org.herts.rpc.HertsRpcServer;
+import org.herts.rpc.RpcServer;
 
 public class QueueTestRsServer {
 
@@ -18,7 +18,7 @@ public class QueueTestRsServer {
         ServerInterceptor interceptor = HertsRpcInterceptBuilder.builder(new GrpcServerInterceptor()).build();
         QueueTestRsService service = new QueueTestRsServiceImpl();
 
-        HertsRpcServer engineBuilder = HertsRpcServerEngineBuilder.builder(Constant.getGrpcServerOption())
+        RpcServer engineBuilder = HertsRpcServerEngineBuilder.builder(Constant.getGrpcServerOption())
                 .registerHertsReactiveRpcService(service, interceptor)
                 .enableMetrics(metrics);
 

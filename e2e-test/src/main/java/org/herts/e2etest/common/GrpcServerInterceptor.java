@@ -1,14 +1,12 @@
 package org.herts.e2etest.common;
 
-import org.herts.core.logger.HertsLogger;
+import org.herts.core.logger.Logging;
 import org.herts.rpc.HertsRpcInterceptor;
 import io.grpc.Metadata;
 import io.grpc.ServerCall;
 
-import java.util.logging.Logger;
-
 public class GrpcServerInterceptor implements HertsRpcInterceptor {
-    private static final Logger logger = HertsLogger.getLogger(GrpcServerInterceptor.class.getSimpleName());
+    private static final java.util.logging.Logger logger = Logging.getLogger(GrpcServerInterceptor.class.getSimpleName());
 
     @Override
     public void setResponseMetadata(Metadata metadata) {

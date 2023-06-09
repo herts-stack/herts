@@ -1,6 +1,6 @@
 package org.herts.httpclient;
 
-import org.herts.core.util.HertsServiceValidateUtil;
+import org.herts.core.util.ServiceValidateUtil;
 
 /**
  * Herts http client validator
@@ -8,5 +8,5 @@ import org.herts.core.util.HertsServiceValidateUtil;
  * @author Herts Contributer
  * @version 1.0.0
  */
-class HertsHttpClientValidator extends HertsServiceValidateUtil {
+class HertsHttpClientValidator extends ServiceValidateUtil {
 }

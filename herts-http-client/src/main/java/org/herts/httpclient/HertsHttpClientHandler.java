@@ -1,13 +1,13 @@
 package org.herts.httpclient;
 
-import org.herts.core.modelx.HertsHttpErrorResponse;
-import org.herts.core.modelx.HertsHttpRequest;
-import org.herts.core.modelx.HertsHttpResponse;
-import org.herts.core.modelx.HertsHttpMsg;
-import org.herts.core.exception.HertsMessageException;
-import org.herts.core.exception.HertsServiceNotFoundException;
-import org.herts.core.serializer.HertsSerializeType;
-import org.herts.core.serializer.HertsSerializer;
+import org.herts.core.exception.InvalidMessageException;
+import org.herts.core.modelx.InternalHttpErrorResponse;
+import org.herts.core.modelx.InternalHttpRequest;
+import org.herts.core.modelx.InternalHttpResponse;
+import org.herts.core.modelx.InternalHttpMsg;
+import org.herts.core.exception.ServiceNotFoundException;
+import org.herts.core.serializer.MessageSerializeType;
+import org.herts.core.serializer.MessageSerializer;
 import org.herts.core.service.HertsService;
 
 import java.io.IOException;
@@ -32,7 +32,7 @@ import java.util.stream.IntStream;
  * @version 1.0.0
  */
 public class HertsHttpClientHandler implements InvocationHandler {
-    private final HertsSerializer serializer = new HertsSerializer(HertsSerializeType.Json);
+    private final MessageSerializer serializer = new MessageSerializer(MessageSerializeType.Json);
     private final ConcurrentMap<String, List<Class<?>>> methodParameters = new ConcurrentHashMap<>();
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final String url;
@@ -59,7 +59,7 @@ public class HertsHttpClientHandler implements InvocationHandler {
         try {
             hertsServiceClass = Class.forName(instanceName);
         } catch (ClassNotFoundException ignore) {
-            throw new HertsServiceNotFoundException("Unknown class name. Allowed class is " + HertsService.class.getName());
+            throw new ServiceNotFoundException("Unknown class name. Allowed class is " + HertsService.class.getName());
         }
 
         Method[] methods = hertsServiceClass.getDeclaredMethods();
@@ -82,18 +82,18 @@ public class HertsHttpClientHandler implements InvocationHandler {
         }
 
         HttpRequest httpRequest;
-        HertsHttpRequest body = new HertsHttpRequest();
+        InternalHttpRequest body = new InternalHttpRequest();
         if (args != null) {
             List<Class<?>> parameterTypes = this.methodParameters.get(method.getName());
             if (parameterTypes == null || args.length != parameterTypes.size()) {
-                throw new HertsMessageException("Invalid herts method.");
+                throw new InvalidMessageException("Invalid herts method.");
             }
 
-            List<HertsHttpMsg> payloads = new ArrayList<>();
+            List<InternalHttpMsg> payloads = new ArrayList<>();
             IntStream.range(0, args.length).forEach(idx -> {
                 Object requestArg = args[idx];
                 Class<?> aClass = parameterTypes.get(idx);
-                HertsHttpMsg payload = new HertsHttpMsg();
+                InternalHttpMsg payload = new InternalHttpMsg();
                 payload.setKeyName("arg" + idx);
                 payload.setValue(requestArg);
                 payload.setClassInfo(aClass.getName());
@@ -116,12 +116,12 @@ public class HertsHttpClientHandler implements InvocationHandler {
             return null;
         }
 
-        HertsHttpResponse deserialize = this.serializer.deserialize(httpResponse.body(), HertsHttpResponse.class);
+        InternalHttpResponse deserialize = this.serializer.deserialize(httpResponse.body(), InternalHttpResponse.class);
         if (deserialize == null) {
             return null;
         }
 
-        HertsHttpMsg payload = deserialize.getPayload();
+        InternalHttpMsg payload = deserialize.getPayload();
         try {
             Class<?> aClass = Class.forName(payload.getClassInfo());
             return serializer.convertFromHertHttpPayload(payload.getValue(), aClass);
@@ -131,7 +131,7 @@ public class HertsHttpClientHandler implements InvocationHandler {
     }
 
     private void throwHertsHttpError(HttpResponse<byte[]> httpResponse) throws IOException {
-        HertsHttpErrorResponse deserialize = this.serializer.deserialize(httpResponse.body(), HertsHttpErrorResponse.class);
+        InternalHttpErrorResponse deserialize = this.serializer.deserialize(httpResponse.body(), InternalHttpErrorResponse.class);
         deserialize.throwHertsHttpErrorException();
     }
 }

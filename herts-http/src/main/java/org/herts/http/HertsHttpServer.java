@@ -1,8 +1,8 @@
 package org.herts.http;
 
 import org.herts.core.context.HertsMetricsSetting;
-import org.herts.core.exception.HertsHttpBuildException;
-import org.herts.core.logger.HertsLogger;
+import org.herts.core.exception.HttpServerBuildException;
+import org.herts.core.logger.Logging;
 import org.herts.core.service.HertsService;
 import org.herts.metrics.HertsMetrics;
 import org.herts.metrics.HertsMetricsHandler;
@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * Herts http server implementation
@@ -31,7 +30,7 @@ import java.util.logging.Logger;
  * @version 1.0.0
  */
 public class HertsHttpServer implements HertsHttpEngine {
-    private static final Logger logger = HertsLogger.getLogger(HertsHttpEngine.class.getSimpleName());
+    private static final java.util.logging.Logger logger = Logging.getLogger(HertsHttpEngine.class.getSimpleName());
     private static final String[] HETRS_HTTP_METHODS = new String[]{"POST", "OPTIONS"};
 
     private final List<HertsService> hertsRpcServices;
@@ -113,7 +112,7 @@ public class HertsHttpServer implements HertsHttpEngine {
             logger.info("Started Herts HTTP server. Port " + this.port);
             server.join();
         } catch (Exception ex) {
-            throw new HertsHttpBuildException(ex);
+            throw new HttpServerBuildException(ex);
         }
     }
 

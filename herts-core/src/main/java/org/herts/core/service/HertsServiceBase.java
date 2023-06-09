@@ -1,6 +1,6 @@
 package org.herts.core.service;
 
-import org.herts.core.context.HertsSystemContext;
+import org.herts.core.context.SharedServiceContext;
 import org.herts.core.context.HertsType;
 
 import io.grpc.MethodDescriptor;
@@ -28,6 +28,6 @@ class HertsServiceBase<T> implements HertsService {
         if (this.coreType == HertsType.Http) {
             return null;
         }
-        return HertsSystemContext.Header.HERTS_CONNECTION_ID_CTX.get();
+        return SharedServiceContext.Header.HERTS_CONNECTION_ID_CTX.get();
     }
 }

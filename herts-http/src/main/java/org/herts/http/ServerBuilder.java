@@ -2,7 +2,7 @@ package org.herts.http;
 
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.herts.core.context.HertsMetricsSetting;
-import org.herts.core.exception.HertsHttpBuildException;
+import org.herts.core.exception.HttpServerBuildException;
 import org.herts.core.service.HertsService;
 
 import javax.annotation.Nullable;
@@ -30,7 +30,7 @@ class ServerBuilder implements HertsHttpEngineBuilder {
     @Override
     public HertsHttpEngineBuilder registerHertsHttpService(HertsService hertsRpcService, @Nullable HertsHttpInterceptor interceptor) {
         if (hertsRpcService.getClass().getInterfaces().length == 0) {
-            throw new HertsHttpBuildException("Please implemented interface with @HertsHttp");
+            throw new HttpServerBuildException("Please implemented interface with @HertsHttp");
         }
         if (interceptor != null) {
             this.interceptorMap.put(hertsRpcService.getClass().getInterfaces()[0].getSimpleName(), interceptor);
@@ -42,7 +42,7 @@ class ServerBuilder implements HertsHttpEngineBuilder {
     @Override
     public HertsHttpEngineBuilder registerHertsHttpService(HertsService hertsRpcService) {
         if (hertsRpcService.getClass().getInterfaces().length == 0) {
-            throw new HertsHttpBuildException("Please implemented interface with @HertsHttp");
+            throw new HttpServerBuildException("Please implemented interface with @HertsHttp");
         }
         this.hertsRpcServices.add(hertsRpcService);
         return this;
@@ -70,15 +70,15 @@ class ServerBuilder implements HertsHttpEngineBuilder {
     @Override
     public HertsHttpEngine build() {
         if (this.hertsRpcServices.size() == 0) {
-            throw new HertsHttpBuildException("Please register HertsCoreService");
+            throw new HttpServerBuildException("Please register HertsCoreService");
         }
         if (!HertsHttpValidator.isAllHttpTypeByService(this.hertsRpcServices)) {
-            throw new HertsHttpBuildException("Please register Http HertcoreService");
+            throw new HttpServerBuildException("Please register Http HertcoreService");
         }
 
         String validateMsg = HertsHttpValidator.validateRegisteredServices(this.hertsRpcServices);
         if (!validateMsg.isEmpty()) {
-            throw new HertsHttpBuildException(validateMsg);
+            throw new HttpServerBuildException(validateMsg);
         }
         return new HertsHttpServer(this);
     }

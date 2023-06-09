@@ -1,7 +1,7 @@
 package org.herts.e2etest.unary_rpc;
 
-import org.herts.core.exception.rpc.HertsRpcErrorException;
-import org.herts.core.logger.HertsLogger;
+import org.herts.core.exception.rpc.RpcErrorException;
+import org.herts.core.logger.Logging;
 import org.herts.core.service.HertsServiceUnary;
 import org.herts.e2etest.common.HelloRequest;
 
@@ -9,10 +9,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class UnaryServiceImpl01 extends HertsServiceUnary<UnaryRpcService01> implements UnaryRpcService01 {
-    private static final Logger logger = HertsLogger.getLogger(UnaryServiceImpl01.class.getSimpleName());
+    private static final java.util.logging.Logger logger = Logging.getLogger(UnaryServiceImpl01.class.getSimpleName());
 
     public UnaryServiceImpl01() {
     }
@@ -56,12 +55,12 @@ public class UnaryServiceImpl01 extends HertsServiceUnary<UnaryRpcService01> imp
 
     @Override
     public void error01() {
-        throw new HertsRpcErrorException(HertsRpcErrorException.StatusCode.Status2, "error02");
+        throw new RpcErrorException(RpcErrorException.StatusCode.Status2, "error02");
     }
 
     @Override
     public void error02() {
-        throw new HertsRpcErrorException(HertsRpcErrorException.StatusCode.Status10, "error03");
+        throw new RpcErrorException(RpcErrorException.StatusCode.Status10, "error03");
     }
 
     @Override

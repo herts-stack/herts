@@ -1,7 +1,7 @@
 package org.herts.rpc;
 
 import org.herts.core.service.HertsService;
-import org.herts.core.util.HertsServiceValidateUtil;
+import org.herts.core.util.ServiceValidateUtil;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author Herts Contributer
  * @version 1.0.0
  */
-class RpcValidator extends HertsServiceValidateUtil {
+class RpcValidator extends ServiceValidateUtil {
     private static final String ioGrpcStreamPkgName = "io.grpc.stub.StreamObserver";
 
     /**

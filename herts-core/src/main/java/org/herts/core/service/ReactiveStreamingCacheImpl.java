@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 1.0.0
  */
 class ReactiveStreamingCacheImpl implements ReactiveStreamingCache {
-    private volatile ConcurrentHashMap<String, HertsReceiverInfo> receivers;
+    private volatile ConcurrentHashMap<String, ReceiverInfo> receivers;
     private volatile ConcurrentHashMap<String, StreamObserver<Object>> observers;
     private volatile ConcurrentHashMap<String, String> clientId;
     private static ReactiveStreamingCacheImpl thisClass;
@@ -68,12 +68,12 @@ class ReactiveStreamingCacheImpl implements ReactiveStreamingCache {
 
     @Override
     public void setHertsReceiver(String hertsClientId, HertsReceiver hertsReceiver, HertsReactiveStreamingInvoker invoker) {
-        HertsReceiverInfo receiver = new HertsReceiverInfo(hertsReceiver, invoker);
+        ReceiverInfo receiver = new ReceiverInfo(hertsReceiver, invoker);
         this.receivers.put(hertsClientId, receiver);
     }
 
     @Override
-    public HertsReceiverInfo getHertsReceiver(String hertsClientId) {
+    public ReceiverInfo getHertsReceiver(String hertsClientId) {
         return this.receivers.get(hertsClientId);
     }
 }

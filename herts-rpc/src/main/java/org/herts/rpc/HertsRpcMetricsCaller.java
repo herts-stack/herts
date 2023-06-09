@@ -1,6 +1,6 @@
 package org.herts.rpc;
 
-import org.herts.core.serializer.HertsSerializer;
+import org.herts.core.serializer.MessageSerializer;
 import org.herts.metrics.HertsMetrics;
 import org.herts.metrics.HertsMetricsContext;
 import org.herts.metrics.HertsTimer;
@@ -20,11 +20,11 @@ import java.lang.reflect.Method;
 class HertsRpcMetricsCaller extends BaseCaller implements HertsRpcCaller {
     private final Method reflectMethod;
     private final HertsMetrics hertsMetrics;
-    private final HertsSerializer hertsSerializer;
+    private final MessageSerializer hertsSerializer;
     private final Object coreObject;
     private final Object[] requests;
 
-    public HertsRpcMetricsCaller(Method reflectMethod, HertsMetrics hertsMetrics, HertsSerializer hertsSerializer,
+    public HertsRpcMetricsCaller(Method reflectMethod, HertsMetrics hertsMetrics, MessageSerializer hertsSerializer,
                                  Object coreObject, Object[] requests) {
 
         super(reflectMethod, hertsSerializer, coreObject, requests);

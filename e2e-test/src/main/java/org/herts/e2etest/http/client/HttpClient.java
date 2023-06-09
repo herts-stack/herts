@@ -1,22 +1,21 @@
 package org.herts.e2etest.http.client;
 
-import org.herts.core.exception.http.HertsHttpErrorException;
+import org.herts.core.exception.http.HttpErrorException;
 import org.herts.e2etest.common.Constant;
 import org.herts.e2etest.http.HttpService01;
-import org.herts.core.logger.HertsLogger;
-import org.herts.core.serializer.HertsSerializeType;
-import org.herts.core.serializer.HertsSerializer;
+import org.herts.core.logger.Logging;
+import org.herts.core.serializer.MessageSerializeType;
+import org.herts.core.serializer.MessageSerializer;
 import org.herts.e2etest.http.HttpService02;
 import org.herts.e2etest.common.TestData;
 import org.herts.httpclient.HertsHttpClient;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class HttpClient {
-    private static final Logger logger = HertsLogger.getLogger(HttpClient.class.getSimpleName());
-    private static final HertsSerializer serializer = new HertsSerializer(HertsSerializeType.Json);
+    private static final java.util.logging.Logger logger = Logging.getLogger(HttpClient.class.getSimpleName());
+    private static final MessageSerializer serializer = new MessageSerializer(MessageSerializeType.Json);
 
     public static void run() {
         HertsHttpClient client = HertsHttpClient
@@ -57,7 +56,7 @@ public class HttpClient {
 
             try {
                 String res07 = service.httpTest07();
-            } catch (HertsHttpErrorException ex) {
+            } catch (HttpErrorException ex) {
                 logger.info(ex.getStatusCode() + " " + ex.getMessage());
             }
 
