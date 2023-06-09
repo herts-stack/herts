@@ -1,7 +1,7 @@
 package org.herts.e2etest.reactivestreaming_rpc.client;
 
 import io.grpc.ConnectivityState;
-import org.herts.core.logger.HertsLogger;
+import org.herts.core.logger.Logging;
 import org.herts.e2etest.common.Constant;
 import org.herts.e2etest.common.GrpcClientInterceptor;
 import org.herts.e2etest.common.HelloRequest;
@@ -12,10 +12,9 @@ import org.herts.rpcclient.HertsRpcClientBuilder;
 import org.herts.rpcclient.HertsRpcClientInterceptBuilder;
 
 import java.util.Collections;
-import java.util.logging.Logger;
 
 public class IntegrationTestRsClient {
-    private static final Logger logger = HertsLogger.getLogger(IntegrationTestRsClient.class.getSimpleName());
+    private static final java.util.logging.Logger logger = Logging.getLogger(IntegrationTestRsClient.class.getSimpleName());
 
     public static void run() {
         HertsRpcClient client = HertsRpcClientBuilder

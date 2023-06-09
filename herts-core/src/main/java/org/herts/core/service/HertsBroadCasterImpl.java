@@ -1,7 +1,7 @@
 package org.herts.core.service;
 
 import io.grpc.stub.StreamObserver;
-import org.herts.core.context.HertsSystemContext;
+import org.herts.core.context.SharedServiceContext;
 
 import java.lang.reflect.Proxy;
 import java.util.Collections;
@@ -32,16 +32,16 @@ class HertsBroadCasterImpl implements HertsBroadCaster {
 
     @Override
     public void registerReceiver(StreamObserver<Object> objectStreamObservers) {
-        String clientId = HertsSystemContext.Header.HERTS_CONNECTION_ID_CTX.get();
+        String clientId = SharedServiceContext.Header.HERTS_CONNECTION_ID_CTX.get();
         this.reactiveStreamingCache.setClientId(clientId);
         this.reactiveStreamingCache.setObserver(clientId, objectStreamObservers);
-        objectStreamObservers.onNext(Collections.singletonList(HertsSystemContext.Rpc.REGISTERED_METHOD_NAME));
+        objectStreamObservers.onNext(Collections.singletonList(SharedServiceContext.Rpc.REGISTERED_METHOD_NAME));
         createReceiver(clientId);
     }
 
     @Override
     public String getClientId() {
-        return HertsSystemContext.Header.HERTS_CONNECTION_ID_CTX.get();
+        return SharedServiceContext.Header.HERTS_CONNECTION_ID_CTX.get();
     }
 
     @Override
@@ -77,7 +77,7 @@ class HertsBroadCasterImpl implements HertsBroadCaster {
     }
 
     private HertsReceiver createReceiver(String clientId) {
-        HertsReceiverInfo hertsReceiverInfo = this.reactiveStreamingCache.getHertsReceiver(clientId);
+        ReceiverInfo hertsReceiverInfo = this.reactiveStreamingCache.getHertsReceiver(clientId);
         if (hertsReceiverInfo != null) {
             return hertsReceiverInfo.getReceiver();
         }

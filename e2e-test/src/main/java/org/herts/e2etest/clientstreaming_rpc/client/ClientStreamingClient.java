@@ -4,7 +4,7 @@ import org.herts.e2etest.clientstreaming_rpc.ClientStreamingRpcService;
 import org.herts.e2etest.common.Constant;
 import org.herts.e2etest.common.HelloRequest;
 import org.herts.e2etest.common.HelloResponse01;
-import org.herts.core.logger.HertsLogger;
+import org.herts.core.logger.Logging;
 import org.herts.e2etest.common.GrpcClientInterceptor;
 import org.herts.rpcclient.HertsRpcClient;
 import org.herts.rpcclient.HertsRpcClientBuilder;
@@ -12,10 +12,8 @@ import org.herts.rpcclient.HertsRpcClientInterceptBuilder;
 
 import io.grpc.stub.StreamObserver;
 
-import java.util.logging.Logger;
-
 public class ClientStreamingClient {
-    private static final Logger logger = HertsLogger.getLogger(ClientStreamingClient.class.getSimpleName());
+    private static final java.util.logging.Logger logger = Logging.getLogger(ClientStreamingClient.class.getSimpleName());
 
     public static void run() {
         HertsRpcClient client = HertsRpcClientBuilder

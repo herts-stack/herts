@@ -1,6 +1,6 @@
 package org.herts.core.context;
 
-import org.herts.core.exception.HertsTypeInvalidException;
+import org.herts.core.exception.TypeInvalidException;
 
 import io.grpc.MethodDescriptor;
 
@@ -46,7 +46,7 @@ public enum HertsType {
         } else if (id == Reactive.getId()) {
             methodType = MethodDescriptor.MethodType.BIDI_STREAMING;
         } else {
-            throw new HertsTypeInvalidException("gRPC Herts type is invalid");
+            throw new TypeInvalidException("gRPC Herts type is invalid");
         }
         return methodType;
     }

@@ -9,7 +9,7 @@ import org.herts.e2etest.common.GrpcServerInterceptor;
 import org.herts.rpc.HertsRpcInterceptBuilder;
 import org.herts.rpc.HertsRpcServerEngine;
 import org.herts.rpc.HertsRpcServerEngineBuilder;
-import org.herts.rpc.HertsRpcServer;
+import org.herts.rpc.RpcServer;
 
 public class ClientStreamingServer {
 
@@ -18,7 +18,7 @@ public class ClientStreamingServer {
         ServerInterceptor interceptor = HertsRpcInterceptBuilder.builder(new GrpcServerInterceptor()).build();
         ClientStreamingRpcService service = new ClientStreamingServiceImpl();
 
-        HertsRpcServer engineBuilder = HertsRpcServerEngineBuilder.builder(Constant.getGrpcServerOption())
+        RpcServer engineBuilder = HertsRpcServerEngineBuilder.builder(Constant.getGrpcServerOption())
                 .registerHertsRpcService(service, interceptor)
                 .enableMetrics(metrics);
 

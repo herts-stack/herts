@@ -23,6 +23,7 @@ dependencies {
     implementation project(':herts-rpc-client')
     implementation project(':herts-http')
     implementation project(':herts-http-client')
+    implementation project(':herts-serializer')
 
     implementation 'commons-cli:commons-cli:1.5.0'
 }

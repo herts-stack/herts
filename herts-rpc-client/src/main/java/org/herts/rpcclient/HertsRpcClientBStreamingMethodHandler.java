@@ -1,9 +1,9 @@
 package org.herts.rpcclient;
 
-import org.herts.core.descriptor.HertsGrpcDescriptor;
+import org.herts.core.descriptor.CustomGrpcDescriptor;
 import org.herts.core.context.HertsType;
-import org.herts.core.exception.HertsServiceNotFoundException;
-import org.herts.core.exception.HertsStreamingReqBodyException;
+import org.herts.core.exception.ServiceNotFoundException;
+import org.herts.core.exception.StreamBodyException;
 import org.herts.core.service.HertsService;
 
 import io.grpc.CallOptions;
@@ -41,7 +41,7 @@ class HertsRpcClientBStreamingMethodHandler extends io.grpc.stub.AbstractBlockin
         try {
             hertsServiceClass = Class.forName(this.serviceName);
         } catch (ClassNotFoundException ignore) {
-            throw new HertsServiceNotFoundException("Unknown class name. Allowed class is " + HertsService.class.getName());
+            throw new ServiceNotFoundException("Unknown class name. Allowed class is " + HertsService.class.getName());
         }
 
         Method[] methods = hertsServiceClass.getDeclaredMethods();
@@ -55,7 +55,7 @@ class HertsRpcClientBStreamingMethodHandler extends io.grpc.stub.AbstractBlockin
         String methodName = method.getName();
         MethodDescriptor<Object, Object> methodDescriptor = this.descriptors.get(methodName);
         if (methodDescriptor == null) {
-            methodDescriptor = HertsGrpcDescriptor
+            methodDescriptor = CustomGrpcDescriptor
                     .generateStramingMethodDescriptor(HertsType.BidirectionalStreaming, this.serviceName, methodName);
             this.descriptors.put(methodName, methodDescriptor);
         }
@@ -65,7 +65,7 @@ class HertsRpcClientBStreamingMethodHandler extends io.grpc.stub.AbstractBlockin
             bytes = (StreamObserver<Object>) args[0];
         }
         if (bytes == null) {
-            throw new HertsStreamingReqBodyException("Streaming body data is null");
+            throw new StreamBodyException("Streaming body data is null");
         }
         return ClientCalls.asyncBidiStreamingCall(getChannel().newCall(methodDescriptor, getCallOptions()), bytes);
     }

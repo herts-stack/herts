@@ -1,8 +1,8 @@
 package org.herts.rpc;
 
-import org.herts.core.exception.HertsInstanceException;
-import org.herts.core.modelx.HertsMethod;
-import org.herts.core.serializer.HertsSerializer;
+import org.herts.core.exception.ServiceMethodNotfoundException;
+import org.herts.core.modelx.RegisteredMethod;
+import org.herts.serializer.MessageSerializer;
 
 import io.grpc.stub.StreamObserver;
 import org.herts.core.service.HertsService;
@@ -24,14 +24,14 @@ class HertsRpcSStreamingMethodHandler<Req, Resp> implements
         io.grpc.stub.ServerCalls.ClientStreamingMethod<Req, Resp>,
         io.grpc.stub.ServerCalls.BidiStreamingMethod<Req, Resp> {
 
-    private final HertsSerializer serializer = new HertsSerializer();
+    private final MessageSerializer serializer = new MessageSerializer();
     private final Object coreObject;
     private final Object[] requests;
     private final Method reflectMethod;
-    private final HertsMethod hertsMethod;
+    private final RegisteredMethod hertsMethod;
     private final HertsRpcCaller hertsRpcCaller;
 
-    public HertsRpcSStreamingMethodHandler(HertsMethod hertsMethod, HertsMetrics hertsMetrics, HertsService hertsService) {
+    public HertsRpcSStreamingMethodHandler(RegisteredMethod hertsMethod, HertsMetrics hertsMetrics, HertsService hertsService) {
         this.hertsMethod = hertsMethod;
         this.requests = new Object[this.hertsMethod.getParameters().length];
         this.coreObject = hertsService;
@@ -41,7 +41,7 @@ class HertsRpcSStreamingMethodHandler<Req, Resp> implements
         try {
             method = coreClass.getMethod(hertsMethod.getMethodName(), hertsMethod.getParameters());
         } catch (NoSuchMethodException ex) {
-            throw new HertsInstanceException(ex);
+            throw new ServiceMethodNotfoundException(ex);
         }
 
         this.reflectMethod = method;

@@ -1,6 +1,6 @@
 package org.herts.rpcclient;
 
-import org.herts.core.exception.rpc.HertsRpcErrorException;
+import org.herts.core.exception.rpc.RpcErrorException;
 import org.herts.core.service.HertsServiceUnary;
 
 import java.util.ArrayList;
@@ -55,11 +55,11 @@ public class TestUnaryRpcServiceImpl extends HertsServiceUnary<TestUnaryRpcServi
 
     @Override
     public void error02() {
-        throw new HertsRpcErrorException(HertsRpcErrorException.StatusCode.Status2, "error02");
+        throw new RpcErrorException(RpcErrorException.StatusCode.Status2, "error02");
     }
 
     @Override
     public void error03() {
-        throw new HertsRpcErrorException(HertsRpcErrorException.StatusCode.Status10, "error03");
+        throw new RpcErrorException(RpcErrorException.StatusCode.Status10, "error03");
     }
 }

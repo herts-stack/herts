@@ -1,12 +1,11 @@
 package org.herts.metrics;
 
 import org.eclipse.jetty.server.Server;
-import org.herts.core.logger.HertsLogger;
+import org.herts.core.logger.Logging;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.Logger;
 
 /**
  * Herts metrics server
@@ -15,7 +14,7 @@ import java.util.logging.Logger;
  * @version 1.0.0
  */
 public class HertsMetricsServer {
-    private static final Logger logger = HertsLogger.getLogger(HertsMetricsServer.class.getSimpleName());
+    private static final java.util.logging.Logger logger = Logging.getLogger(HertsMetricsServer.class.getSimpleName());
     private final HertsMetrics hertsMetrics;
 
     private int port = 8888;

@@ -10,14 +10,14 @@ public class HertsMarshallerTest {
 
     @Test
     public void streamIfNull() {
-        HertsMarshaller marshaller = new HertsMarshaller();
+        CustomGrpcMarshaller marshaller = new CustomGrpcMarshaller();
         InputStream stream = marshaller.stream(null);
         assertNull(stream);
     }
 
     @Test
     public void parseIfNull() {
-        HertsMarshaller marshaller = new HertsMarshaller();
+        CustomGrpcMarshaller marshaller = new CustomGrpcMarshaller();
         byte[] parsedData = marshaller.parse(null);
         assertNull(parsedData);
     }

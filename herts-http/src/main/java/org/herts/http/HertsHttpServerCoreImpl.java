@@ -1,12 +1,12 @@
 package org.herts.http;
 
-import org.herts.core.exception.HertsJsonProcessingException;
-import org.herts.core.modelx.HertsHttpErrorResponse;
-import org.herts.core.exception.HertsInvalidBodyException;
-import org.herts.core.exception.http.HertsHttpErrorException;
-import org.herts.core.logger.HertsLogger;
-import org.herts.core.serializer.HertsSerializeType;
-import org.herts.core.serializer.HertsSerializer;
+import org.herts.serializer.MessageJsonParsingException;
+import org.herts.core.modelx.InternalHttpErrorResponse;
+import org.herts.core.exception.InvalidMessageException;
+import org.herts.core.exception.http.HttpErrorException;
+import org.herts.core.logger.Logging;
+import org.herts.serializer.MessageSerializeType;
+import org.herts.serializer.MessageSerializer;
 import org.herts.core.service.HertsService;
 import org.herts.metrics.HertsMetrics;
 import org.herts.metrics.HertsMetricsServer;
@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.logging.Logger;
 
 /**
  * Herts http server core
@@ -32,11 +31,11 @@ import java.util.logging.Logger;
  * @version 1.0.0
  */
 class HertsHttpServerCoreImpl extends HttpServlet implements HertsHttpServerCore {
-    private static final Logger logger = HertsLogger.getLogger(HertsHttpServerCoreImpl.class.getSimpleName());
+    private static final java.util.logging.Logger logger = Logging.getLogger(HertsHttpServerCoreImpl.class.getSimpleName());
 
     private final HertsMetrics hertsHttpMetrics;
     private final HertsHttpCaller hertsHttpCaller;
-    private final HertsSerializer hertsSerializer = new HertsSerializer(HertsSerializeType.Json);
+    private final MessageSerializer hertsSerializer = new MessageSerializer(MessageSerializeType.Json);
     private final ConcurrentMap<String, Method> methods = new ConcurrentHashMap<>();
     private final String baseEndpoint;
 
@@ -100,23 +99,23 @@ class HertsHttpServerCoreImpl extends HttpServlet implements HertsHttpServerCore
 
         try {
             this.hertsHttpCaller.post(hertsMethod, request, response);
-        } catch (HertsInvalidBodyException | HertsJsonProcessingException ex) {
-            HertsHttpErrorResponse err = genErrorResponse(HertsHttpErrorException.StatusCode.Status400, ex.getMessage());
+        } catch (InvalidMessageException | MessageJsonParsingException ex) {
+            InternalHttpErrorResponse err = genErrorResponse(HttpErrorException.StatusCode.Status400, ex.getMessage());
             setError(HttpServletResponse.SC_BAD_REQUEST, response, err);
         } catch (InvocationTargetException ex) {
             Throwable cause = ex.getCause();
-            if (cause instanceof HertsHttpErrorException) {
-                HertsHttpErrorException exception = (HertsHttpErrorException) cause;
-                HertsHttpErrorResponse err = genErrorResponse(exception.getStatusCode(), ex.getMessage());
+            if (cause instanceof HttpErrorException) {
+                HttpErrorException exception = (HttpErrorException) cause;
+                InternalHttpErrorResponse err = genErrorResponse(exception.getStatusCode(), ex.getMessage());
                 setError(exception.getStatusCode().getIntegerCode(), response, err);
             } else {
                 ex.printStackTrace();
-                HertsHttpErrorResponse err = genErrorResponse(HertsHttpErrorException.StatusCode.Status500, ex.getMessage());
+                InternalHttpErrorResponse err = genErrorResponse(HttpErrorException.StatusCode.Status500, ex.getMessage());
                 setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response, err);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            HertsHttpErrorResponse err = genErrorResponse(HertsHttpErrorException.StatusCode.Status500, ex.getMessage());
+            InternalHttpErrorResponse err = genErrorResponse(HttpErrorException.StatusCode.Status500, ex.getMessage());
             setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response, err);
         }
     }
@@ -131,14 +130,14 @@ class HertsHttpServerCoreImpl extends HttpServlet implements HertsHttpServerCore
         return this.methods.keySet().toArray(new String[0]);
     }
 
-    public static HertsHttpErrorResponse genErrorResponse(HertsHttpErrorException.StatusCode statusCodeEnum, String message) {
-        HertsHttpErrorResponse hertsResponse = new HertsHttpErrorResponse();
+    public static InternalHttpErrorResponse genErrorResponse(HttpErrorException.StatusCode statusCodeEnum, String message) {
+        InternalHttpErrorResponse hertsResponse = new InternalHttpErrorResponse();
         hertsResponse.setStatusCode(statusCodeEnum);
         hertsResponse.setMessage(message);
         return hertsResponse;
     }
 
-    private void setError(int statusCode, HttpServletResponse response, HertsHttpErrorResponse errorResponse) throws IOException {
+    private void setError(int statusCode, HttpServletResponse response, InternalHttpErrorResponse errorResponse) throws IOException {
         response.setStatus(statusCode);
         HertsHttpCallerBase.setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(errorResponse));
     }

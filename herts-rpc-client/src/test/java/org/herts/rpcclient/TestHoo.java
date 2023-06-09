@@ -1,12 +1,12 @@
 package org.herts.rpcclient;
 
-import org.herts.core.modelx.HertsRpcMsg;
+import org.herts.core.modelx.InternalRpcMsg;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class TestHoo extends HertsRpcMsg {
+public class TestHoo extends InternalRpcMsg {
     private String a01;
     private int b01;
     private double c01;

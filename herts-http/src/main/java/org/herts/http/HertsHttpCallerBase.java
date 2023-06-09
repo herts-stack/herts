@@ -1,11 +1,11 @@
 package org.herts.http;
 
-import org.herts.core.context.HertsSystemContext;
-import org.herts.core.modelx.HertsHttpRequest;
-import org.herts.core.modelx.HertsHttpResponse;
-import org.herts.core.modelx.HertsHttpMsg;
-import org.herts.core.exception.HertsInvalidBodyException;
-import org.herts.core.serializer.HertsSerializer;
+import org.herts.core.context.SharedServiceContext;
+import org.herts.core.modelx.InternalHttpRequest;
+import org.herts.core.modelx.InternalHttpResponse;
+import org.herts.core.modelx.InternalHttpMsg;
+import org.herts.core.exception.InvalidMessageException;
+import org.herts.serializer.MessageSerializer;
 import org.herts.metrics.HertsMetricsServer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,11 +28,11 @@ import java.util.concurrent.ConcurrentMap;
 class HertsHttpCallerBase {
     private final Object coreObject;
     private final HertsMetricsServer hertsMetricsServer;
-    private final HertsSerializer hertsSerializer;
+    private final MessageSerializer hertsSerializer;
     private final ConcurrentMap<String, List<Parameter>> parameters;
 
     public HertsHttpCallerBase(Object coreObject, HertsMetricsServer hertsMetricsServer,
-                               HertsSerializer hertsSerializer, ConcurrentMap<String, List<Parameter>> parameters) {
+                               MessageSerializer hertsSerializer, ConcurrentMap<String, List<Parameter>> parameters) {
 
         this.coreObject = coreObject;
         this.hertsMetricsServer = hertsMetricsServer;
@@ -50,32 +50,32 @@ class HertsHttpCallerBase {
     }
 
     public void setHertsHeader(HttpServletResponse response) {
-        response.setHeader(HertsSystemContext.Header.HERTS_CONTEXT_VERSION, HertsSystemContext.Header.CODE_VERSION);
-        response.setHeader(HertsSystemContext.Header.HERTS_SERVER_KEY, HertsSystemContext.Header.HERTS_SERVER_VAL);
+        response.setHeader(SharedServiceContext.Header.HERTS_CONTEXT_VERSION, SharedServiceContext.Header.CODE_VERSION);
+        response.setHeader(SharedServiceContext.Header.HERTS_SERVER_KEY, SharedServiceContext.Header.HERTS_SERVER_VAL);
     }
 
     protected void call(Method hertsMethod, HttpServletRequest request, HttpServletResponse response) throws Exception {
         List<Parameter> parameters = this.parameters.get(hertsMethod.getName());
-        HertsHttpRequest hertsRequest;
+        InternalHttpRequest hertsRequest;
 
         if (parameters.size() > 0) {
-            hertsRequest = this.hertsSerializer.deserialize(request.getReader(), HertsHttpRequest.class);
+            hertsRequest = this.hertsSerializer.deserialize(request.getReader(), InternalHttpRequest.class);
 
             List<String> keyNames = hertsRequest.getKeyNames();
             for (Parameter param : parameters) {
                 if (!keyNames.contains(param.getName())) {
-                    throw new HertsInvalidBodyException("Invalid body");
+                    throw new InvalidMessageException("Invalid body");
                 }
             }
         } else {
-            hertsRequest = new HertsHttpRequest();
+            hertsRequest = new InternalHttpRequest();
             hertsRequest.setPayloads(new ArrayList<>());
         }
 
-        List<HertsHttpMsg> payloads = hertsRequest.getPayloads();
+        List<InternalHttpMsg> payloads = hertsRequest.getPayloads();
         Object[] args = new Object[payloads.size()];
         int idx = 0;
-        for (HertsHttpMsg payload : payloads) {
+        for (InternalHttpMsg payload : payloads) {
             Object castedArg;
             try {
                 Class<?> aClass = Class.forName(payload.getClassInfo());
@@ -93,8 +93,8 @@ class HertsHttpCallerBase {
             return;
         }
 
-        HertsHttpResponse hertsResponse = new HertsHttpResponse();
-        HertsHttpMsg payload = new HertsHttpMsg();
+        InternalHttpResponse hertsResponse = new InternalHttpResponse();
+        InternalHttpMsg payload = new InternalHttpMsg();
         payload.setValue(res);
         payload.setClassInfo(hertsMethod.getReturnType().getName());
         hertsResponse.setPayload(payload);

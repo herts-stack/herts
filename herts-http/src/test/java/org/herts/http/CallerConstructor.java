@@ -2,7 +2,7 @@ package org.herts.http;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.herts.core.serializer.HertsSerializer;
+import org.herts.serializer.MessageSerializer;
 import org.herts.metrics.HertsMetricsServer;
 
 import java.lang.reflect.Method;
@@ -17,10 +17,10 @@ public class CallerConstructor {
     private HttpServletRequest req;
     private HttpServletResponse res;
     private HertsMetricsServer metricsServer;
-    private HertsSerializer serializer;
+    private MessageSerializer serializer;
 
     public CallerConstructor(Class<?> c, HttpServletRequest req, HttpServletResponse res,
-                             HertsMetricsServer metricsServer, HertsSerializer serializer) {
+                             HertsMetricsServer metricsServer, MessageSerializer serializer) {
         this.c = c;
         this.req = req;
         this.res = res;
@@ -61,7 +61,7 @@ public class CallerConstructor {
         return metricsServer;
     }
 
-    public HertsSerializer getSerializer() {
+    public MessageSerializer getSerializer() {
         return serializer;
     }
 }

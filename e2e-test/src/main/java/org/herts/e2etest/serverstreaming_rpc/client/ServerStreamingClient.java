@@ -4,16 +4,14 @@ import org.herts.e2etest.common.Constant;
 import org.herts.e2etest.common.HelloRequest;
 import org.herts.e2etest.common.HelloResponse01;
 import org.herts.e2etest.serverstreaming_rpc.ServerStreamingRpcService;
-import org.herts.core.logger.HertsLogger;
+import org.herts.core.logger.Logging;
 import org.herts.e2etest.common.HelloResponse02;
 import org.herts.rpcclient.HertsRpcClient;
 import org.herts.rpcclient.HertsRpcClientBuilder;
 import io.grpc.stub.StreamObserver;
 
-import java.util.logging.Logger;
-
 public class ServerStreamingClient {
-    private static final Logger logger = HertsLogger.getLogger(ServerStreamingClient.class.getSimpleName());
+    private static final java.util.logging.Logger logger = Logging.getLogger(ServerStreamingClient.class.getSimpleName());
 
     public static void run() {
         HertsRpcClient client = HertsRpcClientBuilder

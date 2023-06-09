@@ -9,7 +9,7 @@ import org.herts.e2etest.reactivestreaming_rpc.IntegrationTestRsServiceImpl;
 import org.herts.rpc.HertsRpcInterceptBuilder;
 import org.herts.rpc.HertsRpcServerEngine;
 import org.herts.rpc.HertsRpcServerEngineBuilder;
-import org.herts.rpc.HertsRpcServer;
+import org.herts.rpc.RpcServer;
 
 public class IntegrationTestRsServer {
 
@@ -18,7 +18,7 @@ public class IntegrationTestRsServer {
         ServerInterceptor interceptor = HertsRpcInterceptBuilder.builder(new GrpcServerInterceptor()).build();
         IntegrationTestRsService service = new IntegrationTestRsServiceImpl();
 
-        HertsRpcServer engineBuilder = HertsRpcServerEngineBuilder.builder(Constant.getGrpcServerOption())
+        RpcServer engineBuilder = HertsRpcServerEngineBuilder.builder(Constant.getGrpcServerOption())
                 .registerHertsReactiveRpcService(service, interceptor)
                 .enableMetrics(metrics);
 

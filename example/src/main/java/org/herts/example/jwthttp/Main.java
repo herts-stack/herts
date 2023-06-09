@@ -1,6 +1,6 @@
 package org.herts.example.jwthttp;
 
-import org.herts.core.exception.http.HertsHttpErrorException;
+import org.herts.core.exception.http.HttpErrorException;
 import org.herts.http.HertsHttpEngine;
 import org.herts.http.HertsHttpServer;
 import org.herts.httpclient.HertsHttpClient;
@@ -35,7 +35,7 @@ public class Main {
         var service = client.createHertsService(HttpService.class);
         try {
             service.hellowWorld();
-        } catch (HertsHttpErrorException ex) {
+        } catch (HttpErrorException ex) {
             System.out.println("Error on client: " + ex.getMessage());
         }
 

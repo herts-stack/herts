@@ -1,6 +1,6 @@
 package org.herts.e2etest.reactivestreaming_rpc.client;
 
-import org.herts.core.logger.HertsLogger;
+import org.herts.core.logger.Logging;
 import org.herts.e2etest.common.Constant;
 import org.herts.e2etest.reactivestreaming_rpc.QueueTestRsReceiverImpl;
 import org.herts.e2etest.reactivestreaming_rpc.QueueTestRsService;
@@ -9,10 +9,9 @@ import org.herts.rpcclient.HertsRpcClientBuilder;
 
 import java.time.Instant;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 public class QueueTestRsClient {
-    private static final Logger logger = HertsLogger.getLogger(QueueTestRsClient.class.getSimpleName());
+    private static final java.util.logging.Logger logger = Logging.getLogger(QueueTestRsClient.class.getSimpleName());
 
     public static void run() {
         HertsRpcClient client = createClient();

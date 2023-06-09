@@ -2,7 +2,7 @@ package org.herts.rpcclient;
 
 import io.grpc.CallCredentials;
 import io.grpc.Metadata;
-import org.herts.core.context.HertsSystemContext;
+import org.herts.core.context.SharedServiceContext;
 
 import java.util.UUID;
 import java.util.concurrent.Executor;
@@ -31,10 +31,10 @@ class ClientConnection extends CallCredentials {
         executor.execute(new Runnable() {
             @Override public void run() {
                 Metadata headers = new Metadata();
-                Metadata.Key<String> clientIdKey = HertsSystemContext.Header.HERTS_CONNECTION_ID;
+                Metadata.Key<String> clientIdKey = SharedServiceContext.Header.HERTS_CONNECTION_ID;
                 headers.put(clientIdKey, clientId);
-                Metadata.Key<String> versionKey = HertsSystemContext.Header.HERTS_VERSION;
-                headers.put(versionKey, HertsSystemContext.Header.CODE_VERSION);
+                Metadata.Key<String> versionKey = SharedServiceContext.Header.HERTS_VERSION;
+                headers.put(versionKey, SharedServiceContext.Header.CODE_VERSION);
                 applier.apply(headers);
             }
         });

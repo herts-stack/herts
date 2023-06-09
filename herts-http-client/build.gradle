@@ -19,6 +19,7 @@ repositories {
 
 dependencies {
     implementation project(':herts-core')
+    implementation project(':herts-serializer')
 
     testImplementation project(':herts-http')
     testImplementation project(':herts-core')

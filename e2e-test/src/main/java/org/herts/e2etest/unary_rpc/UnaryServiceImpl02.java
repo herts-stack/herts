@@ -1,12 +1,10 @@
 package org.herts.e2etest.unary_rpc;
 
-import org.herts.core.logger.HertsLogger;
+import org.herts.core.logger.Logging;
 import org.herts.core.service.HertsServiceUnary;
 
-import java.util.logging.Logger;
-
 public class UnaryServiceImpl02 extends HertsServiceUnary<UnaryRpcService02> implements UnaryRpcService02 {
-    private static final Logger logger = HertsLogger.getLogger(UnaryServiceImpl02.class.getSimpleName());
+    private static final java.util.logging.Logger logger = Logging.getLogger(UnaryServiceImpl02.class.getSimpleName());
 
     public UnaryServiceImpl02() {
     }

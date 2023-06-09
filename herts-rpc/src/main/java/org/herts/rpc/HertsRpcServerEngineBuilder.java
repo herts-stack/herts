@@ -1,8 +1,8 @@
 package org.herts.rpc;
 
 import org.herts.core.context.HertsType;
-import org.herts.core.exception.HertsRpcBuildException;
-import org.herts.core.logger.HertsLogger;
+import org.herts.core.exception.RpcServerBuildException;
+import org.herts.core.logger.Logging;
 import org.herts.metrics.HertsMetricsServer;
 
 import io.grpc.Grpc;
@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 /**
  * Herts server engine builder implementation
@@ -26,7 +25,7 @@ import java.util.logging.Logger;
  * @version 1.0.0
  */
 public class HertsRpcServerEngineBuilder implements HertsRpcServerEngine {
-    private static final Logger logger = HertsLogger.getLogger(HertsRpcServerEngineBuilder.class.getSimpleName());
+    private static final java.util.logging.Logger logger = Logging.getLogger(HertsRpcServerEngineBuilder.class.getSimpleName());
 
     private final Map<BindableService, ServerInterceptor> services;
     private final List<HertsType> hertsTypes;
@@ -46,11 +45,11 @@ public class HertsRpcServerEngineBuilder implements HertsRpcServerEngine {
         this.hertsShutdownHook = serverBuildInfo.getHook();
     }
 
-    public static HertsRpcServer builder() {
+    public static RpcServer builder() {
         return new HertsRpcServerBuilder();
     }
 
-    public static HertsRpcServer builder(GrpcServerOption option) {
+    public static RpcServer builder(GrpcServerOption option) {
         return new HertsRpcServerBuilder(option);
     }
 
@@ -58,7 +57,7 @@ public class HertsRpcServerEngineBuilder implements HertsRpcServerEngine {
     public void start() {
         try {
             if (this.option.getPort() == 8888) {
-                throw new HertsRpcBuildException("Port 8888 is reserved port number for metrics");
+                throw new RpcServerBuildException("Port 8888 is reserved port number for metrics");
             }
 
             ServerBuilder<?> serverBuilder;
@@ -113,7 +112,7 @@ public class HertsRpcServerEngineBuilder implements HertsRpcServerEngine {
                 @Override
                 public void run() {
                     try {
-                        Logger _logger = HertsLogger.getLogger("ShutdownTrigger");
+                        java.util.logging.Logger _logger = Logging.getLogger("ShutdownTrigger");
                         if (hertsShutdownHook != null) {
                             hertsShutdownHook.hookShutdown();
                         }
@@ -124,7 +123,7 @@ public class HertsRpcServerEngineBuilder implements HertsRpcServerEngine {
                         server.shutdown();
                     } finally {
                         try {
-                            HertsLogger.HertsLogManager.resetFinally();
+                            Logging.Manager.resetFinally();
                         } catch (Exception ignore) {
                         }
                     }
@@ -136,7 +135,7 @@ public class HertsRpcServerEngineBuilder implements HertsRpcServerEngine {
             logger.info("Started Herts RPC server. gRPC type " + this.hertsTypes.get(0) + " Port " + this.option.getPort());
             server.awaitTermination();
         } catch (Exception ex) {
-            throw new HertsRpcBuildException(ex);
+            throw new RpcServerBuildException(ex);
         }
     }
 

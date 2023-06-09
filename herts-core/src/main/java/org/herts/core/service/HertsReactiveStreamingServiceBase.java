@@ -1,7 +1,7 @@
 package org.herts.core.service;
 
 import io.grpc.MethodDescriptor;
-import org.herts.core.context.HertsSystemContext;
+import org.herts.core.context.SharedServiceContext;
 import org.herts.core.context.HertsType;
 
 /**
@@ -31,7 +31,7 @@ class HertsReactiveStreamingServiceBase<T, K> implements HertsReactiveService {
 
     @Override
     public String getConnection() {
-        return HertsSystemContext.Header.HERTS_CONNECTION_ID_CTX.get();
+        return SharedServiceContext.Header.HERTS_CONNECTION_ID_CTX.get();
     }
 
     @Override

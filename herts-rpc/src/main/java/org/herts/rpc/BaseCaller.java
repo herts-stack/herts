@@ -1,7 +1,7 @@
 package org.herts.rpc;
 
-import org.herts.core.modelx.HertsRpcMsg;
-import org.herts.core.serializer.HertsSerializer;
+import org.herts.core.modelx.InternalRpcMsg;
+import org.herts.serializer.MessageSerializer;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -16,11 +16,11 @@ import java.lang.reflect.Method;
  */
 class BaseCaller {
     private final Method reflectMethod;
-    private final HertsSerializer hertsSerializer;
+    private final MessageSerializer hertsSerializer;
     private final Object coreObject;
     private final Object[] requests;
 
-    public BaseCaller(Method reflectMethod, HertsSerializer hertsSerializer, Object coreObject, Object[] requests) {
+    public BaseCaller(Method reflectMethod, MessageSerializer hertsSerializer, Object coreObject, Object[] requests) {
         this.reflectMethod = reflectMethod;
         this.hertsSerializer = hertsSerializer;
         this.coreObject = coreObject;
@@ -35,7 +35,7 @@ class BaseCaller {
      */
     protected <T> void setMethodRequests(T request) throws IOException {
         if (((byte[]) request).length > 0) {
-            HertsRpcMsg deserialized = this.hertsSerializer.deserialize((byte[]) request, HertsRpcMsg.class);
+            InternalRpcMsg deserialized = this.hertsSerializer.deserialize((byte[]) request, InternalRpcMsg.class);
             int index = 0;
             if (deserialized.getMessageParameters() != null) {
                 for (Object obj : deserialized.getMessageParameters()) {

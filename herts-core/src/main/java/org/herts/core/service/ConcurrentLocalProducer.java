@@ -1,6 +1,6 @@
 package org.herts.core.service;
 
-import org.herts.core.serializer.HertsSerializer;
+import org.herts.serializer.MessageSerializer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +13,12 @@ import java.util.List;
  */
 class ConcurrentLocalProducer implements HertsReactiveProducer {
     private final List<HertsReactiveConsumer> observers;
-    private final HertsSerializer serializer;
+    private final MessageSerializer serializer;
     private final String producerName;
 
     public ConcurrentLocalProducer(String producerName) {
         this.observers = new ArrayList<>();
-        this.serializer = new HertsSerializer();
+        this.serializer = new MessageSerializer();
         this.producerName = producerName;
     }
 

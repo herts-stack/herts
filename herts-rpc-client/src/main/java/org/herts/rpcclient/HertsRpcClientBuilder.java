@@ -2,9 +2,9 @@ package org.herts.rpcclient;
 
 import io.grpc.CallCredentials;
 import org.herts.core.context.HertsType;
-import org.herts.core.exception.HertsChannelIsNullException;
-import org.herts.core.exception.HertsRpcClientBuildException;
-import org.herts.core.exception.HertsTypeInvalidException;
+import org.herts.core.exception.ChannelIsNullException;
+import org.herts.core.exception.RpcClientBuildException;
+import org.herts.core.exception.TypeInvalidException;
 import org.herts.core.service.HertsService;
 
 import io.grpc.Channel;
@@ -59,7 +59,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
     @Override
     public ManagedChannel getChannel() {
         if (this.channel == null) {
-            throw new HertsChannelIsNullException("Please create HertService instance.");
+            throw new ChannelIsNullException("Please create HertService instance.");
         }
         return (ManagedChannel) channel;
     }
@@ -81,7 +81,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
 
     private <T extends HertsService> T hertsRpcService(Class<T> interfaceType, CallCredentials credentials) {
         if (!interfaceType.isInterface()) {
-            throw new HertsRpcClientBuildException(interfaceType.getSimpleName() + " is not interface. You can create client by interface");
+            throw new RpcClientBuildException(interfaceType.getSimpleName() + " is not interface. You can create client by interface");
         }
 
         String serviceName = interfaceType.getName();
@@ -94,7 +94,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
         }
 
         if (target == null) {
-            throw new HertsRpcClientBuildException("Not found " + serviceName + " in registration services");
+            throw new RpcClientBuildException("Not found " + serviceName + " in registration services");
         }
 
         switch (this.hertsType) {
@@ -119,7 +119,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
                 return (T) generateService(reactiveStreaming, interfaceType);
 
             default:
-                throw new HertsTypeInvalidException("Undefined Hert core type. HertsCoreType" + this.hertsType);
+                throw new TypeInvalidException("Undefined Hert core type. HertsCoreType" + this.hertsType);
         }
     }
 

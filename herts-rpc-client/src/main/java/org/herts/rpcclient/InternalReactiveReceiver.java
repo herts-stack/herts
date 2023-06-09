@@ -7,11 +7,11 @@ import io.grpc.stub.AbstractStub;
 import io.grpc.stub.ClientCalls;
 import io.grpc.stub.StreamObserver;
 
-import org.herts.core.exception.HertsJsonProcessingException;
-import org.herts.core.modelx.HertsRpcMsg;
+import org.herts.serializer.MessageJsonParsingException;
+import org.herts.core.modelx.InternalRpcMsg;
 import org.herts.core.context.HertsType;
-import org.herts.core.descriptor.HertsGrpcDescriptor;
-import org.herts.core.serializer.HertsSerializer;
+import org.herts.core.descriptor.CustomGrpcDescriptor;
+import org.herts.serializer.MessageSerializer;
 import org.herts.core.service.HertsReceiver;
 
 import java.lang.reflect.Method;
@@ -56,7 +56,7 @@ class InternalReactiveReceiver {
      * InternalReceiverStub class.
      */
     public static class InternalReceiverStub extends io.grpc.stub.AbstractBlockingStub<InternalReceiverStub> {
-        private final HertsSerializer serializer = new HertsSerializer();
+        private final MessageSerializer serializer = new MessageSerializer();
         private final HertsReceiver hertsReceiver;
 
         private Channel channel;
@@ -74,11 +74,11 @@ class InternalReactiveReceiver {
          *
          * @param streaming Class
          */
-        public void registerReceiver(Class<?> streaming) throws HertsJsonProcessingException {
+        public void registerReceiver(Class<?> streaming) throws MessageJsonParsingException {
             String serviceName = streaming.getName();
             Method method = streaming.getDeclaredMethods()[0];
 
-            MethodDescriptor<Object, Object> methodDescriptor = HertsGrpcDescriptor
+            MethodDescriptor<Object, Object> methodDescriptor = CustomGrpcDescriptor
                     .generateStramingMethodDescriptor(HertsType.ServerStreaming, serviceName, method.getName());
 
             StreamObserver<Object> responseObserver = new InternalReactiveObserver(this.hertsReceiver);
@@ -87,7 +87,7 @@ class InternalReactiveReceiver {
             Class<?>[] parameterTypes = new Class<?>[1];
             parameterTypes[0] = method.getParameterTypes()[0];
 
-            byte[] requestBytes = this.serializer.serialize(new HertsRpcMsg(methodParameters, parameterTypes));
+            byte[] requestBytes = this.serializer.serialize(new InternalRpcMsg(methodParameters, parameterTypes));
 
             ClientCalls.asyncServerStreamingCall(this.channel.newCall(methodDescriptor, this.callOptions), requestBytes, responseObserver);
         }

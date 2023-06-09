@@ -9,10 +9,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.herts.core.exception.http.HertsHttpErrorException;
-import org.herts.core.modelx.HertsHttpErrorResponse;
-import org.herts.core.serializer.HertsSerializeType;
-import org.herts.core.serializer.HertsSerializer;
+import org.herts.core.exception.http.HttpErrorException;
+import org.herts.core.modelx.InternalHttpErrorResponse;
+import org.herts.serializer.MessageSerializeType;
+import org.herts.serializer.MessageSerializer;
 
 import java.io.IOException;
 import java.util.Map;
@@ -27,11 +27,11 @@ import java.util.concurrent.ConcurrentMap;
  */
 class HertsHttpInterceptHandler implements Filter {
     private final ConcurrentMap<String, HertsHttpInterceptor> interceptors;
-    private final HertsSerializer hertsSerializer;
+    private final MessageSerializer hertsSerializer;
 
     public HertsHttpInterceptHandler(Map<String, HertsHttpInterceptor> interceptorMap) {
         this.interceptors = new ConcurrentHashMap<>(interceptorMap);
-        this.hertsSerializer = new HertsSerializer(HertsSerializeType.Json);
+        this.hertsSerializer = new MessageSerializer(MessageSerializeType.Json);
     }
 
     @Override
@@ -46,11 +46,11 @@ class HertsHttpInterceptHandler implements Filter {
         if (intercept != null) {
             try {
                 intercept.beforeHandle(new HertsHttpRequestImpl(request, httpReq));
-            } catch (HertsHttpErrorException ex) {
+            } catch (HttpErrorException ex) {
                 setError(ex.getMessage(), ex.getStatusCode().getIntegerCode(), ex.getStatusCode(), (HttpServletResponse) response);
                 return;
             } catch (Exception ex) {
-                setError(ex.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, HertsHttpErrorException.StatusCode.Status500, (HttpServletResponse) response);
+                setError(ex.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, HttpErrorException.StatusCode.Status500, (HttpServletResponse) response);
                 return;
             }
         }
@@ -60,8 +60,8 @@ class HertsHttpInterceptHandler implements Filter {
         }
     }
 
-    private void setError(String message, int statusCode, HertsHttpErrorException.StatusCode statusCodeEnum, HttpServletResponse response) throws IOException {
-        HertsHttpErrorResponse errorResponse = HertsHttpServerCoreImpl.genErrorResponse(statusCodeEnum, message);
+    private void setError(String message, int statusCode, HttpErrorException.StatusCode statusCodeEnum, HttpServletResponse response) throws IOException {
+        InternalHttpErrorResponse errorResponse = HertsHttpServerCoreImpl.genErrorResponse(statusCodeEnum, message);
         response.setStatus(statusCode);
         HertsHttpCallerBase.setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(errorResponse));
     }

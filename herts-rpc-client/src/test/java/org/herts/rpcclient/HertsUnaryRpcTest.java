@@ -1,6 +1,6 @@
 package org.herts.rpcclient;
 
-import org.herts.core.exception.rpc.HertsRpcErrorException;
+import org.herts.core.exception.rpc.RpcErrorException;
 import org.herts.core.service.HertsService;
 import org.herts.rpc.GrpcServerOption;
 import org.herts.rpc.HertsRpcServerEngineBuilder;
@@ -114,8 +114,8 @@ public class HertsUnaryRpcTest {
         try {
             rpc.error01();
             throw new RuntimeException("Invalid exception");
-        } catch (HertsRpcErrorException ex) {
-            assertEquals(HertsRpcErrorException.StatusCode.Status13, ex.getStatusCode());
+        } catch (RpcErrorException ex) {
+            assertEquals(RpcErrorException.StatusCode.Status13, ex.getStatusCode());
             assertTrue(ex.getMessage().contains("Unexpected error occurred"));
         }
     }
@@ -127,9 +127,9 @@ public class HertsUnaryRpcTest {
         try {
             rpc.error02();
             throw new RuntimeException("Invalid exception");
-        } catch (HertsRpcErrorException ex) {
+        } catch (RpcErrorException ex) {
             assertEquals("error02", ex.getMessage());
-            assertEquals(HertsRpcErrorException.StatusCode.Status2, ex.getStatusCode());
+            assertEquals(RpcErrorException.StatusCode.Status2, ex.getStatusCode());
         }
     }
 
@@ -140,9 +140,9 @@ public class HertsUnaryRpcTest {
         try {
             rpc.error03();
             throw new RuntimeException("Invalid exception");
-        } catch (HertsRpcErrorException ex) {
+        } catch (RpcErrorException ex) {
             assertEquals("error03", ex.getMessage());
-            assertEquals(HertsRpcErrorException.StatusCode.Status10, ex.getStatusCode());
+            assertEquals(RpcErrorException.StatusCode.Status10, ex.getStatusCode());
         }
     }
 }

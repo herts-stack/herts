@@ -1,16 +1,15 @@
 package org.herts.e2etest.reactivestreaming_rpc;
 
-import org.herts.core.logger.HertsLogger;
+import org.herts.core.logger.Logging;
 import org.herts.core.service.HertsReactiveStreamingService;
 import org.herts.e2etest.common.HelloRequest;
 import org.herts.e2etest.common.HelloResponse01;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class IntegrationTestRsServiceImpl extends HertsReactiveStreamingService<IntegrationTestRsService, IntegrationTestRsReceiver> implements IntegrationTestRsService {
-    private static final Logger logger = HertsLogger.getLogger(IntegrationTestRsServiceImpl.class.getSimpleName());
+    private static final java.util.logging.Logger logger = Logging.getLogger(IntegrationTestRsServiceImpl.class.getSimpleName());
 
     public IntegrationTestRsServiceImpl() {
     }
