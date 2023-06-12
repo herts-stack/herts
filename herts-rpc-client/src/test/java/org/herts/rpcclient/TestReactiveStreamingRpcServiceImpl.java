@@ -1,11 +1,11 @@
 package org.herts.rpcclient;
 
-import org.herts.core.service.HertsReactiveStreamingService;
+import org.herts.core.service.HertsServiceReactiveStreaming;
 
 import java.util.Map;
 
 public class TestReactiveStreamingRpcServiceImpl
-        extends HertsReactiveStreamingService<TestReactiveStreamingRpcService, TestReactiveStreamingRpcReceiver>
+        extends HertsServiceReactiveStreaming<TestReactiveStreamingRpcService, TestReactiveStreamingRpcReceiver>
         implements TestReactiveStreamingRpcService {
 
     @Override

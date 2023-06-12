@@ -10,4 +10,7 @@ include 'herts-http-client'
 include 'herts-serializer'
 include 'benchmark-test'
 include 'example'
+include 'herts-broker'
+include 'herts-broker-redis'
+include 'herts-broker-local'
 

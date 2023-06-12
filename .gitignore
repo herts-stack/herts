@@ -7,6 +7,9 @@ herts-codegen/build/
 herts-http/build/
 herts-http-client/build/
 herts-serializer/build/
+herts-broker/build/
+herts-broker-redis/build/
+herts-broker-local/build/
 tools/build/
 example/build/
 e2e-test/build/

@@ -1,8 +1,8 @@
 package org.herts.example.reactivesteaming;
 
-import org.herts.core.service.HertsReactiveStreamingService;
+import org.herts.core.service.HertsServiceReactiveStreaming;
 
-public class ReactiveServiceImpl extends HertsReactiveStreamingService<ReactiveService, ReactiveReceiver> implements ReactiveService {
+public class ReactiveServiceImpl extends HertsServiceReactiveStreaming<ReactiveService, ReactiveReceiver> implements ReactiveService {
     @Override
     public String helloWorld(String value) {
         System.out.println("Received data on server: " + value);
