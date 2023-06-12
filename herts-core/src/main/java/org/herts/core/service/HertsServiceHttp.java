@@ -8,7 +8,7 @@ import org.herts.core.context.HertsType;
  * @author Herts Contributer
  * @version 1.0.0
  */
-public abstract class HertsServiceHttp<T> extends HertsServiceBase<T> {
+public abstract class HertsServiceHttp<T> extends ServiceBase<T> {
 
     public HertsServiceHttp() {
         super(HertsType.Http);

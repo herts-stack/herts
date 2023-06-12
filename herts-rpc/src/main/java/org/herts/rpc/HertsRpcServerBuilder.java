@@ -15,7 +15,7 @@ import org.herts.core.exception.ServiceNotFoundException;
 import org.herts.core.service.HertsServiceBidirectionalStreaming;
 import org.herts.core.service.HertsServiceClientStreaming;
 import org.herts.core.service.HertsReactiveService;
-import org.herts.core.service.HertsReactiveStreamingService;
+import org.herts.core.service.HertsServiceReactiveStreaming;
 import org.herts.core.service.HertsService;
 import org.herts.core.service.HertsServiceServerStreaming;
 import org.herts.metrics.HertsMetrics;
@@ -206,7 +206,7 @@ class HertsRpcServerBuilder implements RpcServer {
 
         if (hertsType == HertsType.Reactive) {
             for (HertsService hertsService : this.hertsRpcServices) {
-                HertsReactiveStreamingService reactiveStreamingService = (HertsReactiveStreamingService) hertsService;
+                HertsServiceReactiveStreaming reactiveStreamingService = (HertsServiceReactiveStreaming) hertsService;
                 reactiveStreamingService.setBroker(this.reactiveBroker);
             }
         }

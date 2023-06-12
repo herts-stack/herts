@@ -11,11 +11,11 @@ import org.herts.core.context.HertsType;
  * @author Herts Contributer
  * @version 1.0.0
  */
-class HertsReactiveStreamingServiceBase<T, K> implements HertsReactiveService {
+class ReactiveStreamingBase<T, K> implements HertsReactiveService {
     private final HertsType coreType;
     private final HertsBroadCaster broadCaster;
 
-    public HertsReactiveStreamingServiceBase(HertsType rpcType) {
+    public ReactiveStreamingBase(HertsType rpcType) {
         this.coreType = rpcType;
         this.broadCaster = new HertsBroadCasterImpl();
     }

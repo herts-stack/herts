@@ -5,11 +5,11 @@ import org.herts.core.context.HertsType;
 
 import io.grpc.MethodDescriptor;
 
-class HertsServiceBase<T> implements HertsService {
+class ServiceBase<T> implements HertsService {
     private T t;
     private final HertsType coreType;
 
-    public HertsServiceBase(HertsType rpcType) {
+    public ServiceBase(HertsType rpcType) {
         this.coreType = rpcType;
     }
 
