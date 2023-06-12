@@ -1,6 +1,7 @@
 package org.herts.core.service;
 
 import io.grpc.MethodDescriptor;
+import org.herts.broker.ReactiveBroker;
 import org.herts.core.context.SharedServiceContext;
 import org.herts.core.context.HertsType;
 
@@ -44,11 +45,7 @@ class HertsReactiveStreamingServiceBase<T, K> implements HertsReactiveService {
         return this.broadCaster.getReceiver();
     }
 
-    public void createBroker(LoadBalancingType lbType, String connectionInfo) {
-        HertsReactiveBroker broker = ReactiveBrokerTypeBuilder.builder()
-                .loadBalancingType(lbType)
-                .connectionInfo(connectionInfo)
-                .build();
+    public void setBroker(ReactiveBroker broker) {
         this.broadCaster.setBroker(broker);
     }
 

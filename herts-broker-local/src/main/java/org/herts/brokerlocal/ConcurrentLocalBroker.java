@@ -1,4 +1,9 @@
-package org.herts.core.service;
+package org.herts.brokerlocal;
+
+
+import org.herts.broker.ReactiveBroker;
+import org.herts.broker.ReactiveConsumer;
+import org.herts.broker.ReactiveProducer;
 
 import java.util.UUID;
 
@@ -9,18 +14,18 @@ import java.util.UUID;
  * @author Herts Contributer
  * @version 1.0.0
  */
-class ConcurrentLocalBroker implements HertsReactiveBroker {
+public class ConcurrentLocalBroker implements ReactiveBroker {
 
-    private static HertsReactiveBroker broker;
-    private final HertsReactiveProducer producer;
-    private final HertsReactiveConsumer consumer;
+    private static ReactiveBroker broker;
+    private final ReactiveProducer producer;
+    private final ReactiveConsumer consumer;
 
-    private ConcurrentLocalBroker(HertsReactiveProducer producer, HertsReactiveConsumer consumer) {
+    private ConcurrentLocalBroker(ReactiveProducer producer, ReactiveConsumer consumer) {
         this.producer = producer;
         this.consumer = consumer;
     }
 
-    public static HertsReactiveBroker getInstance() {
+    public static ReactiveBroker getInstance() {
         if (broker != null) {
             return broker;
         }
@@ -32,12 +37,12 @@ class ConcurrentLocalBroker implements HertsReactiveBroker {
     }
 
     @Override
-    public HertsReactiveProducer getHertsMessageProducer() {
+    public ReactiveProducer getHertsMessageProducer() {
         return this.producer;
     }
 
     @Override
-    public HertsReactiveConsumer getHertsMessageConsumer() {
+    public ReactiveConsumer getHertsMessageConsumer() {
         return this.consumer;
     }
 }

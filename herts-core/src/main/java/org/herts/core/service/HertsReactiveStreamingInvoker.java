@@ -1,7 +1,8 @@
 package org.herts.core.service;
 
+import org.herts.broker.InternalReactivePayload;
+import org.herts.broker.ReactiveBroker;
 import org.herts.serializer.MessageJsonParsingException;
-import org.herts.core.modelx.InternalReactivePayload;
 import org.herts.serializer.MessageSerializer;
 
 import java.lang.reflect.InvocationHandler;
@@ -18,11 +19,11 @@ import java.util.List;
  * @version 1.0.0
  */
 class HertsReactiveStreamingInvoker implements InvocationHandler {
-    private final HertsReactiveBroker hertsMessageBroker;
+    private final ReactiveBroker hertsMessageBroker;
     private final MessageSerializer hertsSerializer;
-    private String clientId;
+    private final String clientId;
 
-    public HertsReactiveStreamingInvoker(HertsReactiveBroker hertsMessageBroker, String clientId) {
+    public HertsReactiveStreamingInvoker(ReactiveBroker hertsMessageBroker, String clientId) {
         this.hertsMessageBroker = hertsMessageBroker;
         this.hertsSerializer = new MessageSerializer();
         this.clientId = clientId;

@@ -22,6 +22,8 @@ dependencies {
     implementation project(':herts-core')
     implementation project(':herts-metrics')
     implementation project(':herts-serializer')
+    implementation project(':herts-broker')
+    implementation project(':herts-broker-local')
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'

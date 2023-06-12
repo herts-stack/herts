@@ -1,4 +1,4 @@
-package org.herts.core.service;
+package org.herts.broker;
 
 import io.grpc.stub.StreamObserver;
 
@@ -10,10 +10,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Herts Contributer
  * @version 1.0.0
  */
-class ReactiveStreamingCacheImpl implements ReactiveStreamingCache {
-    private volatile ConcurrentHashMap<String, ReceiverInfo> receivers;
-    private volatile ConcurrentHashMap<String, StreamObserver<Object>> observers;
-    private volatile ConcurrentHashMap<String, String> clientId;
+public class ReactiveStreamingCacheImpl<T> implements ReactiveStreamingCache<T> {
+    private final ConcurrentHashMap<String, T> receivers;
+    private final ConcurrentHashMap<String, StreamObserver<Object>> observers;
+    private final ConcurrentHashMap<String, String> clientId;
     private static ReactiveStreamingCacheImpl thisClass;
 
     private ReactiveStreamingCacheImpl() {
@@ -27,11 +27,12 @@ class ReactiveStreamingCacheImpl implements ReactiveStreamingCache {
      *
      * @return ReactiveStreamingCache
      */
-    public static ReactiveStreamingCache getInstance() {
+    @SuppressWarnings("unchecked")
+    public static <T> ReactiveStreamingCache<T> getInstance() {
         if (thisClass != null) {
             return thisClass;
         }
-        thisClass = new ReactiveStreamingCacheImpl();
+        thisClass = new ReactiveStreamingCacheImpl<T>();
         return thisClass;
     }
 
@@ -67,13 +68,12 @@ class ReactiveStreamingCacheImpl implements ReactiveStreamingCache {
     }
 
     @Override
-    public void setHertsReceiver(String hertsClientId, HertsReceiver hertsReceiver, HertsReactiveStreamingInvoker invoker) {
-        ReceiverInfo receiver = new ReceiverInfo(hertsReceiver, invoker);
-        this.receivers.put(hertsClientId, receiver);
+    public void setHertsReceiver(String hertsClientId, T hertsReceiver) {
+        this.receivers.put(hertsClientId, hertsReceiver);
     }
 
     @Override
-    public ReceiverInfo getHertsReceiver(String hertsClientId) {
+    public T getHertsReceiver(String hertsClientId) {
         return this.receivers.get(hertsClientId);
     }
 }

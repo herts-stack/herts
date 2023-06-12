@@ -1,5 +1,7 @@
 package org.herts.rpc;
 
+import org.herts.broker.ReactiveBroker;
+import org.herts.brokerlocal.ConcurrentLocalBroker;
 import org.herts.core.modelx.RegisteredMethod;
 import org.herts.core.context.HertsMetricsSetting;
 import org.herts.core.context.SharedServiceContext;
@@ -10,7 +12,6 @@ import org.herts.core.descriptor.CustomGrpcUnaryDescriptor;
 import org.herts.core.exception.NotSupportParameterTypeException;
 import org.herts.core.exception.RpcServerBuildException;
 import org.herts.core.exception.ServiceNotFoundException;
-import org.herts.core.service.LoadBalancingType;
 import org.herts.core.service.HertsServiceBidirectionalStreaming;
 import org.herts.core.service.HertsServiceClientStreaming;
 import org.herts.core.service.HertsReactiveService;
@@ -45,7 +46,8 @@ class HertsRpcServerBuilder implements RpcServer {
     private final Map<BindableService, ServerInterceptor> services = new HashMap<>();
     private final List<HertsType> hertsTypes = new ArrayList<>();
     private final List<HertsService> hertsRpcServices = new ArrayList<>();
-    private LoadBalancingType loadBalancingType = LoadBalancingType.LocalGroupRepository;
+
+    private ReactiveBroker reactiveBroker = ConcurrentLocalBroker.getInstance();
     private String connectionInfo;
     private GrpcServerOption option;
     private ServerCredentials credentials;
@@ -137,9 +139,8 @@ class HertsRpcServerBuilder implements RpcServer {
     }
 
     @Override
-    public RpcServer loadBalancingType(LoadBalancingType loadBalancingType, @Nullable String connectionInfo) {
-        this.loadBalancingType = loadBalancingType;
-        this.connectionInfo = connectionInfo;
+    public RpcServer loadBalancingBroker(ReactiveBroker broker) {
+        this.reactiveBroker = broker;
         return this;
     }
 
@@ -206,7 +207,7 @@ class HertsRpcServerBuilder implements RpcServer {
         if (hertsType == HertsType.Reactive) {
             for (HertsService hertsService : this.hertsRpcServices) {
                 HertsReactiveStreamingService reactiveStreamingService = (HertsReactiveStreamingService) hertsService;
-                reactiveStreamingService.createBroker(this.loadBalancingType, this.connectionInfo);
+                reactiveStreamingService.setBroker(this.reactiveBroker);
             }
         }
 

@@ -1,4 +1,4 @@
-package org.herts.core.service;
+package org.herts.broker;
 
 /**
  * Herts message producer
@@ -6,7 +6,7 @@ package org.herts.core.service;
  * @author Herts Contributer
  * @version 1.0.0
  */
-interface HertsReactiveProducer {
+public interface ReactiveProducer {
 
     /**
      * Produce message.
@@ -20,5 +20,5 @@ interface HertsReactiveProducer {
      *
      * @param observer HertsConsumer
      */
-    void addObserver(HertsReactiveConsumer observer);
+    void addObserver(ReactiveConsumer observer);
 }

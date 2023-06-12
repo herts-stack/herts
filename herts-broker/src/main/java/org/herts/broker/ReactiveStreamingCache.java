@@ -1,4 +1,4 @@
-package org.herts.core.service;
+package org.herts.broker;
 
 import io.grpc.stub.StreamObserver;
 
@@ -9,7 +9,7 @@ import io.grpc.stub.StreamObserver;
  * @author Herts Contributer
  * @version 1.0.0
  */
-interface ReactiveStreamingCache {
+public interface ReactiveStreamingCache<T> {
 
     /**
      * Register StreamingObserver to server cache service.
@@ -61,10 +61,9 @@ interface ReactiveStreamingCache {
      * Set Herts receiver.
      *
      * @param clientId      ClientId
-     * @param hertsReceiver HertsReceiver
-     * @param invoker       HertsReactiveStreamingInvoker
+     * @param T HertsReceiver
      */
-    void setHertsReceiver(String clientId, HertsReceiver hertsReceiver, HertsReactiveStreamingInvoker invoker);
+    void setHertsReceiver(String clientId, T hertsReceiver);
 
     /**
      * Get Herts receiver.
@@ -72,5 +71,5 @@ interface ReactiveStreamingCache {
      * @param clientId ClientId
      * @return HertsReceiverInfo
      */
-    ReceiverInfo getHertsReceiver(String clientId);
+    T getHertsReceiver(String clientId);
 }

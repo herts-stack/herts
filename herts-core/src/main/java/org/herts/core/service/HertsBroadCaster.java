@@ -1,6 +1,7 @@
 package org.herts.core.service;
 
 import io.grpc.stub.StreamObserver;
+import org.herts.broker.ReactiveBroker;
 
 /**
  * HertsBroadCaster for internal reactive streaming.
@@ -44,7 +45,7 @@ interface HertsBroadCaster {
      *
      * @param broker HertsMessageBroker
      */
-    void setBroker(HertsReactiveBroker broker);
+    void setBroker(ReactiveBroker broker);
 
     /**
      * Get HertsService

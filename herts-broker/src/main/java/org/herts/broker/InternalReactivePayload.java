@@ -1,5 +1,8 @@
-package org.herts.core.modelx;
+package org.herts.broker;
 
+import org.msgpack.annotation.Message;
+
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -8,7 +11,8 @@ import java.util.List;
  * @author Herts Contributer
  * @version 1.0.0
  */
-public class InternalReactivePayload extends InternalRpcMsg {
+@Message
+public class InternalReactivePayload implements Serializable {
     private String methodName;
     private String clientId;
     private List<Object> parameters;

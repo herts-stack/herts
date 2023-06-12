@@ -1,6 +1,9 @@
 package org.herts.core.service;
 
 import io.grpc.stub.StreamObserver;
+import org.herts.broker.ReactiveBroker;
+import org.herts.broker.ReactiveStreamingCache;
+import org.herts.broker.ReactiveStreamingCacheImpl;
 import org.herts.core.context.SharedServiceContext;
 
 import java.lang.reflect.Proxy;
@@ -16,8 +19,8 @@ import java.util.logging.Logger;
 class HertsBroadCasterImpl implements HertsBroadCaster {
     private static final Logger logger = Logger.getLogger(HertsBroadCasterImpl.class.getName());
 
-    private final ReactiveStreamingCache reactiveStreamingCache = ReactiveStreamingCacheImpl.getInstance();
-    private HertsReactiveBroker broker;
+    private final ReactiveStreamingCache<HertsReceiver> reactiveStreamingCache = ReactiveStreamingCacheImpl.getInstance();
+    private ReactiveBroker broker;
     private Class<?> service;
     private Class<?> receiver;
 
@@ -55,7 +58,7 @@ class HertsBroadCasterImpl implements HertsBroadCaster {
     }
 
     @Override
-    public void setBroker(HertsReactiveBroker broker) {
+    public void setBroker(ReactiveBroker broker) {
         this.broker = broker;
     }
 
@@ -69,17 +72,10 @@ class HertsBroadCasterImpl implements HertsBroadCaster {
         return this.receiver;
     }
 
-    private void printClientIds() {
-        logger.info("Debug client id stat");
-        for (String id : this.reactiveStreamingCache.getClientIds()) {
-            logger.info(id);
-        }
-    }
-
     private HertsReceiver createReceiver(String clientId) {
-        ReceiverInfo hertsReceiverInfo = this.reactiveStreamingCache.getHertsReceiver(clientId);
-        if (hertsReceiverInfo != null) {
-            return hertsReceiverInfo.getReceiver();
+        HertsReceiver hertsReceiver = this.reactiveStreamingCache.getHertsReceiver(clientId);
+        if (hertsReceiver != null) {
+            return hertsReceiver;
         }
         StreamObserver<Object> observer = this.reactiveStreamingCache.getObserver(clientId);
         if (observer == null) {
@@ -88,12 +84,12 @@ class HertsBroadCasterImpl implements HertsBroadCaster {
 
         HertsReactiveStreamingInvoker handler = new HertsReactiveStreamingInvoker(this.broker, clientId);
         try {
-            HertsReceiver hertsReceiver = (HertsReceiver) Proxy.newProxyInstance(
+            hertsReceiver = (HertsReceiver) Proxy.newProxyInstance(
                     this.receiver.getClassLoader(),
                     new Class<?>[]{this.receiver},
                     handler);
 
-            this.reactiveStreamingCache.setHertsReceiver(clientId, hertsReceiver, handler);
+            this.reactiveStreamingCache.setHertsReceiver(clientId, hertsReceiver);
             return hertsReceiver;
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -1,7 +1,11 @@
-package org.herts.core.service;
+package org.herts.brokerlocal;
 
 import io.grpc.stub.StreamObserver;
-import org.herts.core.modelx.InternalReactivePayload;
+
+import org.herts.broker.InternalReactivePayload;
+import org.herts.broker.ReactiveConsumer;
+import org.herts.broker.ReactiveStreamingCache;
+import org.herts.broker.ReactiveStreamingCacheImpl;
 import org.herts.serializer.MessageSerializer;
 
 import java.io.IOException;
@@ -14,7 +18,7 @@ import java.util.List;
  * @author Herts Contributer
  * @version 1.0.0
  */
-class ConcurrentLocalConsumer implements HertsReactiveConsumer {
+class ConcurrentLocalConsumer implements ReactiveConsumer {
     private final MessageSerializer serializer;
     private final ReactiveStreamingCache reactiveStreamingCache;
     private final String consumerName;
@@ -26,6 +30,7 @@ class ConcurrentLocalConsumer implements HertsReactiveConsumer {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public synchronized void receive(byte[] payload) {
         InternalReactivePayload hertsPayload;
         try {

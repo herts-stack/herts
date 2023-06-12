@@ -1,4 +1,4 @@
-package org.herts.core.service;
+package org.herts.broker;
 
 /**
  * Herts message broker for load balancing grpc connection
@@ -6,19 +6,19 @@ package org.herts.core.service;
  * @author Herts Contributer
  * @version 1.0.0
  */
-interface HertsReactiveBroker {
+public interface ReactiveBroker {
 
     /**
      * Get herts producer for load balancing.
      *
      * @return HertsMessageProducer
      */
-    HertsReactiveProducer getHertsMessageProducer();
+    ReactiveProducer getHertsMessageProducer();
 
     /**
      * Get herts consumer for load balancing.
      *
      * @return HertsMessageConsumer
      */
-    HertsReactiveConsumer getHertsMessageConsumer();
+    ReactiveConsumer getHertsMessageConsumer();
 }

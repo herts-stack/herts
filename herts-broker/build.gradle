@@ -4,7 +4,7 @@ plugins {
 }
 apply plugin: 'application'
 
-def pkgName = 'org.herts.core'
+def pkgName = 'org.herts.broker'
 def pkgVersion = '1.0.0'
 def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '11'
 
@@ -15,12 +15,10 @@ targetCompatibility = javaVersion
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
-    implementation project(':herts-serializer')
-    implementation project(':herts-broker')
-
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }

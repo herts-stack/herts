@@ -1,8 +1,8 @@
 package org.herts.rpc;
 
+import org.herts.broker.ReactiveBroker;
 import org.herts.core.context.HertsMetricsSetting;
 import org.herts.core.context.HertsType;
-import org.herts.core.service.LoadBalancingType;
 import org.herts.core.service.HertsReactiveService;
 import org.herts.core.service.HertsService;
 
@@ -65,11 +65,10 @@ public interface RpcServer {
      * Load balancing type.
      * Default is LocalGroupRepository.
      *
-     * @param loadBalancingType LoadBalancingType
-     * @param connectionInfo ConnectionInfo
+     * @param broker ReactiveBroker
      * @return HertsRpcEngineBuilder
      */
-    RpcServer loadBalancingType(LoadBalancingType loadBalancingType, @Nullable String connectionInfo);
+    RpcServer loadBalancingBroker(ReactiveBroker broker);
 
     /**
      * Secure connection

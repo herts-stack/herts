@@ -1,4 +1,4 @@
-package org.herts.core.service;
+package org.herts.broker;
 
 /**
  * Herts message consumer
@@ -6,7 +6,7 @@ package org.herts.core.service;
  * @author Herts Contributer
  * @version 1.0.0
  */
-interface HertsReactiveConsumer {
+public interface ReactiveConsumer {
 
     /**
      * Receive message.

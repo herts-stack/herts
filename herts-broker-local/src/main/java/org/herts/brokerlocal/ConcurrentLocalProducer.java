@@ -1,5 +1,7 @@
-package org.herts.core.service;
+package org.herts.brokerlocal;
 
+import org.herts.broker.ReactiveConsumer;
+import org.herts.broker.ReactiveProducer;
 import org.herts.serializer.MessageSerializer;
 
 import java.util.ArrayList;
@@ -11,8 +13,8 @@ import java.util.List;
  * @author Herts Contributer
  * @version 1.0.0
  */
-class ConcurrentLocalProducer implements HertsReactiveProducer {
-    private final List<HertsReactiveConsumer> observers;
+class ConcurrentLocalProducer implements ReactiveProducer {
+    private final List<ReactiveConsumer> observers;
     private final MessageSerializer serializer;
     private final String producerName;
 
@@ -28,12 +30,12 @@ class ConcurrentLocalProducer implements HertsReactiveProducer {
     }
 
     @Override
-    public void addObserver(HertsReactiveConsumer observer) {
+    public void addObserver(ReactiveConsumer observer) {
         this.observers.add(observer);
     }
 
     private void notifyObservers(byte[] payload) {
-        for (HertsReactiveConsumer observer : this.observers) {
+        for (ReactiveConsumer observer : this.observers) {
             observer.receive(payload);
         }
     }
