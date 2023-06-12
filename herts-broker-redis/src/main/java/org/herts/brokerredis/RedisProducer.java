@@ -4,6 +4,12 @@ import org.herts.broker.ReactiveConsumer;
 import org.herts.broker.ReactiveProducer;
 import redis.clients.jedis.Jedis;
 
+/**
+ * Redis producer
+ *
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class RedisProducer implements ReactiveProducer {
     private final Jedis publisherJedis;
     private final byte[] channel;

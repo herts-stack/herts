@@ -13,6 +13,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Redis broker
+ *
+ * @author Herts Contributer
+ * @version 1.0.0
+ */
 public class RedisBroker implements ReactiveBroker {
 
     private static final String baseChannelName = "herts-reactive-group-0";
