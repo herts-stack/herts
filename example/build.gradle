@@ -23,6 +23,10 @@ dependencies {
     implementation project(':herts-rpc-client')
     implementation project(':herts-http')
     implementation project(':herts-http-client')
+    implementation project(':herts-broker-redis')
+    implementation project(':herts-broker')
+
+    implementation 'redis.clients:jedis:4.3.1'
 
     implementation ('org.eclipse.jetty:jetty-server:10.0.15') {
         exclude group: "org.slf4j", module: "slf4j-api"
@@ -81,9 +85,15 @@ tasks.register('runExampleRpcBidStreaming', JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
-tasks.register('runExampleRpcReactimeStreaming', JavaExec) {
+tasks.register('runExampleRpcReactiveLocalStreaming', JavaExec) {
     dependsOn 'classes'
-    main = 'org.herts.example.reactivesteaming.Main'
+    main = 'org.herts.example.reactivesteaming.local.Main'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+tasks.register('runExampleRpcReactiveRedisStreaming', JavaExec) {
+    dependsOn 'classes'
+    main = 'org.herts.example.reactivesteaming.redis.Main'
     classpath = sourceSets.main.runtimeClasspath
 }
 

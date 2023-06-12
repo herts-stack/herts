@@ -21,4 +21,16 @@ public interface ReactiveBroker {
      * @return HertsMessageConsumer
      */
     ReactiveConsumer getHertsMessageConsumer();
+
+    /**
+     * Get broker type
+     *
+     * @return BrokerType
+     */
+    BrokerType getBrokerType();
+
+    /**
+     * Close broker.
+     */
+    void closeBroker();
 }

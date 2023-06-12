@@ -1,6 +1,7 @@
 package org.herts.brokerlocal;
 
 
+import org.herts.broker.BrokerType;
 import org.herts.broker.ReactiveBroker;
 import org.herts.broker.ReactiveConsumer;
 import org.herts.broker.ReactiveProducer;
@@ -44,5 +45,14 @@ public class ConcurrentLocalBroker implements ReactiveBroker {
     @Override
     public ReactiveConsumer getHertsMessageConsumer() {
         return this.consumer;
+    }
+
+    @Override
+    public BrokerType getBrokerType() {
+        return BrokerType.Local;
+    }
+
+    @Override
+    public void closeBroker() {
     }
 }

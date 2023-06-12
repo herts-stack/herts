@@ -1,5 +1,8 @@
-package org.herts.example.reactivesteaming;
+package org.herts.example.reactivesteaming.local;
 
+import org.herts.example.reactivesteaming.ReactiveReceiverImpl;
+import org.herts.example.reactivesteaming.ReactiveService;
+import org.herts.example.reactivesteaming.ReactiveServiceImpl;
 import org.herts.rpc.HertsRpcServerEngine;
 import org.herts.rpc.HertsRpcServerEngineBuilder;
 import org.herts.rpcclient.HertsRpcClient;

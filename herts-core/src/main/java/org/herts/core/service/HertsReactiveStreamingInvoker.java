@@ -52,7 +52,7 @@ class HertsReactiveStreamingInvoker implements InvocationHandler {
 
         try {
             this.hertsMessageBroker.getHertsMessageProducer().produce(this.hertsSerializer.serialize(hertsPayload));
-        } catch (MessageJsonParsingException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return proxy;

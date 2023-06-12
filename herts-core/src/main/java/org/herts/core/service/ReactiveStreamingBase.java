@@ -4,6 +4,9 @@ import io.grpc.MethodDescriptor;
 import org.herts.broker.ReactiveBroker;
 import org.herts.core.context.SharedServiceContext;
 import org.herts.core.context.HertsType;
+import org.herts.core.logger.Logging;
+
+import java.util.logging.Logger;
 
 /**
  * HertsReactiveStreamingServiceBase
@@ -12,6 +15,8 @@ import org.herts.core.context.HertsType;
  * @version 1.0.0
  */
 class ReactiveStreamingBase<T, K> implements HertsReactiveService {
+    private static final Logger logger = Logging.getLogger(ReactiveStreamingBase.class.getSimpleName());
+
     private final HertsType coreType;
     private final HertsBroadCaster broadCaster;
 
@@ -46,6 +51,7 @@ class ReactiveStreamingBase<T, K> implements HertsReactiveService {
     }
 
     public void setBroker(ReactiveBroker broker) {
+        logger.info("Setup broker type is " + broker.getBrokerType());
         this.broadCaster.setBroker(broker);
     }
 
