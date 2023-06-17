@@ -7,6 +7,7 @@ apply plugin: 'application'
 def pkgName = 'org.herts.serializer'
 def pkgVersion = '1.0.0'
 def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '11'
+def artifactId = 'herts-serializer'
 
 group pkgName
 version pkgVersion
@@ -18,6 +19,9 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.msgpack:jackson-dataformat-msgpack:0.7.1'
+    implementation 'org.msgpack:msgpack:0.6.12'
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
@@ -54,12 +58,9 @@ publishing {
             from components.java
 
             pom {
-                name = 'Herts framework'
-                description = 'tmp'
-                url = 'https://www.example.com/'
-                properties = [
-                        myProp: "value",
-                ]
+                name = 'Herts serializer library'
+                description = 'Herts real time framework for Serializer'
+                url = 'https://www.herts.org/'
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'
@@ -78,7 +79,7 @@ publishing {
     }
     repositories {
         maven {
-            url 'file://Users/tomohito.oyane/Developers/maven-herts-repo'
+            url 'file://Users/tomohito.oyane/Developers/maven-repo'
         }
     }
 }

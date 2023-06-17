@@ -7,6 +7,7 @@ apply plugin: 'application'
 def pkgName = 'org.herts.http'
 def pkgVersion = '1.0.0'
 def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '11'
+def artifactId = 'herts-http'
 
 group pkgName
 version pkgVersion
@@ -22,6 +23,8 @@ dependencies {
     implementation project(':herts-core')
     implementation project(':herts-metrics')
     implementation project(':herts-serializer')
+
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
 
     implementation 'javax.servlet:servlet-api:3.0-alpha-1'
     implementation ('org.eclipse.jetty:jetty-server:10.0.15') {
@@ -61,18 +64,15 @@ publishing {
     publications {
         maven(MavenPublication) {
             groupId = pkgName
-            artifactId = 'library'
+            artifactId = artifactId
             version = pkgVersion
 
             from components.java
 
             pom {
-                name = 'Herts framework'
-                description = 'tmp'
-                url = 'https://www.example.com/'
-                properties = [
-                        myProp: "value",
-                ]
+                name = 'Herts http library'
+                description = 'Herts real time framework for Http'
+                url = 'https://www.herts.org/'
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'
@@ -91,7 +91,7 @@ publishing {
     }
     repositories {
         maven {
-            url 'file://Users/tomohito.oyane/Developers/maven-herts-repo'
+            url 'file://Users/tomohito.oyane/Developers/maven-repo'
         }
     }
 }
