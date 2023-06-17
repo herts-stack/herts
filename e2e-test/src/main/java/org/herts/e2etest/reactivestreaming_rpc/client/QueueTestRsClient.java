@@ -34,7 +34,7 @@ public class QueueTestRsClient {
 
     private static HertsRpcClient createClient() {
         return HertsRpcClientBuilder
-                .builder("localhost", Constant.port)
+                .builder("10.99.98.123", 8888)
                 .secure(false)
                 .registerHertsRpcServiceInterface(QueueTestRsService.class)
                 .registerHertsRpcReceiver(new QueueTestRsReceiverImpl())

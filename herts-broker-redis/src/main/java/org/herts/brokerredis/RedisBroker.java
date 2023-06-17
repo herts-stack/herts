@@ -38,7 +38,7 @@ public class RedisBroker implements ReactiveBroker {
         throwIfRedisIsClosed();
     }
 
-    private RedisBroker(JedisPool jedisPool) {
+    public RedisBroker(JedisPool jedisPool) {
         this.unifiedJedis = null;
         this.jedisPool = jedisPool;
 

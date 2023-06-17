@@ -48,9 +48,16 @@ public class Main {
                 .required(false)
                 .build());
 
+        options.addOption(Option.builder("r")
+                .longOpt("redis_host")
+                .hasArg(true)
+                .desc("")
+                .required(false)
+                .build());
+
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd;
-        String exec_type = null, herts_type = null, test_type = null;
+        String exec_type = null, herts_type = null, test_type = null, redis_host = null;
         try {
             cmd = parser.parse(options, args);
             if (cmd.hasOption("e")) {
@@ -72,6 +79,12 @@ public class Main {
                 }
             } else {
                 test_type = ArgOperation.testTypes[0];
+            }
+            if (cmd.hasOption("r")) {
+                redis_host = cmd.getOptionValue("r");
+                if (redis_host == null || redis_host.isEmpty()) {
+                    throw new ParseException("redis_host");
+                }
             }
         } catch (ParseException pe) {
             System.out.println("Error parsing command-line arguments! " + pe.getMessage());
@@ -107,7 +120,7 @@ public class Main {
         } else if (exec_type.equals(ArgOperation.SERVER) && test_type.equals(ArgOperation.testTypes[1])) {
             switch (coreType) {
                 case Reactive:
-                    QueueTestRsServer.run();
+                    QueueTestRsServer.run(redis_host);
                     break;
             }
         } else if (exec_type.equals(ArgOperation.CLIENT) && test_type.equals(ArgOperation.testTypes[0])) {
