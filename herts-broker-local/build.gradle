@@ -7,6 +7,7 @@ apply plugin: 'application'
 def pkgName = 'org.herts.brokerlocal'
 def pkgVersion = '1.0.0'
 def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '11'
+def artifactId = 'herts-broker-local'
 
 group pkgName
 version pkgVersion
@@ -18,9 +19,17 @@ repositories {
     gradlePluginPortal()
 }
 
+def grpcVersion = '1.53.0'
 dependencies {
     implementation project(':herts-broker')
     implementation project(':herts-serializer')
+
+    implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+    implementation "io.grpc:grpc-services:${grpcVersion}"
+    implementation "io.grpc:grpc-stub:${grpcVersion}"
+    runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
+
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
@@ -58,12 +67,9 @@ publishing {
             from components.java
 
             pom {
-                name = 'Herts framework'
-                description = 'tmp'
-                url = 'https://www.example.com/'
-                properties = [
-                        myProp: "value",
-                ]
+                name = 'Herts broker local library'
+                description = 'Herts real time framework for BrokerLocal'
+                url = 'https://www.herts.org/'
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'
@@ -82,7 +88,7 @@ publishing {
     }
     repositories {
         maven {
-            url 'file://Users/tomohito.oyane/Developers/maven-herts-repo'
+            url 'file://Users/tomohito.oyane/Developers/maven-repo'
         }
     }
 }

@@ -7,6 +7,7 @@ apply plugin: 'application'
 def pkgName = 'org.herts.metrics'
 def pkgVersion = '1.0.0'
 def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '11'
+def artifactId = 'herts-metrics'
 
 group pkgName
 version pkgVersion
@@ -61,18 +62,15 @@ publishing {
     publications {
         maven(MavenPublication) {
             groupId = pkgName
-            artifactId = 'library'
+            artifactId = artifactId
             version = pkgVersion
 
             from components.java
 
             pom {
-                name = 'Herts framework'
-                description = 'tmp'
-                url = 'https://www.example.com/'
-                properties = [
-                        myProp: "value",
-                ]
+                name = 'Herts metrics library'
+                description = 'Herts real time framework for Metrics'
+                url = 'https://www.herts.org/'
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'
@@ -91,7 +89,7 @@ publishing {
     }
     repositories {
         maven {
-            url 'file://Users/tomohito.oyane/Developers/maven-herts-repo'
+            url 'file://Users/tomohito.oyane/Developers/maven-repo'
         }
     }
 }
