@@ -61,8 +61,7 @@ public class HertsHttpServer implements HertsHttpEngine {
             ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
             context.setContextPath("/");
 
-            List<String> endpointLogs = new ArrayList<>();
-
+            // Metrics
             HertsMetrics metrics;
             if (this.metricsSetting != null) {
                 metrics = HertsMetricsHandler.builder()
@@ -79,30 +78,25 @@ public class HertsHttpServer implements HertsHttpEngine {
                         .build();
             }
 
-            HertsMetricsServer metricsServer = new HertsMetricsServer(metrics, server);
-            HertsHttpServerCoreImpl hertsServer = new HertsHttpServerCoreImpl(this.hertsRpcServices, metrics, metricsServer);
-
-            for (String endpoint : hertsServer.getEndpoints()) {
-                for (String m : HETRS_HTTP_METHODS) {
-                    String logM = m.equals(HETRS_HTTP_METHODS[0]) ? "[" + m + "]    " : "[" + m + "] ";
-                    endpointLogs.add(logM + endpoint);
-                }
-            }
+            HertsHttpServerCoreImpl hertsServer = new HertsHttpServerCoreImpl(
+                    this.hertsRpcServices, metrics, new HertsMetricsServer(metrics, server));
 
             context.addServlet(new ServletHolder(hertsServer), "/*");
 
+            // Interceptor
             if (this.interceptors != null && this.interceptors.size() > 0) {
                 context.addFilter(new FilterHolder(
                         new HertsHttpInterceptHandler(this.interceptors)), "/*", EnumSet.of(DispatcherType.REQUEST));
             }
 
+            // TLS
             if (this.sslContextFactory != null) {
                 final ServerConnector httpsConnector = new ServerConnector(server, (SslContextFactory.Server) this.sslContextFactory);
                 httpsConnector.setPort(this.port);
                 server.setConnectors(new Connector[]{httpsConnector});
             }
 
-            for (String log : endpointLogs) {
+            for (String log : generateStartedLog(hertsServer)) {
                 logger.info(log);
             }
             server.setHandler(context);
@@ -119,5 +113,19 @@ public class HertsHttpServer implements HertsHttpEngine {
         if (this.server != null) {
             this.server.stop();
         }
+    }
+
+    private List<String> generateStartedLog(HertsHttpServerCoreImpl hertsServer) {
+        List<String> endpointLogs = new ArrayList<>();
+        for (String endpoint : hertsServer.getEndpoints()) {
+            for (String m : HETRS_HTTP_METHODS) {
+                String log = m.equals(HETRS_HTTP_METHODS[0]) ? "[" + m + "]    " : "[" + m + "] ";
+                endpointLogs.add(log + endpoint);
+            }
+        }
+        if (this.metricsSetting != null) {
+            endpointLogs.add("[GET]     /metricsz" );
+        }
+        return endpointLogs;
     }
 }
