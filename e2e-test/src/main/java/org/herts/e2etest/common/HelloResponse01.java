@@ -1,8 +1,8 @@
 package org.herts.e2etest.common;
 
-import org.herts.core.modelx.InternalRpcMsg;
+import org.herts.core.modelx.HertsMessage;
 
-public class HelloResponse01 extends InternalRpcMsg {
+public class HelloResponse01 extends HertsMessage {
     private int code;
     private long timestamp;
     private String test;

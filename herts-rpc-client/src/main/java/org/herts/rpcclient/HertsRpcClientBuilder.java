@@ -119,7 +119,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
                 return (T) generateService(reactiveStreaming, interfaceType);
 
             default:
-                throw new TypeInvalidException("Undefined Hert core type. HertsCoreType" + this.hertsType);
+                throw new TypeInvalidException("Undefined Herts type. HertsType: " + this.hertsType);
         }
     }
 

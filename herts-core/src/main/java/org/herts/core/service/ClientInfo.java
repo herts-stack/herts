@@ -1,6 +1,6 @@
 package org.herts.core.service;
 
-import org.herts.core.modelx.InternalRpcMsg;
+import org.herts.core.modelx.HertsMessage;
 
 /**
  * HertsClientInfo
@@ -8,7 +8,7 @@ import org.herts.core.modelx.InternalRpcMsg;
  * @author Herts Contributer
  * @version 1.0.0
  */
-public class ClientInfo extends InternalRpcMsg {
+public class ClientInfo extends HertsMessage {
     public String id;
     public String globalIp;
     public String userAgent;

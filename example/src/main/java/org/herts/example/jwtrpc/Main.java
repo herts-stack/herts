@@ -2,6 +2,7 @@ package org.herts.example.jwtrpc;
 
 import io.grpc.CallCredentials;
 import io.grpc.Metadata;
+import io.grpc.ServerInterceptor;
 import org.herts.core.exception.rpc.RpcErrorException;
 import org.herts.rpc.HertsRpcInterceptBuilder;
 import org.herts.rpc.HertsRpcServerEngine;
@@ -19,8 +20,9 @@ public class Main {
     }
 
     private static void startServer() {
+        ServerInterceptor interceptor = HertsRpcInterceptBuilder.builder(new JwtServerInterceptor()).build();
         HertsRpcServerEngine engine = HertsRpcServerEngineBuilder.builder()
-                .registerHertsRpcService(new UnaryServiceImpl(), HertsRpcInterceptBuilder.builder(new JwtServerInterceptor()).build())
+                .registerHertsRpcService(new UnaryServiceImpl(), interceptor)
                 .registerHertsRpcService(new AuthRpcServiceImpl())
                 .build();
 

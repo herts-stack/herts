@@ -30,7 +30,6 @@ public class BiStreamingClient {
             @Override
             public void onError(Throwable t) {
                 t.printStackTrace();
-                logger.info("ERRRR");
             }
 
             @Override

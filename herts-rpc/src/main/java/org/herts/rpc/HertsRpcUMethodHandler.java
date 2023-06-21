@@ -1,5 +1,6 @@
 package org.herts.rpc;
 
+import io.grpc.Context;
 import org.herts.core.exception.ServiceMethodNotfoundException;
 import org.herts.core.modelx.RegisteredMethod;
 import org.herts.core.exception.rpc.RpcErrorException;
@@ -60,6 +61,8 @@ class HertsRpcUMethodHandler<Req, Resp> implements
 
     @Override
     public void invoke(Req request, StreamObserver<Resp> responseObserver) {
+        Context newContext = Context.current().fork();
+        Context origContext = newContext.attach();
         try {
             Object response = this.hertsRpcCaller.invokeUnary(request, responseObserver);
             if (response == null) {
@@ -80,6 +83,8 @@ class HertsRpcUMethodHandler<Req, Resp> implements
             } else {
                 responseObserver.onError(new RpcErrorException(RpcErrorException.StatusCode.Status13, "Unexpected error occurred. " + ex.getMessage()).createStatusException());
             }
+        } finally {
+            newContext.detach(origContext);
         }
     }
 }

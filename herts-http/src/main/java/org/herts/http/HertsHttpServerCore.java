@@ -30,13 +30,6 @@ interface HertsHttpServerCore {
     void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
     /**
-     * Get base endpoint
-     *
-     * @return Endpoint
-     */
-    String getBaseEndpoint();
-
-    /**
      * Get all endpoints
      *
      * @return Endpoints

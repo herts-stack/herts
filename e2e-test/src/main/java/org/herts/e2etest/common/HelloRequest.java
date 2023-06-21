@@ -1,8 +1,8 @@
 package org.herts.e2etest.common;
 
-import org.herts.core.modelx.InternalRpcMsg;
+import org.herts.core.modelx.HertsMessage;
 
-public class HelloRequest extends InternalRpcMsg {
+public class HelloRequest extends HertsMessage {
     private String key;
     private boolean isOk;
     private int number;

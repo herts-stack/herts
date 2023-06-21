@@ -11,22 +11,22 @@ import java.io.Serializable;
  * @version 1.0.0
  */
 @Message
-public class InternalRpcMsg implements Serializable {
+public class HertsMessage implements Serializable {
     private Object[] messageParameters;
     private Class<?>[] classTypes;
 
-    public InternalRpcMsg() {
+    public HertsMessage() {
     }
 
-    public InternalRpcMsg(Object[] messageParameters) {
+    public HertsMessage(Object[] messageParameters) {
         this.messageParameters = messageParameters;
     }
 
-    public InternalRpcMsg(Class<?>[] classTypes) {
+    public HertsMessage(Class<?>[] classTypes) {
         this.classTypes = classTypes;
     }
 
-    public InternalRpcMsg(Object[] messageParameters, Class<?>[] classTypes) {
+    public HertsMessage(Object[] messageParameters, Class<?>[] classTypes) {
         this.messageParameters = messageParameters;
         this.classTypes = classTypes;
     }

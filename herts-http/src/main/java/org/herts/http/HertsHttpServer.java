@@ -63,35 +63,33 @@ public class HertsHttpServer implements HertsHttpEngine {
 
             List<String> endpointLogs = new ArrayList<>();
 
-            for (HertsService coreService : this.hertsRpcServices) {
-                HertsMetrics metrics;
-                if (this.metricsSetting != null) {
-                    metrics = HertsMetricsHandler.builder()
-                            .registerHertsServices(Collections.singletonList(coreService))
-                            .isErrRateEnabled(this.metricsSetting.isErrRateEnabled())
-                            .isJvmEnabled(this.metricsSetting.isJvmEnabled())
-                            .isLatencyEnabled(this.metricsSetting.isLatencyEnabled())
-                            .isServerResourceEnabled(this.metricsSetting.isServerResourceEnabled())
-                            .isRpsEnabled(this.metricsSetting.isRpsEnabled())
-                            .build();
-                } else {
-                    metrics = HertsMetricsHandler.builder()
-                            .registerHertsServices(Collections.singletonList(coreService))
-                            .build();
-                }
-
-                HertsMetricsServer metricsServer = new HertsMetricsServer(metrics, server);
-                HertsHttpServerCoreImpl hertsServer = new HertsHttpServerCoreImpl(coreService, metrics, metricsServer);
-
-                endpointLogs.add(coreService.getClass().getSimpleName() + " endpoint.");
-                for (String endpoint : hertsServer.getEndpoints()) {
-                    for (String m : HETRS_HTTP_METHODS) {
-                        String logM = m.equals(HETRS_HTTP_METHODS[0]) ? "[" + m + "]    " : "[" + m + "] ";
-                        endpointLogs.add(logM + endpoint);
-                    }
-                }
-                context.addServlet(new ServletHolder(hertsServer), hertsServer.getBaseEndpoint() + "/*");
+            HertsMetrics metrics;
+            if (this.metricsSetting != null) {
+                metrics = HertsMetricsHandler.builder()
+                        .registerHertsServices(this.hertsRpcServices)
+                        .isErrRateEnabled(this.metricsSetting.isErrRateEnabled())
+                        .isJvmEnabled(this.metricsSetting.isJvmEnabled())
+                        .isLatencyEnabled(this.metricsSetting.isLatencyEnabled())
+                        .isServerResourceEnabled(this.metricsSetting.isServerResourceEnabled())
+                        .isRpsEnabled(this.metricsSetting.isRpsEnabled())
+                        .build();
+            } else {
+                metrics = HertsMetricsHandler.builder()
+                        .registerHertsServices(this.hertsRpcServices)
+                        .build();
             }
+
+            HertsMetricsServer metricsServer = new HertsMetricsServer(metrics, server);
+            HertsHttpServerCoreImpl hertsServer = new HertsHttpServerCoreImpl(this.hertsRpcServices, metrics, metricsServer);
+
+            for (String endpoint : hertsServer.getEndpoints()) {
+                for (String m : HETRS_HTTP_METHODS) {
+                    String logM = m.equals(HETRS_HTTP_METHODS[0]) ? "[" + m + "]    " : "[" + m + "] ";
+                    endpointLogs.add(logM + endpoint);
+                }
+            }
+
+            context.addServlet(new ServletHolder(hertsServer), "/*");
 
             if (this.interceptors != null && this.interceptors.size() > 0) {
                 context.addFilter(new FilterHolder(
