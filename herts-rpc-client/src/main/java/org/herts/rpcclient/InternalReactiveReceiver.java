@@ -8,7 +8,7 @@ import io.grpc.stub.ClientCalls;
 import io.grpc.stub.StreamObserver;
 
 import org.herts.serializer.MessageJsonParsingException;
-import org.herts.core.modelx.InternalRpcMsg;
+import org.herts.core.modelx.HertsMessage;
 import org.herts.core.context.HertsType;
 import org.herts.core.descriptor.CustomGrpcDescriptor;
 import org.herts.serializer.MessageSerializer;
@@ -43,7 +43,7 @@ class InternalReactiveReceiver {
      * @return InternalReceiverStub
      */
     public InternalReceiverStub newHertsReactiveStreamingService(Channel channel) {
-        io.grpc.stub.AbstractStub.StubFactory<InternalReceiverStub> factory = new AbstractStub.StubFactory<InternalReceiverStub>() {
+        io.grpc.stub.AbstractStub.StubFactory<InternalReceiverStub> factory = new AbstractStub.StubFactory<>() {
             @Override
             public InternalReceiverStub newStub(Channel channel, CallOptions callOptions) {
                 return new InternalReceiverStub(channel, callOptions, hertsReceiver);
@@ -58,9 +58,8 @@ class InternalReactiveReceiver {
     public static class InternalReceiverStub extends io.grpc.stub.AbstractBlockingStub<InternalReceiverStub> {
         private final MessageSerializer serializer = new MessageSerializer();
         private final HertsReceiver hertsReceiver;
-
-        private Channel channel;
-        private CallOptions callOptions;
+        private final Channel channel;
+        private final CallOptions callOptions;
 
         protected InternalReceiverStub(Channel channel, CallOptions callOptions, HertsReceiver hertsReceiver) {
             super(channel, callOptions);
@@ -87,7 +86,7 @@ class InternalReactiveReceiver {
             Class<?>[] parameterTypes = new Class<?>[1];
             parameterTypes[0] = method.getParameterTypes()[0];
 
-            byte[] requestBytes = this.serializer.serialize(new InternalRpcMsg(methodParameters, parameterTypes));
+            byte[] requestBytes = this.serializer.serialize(new HertsMessage(methodParameters, parameterTypes));
 
             ClientCalls.asyncServerStreamingCall(this.channel.newCall(methodDescriptor, this.callOptions), requestBytes, responseObserver);
         }

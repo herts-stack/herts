@@ -1,5 +1,6 @@
 package org.herts.rpc;
 
+import io.grpc.Context;
 import org.herts.core.exception.ServiceMethodNotfoundException;
 import org.herts.core.modelx.RegisteredMethod;
 import org.herts.serializer.MessageSerializer;
@@ -59,12 +60,16 @@ class HertsRpcSStreamingMethodHandler<Req, Resp> implements
 
     @Override
     public void invoke(Req request, StreamObserver<Resp> responseObserver) {
+        Context newContext = Context.current().fork();
+        Context origContext = newContext.attach();
         try {
             this.hertsRpcCaller.invokeServerStreaming(request, responseObserver);
         } catch (IllegalAccessException | IOException ex) {
             responseObserver.onError(ex);
         } catch (InvocationTargetException ex) {
             responseObserver.onError(ex.getCause());
+        } finally {
+            newContext.detach(origContext);
         }
     }
 }

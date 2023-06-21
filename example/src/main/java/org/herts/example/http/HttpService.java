@@ -5,5 +5,5 @@ import org.herts.core.service.HertsService;
 
 @HertsHttp
 public interface HttpService extends HertsService {
-    String hellowWorld();
+    String helloWorld();
 }

@@ -5,7 +5,7 @@ import io.grpc.Channel;
 import io.grpc.MethodDescriptor;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.ClientCalls;
-import org.herts.core.modelx.InternalRpcMsg;
+import org.herts.core.modelx.HertsMessage;
 import org.herts.core.context.HertsType;
 import org.herts.core.descriptor.CustomGrpcDescriptor;
 import org.herts.core.exception.ServiceNotFoundException;
@@ -65,7 +65,7 @@ class HertsRpcClientRStreamingMethodHandler extends io.grpc.stub.AbstractBlockin
         byte[] bytes = new byte[]{};
         if (args != null) {
             Class<?>[] parameterTypes = cachedMethod.getParameterTypes();
-            bytes = this.serializer.serialize(new InternalRpcMsg(args, parameterTypes));
+            bytes = this.serializer.serialize(new HertsMessage(args, parameterTypes));
         }
 
         byte[] res;

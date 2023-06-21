@@ -120,7 +120,7 @@ public class IBuilder implements HertsRpcClientIBuilder {
             if (this.option.getIdleTimeoutMilliSec() != null) {
                 managedChannelBuilder = managedChannelBuilder.idleTimeout(this.option.getIdleTimeoutMilliSec(), TimeUnit.MILLISECONDS);
             }
-            this.channel = managedChannelBuilder.build();
+            this.channel = managedChannelBuilder.enableRetry().build();
         }
 
         if (this.hertsType == HertsType.Reactive && this.hertsRpcReceivers.size() > 0) {
@@ -136,7 +136,8 @@ public class IBuilder implements HertsRpcClientIBuilder {
                 }
             }
         }
-        return new HertsRpcClientBuilder(this);
+        HertsRpcClientBuilder hertsRpcClientBuilder = new HertsRpcClientBuilder(this);
+        return hertsRpcClientBuilder;
     }
 
     private List<HertsType> getRegisteredServiceHertsTypes() {

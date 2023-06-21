@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,57 +32,70 @@ import java.util.concurrent.ConcurrentMap;
  * @version 1.0.0
  */
 class HertsHttpServerCoreImpl extends HttpServlet implements HertsHttpServerCore {
-    private static final java.util.logging.Logger logger = Logging.getLogger(HertsHttpServerCoreImpl.class.getSimpleName());
+    private static final java.util.logging.Logger logger = Logging.getLogger(HertsHttpServerCore.class.getSimpleName());
 
     private final HertsMetrics hertsHttpMetrics;
-    private final HertsHttpCaller hertsHttpCaller;
     private final MessageSerializer hertsSerializer = new MessageSerializer(MessageSerializeType.Json);
+
+    // Key is endpoint
     private final ConcurrentMap<String, Method> methods = new ConcurrentHashMap<>();
-    private final String baseEndpoint;
+
+    // Key is HertsService string name
+    private final ConcurrentMap<String, HertsHttpCaller> callers = new ConcurrentHashMap<>();
+
+    private final List<String> baseEndpoints = new ArrayList<>();
 
     public void init() {
     }
 
-    public HertsHttpServerCoreImpl(HertsService hertsRpcService, HertsMetrics hertsHttpMetrics, HertsMetricsServer metricsServer)
+    public HertsHttpServerCoreImpl(List<HertsService> hertsRpcServices, HertsMetrics hertsHttpMetrics, HertsMetricsServer metricsServer)
             throws ClassNotFoundException, NoSuchMethodException {
 
-        String serviceName = hertsRpcService.getClass().getInterfaces()[0].getSimpleName();
         this.hertsHttpMetrics = hertsHttpMetrics;
         this.hertsHttpMetrics.register();
-        this.baseEndpoint = "/api/" + serviceName;
 
-        Class<?> thisClass = Class.forName(hertsRpcService.getClass().getName());
-        Method[] methods = thisClass.getDeclaredMethods();
-        ConcurrentMap<String, List<Parameter>> methodParameters = new ConcurrentHashMap<>();
-        for (Method method : methods) {
-            List<Parameter> parameters = Arrays.asList(thisClass.getMethod(method.getName(), method.getParameterTypes()).getParameters());
+        for (HertsService hertsRpcService : hertsRpcServices) {
+            String serviceName = hertsRpcService.getClass().getInterfaces()[0].getSimpleName();
+            String baseEndpoint = "/api/" + serviceName;
+            this.baseEndpoints.add(baseEndpoint);
 
-            String endpoint = this.baseEndpoint + "/" + method.getName();
-            this.methods.put(endpoint, method);
-            methodParameters.put(method.getName(), parameters);
-        }
+            Class<?> thisClass = Class.forName(hertsRpcService.getClass().getName());
+            Method[] methods = thisClass.getDeclaredMethods();
+            ConcurrentMap<String, List<Parameter>> methodParameters = new ConcurrentHashMap<>();
+            for (Method method : methods) {
+                List<Parameter> parameters = Arrays.asList(thisClass.getMethod(method.getName(), method.getParameterTypes()).getParameters());
+                String endpoint = baseEndpoint + "/" + method.getName();
+                this.methods.put(endpoint, method);
+                methodParameters.put(method.getName(), parameters);
+            }
 
-        if (this.hertsHttpMetrics.isMetricsEnabled()) {
-            this.hertsHttpCaller = new HertsHttpMetricsCaller(hertsRpcService, this.hertsHttpMetrics,
-                    this.hertsSerializer, metricsServer, methodParameters, serviceName);
-        } else {
-            this.hertsHttpCaller = new HertsHttpSimpleCaller(hertsRpcService, this.hertsHttpMetrics,
-                    this.hertsSerializer, methodParameters);
+            if (this.hertsHttpMetrics.isMetricsEnabled()) {
+                this.callers.put(serviceName, new HertsHttpMetricsCaller(hertsRpcService, this.hertsHttpMetrics,
+                        this.hertsSerializer, metricsServer, methodParameters, serviceName));
+            } else {
+                this.callers.put(serviceName, new HertsHttpSimpleCaller(hertsRpcService, this.hertsHttpMetrics,
+                        this.hertsSerializer, methodParameters));
+            }
         }
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        if (!this.hertsHttpMetrics.isMetricsEnabled() || !request.getRequestURI().equals("/metricsz")) {
+        String uri = request.getRequestURI();
+        if (!isMetricsEndpoint(uri)) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-        this.hertsHttpCaller.setMetricsResponse(response);
+        this.callers.entrySet().iterator().next().getValue().setMetricsResponse(response);
     }
 
     @Override
     public void doOptions(HttpServletRequest request, HttpServletResponse response) {
-        response.setHeader("Allow", "GET, POST, HEAD, OPTIONS");
+        if (isMetricsEndpoint(request.getRequestURI())) {
+            response.setHeader("Allow", "POST, HEAD, OPTIONS");
+        } else {
+            response.setHeader("Allow", "GET, HEAD, OPTIONS");
+        }
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
@@ -89,7 +103,14 @@ class HertsHttpServerCoreImpl extends HttpServlet implements HertsHttpServerCore
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        this.hertsHttpCaller.setHertsHeader(response);
+
+        String uri = request.getRequestURI();
+        String serviceName = extractServiceName(uri);
+        if (serviceName == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+        this.callers.get(serviceName).setHertsHeader(response);
 
         Method hertsMethod = this.methods.get(request.getRequestURI());
         if (hertsMethod == null) {
@@ -98,7 +119,7 @@ class HertsHttpServerCoreImpl extends HttpServlet implements HertsHttpServerCore
         }
 
         try {
-            this.hertsHttpCaller.post(hertsMethod, request, response);
+            this.callers.get(serviceName).post(hertsMethod, request, response);
         } catch (InvalidMessageException | MessageJsonParsingException ex) {
             InternalHttpErrorResponse err = genErrorResponse(HttpErrorException.StatusCode.Status400, ex.getMessage());
             setError(HttpServletResponse.SC_BAD_REQUEST, response, err);
@@ -121,13 +142,26 @@ class HertsHttpServerCoreImpl extends HttpServlet implements HertsHttpServerCore
     }
 
     @Override
-    public String getBaseEndpoint() {
-        return this.baseEndpoint;
-    }
-
-    @Override
     public String[] getEndpoints() {
         return this.methods.keySet().toArray(new String[0]);
+    }
+
+    private String extractServiceName(String url) {
+        if (url == null || url.isEmpty()) {
+            return null;
+        }
+        String[] splitUrls = url.split("/");
+        if (splitUrls.length < 3) {
+            return null;
+        }
+        return splitUrls[2];
+    }
+
+    private boolean isMetricsEndpoint(String url) {
+        if (this.hertsHttpMetrics.isMetricsEnabled() && url.equals("/metricsz")) {
+            return true;
+        }
+        return false;
     }
 
     public static InternalHttpErrorResponse genErrorResponse(HttpErrorException.StatusCode statusCodeEnum, String message) {
