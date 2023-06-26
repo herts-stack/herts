@@ -3,6 +3,7 @@ package org.herts.brokerredis;
 import org.herts.broker.ReactiveConsumer;
 import org.herts.broker.ReactiveProducer;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 /**
  * Redis producer
@@ -11,18 +12,20 @@ import redis.clients.jedis.Jedis;
  * @version 1.0.0
  */
 public class RedisProducer implements ReactiveProducer {
-    private final Jedis publisherJedis;
+    private final JedisPool jedisPool;
     private final byte[] channel;
 
-    public RedisProducer(Jedis publisherJedis, String channel) {
-        this.publisherJedis = publisherJedis;
+    public RedisProducer(JedisPool jedisPool, String channel) {
+        this.jedisPool = jedisPool;
         this.channel = channel.getBytes();
     }
 
     @Override
     public void produce(byte[] payload) {
         try {
-            this.publisherJedis.publish(this.channel, payload);
+            try (Jedis resource = jedisPool.getResource()) {
+                resource.publish(this.channel, payload);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }

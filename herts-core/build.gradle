@@ -25,6 +25,7 @@ dependencies {
 
     implementation 'org.msgpack:jackson-dataformat-msgpack:0.7.1'
     implementation 'org.msgpack:msgpack:0.6.12'
+    implementation 'com.google.guava:guava:32.0.1-jre'
 
     implementation "io.grpc:grpc-protobuf:${grpcVersion}"
     implementation "io.grpc:grpc-services:${grpcVersion}"
