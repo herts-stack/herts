@@ -142,12 +142,10 @@ public class HertsMetricsHandler implements HertsMetrics {
 
                 if (this.hertsType == HertsType.Http) {
                     this.latencyTimer.put(method.getName(), Timer.builder(HertsMetricsContext.HTTP_REQ_LATENCY)
-                            .publishPercentileHistogram()
                             .tags(HertsMetricsContext.METRICS_KEY, method.getName())
                             .register(this.prometheusMeterRegistry));
                 } else {
                     this.latencyTimer.put(method.getName(), Timer.builder(HertsMetricsContext.RPC_CMD_LATENCY)
-                            .publishPercentileHistogram()
                             .tags(HertsMetricsContext.METRICS_KEY, method.getName())
                             .register(this.prometheusMeterRegistry));
                 }
@@ -155,20 +153,19 @@ public class HertsMetricsHandler implements HertsMetrics {
 
             if (this.hertsType == HertsType.Http) {
                 this.prometheusMeterRegistry.counter(HertsMetricsContext.HTTP_REQ_COUNT, this.tagNames.values());
-                this.prometheusMeterRegistry.gauge(HertsMetricsContext.HTTP_REQ_ERR_RATE, this.tagNames.values(), 0);
+                this.prometheusMeterRegistry.counter(HertsMetricsContext.HTTP_REQ_ERR_RATE, this.tagNames.values());
             } else {
                 this.prometheusMeterRegistry.counter(HertsMetricsContext.RPC_CMD_COUNT, this.tagNames.values());
-                this.prometheusMeterRegistry.gauge(HertsMetricsContext.RPC_CMD_ERR_RATE, this.tagNames.values(), 0);
+                this.prometheusMeterRegistry.counter(HertsMetricsContext.RPC_CMD_ERR_RATE, this.tagNames.values());
             }
+        }
 
-            Metrics.globalRegistry.add(this.prometheusMeterRegistry);
-
-            if (this.isJvmEnabled) {
-                new JvmMemoryMetrics().bindTo(this.prometheusMeterRegistry);
-            }
-            if (this.isServerResourceEnabled) {
-                new ProcessorMetrics().bindTo(this.prometheusMeterRegistry);
-            }
+        Metrics.globalRegistry.add(this.prometheusMeterRegistry);
+        if (this.isJvmEnabled) {
+            new JvmMemoryMetrics().bindTo(this.prometheusMeterRegistry);
+        }
+        if (this.isServerResourceEnabled) {
+            new ProcessorMetrics().bindTo(this.prometheusMeterRegistry);
         }
     }
 

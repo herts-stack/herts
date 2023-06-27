@@ -38,7 +38,7 @@ public class RedisBroker implements ReactiveBroker {
         throwIfRedisIsClosed();
     }
 
-    public RedisBroker(JedisPool jedisPool) {
+    private RedisBroker(JedisPool jedisPool) {
         this.unifiedJedis = null;
         this.jedisPool = jedisPool;
 
@@ -49,8 +49,7 @@ public class RedisBroker implements ReactiveBroker {
 
     private void createProducer() {
         if (this.redisProducer == null) {
-            Jedis resource = this.jedisPool.getResource();
-            this.redisProducer = new RedisProducer(resource, baseChannelName);
+            this.redisProducer = new RedisProducer(this.jedisPool, baseChannelName);
         }
     }
 

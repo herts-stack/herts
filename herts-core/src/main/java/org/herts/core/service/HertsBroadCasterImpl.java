@@ -1,5 +1,6 @@
 package org.herts.core.service;
 
+import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 import org.herts.broker.ReactiveBroker;
 import org.herts.broker.ReactiveStreamingCache;
@@ -35,6 +36,10 @@ class HertsBroadCasterImpl implements HertsBroadCaster {
 
     @Override
     public void registerReceiver(StreamObserver<Object> objectStreamObservers) {
+        ServerCallStreamObserver<Object> serverCallStreamObserver = (ServerCallStreamObserver<Object>) objectStreamObservers;
+        serverCallStreamObserver.setOnCancelHandler(() -> {
+            logger.info("Cancelled internal receiver of Herts");
+        });
         String clientId = SharedServiceContext.Header.HERTS_CONNECTION_ID_CTX.get();
         this.reactiveStreamingCache.setClientId(clientId);
         this.reactiveStreamingCache.setObserver(clientId, objectStreamObservers);
@@ -77,11 +82,6 @@ class HertsBroadCasterImpl implements HertsBroadCaster {
         if (hertsReceiver != null) {
             return hertsReceiver;
         }
-        StreamObserver<Object> observer = this.reactiveStreamingCache.getObserver(clientId);
-        if (observer == null) {
-            return null;
-        }
-
         HertsReactiveStreamingInvoker handler = new HertsReactiveStreamingInvoker(this.broker, clientId);
         try {
             hertsReceiver = (HertsReceiver) Proxy.newProxyInstance(

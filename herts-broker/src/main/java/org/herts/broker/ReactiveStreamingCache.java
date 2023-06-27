@@ -15,26 +15,26 @@ public interface ReactiveStreamingCache<T> {
      * Register StreamingObserver to server cache service.
      * Object parameter is same as Receiver method parameters
      *
-     * @param hertsClientId ClientId
+     * @param clientId ClientId
      * @param observer      StreamObserver
      */
-    void setObserver(String hertsClientId, StreamObserver<Object> observer);
+    void setObserver(String clientId, StreamObserver<Object> observer);
 
     /**
      * Get observer
      *
-     * @param hertsClientId ClientId
+     * @param clientId ClientId
      * @return StreamObserver
      */
-    StreamObserver<Object> getObserver(String hertsClientId);
+    StreamObserver<Object> getObserver(String clientId);
 
     /**
      * Remove Observer.
      *
-     * @param hertsClientId ClientId
+     * @param clientId ClientId
      * @return Result
      */
-    boolean removeObserver(String hertsClientId);
+    boolean removeObserver(String clientId);
 
     /**
      * Set clientId.

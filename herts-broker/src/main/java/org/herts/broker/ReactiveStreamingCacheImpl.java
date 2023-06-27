@@ -1,8 +1,10 @@
 package org.herts.broker;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import io.grpc.stub.StreamObserver;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * HertsReactive cache local implementation.
@@ -11,15 +13,21 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 1.0.0
  */
 public class ReactiveStreamingCacheImpl<T> implements ReactiveStreamingCache<T> {
-    private final ConcurrentHashMap<String, T> receivers;
-    private final ConcurrentHashMap<String, StreamObserver<Object>> observers;
-    private final ConcurrentHashMap<String, String> clientId;
+    private final Cache<String, T> receivers;
+    private final Cache<String, StreamObserver<Object>> observers;
+    private final Cache<String, String> clientId;
     private static ReactiveStreamingCacheImpl thisClass;
 
     private ReactiveStreamingCacheImpl() {
-        this.receivers = new ConcurrentHashMap<>();
-        this.observers = new ConcurrentHashMap<>();
-        this.clientId = new ConcurrentHashMap<>();
+        this.receivers = CacheBuilder.newBuilder()
+                .expireAfterWrite(10, TimeUnit.MINUTES)
+                .build();
+        this.observers = CacheBuilder.newBuilder()
+                .expireAfterWrite(10, TimeUnit.MINUTES)
+                .build();
+        this.clientId = CacheBuilder.newBuilder()
+                .expireAfterAccess(30, TimeUnit.DAYS)
+                .build();
     }
 
     /**
@@ -37,18 +45,18 @@ public class ReactiveStreamingCacheImpl<T> implements ReactiveStreamingCache<T> 
     }
 
     @Override
-    public void setObserver(String hertsClientId, StreamObserver<Object> observer) {
-        this.observers.put(hertsClientId, observer);
+    public void setObserver(String clientId, StreamObserver<Object> observer) {
+        this.observers.put(clientId, observer);
     }
 
     @Override
-    public StreamObserver<Object> getObserver(String hertsClientId) {
-        return this.observers.get(hertsClientId);
+    public StreamObserver<Object> getObserver(String clientId) {
+        return this.observers.getIfPresent(clientId);
     }
 
     @Override
-    public boolean removeObserver(String hertsClientId) {
-        this.observers.remove(hertsClientId);
+    public boolean removeObserver(String clientId) {
+        this.observers.invalidate(clientId);
         return true;
     }
 
@@ -59,21 +67,21 @@ public class ReactiveStreamingCacheImpl<T> implements ReactiveStreamingCache<T> 
 
     @Override
     public String getClientId(String clientId) {
-        return this.clientId.get(clientId);
+        return this.clientId.getIfPresent(clientId);
     }
 
     @Override
     public String[] getClientIds() {
-        return this.clientId.keySet().toArray(new String[0]);
+        return this.clientId.asMap().keySet().toArray(new String[0]);
     }
 
     @Override
-    public void setHertsReceiver(String hertsClientId, T hertsReceiver) {
-        this.receivers.put(hertsClientId, hertsReceiver);
+    public void setHertsReceiver(String clientId, T receiver) {
+        this.receivers.put(clientId, receiver);
     }
 
     @Override
-    public T getHertsReceiver(String hertsClientId) {
-        return this.receivers.get(hertsClientId);
+    public T getHertsReceiver(String clientId) {
+        return this.receivers.getIfPresent(clientId);
     }
 }
