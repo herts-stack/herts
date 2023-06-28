@@ -15,6 +15,8 @@ public interface HertsHttpEngine {
 
     /**
      * Stop server
+     *
+     * @throws Exception If fail shutdown
      */
     void stop() throws Exception;
 }

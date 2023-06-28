@@ -15,6 +15,7 @@ import org.herts.serializer.MessageSerializer;
 import org.herts.core.service.HertsReceiver;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Internal reactive receiver
@@ -34,6 +35,10 @@ class InternalReactiveReceiver {
 
     public static InternalReactiveReceiver create(HertsReceiver hertsReceiver, ClientConnection clientConnection) {
         return new InternalReactiveReceiver(hertsReceiver, clientConnection);
+    }
+
+    public String getClientId() {
+        return this.clientConnection.getClientId();
     }
 
     /**

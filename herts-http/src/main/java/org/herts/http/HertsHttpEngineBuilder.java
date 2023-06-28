@@ -20,6 +20,7 @@ public interface HertsHttpEngineBuilder {
      * Not interface
      *
      * @param hertsRpcService HertsCoreService
+     * @param interceptor Interceptor
      * @return HertHttpEngineBuilder
      */
     HertsHttpEngineBuilder registerHertsHttpService(HertsService hertsRpcService, @Nullable HertsHttpInterceptor interceptor);

@@ -57,6 +57,11 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
     }
 
     @Override
+    public String getClient() {
+        return this.clientConnection.getClientId();
+    }
+
+    @Override
     public ManagedChannel getChannel() {
         if (this.channel == null) {
             throw new ChannelIsNullException("Please create HertService instance.");
@@ -79,6 +84,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
         return hertsRpcService(interfaceClass, credentials);
     }
 
+    @SuppressWarnings("unchecked")
     private <T extends HertsService> T hertsRpcService(Class<T> interfaceType, CallCredentials credentials) {
         if (!interfaceType.isInterface()) {
             throw new RpcClientBuildException(interfaceType.getSimpleName() + " is not interface. You can create client by interface");

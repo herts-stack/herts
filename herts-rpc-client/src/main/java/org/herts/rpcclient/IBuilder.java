@@ -10,11 +10,9 @@ import org.herts.core.service.HertsReceiver;
 
 import io.grpc.Channel;
 import io.grpc.ClientInterceptor;
-import io.grpc.ManagedChannelBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * HertsRpcClientIBuilder implementation
@@ -101,43 +99,30 @@ public class IBuilder implements HertsRpcClientIBuilder {
         }
 
         if (this.channel == null) {
-            ManagedChannelBuilder<?> managedChannelBuilder = ManagedChannelBuilder.forAddress(this.connectedHost, this.serverPort);
-
-            if (!this.isSecureConnection) {
-                managedChannelBuilder = managedChannelBuilder.usePlaintext();
-            }
-            if (this.interceptor != null) {
-                managedChannelBuilder = managedChannelBuilder.intercept(interceptor);
-            } else {
-                managedChannelBuilder = managedChannelBuilder.intercept(HertsRpcClientInterceptBuilder.builder(new HertsRpcClientEmptyInterceptor()).build());
-            }
-            if (this.option.getKeepaliveMilliSec() != null) {
-                managedChannelBuilder = managedChannelBuilder.keepAliveTime(this.option.getKeepaliveMilliSec(), TimeUnit.MILLISECONDS);
-            }
-            if (this.option.getKeepaliveTimeoutMilliSec() != null) {
-                managedChannelBuilder = managedChannelBuilder.keepAliveTimeout(this.option.getKeepaliveTimeoutMilliSec(), TimeUnit.MILLISECONDS);
-            }
-            if (this.option.getIdleTimeoutMilliSec() != null) {
-                managedChannelBuilder = managedChannelBuilder.idleTimeout(this.option.getIdleTimeoutMilliSec(), TimeUnit.MILLISECONDS);
-            }
-            this.channel = managedChannelBuilder.enableRetry().build();
+            ConnectionManager manager = new ConnectionManager(this.channel, this.option);
+            this.channel = manager.connect(this.connectedHost, this.serverPort, this.isSecureConnection, this.interceptor);
+            manager.reconnectListener(this::registerReceivers);
         }
 
         if (this.hertsType == HertsType.Reactive && this.hertsRpcReceivers.size() > 0) {
-            for (HertsReceiver receiver : this.hertsRpcReceivers) {
-                try {
-                    InternalReactiveReceiver.create(receiver, this.clientConnection)
-                            .newHertsReactiveStreamingService(this.channel)
-                            .registerReceiver(ReactiveStreaming.class);
-
-                    Thread.sleep(500);
-                } catch (MessageJsonParsingException | InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            registerReceivers(this.channel);
         }
         HertsRpcClientBuilder hertsRpcClientBuilder = new HertsRpcClientBuilder(this);
         return hertsRpcClientBuilder;
+    }
+
+    public void registerReceivers(Channel channel) {
+        for (HertsReceiver receiver : this.hertsRpcReceivers) {
+            try {
+                InternalReactiveReceiver.create(receiver, this.clientConnection)
+                        .newHertsReactiveStreamingService(channel)
+                        .registerReceiver(ReactiveStreaming.class);
+
+                Thread.sleep(500);
+            } catch (MessageJsonParsingException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     private List<HertsType> getRegisteredServiceHertsTypes() {

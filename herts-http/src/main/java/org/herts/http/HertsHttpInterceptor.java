@@ -10,6 +10,8 @@ public interface HertsHttpInterceptor {
 
     /**
      * Before handle intercept
+     *
+     * @param request Herts Request class
      */
     void beforeHandle(HertsHttpRequest request);
 

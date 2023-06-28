@@ -67,4 +67,11 @@ public interface HertsRpcClient {
      * @return HertsType
      */
     HertsType getHertsCoreType();
+
+    /**
+     * Get clientId.
+     *
+     * @return ClientId string
+     */
+    String getClient();
 }
