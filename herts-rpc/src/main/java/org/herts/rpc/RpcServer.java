@@ -57,6 +57,7 @@ public interface RpcServer {
     /**
      * Add server shutdown hook.
      *
+     * @param hook HertsRpcServerShutdownHook
      * @return HertsRpcEngineBuilder
      */
     RpcServer addShutdownHook(HertsRpcServerShutdownHook hook);

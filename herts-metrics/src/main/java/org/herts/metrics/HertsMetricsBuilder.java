@@ -23,6 +23,7 @@ public interface HertsMetricsBuilder {
     /**
      * Metrics rps is enabled or not
      *
+     * @param isRpsEnabled Enable rps metrics
      * @return Builder
      */
     HertsMetricsBuilder isRpsEnabled(boolean isRpsEnabled);
@@ -30,6 +31,7 @@ public interface HertsMetricsBuilder {
     /**
      * Metrics latency is enabled or not
      *
+     * @param isLatencyEnabled Enable latency metrics
      * @return Builder
      */
     HertsMetricsBuilder isLatencyEnabled(boolean isLatencyEnabled);
@@ -37,6 +39,7 @@ public interface HertsMetricsBuilder {
     /**
      * Metrics err rate is enabled or not
      *
+     * @param isErrRateEnabled Enable error rate metrics
      * @return Builder
      */
     HertsMetricsBuilder isErrRateEnabled(boolean isErrRateEnabled);
@@ -44,6 +47,7 @@ public interface HertsMetricsBuilder {
     /**
      * Metrics jvm is enabled or not
      *
+     * @param isJvmEnabled Enable JVM metrics
      * @return Builder
      */
     HertsMetricsBuilder isJvmEnabled(boolean isJvmEnabled);
@@ -51,6 +55,7 @@ public interface HertsMetricsBuilder {
     /**
      * Metrics server resource is enabled or not
      *
+     * @param isServerResourceEnabled Enable Server machine resource
      * @return Builder
      */
     HertsMetricsBuilder isServerResourceEnabled(boolean isServerResourceEnabled);

@@ -32,6 +32,7 @@ public interface HertsHttpClientBuilder {
      *
      * @param interfaceClass Interface class
      * @return HertsHttpClientBuilder
+     * @param <T> HertsService interface
      */
     <T> HertsHttpClientBuilder registerHertService(Class<T> interfaceClass);
 

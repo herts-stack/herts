@@ -26,6 +26,7 @@ public interface HertsRpcClientIBuilder {
      *
      * @param serviceClass HertsService
      * @return HertsCoreClientBuilder
+     * @param <T> HertsService class type
      */
     <T> HertsRpcClientIBuilder registerHertsRpcServiceInterface(Class<T> serviceClass);
 

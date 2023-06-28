@@ -61,7 +61,7 @@ public interface ReactiveStreamingCache<T> {
      * Set Herts receiver.
      *
      * @param clientId      ClientId
-     * @param T HertsReceiver
+     * @param hertsReceiver HertsReceiver
      */
     void setHertsReceiver(String clientId, T hertsReceiver);
 
