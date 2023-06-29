@@ -2,6 +2,8 @@
 
 [![build](https://github.com/herts-stack/herts/actions/workflows/build.yaml/badge.svg)](https://github.com/herts-stack/herts/actions/workflows/build.yaml)
 [![Apache License](https://img.shields.io/badge/license-Apatch-blue.svg?style=flat)](https://github.com/herts-stack/herts/blob/master/LICENSE)
+[![Doc](https://img.shields.io/badge/herts-core?logo=herts&logoColor=%23003366&label=document&color=%23000077&link=https%3A%2F%2Fherts-framework.herts-stack.org%2F
+)](https://herts-framework.herts-stack.org/)
 
 Unified gRPC/HTTP Realtime API framework for Java.
 
