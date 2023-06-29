@@ -5,7 +5,7 @@
 
 Unified gRPC/HTTP Realtime API framework for Java.
 
-<img width="194" alt="herts" src="https://github.com/herts-stack/herts/assets/9509132/aad29304-3ed2-4651-bdea-a1c910cbb2ca">
+<img width="130" alt="herts" src="https://github.com/herts-stack/herts/assets/9509132/aad29304-3ed2-4651-bdea-a1c910cbb2ca">
 
 ---
 
@@ -25,15 +25,15 @@ There are multiple OSS to support.
 Herts support original bidirectional streaming.  
 It enables two-way communication with a **simple interface**. Also, this communication method can be **easily load balanced**.
 
-![img09](https://github.com/herts-stack/herts/assets/9509132/775c4866-b9cd-4319-b64f-91a3bcc67586)
+<kbd><img width="800" alt="herts" src="https://github.com/herts-stack/herts/assets/9509132/efaabf82-23b0-4db4-a969-9dba2d1b3c16"></kbd>
 
-#### *Support Type*
+#### *Support Service Type*
 
 * gRPC Unary
 * gRPC Client Streaming 
 * gRPC Server Streaming
 * gRPC Bidirectional Streaming
-* gRPC Herts Steaming
+* gRPC Herts Reactive Steaming
 * HTTP API
 
 ## Requirements
@@ -47,16 +47,8 @@ Client-side
 * `org.herts`, `io.grpc` packages
 
 ## Getting Started
-gRPC Unary Sample code.
-
-Dependency.
-```bash
-dependencies {
-    implementation 'org.herts.core:herts-core:1.0.0'
-    implementation 'org.herts.rpc:herts-rpc:1.0.0'
-    implementation 'org.herts.rpcclient:herts-rpc-client:1.0.0'
-}
-```
+### **Herts Unary** sample
+#### Definition Service
 
 Definition Interface.  
 It is used by server and client both.  
@@ -110,6 +102,8 @@ public class Payload extends HertsMessage {
 }
 ```
 
+#### Start Server/Client
+
 Server side.
 ```java
 public class Main {
@@ -117,7 +111,7 @@ public class Main {
     public static void main(String[] args) {
         UnaryService service = new UnaryServiceImpl();
         HertsRpcServerEngine engine = HertsRpcServerEngineBuilder.builder()
-                .registerHertsRpcService(service)
+                .registerHertsRpcService(service) // You can register multi service
                 .build();
 
         engine.start();
@@ -130,11 +124,10 @@ Client side.
 public class Main {
   
     public static void main(String[] args) {
-
         HertsRpcClient client = HertsRpcClientBuilder
                 .builder("localhost")
                 .secure(false)
-                .registerHertsRpcServiceInterface(UnaryService.class)
+                .registerHertsRpcServiceInterface(UnaryService.class) // You can register multi service
                 .connect();
 
         UnaryService service = client.createHertsRpcService(UnaryService.class);
@@ -150,7 +143,135 @@ public class Main {
 }
 ```
 
-### More Examples
+
+### **Herts Reactive Streaming** sample
+
+Dependency.
+```bash
+dependencies {
+    implementation 'org.herts.core:herts-core:1.0.0'
+    implementation 'org.herts.rpc:herts-rpc:1.0.0'
+    implementation 'org.herts.rpcclient:herts-rpc-client:1.0.0'
+}
+```
+
+Payload definition.  
+Herts request and response models require `extends HertsMessage`
+```java
+public class Payload extends HertsMessage {
+    private String hoo;
+
+    public String getHoo() {
+        return hoo;
+    }
+    public void setHoo(String hoo) {
+        this.hoo = hoo;
+    }
+}
+```
+
+#### Server Service Definition
+
+Definition Server ServiceInterface.  
+It is used by server and client both.  
+Herts service interface require a `@HertsRpcService(value = HertsType.XXXX)` and `extends HertsService`.
+```java
+import org.herts.core.annotation.HertsRpcService;
+import org.herts.core.service.HertsReactiveService;
+
+@HertsRpcService(value = HertsType.Reactive)
+public interface ReactiveStreamingService extends HertsReactiveService {
+    String publishToClient(Payload payload);
+    List<String> getIds();
+}
+```
+
+Implementation class.  
+Herts implementation require a `extends HertsServiceXXXX<YOUTR INTERFCE> implements YOUTR INTERFCE`.
+```java
+import org.herts.core.service.HertsServiceReactiveStreaming;
+
+public class ReactiveStreamingServiceImpl extends HertsServiceReactiveStreaming<ReactiveStreamingService, ReactiveReceiver> implements ReactiveStreamingService {
+    
+    @Override
+    public String publishToClient(Payload payload) {
+        var clientId = getClientId();
+        var uniqId = UUID.randomUUID().toString();
+        broadcast(clientId).onReceivedData(clientId, "Published");
+        return uniqId;
+    }
+
+    @Override
+    public List<String> getIds() {
+        return Collections.singletonList("Hello");
+    }
+
+}
+```
+
+#### Client Receiver Definition
+
+Definition Client ReceiverInterface.  
+It is used by server and client both.  
+Herts receiver interface require a `@HertsRpcReceiver` and `extends HertsReceiver`.
+```java
+import org.herts.core.annotation.HertsRpcReceiver;
+import org.herts.core.service.HertsReceiver;
+
+@HertsRpcReceiver
+public interface ReactiveReceiver extends HertsReceiver {
+    void onReceivedData(String fromClient, String data);
+}
+```
+
+Implementation class.  
+```java
+public class ReactiveReceiverImpl implements ReactiveReceiver {
+    @Override
+    public void onReceivedData(String fromClient, String data) {
+        System.out.println("Client: " + fromClient + ", Data: " + data);
+    }
+}
+```
+
+#### Start Server/Client
+Server side.
+```java
+public class Main {
+    public static void main(String[] args) {
+        var service = new ReactiveStreamingServiceImpl();
+
+        HertsRpcServerEngine engine = HertsRpcServerEngineBuilder.builder()
+                .registerHertsReactiveRpcService(service) // You can register multi service
+                .build();
+
+        engine.start();
+    }
+}
+```
+
+Client side.
+```java
+public class Main {
+  
+    public static void main(String[] args) {
+        HertsRpcClient client = HertsRpcClientBuilder
+                .builder("localhost")
+                .secure(false)
+                .registerHertsRpcServiceInterface(ReactiveStreamingService.class) // You can register multi service
+                .registerHertsRpcReceiver(new ReactiveReceiver())                 // You can register multi receiver
+                .connect();
+
+        ReactiveStreamingService service = client.createHertsRpcService(ReactiveStreamingService.java);
+        
+        Payload p = new Payload();
+        var res = service.publishToClient(p);
+        System.out.println(res);
+    }
+}
+```
+
+## All Examples
 * [Herts document - Getting Started - gRPC Unary](https://herts-framework.herts-stack.org/getting-started/grpc_unary/)
 * [Herts document - Getting Started - gRPC Server Streaming](https://herts-framework.herts-stack.org/getting-started/grpc_serverstreaming/)
 * [Herts document - Getting Started - gRPC Client Streaming](https://herts-framework.herts-stack.org/getting-started/grpc_clientstreaming/)
