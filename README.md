@@ -5,38 +5,46 @@
 
 Unified gRPC/HTTP Realtime API framework for Java.
 
-![logo_index](https://github.com/herts-stack/herts/assets/9509132/26d11e7b-172a-44b8-a163-17dfbf2d2dac)
+<img width="194" alt="herts" src="https://github.com/herts-stack/herts/assets/9509132/aad29304-3ed2-4651-bdea-a1c910cbb2ca">
 
+---
+
+## Document
 **[Herts Document](https://herts-framework.herts-stack.org/)**
 
 ## About
-
+#### *Code base Streaming*
 This framework is based on gRPC Streaming, which is a fast and binary network transport for HTTP/2.  
-However, unlike plain gRPC, it treats Java interfaces as a protocol schema, enabling seamless code sharing without .proto .
+However, unlike plain gRPC, it treats **Java interfaces as a protocol schema**, enabling seamless code sharing without .proto .
 
-![img09](https://github.com/herts-stack/herts/assets/9509132/a26742d2-bf76-4d4e-9e92-168e83427032)
+#### *Easy to load balancing*
+Loadbalancing is easily performed with functions supported by Herts.  
+There are multiple OSS to support.  
 
-Support functions  
+#### *Original Streaming Interface*
+Herts support original bidirectional streaming.  
+It enables two-way communication with a **simple interface**. Also, this communication method can be **easily load balanced**.
+
+![img09](https://github.com/herts-stack/herts/assets/9509132/775c4866-b9cd-4319-b64f-91a3bcc67586)
+
+#### *Support Type*
 
 * gRPC Unary
 * gRPC Client Streaming 
 * gRPC Server Streaming
 * gRPC Bidirectional Streaming
 * gRPC Herts Steaming
-* HTTP API Interface
+* HTTP API
 
 ## Requirements
 
 Server-side
 * Java 11+
-* `org.herts` packages
-* `io.grpc` packages
+* `org.herts`, `io.grpc` packages
 
 Client-side  
 * Java 11+
-* `org.herts` packages
-* `io.grpc` packages
-
+* `org.herts`, `io.grpc` packages
 
 ## Getting Started
 gRPC Unary Sample code.
@@ -51,7 +59,8 @@ dependencies {
 ```
 
 Definition Interface.  
-It is used by server and client both.
+It is used by server and client both.  
+Herts interface require a `@HertsRpcService(value = HertsType.XXXX)` and `extends HertsService`.
 ```java
 import org.herts.core.annotation.HertsRpcService;
 import org.herts.core.service.HertsService;
@@ -61,12 +70,13 @@ public interface UnaryService extends HertsService {
 
     String helloWorld();
 
-    Map<String, String> getUser(String id);
+    Map<String, String> getUser(Payload payload);
 
 }
 ```
 
-Implementation
+Implementation class.  
+Herts implementation require a `extends HertsServiceXXXX<YOUTR INTERFCE> implements YOUTR INTERFCE`.
 ```java
 import org.herts.core.service.HertsServiceUnary;
 
@@ -78,8 +88,24 @@ public class UnaryServiceImpl extends HertsServiceUnary<UnaryService> implements
     }
     
     @Overide
-    public Map<String, String> getUser(String id) {
+    public Map<String, String> getUser(Payload payload) {
+        System.out.println(payload);
         return Collections.singletonMap("name", "foo");
+    }
+}
+```
+
+Payload definition.  
+Herts request and response models require `extends HertsMessage`
+```java
+public class Payload extends HertsMessage {
+    private String hoo;
+
+    public String getHoo() {
+        return hoo;
+    }
+    public void setHoo(String hoo) {
+        this.hoo = hoo;
     }
 }
 ```
@@ -116,7 +142,9 @@ public class Main {
         var res01 = service.helloWorld();
         System.out.println(res01);
 
-        var res02 = service.getUser("ID");
+        Payload p = new Payload();
+        p.setHoo("test");
+        var res02 = service.getUser(p);
         System.out.println(res02);
     }
 }
