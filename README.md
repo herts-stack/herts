@@ -49,10 +49,34 @@ Client-side
 * `org.herts`, `io.grpc` packages
 
 ## Getting Started
-### **Herts Unary** sample
-#### Definition Service
 
-Definition Interface.  
+Dependency.
+```bash
+dependencies {
+    implementation 'org.herts.core:herts-core:1.0.0'
+    implementation 'org.herts.rpc:herts-rpc:1.0.0'
+    implementation 'org.herts.rpcclient:herts-rpc-client:1.0.0'
+}
+```
+
+Request Payload definition.  
+Herts request and response models require `extends HertsMessage`
+```java
+public class Payload extends HertsMessage {
+    private String hoo;
+
+    public String getHoo() {
+        return hoo;
+    }
+    public void setHoo(String hoo) {
+        this.hoo = hoo;
+    }
+}
+```
+
+### **Herts Unary** sample
+#### Define Service
+Define a interface.  
 It is used by server and client both.  
 Herts interface require a `@HertsRpcService(value = HertsType.XXXX)` and `extends HertsService`.
 ```java
@@ -69,7 +93,7 @@ public interface UnaryService extends HertsService {
 }
 ```
 
-Implementation class.  
+Implementation a class.  
 Herts implementation require a `extends HertsServiceXXXX<YOUTR INTERFCE> implements YOUTR INTERFCE`.
 ```java
 import org.herts.core.service.HertsServiceUnary;
@@ -85,21 +109,6 @@ public class UnaryServiceImpl extends HertsServiceUnary<UnaryService> implements
     public Map<String, String> getUser(Payload payload) {
         System.out.println(payload);
         return Collections.singletonMap("name", "foo");
-    }
-}
-```
-
-Payload definition.  
-Herts request and response models require `extends HertsMessage`
-```java
-public class Payload extends HertsMessage {
-    private String hoo;
-
-    public String getHoo() {
-        return hoo;
-    }
-    public void setHoo(String hoo) {
-        this.hoo = hoo;
     }
 }
 ```
@@ -147,34 +156,9 @@ public class Main {
 
 
 ### **Herts Reactive Streaming** sample
+#### Define Server Service
 
-Dependency.
-```bash
-dependencies {
-    implementation 'org.herts.core:herts-core:1.0.0'
-    implementation 'org.herts.rpc:herts-rpc:1.0.0'
-    implementation 'org.herts.rpcclient:herts-rpc-client:1.0.0'
-}
-```
-
-Payload definition.  
-Herts request and response models require `extends HertsMessage`
-```java
-public class Payload extends HertsMessage {
-    private String hoo;
-
-    public String getHoo() {
-        return hoo;
-    }
-    public void setHoo(String hoo) {
-        this.hoo = hoo;
-    }
-}
-```
-
-#### Server Service Definition
-
-Definition Server ServiceInterface.  
+Define a server service interface.  
 It is used by server and client both.  
 Herts service interface require a `@HertsRpcService(value = HertsType.XXXX)` and `extends HertsService`.
 ```java
@@ -188,7 +172,7 @@ public interface ReactiveStreamingService extends HertsReactiveService {
 }
 ```
 
-Implementation class.  
+Implementation a class.  
 Herts implementation require a `extends HertsServiceXXXX<YOUTR INTERFCE> implements YOUTR INTERFCE`.
 ```java
 import org.herts.core.service.HertsServiceReactiveStreaming;
@@ -211,9 +195,9 @@ public class ReactiveStreamingServiceImpl extends HertsServiceReactiveStreaming<
 }
 ```
 
-#### Client Receiver Definition
+#### Define Client Receiver
 
-Definition Client ReceiverInterface.  
+Define client receiver interface.  
 It is used by server and client both.  
 Herts receiver interface require a `@HertsRpcReceiver` and `extends HertsReceiver`.
 ```java
