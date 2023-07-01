@@ -17,3 +17,5 @@ benchmark-test/build/
 grpc-proto-example/build/
 .gradle/
 .java-version
+.firebaserc
+firebase.json

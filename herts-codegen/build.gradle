@@ -3,8 +3,12 @@ plugins {
     id 'application'
 }
 
-group 'org.herts.codegen'
-version '1.0.0'
+def pkgName = 'org.hertsstack'
+def pkgVersion = '1.0.0'
+def artifactId = 'broker'
+
+group pkgName
+version pkgVersion
 
 repositories {
     mavenCentral()

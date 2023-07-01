@@ -4,10 +4,10 @@ plugins {
 }
 apply plugin: 'application'
 
-def pkgName = 'org.herts.rpcclient'
+def pkgName = 'org.hertsstack'
 def pkgVersion = '1.0.0'
 def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '11'
-def artifactId = 'herts-rpc-client'
+def artifactId = 'rpc-client'
 
 group pkgName
 version pkgVersion
@@ -73,7 +73,7 @@ publishing {
             pom {
                 name = 'Herts rpc client library'
                 description = 'Herts real time framework for RpcClient'
-                url = 'https://www.herts.org/'
+                url = 'https://herts-framework.herts-stack.org/'
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'

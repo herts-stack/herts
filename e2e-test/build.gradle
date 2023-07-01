@@ -7,7 +7,7 @@ apply plugin: 'application'
 
 def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '17'
 
-group 'org.herts.e2etest'
+group 'org.hertsstack.e2etest'
 version '1.0.0'
 sourceCompatibility = javaVersion
 targetCompatibility = javaVersion

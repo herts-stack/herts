@@ -4,10 +4,10 @@ plugins {
 }
 apply plugin: 'application'
 
-def pkgName = 'org.herts.broker'
+def pkgName = 'org.hertsstack'
 def pkgVersion = '1.0.0'
 def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '11'
-def artifactId = 'herts-broker'
+def artifactId = 'broker'
 
 group pkgName
 version pkgVersion
@@ -70,7 +70,7 @@ publishing {
             pom {
                 name = 'Herts broker library'
                 description = 'Herts real time framework for Broker'
-                url = 'https://www.herts.org/'
+                url = 'https://herts-framework.herts-stack.org/'
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'
@@ -79,9 +79,9 @@ publishing {
                 }
                 developers {
                     developer {
-                        id = 'tomoyane'
-                        name = 'tomoyane'
-                        email = 'tomoyane111@gmail.com'
+                        id = ''
+                        name = ''
+                        email = ''
                     }
                 }
             }

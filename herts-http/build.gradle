@@ -4,10 +4,10 @@ plugins {
 }
 apply plugin: 'application'
 
-def pkgName = 'org.herts.http'
+def pkgName = 'org.hertsstack'
 def pkgVersion = '1.0.0'
 def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '11'
-def artifactId = 'herts-http'
+def artifactId = 'http'
 
 group pkgName
 version pkgVersion
@@ -72,7 +72,7 @@ publishing {
             pom {
                 name = 'Herts http library'
                 description = 'Herts real time framework for Http'
-                url = 'https://www.herts.org/'
+                url = 'https://herts-framework.herts-stack.org/'
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'

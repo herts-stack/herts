@@ -53,8 +53,8 @@ dependencies {
 Definition Interface.  
 It is used by server and client both.
 ```java
-import org.herts.core.annotation.HertsRpcService;
-import org.herts.core.service.HertsService;
+import HertsRpcService;
+import HertsService;
 
 @HertsRpcService(value = HertsType.Unary)
 public interface UnaryService extends HertsService {
@@ -68,7 +68,7 @@ public interface UnaryService extends HertsService {
 
 Implementation
 ```java
-import org.herts.core.service.HertsServiceUnary;
+import HertsServiceUnary;
 
 public class UnaryServiceImpl extends HertsServiceUnary<UnaryService> implements UnaryService {
     
