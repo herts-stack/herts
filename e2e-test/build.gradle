@@ -39,7 +39,7 @@ dependencies {
     implementation 'redis.clients:jedis:4.3.1'
 }
 
-def mainClassPath = 'org.herts.e2etest.Main'
+def mainClassPath = 'org.hertsstack.e2etest.Main'
 application {
     mainClass = mainClassPath
 }

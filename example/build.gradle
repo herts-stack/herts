@@ -63,55 +63,55 @@ shadowJar {
 
 tasks.register('runExampleHttp', JavaExec) {
     dependsOn 'classes'
-    main = 'org.herts.example.http.Main'
+    main = 'org.hertsstack.example.http.Main'
     classpath = sourceSets.main.runtimeClasspath
 }
 
 tasks.register('runExampleRpcUnary', JavaExec) {
     dependsOn 'classes'
-    main = 'org.herts.example.unary.Main'
+    main = 'org.hertsstack.example.unary.Main'
     classpath = sourceSets.main.runtimeClasspath
 }
 
 tasks.register('runExampleRpcServerStreaming', JavaExec) {
     dependsOn 'classes'
-    main = 'org.herts.example.serversteaming.Main'
+    main = 'org.hertsstack.example.serversteaming.Main'
     classpath = sourceSets.main.runtimeClasspath
 }
 
 tasks.register('runExampleRpcClientStreaming', JavaExec) {
     dependsOn 'classes'
-    main = 'org.herts.example.clientsteaming.Main'
+    main = 'org.hertsstack.example.clientsteaming.Main'
     classpath = sourceSets.main.runtimeClasspath
 }
 
 tasks.register('runExampleRpcBidStreaming', JavaExec) {
     dependsOn 'classes'
-    main = 'org.herts.example.bidsteaming.Main'
+    main = 'org.hertsstack.example.bidsteaming.Main'
     classpath = sourceSets.main.runtimeClasspath
 }
 
 tasks.register('runExampleRpcReactiveLocalStreaming', JavaExec) {
     dependsOn 'classes'
-    main = 'org.herts.example.reactivesteaming.local.Main'
+    main = 'org.hertsstack.example.reactivesteaming.local.Main'
     classpath = sourceSets.main.runtimeClasspath
 }
 
 tasks.register('runExampleRpcReactiveRedisStreaming', JavaExec) {
     dependsOn 'classes'
-    main = 'org.herts.example.reactivesteaming.redis.Main'
+    main = 'org.hertsstack.example.reactivesteaming.redis.Main'
     classpath = sourceSets.main.runtimeClasspath
 }
 
 tasks.register('runExampleJwtHttp', JavaExec) {
     dependsOn 'classes'
-    main = 'org.herts.example.jwthttp.Main'
+    main = 'org.hertsstack.example.jwthttp.Main'
     classpath = sourceSets.main.runtimeClasspath
 }
 
 tasks.register('runExampleJwtRpc', JavaExec) {
     dependsOn 'classes'
-    main = 'org.herts.example.jwtrpc.Main'
+    main = 'org.hertsstack.example.jwtrpc.Main'
     classpath = sourceSets.main.runtimeClasspath
 }
 
