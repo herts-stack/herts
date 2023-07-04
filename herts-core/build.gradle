@@ -1,13 +1,14 @@
 plugins {
     id 'java'
+    id 'signing'
     id 'maven-publish'
 }
 apply plugin: 'application'
 
-def pkgName = 'org.herts.core'
+def pkgName = 'org.hertsstack'
 def pkgVersion = '1.0.0'
 def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '11'
-def artifactId = 'herts-core'
+def artifactId = 'core'
 
 group pkgName
 version pkgVersion
@@ -58,6 +59,11 @@ jar {
     }
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 publishing {
     publications {
         maven(MavenPublication) {
@@ -70,7 +76,7 @@ publishing {
             pom {
                 name = 'Herts core library'
                 description = 'Herts real time framework for Core'
-                url = 'https://www.herts.org/'
+                url = 'https://github.com/herts-stack/herts'
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'
@@ -79,17 +85,39 @@ publishing {
                 }
                 developers {
                     developer {
-                        id = 'tomoyane'
-                        name = 'tomoyane'
+                        id = 'herts'
+                        name = 'Herts Developer'
                         email = 'tomoyane111@gmail.com'
                     }
+                }
+                scm {
+                    connection.set("git@github.com:herts-stack/herts.git")
+                    developerConnection.set("git@github.com:herts-stack/herts.git")
+                    url.set("https://github.com/herts-stack")
                 }
             }
         }
     }
     repositories {
         maven {
-            url 'file://Users/tomohito.oyane/Developers/maven-repo'
+            //url 'file://Users/tomohito.oyane/Developers/maven-repo'
+            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username = ""
+                password = ""
+            }
         }
+    }
+}
+
+signing {
+    sign(publishing.publications["maven"])
+}
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
     }
 }
