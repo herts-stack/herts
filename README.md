@@ -3,7 +3,7 @@
 [![build](https://github.com/herts-stack/herts/actions/workflows/build.yaml/badge.svg)](https://github.com/herts-stack/herts/actions/workflows/build.yaml)
 [![Apache License](https://img.shields.io/badge/license-Apatch-blue.svg?style=flat)](https://github.com/herts-stack/herts/blob/master/LICENSE)
 [![Doc](https://img.shields.io/badge/herts-core?logo=herts&logoColor=%23003366&label=document&color=%23000077&link=https%3A%2F%2Fherts-framework.herts-stack.org%2F
-)](https://herts-framework.herts-stack.org/)
+)](https://framework.hertsstack.org/)
 
 Unified gRPC/HTTP Realtime API framework for Java.
 
@@ -12,7 +12,7 @@ Unified gRPC/HTTP Realtime API framework for Java.
 ---
 
 ## Document
-**[Herts Document](https://herts-framework.herts-stack.org/)**
+**[Herts Document](https://framework.hertsstack.org/)**
 
 ## About
 #### *Code base Streaming*
@@ -53,9 +53,9 @@ Client-side
 Dependency.
 ```bash
 dependencies {
-    implementation 'org.herts.core:herts-core:1.0.0'
-    implementation 'org.herts.rpc:herts-rpc:1.0.0'
-    implementation 'org.herts.rpcclient:herts-rpc-client:1.0.0'
+    implementation 'org.hertsstack:herts-core:1.0.0'
+    implementation 'org.hertsstack:herts-rpc:1.0.0'
+    implementation 'org.hertsstack:herts-rpc-client:1.0.0'
 }
 ```
 
@@ -258,12 +258,12 @@ public class Main {
 ```
 
 ## All Examples
-* [Herts document - Getting Started - gRPC Unary](https://herts-framework.herts-stack.org/getting-started/grpc_unary/)
-* [Herts document - Getting Started - gRPC Server Streaming](https://herts-framework.herts-stack.org/getting-started/grpc_serverstreaming/)
-* [Herts document - Getting Started - gRPC Client Streaming](https://herts-framework.herts-stack.org/getting-started/grpc_clientstreaming/)
-* [Herts document - Getting Started - gRPC Bid Streaming](https://herts-framework.herts-stack.org/getting-started/grpc_bidstreaming/)
-* [Herts document - Getting Started - gRPC Reactive Streaming](https://herts-framework.herts-stack.org/getting-started/grpc_reactivestreaming/)
-* [Herts document - Getting Started - gRPC Http Service](https://herts-framework.herts-stack.org/getting-started/http/)
+* [Herts document - Getting Started - gRPC Unary](https://framework.hertsstack.org/getting-started/grpc_unary/)
+* [Herts document - Getting Started - gRPC Server Streaming](https://framework.hertsstack.org/getting-started/grpc_serverstreaming/)
+* [Herts document - Getting Started - gRPC Client Streaming](https://framework.hertsstack.org/getting-started/grpc_clientstreaming/)
+* [Herts document - Getting Started - gRPC Bid Streaming](https://framework.hertsstack.org/getting-started/grpc_bidstreaming/)
+* [Herts document - Getting Started - gRPC Reactive Streaming](https://framework.hertsstack.org/getting-started/grpc_reactivestreaming/)
+* [Herts document - Getting Started - gRPC Http Service](https://framework.hertsstack.org/getting-started/http/)
 
 ## License
 
