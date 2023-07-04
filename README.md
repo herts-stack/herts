@@ -7,7 +7,7 @@
 
 Unified gRPC/HTTP Realtime API framework for Java.
 
-<img width="130" alt="herts" src="https://github.com/herts-stack/herts/assets/9509132/aad29304-3ed2-4651-bdea-a1c910cbb2ca">
+<img width="130" alt="herts" src="https://github.com/herts-stack/herts/assets/9509132/f1717514-a403-4597-949f-96c5820f9894">
 
 ---
 
@@ -27,7 +27,7 @@ There are multiple OSS to support.
 Herts support original bidirectional streaming.  
 It enables two-way communication with a **simple interface**. Also, this communication method can be **easily load balanced**.
 
-<kbd><img width="800" alt="herts" src="https://github.com/herts-stack/herts/assets/9509132/efaabf82-23b0-4db4-a969-9dba2d1b3c16"></kbd>
+<kbd><img width="800" alt="herts" src="https://github.com/herts-stack/herts/assets/9509132/a6af6afb-3fea-46f0-8221-4f0ed552495e"></kbd>
 
 #### *Support Service Type*
 
