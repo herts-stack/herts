@@ -19,3 +19,5 @@ grpc-proto-example/build/
 .java-version
 .firebaserc
 firebase.json
+.firebase/
+gradle/
