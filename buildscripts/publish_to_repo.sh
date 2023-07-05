@@ -2,6 +2,7 @@
 
 set -e
 
+cd ..
 ./gradlew :herts-broker-local:clean :herts-broker-local:publish
 ./gradlew :herts-broker-redis:clean :herts-broker-redis:publish
 ./gradlew :herts-broker:clean :herts-broker:publish

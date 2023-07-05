@@ -4,7 +4,7 @@ set -e
 
 java_version=$1
 
-function run_test {
+run_test() {
     herts_type=$1
     echo "==================================="
     echo "  $herts_type Server"
@@ -28,13 +28,13 @@ function run_test {
     sleep 5
 }
 
-function kill {
+kill() {
     pkill java
     sleep 1
     echo "Killed Java process"
 }
 
-function build {
+build() {
     ./gradlew clean
     ./gradlew :e2e-test:clean :e2e-test:shadowJar -P javaVersion=$java_version
 }
