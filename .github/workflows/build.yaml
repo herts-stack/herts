@@ -25,9 +25,9 @@ jobs:
         uses: actions/checkout@v3
 
       - name: 'End 2 End test with Java11'
+        shell: bash
         run: |
           gradle wrapper
-          ./gradlew clean build -P javaVersion=11
           ./e2e-test/test_all.sh 11
 
   build-java17:
