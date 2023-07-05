@@ -26,6 +26,7 @@ jobs:
 
       - name: 'Build Herts project with Java17'
         run: |
+          gradle wrapper
           ./gradlew clean build -P javaVersion=17
           cat herts-core/build/tmp/jar/MANIFEST.MF
 
