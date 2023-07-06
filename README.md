@@ -43,11 +43,11 @@ It enables two-way communication with a **simple interface**. Also, this communi
 
 Server-side
 * Java 11+
-* `org.herts`, `io.grpc` packages
+* `org.hertsstack`, `io.grpc` packages
 
 Client-side  
 * Java 11+
-* `org.herts`, `io.grpc` packages
+* `org.hertsstack`, `io.grpc` packages
 
 ## Getting Started
 
