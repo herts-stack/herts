@@ -28,7 +28,7 @@ jobs:
         shell: bash
         run: |
           gradle wrapper
-          ./e2e-test/test_all.sh 11
+          ./e2e-test/test.sh 11
 
   build-java17:
     runs-on: ubuntu-latest
