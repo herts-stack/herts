@@ -61,7 +61,7 @@ dependencies {
 ```
 
 Request Payload definition.  
-Herts request and response models require `extends HertsMessage`
+Herts request and response Java Objects should have `extend HertsMessage`.
 ```java
 public class Payload extends HertsMessage {
     private String hoo;
