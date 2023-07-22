@@ -1,35 +1,63 @@
 plugins {
     id 'java'
-    id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'org.graalvm.buildtools.native' version '0.9.21'
 }
+apply plugin: 'application'
 
-def pkgName = 'org.hertsstack'
-def pkgVersion = '1.0.0'
-def artifactId = 'broker'
+def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '17'
 
-group pkgName
-version pkgVersion
+group 'org.hertsstack.codegen'
+version '1.0.0'
+sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
 
 repositories {
     mavenCentral()
     gradlePluginPortal()
 }
 
+def grpcVersion = '1.53.0'
 dependencies {
     implementation project(':herts-core')
-    implementation project(':herts-rpc')
-    implementation project(':herts-http')
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation 'commons-cli:commons-cli:1.5.0'
+}
+
+def mainClassPath = 'org.hertsstack.codegen.Main'
+application {
+    mainClass = mainClassPath
+}
+
+jar {
+    manifest {
+        attributes(
+                [
+                        'Main-Class'            : mainClassPath,
+                        'Built-By'              : System.getProperty('user.name'),
+                        'Built-Date'            : new Date(),
+                        'Built-JDK'             : System.getProperty('java.version'),
+                        'Implementation-Version': version,
+                        'Implementation-Title'  : project.name,
+                ]
+        )
+    }
 }
 
 test {
     useJUnitPlatform()
 }
 
-tasks.register('genTypeScriptClient', JavaExec) {
-    dependsOn 'classes'
-    main = 'org.herts.codegen.codetype.MainTs'
-    classpath = sourceSets.main.runtimeClasspath
+shadowJar {
+    mergeServiceFiles()
+}
+
+graalvmNative {
+    binaries {
+        main {
+            javaLauncher = javaToolchains.launcherFor {
+                languageVersion = JavaLanguageVersion.of(17)
+            }
+        }
+    }
 }
