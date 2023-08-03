@@ -1,9 +1,9 @@
 package org.hertsstack.e2etest.http.server;
 
 import org.hertsstack.e2etest.http.HttpServiceImpl01;
-import org.hertsstack.e2etest.http.HttpServiceImpl02;
 import org.hertsstack.e2etest.common.Constant;
 import org.hertsstack.core.context.HertsMetricsSetting;
+import org.hertsstack.example.codegents.HttpCodegenTestServiceImpl;
 import org.hertsstack.http.HertsHttpEngine;
 import org.hertsstack.http.HertsHttpServer;
 
@@ -14,7 +14,7 @@ public class HttpServer {
 
         HertsHttpEngine engine = HertsHttpServer.builder()
                 .registerHertsHttpService(new HttpServiceImpl01(), new HttpServerInterceptor())
-                .registerHertsHttpService(new HttpServiceImpl02())
+                .registerHertsHttpService(new HttpCodegenTestServiceImpl())
                 .setMetricsSetting(metrics)
                 .setPort(Constant.port)
                 .build();

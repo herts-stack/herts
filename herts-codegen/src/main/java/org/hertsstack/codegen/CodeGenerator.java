@@ -1,6 +1,7 @@
 package org.hertsstack.codegen;
 
+import java.util.List;
+
 public interface CodeGenerator {
-  void generate();
-  void generate(String generatedPath);
+    void run(String path, List<Class<?>> hertsServices);
 }

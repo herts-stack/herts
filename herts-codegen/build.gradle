@@ -24,16 +24,10 @@ dependencies {
     implementation 'commons-cli:commons-cli:1.5.0'
 }
 
-def mainClassPath = 'org.hertsstack.codegen.Main'
-application {
-    mainClass = mainClassPath
-}
-
 jar {
     manifest {
         attributes(
                 [
-                        'Main-Class'            : mainClassPath,
                         'Built-By'              : System.getProperty('user.name'),
                         'Built-Date'            : new Date(),
                         'Built-JDK'             : System.getProperty('java.version'),
@@ -43,6 +37,7 @@ jar {
         )
     }
 }
+
 
 test {
     useJUnitPlatform()

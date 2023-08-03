@@ -13,8 +13,6 @@ import java.io.Serializable;
 public class InternalHttpResponse implements Serializable {
     @JsonProperty
     private InternalHttpMsg payload;
-    @JsonProperty
-    private String exceptionCauseMessage;
 
     public InternalHttpMsg getPayload() {
         return payload;
@@ -22,13 +20,5 @@ public class InternalHttpResponse implements Serializable {
 
     public void setPayload(InternalHttpMsg payload) {
         this.payload = payload;
-    }
-
-    public String getExceptionCauseMessage() {
-        return exceptionCauseMessage;
-    }
-
-    public void setExceptionCauseMessage(String exceptionCauseMessage) {
-        this.exceptionCauseMessage = exceptionCauseMessage;
     }
 }
