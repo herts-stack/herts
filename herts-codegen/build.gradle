@@ -2,13 +2,18 @@ plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'org.graalvm.buildtools.native' version '0.9.21'
+    id 'signing'
+    id 'maven-publish'
 }
 apply plugin: 'application'
 
-def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '17'
+def pkgName = 'org.hertsstack'
+def pkgVersion = '1.0.0'
+def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '15'
+def artifactId = 'codegen'
 
-group 'org.hertsstack.codegen'
-version '1.0.0'
+group pkgName
+version pkgVersion
 sourceCompatibility = javaVersion
 targetCompatibility = javaVersion
 
@@ -17,12 +22,19 @@ repositories {
     gradlePluginPortal()
 }
 
-def grpcVersion = '1.53.0'
 dependencies {
     implementation project(':herts-core')
 
     implementation 'org.apache.velocity:velocity-engine-core:2.3'
     implementation 'commons-cli:commons-cli:1.5.0'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'started', 'skipped', 'passed', 'failed'
+        exceptionFormat = 'full'
+    }
 }
 
 jar {
@@ -40,20 +52,65 @@ jar {
 }
 
 
-test {
-    useJUnitPlatform()
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
-shadowJar {
-    mergeServiceFiles()
-}
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = pkgName
+            artifactId = artifactId
+            version = pkgVersion
 
-graalvmNative {
-    binaries {
-        main {
-            javaLauncher = javaToolchains.launcherFor {
-                languageVersion = JavaLanguageVersion.of(17)
+            from components.java
+
+            pom {
+                name = 'Herts codegen library'
+                description = 'Herts API Client generator for Codegen'
+                url = 'https://github.com/herts-stack/herts'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'herts'
+                        name = 'Herts Developer'
+                        email = 'tomoyane111@gmail.com'
+                    }
+                }
+                scm {
+                    connection.set("git@github.com:herts-stack/herts.git")
+                    developerConnection.set("git@github.com:herts-stack/herts.git")
+                    url.set("https://github.com/herts-stack")
+                }
             }
         }
+    }
+    repositories {
+        maven {
+            //url 'file://Users/tomohito.oyane/Developers/maven-repo'
+            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username = ""
+                password = ""
+            }
+        }
+    }
+}
+
+signing {
+    sign(publishing.publications["maven"])
+}
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
     }
 }
