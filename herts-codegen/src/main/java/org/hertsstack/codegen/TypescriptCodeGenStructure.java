@@ -1,7 +1,14 @@
 package org.hertsstack.codegen;
 
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+
+import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,19 +22,20 @@ class TypescriptCodeGenStructure extends TypescriptBase {
         this.fileName = new TypescriptFileName(this.serviceName);
     }
 
-    private void genNestedModel(StringBuilder codeStrBuilder, Class<?> targetClass) throws ClassNotFoundException {
-        Field[] allFields = targetClass.getDeclaredFields();
-        List<String> nestedModelPackages = new ArrayList<>();
+    private void genNestedModel(List<TypescriptDefault.StructureClassInfo.Structure> structures, Class<?> targetClass)
+            throws ClassNotFoundException {
 
         if (this.cacheGenCode.getGeneratedPackageNames().contains(targetClass.getSimpleName())) {
             return;
         }
 
-        codeStrBuilder.append("\n\nexport class " + targetClass.getSimpleName() + " {");
+        List<String> nestedModelPackages = new ArrayList<>();
+        Field[] allFields = targetClass.getDeclaredFields();
 
-        List<String> propertyDefinitions =  new ArrayList<>();
-        List<String> propertyNames =  new ArrayList<>();
+        TypescriptDefault.StructureClassInfo.Structure structure = new TypescriptDefault.StructureClassInfo.Structure();
+        structure.setName(targetClass.getSimpleName());
 
+        List<TypescriptDefault.ConstructorInfo> constructorInfos = new ArrayList<>();
         for (Field field : allFields) {
             String propertyName = field.getName();
             String propertyType = field.getType().getName();
@@ -41,47 +49,33 @@ class TypescriptCodeGenStructure extends TypescriptBase {
                 String[] classSplit = propertyType.split("\\$");
                 propertyType = classSplit[classSplit.length-1];
 
-                propertyDefinitions.add(propertyName + ": " + propertyType);
-                propertyNames.add(propertyName);
+                constructorInfos.add(new TypescriptDefault.ConstructorInfo(propertyName, propertyType));
             } else {
                 JavaType type = JavaType.findType(propertyType);
                 TypescriptType typescriptType = this.typeResolver.convertType(type);
 
-                propertyDefinitions.add(propertyName + ": " + typescriptType.getData());
-                propertyNames.add(propertyName);
+                constructorInfos.add(new TypescriptDefault.ConstructorInfo(propertyName, typescriptType.getData()));
             }
         }
-
-        // Constructor
-        codeStrBuilder.append("\n\tconstructor(" + String.join(", ", propertyDefinitions) + ") {");
-        for (String name : propertyNames) {
-            codeStrBuilder.append("\n\t\tthis." + name + " = " + name);
-        }
-        codeStrBuilder.append("\n\t}");
-
-        // Property
-        for (String def : propertyDefinitions) {
-            codeStrBuilder.append("\n\t" + def);
-        }
-
-        codeStrBuilder.append("\n}");
+        structure.setConstructors(constructorInfos);
+        structures.add(structure);
 
         this.cacheGenCode.addGeneratedPackageNames(targetClass.getSimpleName());
 
         // Recursive generate model
         for (String nestedModelPkg : nestedModelPackages) {
             Class<?> nestedClass = Class.forName(nestedModelPkg);
-            genNestedModel(codeStrBuilder, nestedClass);
+            genNestedModel(structures, nestedClass);
         }
     }
 
-    private void senCustomPkgModelStr(Method[] methods, StringBuilder codeStr) {
+    private void senCustomPkgModelStr(Method[] methods, List<TypescriptDefault.StructureClassInfo.Structure> structures) {
         for (Method method : methods) {
             Class<?>[] parameterTypes = method.getParameterTypes();
             for (Class<?> paramTypeClass : parameterTypes) {
                 if (CodeGenUtil.isCustomModelClass(paramTypeClass)) {
                     try {
-                        genNestedModel(codeStr, paramTypeClass);
+                        genNestedModel(structures, paramTypeClass);
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -95,122 +89,166 @@ class TypescriptCodeGenStructure extends TypescriptBase {
         System.out.println("Typescript file name = " + this.fileName.getStructureFileName());
         System.out.println("Generating...");
 
-        if (!this.cacheGenCode.getGeneratedPackageNames().contains(REQUEST_HEADER_CLASS_NAME)) {
-            codeStr.append(CodeGenUtil.GEN_COMMENT);
-            codeStr.append("\nexport type RequestHeaders = {");
-            codeStr.append("\n\t[x: string]: string | number | boolean;");
-            codeStr.append("\n}");
-            this.cacheGenCode.addGeneratedPackageNames(REQUEST_HEADER_CLASS_NAME);
-        }
+        String templatePath = this.fileName.getStructureTsFileName() + ".vm";
+        String template = TypescriptDefault.STRUCTURE_CUSTOM_MODEL_CLASS;
+        CodeGenUtil.writeFile(templatePath, template);
 
-        senCustomPkgModelStr(methods, codeStr);
+        List<TypescriptDefault.StructureClassInfo.Structure> structures = new ArrayList<>();
+        boolean hasHeader = true;
+        if (!this.cacheGenCode.getGeneratedPackageNames().contains(REQUEST_HEADER_CLASS_NAME)) {
+            this.cacheGenCode.addGeneratedPackageNames(REQUEST_HEADER_CLASS_NAME);
+            hasHeader = false;
+        }
+        senCustomPkgModelStr(methods, structures);
+
+        TypescriptDefault.StructureClassInfo classInfo = new TypescriptDefault.StructureClassInfo(structures);
+        try {
+            Velocity.init();
+            StringWriter sw = new StringWriter();
+            VelocityContext context = classInfo.getVelocityContext(hasHeader);
+            Template tem = Velocity.getTemplate(templatePath);
+            tem.merge(context, sw);
+
+            codeStr.append(sw);
+        } catch (Exception ex) {
+            System.out.println("Failed to merge " + this.fileName.getStructureFileName() + " file");
+            ex.printStackTrace();
+        } finally {
+            try {
+                Files.delete(Path.of(templatePath));
+            } catch (Exception ignore) {
+            }
+        }
     }
 
     public void genResponseModel(Method[] methods) {
         System.out.println("Typescript file name = " + this.fileName.getResponseFileName());
         System.out.println("Generating...");
 
-        StringBuilder codeStr = new StringBuilder();
-        codeStr.append("// Don't edit this file because this file is generated by herts codegen.");
+        String templatePath = this.fileName.getResponseTsFileName() + ".vm";
+        String template = TypescriptDefault.STRUCTURE_RES_MODEL_CLASS;
+        CodeGenUtil.writeFile(templatePath, template);
+
+        List<TypescriptDefault.ImportInfo> importInfos = new ArrayList<>();
+        List<TypescriptDefault.ResClassInfo.Response> resClassInfos = new ArrayList<>();
+        List<TypescriptDefault.ResClassInfo.Payload> payloadClassInfos = new ArrayList<>();
         for (Method method : methods) {
             String capitalizeMethodName = CodeGenUtil.capitalizeFirstLetter(method.getName());
+            String payloadClassName = capitalizeMethodName + "Payload";
 
-            // Response Class
-            codeStr.append("\n\nexport class " + capitalizeMethodName + "Response {");
-            codeStr.append("\n\tconstructor() {");
-            codeStr.append("\n\t\tthis.payload = new " + capitalizeMethodName + "Payload();");
-            codeStr.append("\n\t}");
-            codeStr.append("\n\tpayload: " + capitalizeMethodName + "Payload;");
-            codeStr.append("\n}");
-
-            // Response Payload Class
             JavaType javaType = JavaType.findType(method.getReturnType().getName());
             String typescriptType = getTypescriptTypeStr(javaType, method.getReturnType());
             if (this.typeResolver.findType(typescriptType) == null) {
-                codeStr.insert(CodeGenUtil.GEN_COMMENT.length(), "\n\nimport {" + typescriptType + "} from './" + this.fileName.getStructureTsFileName() + "'");
+                importInfos.add(new TypescriptDefault.ImportInfo(
+                        typescriptType,
+                        this.fileName.getStructureTsFileName()
+                ));
             }
 
-            codeStr.append("\n\nexport class " + capitalizeMethodName + "Payload {");
-            codeStr.append("\n\tconstructor() {");
-            codeStr.append("\n\t\tthis.keyName = '';");
-            codeStr.append("\n\t\tthis.value = null;");
-            codeStr.append("\n\t\tthis.classInfo = '';");
-            codeStr.append("\n\t}");
-            codeStr.append("\n\tprivate keyName: string;");
-            codeStr.append("\n\tvalue: " + typescriptType + ";");
-            codeStr.append("\n\tprivate classInfo: string;");
-            codeStr.append("\n}");
+            resClassInfos.add(new TypescriptDefault.ResClassInfo.Response(
+                    capitalizeMethodName + "Response",
+                    payloadClassName
+            ));
+
+            payloadClassInfos.add(new TypescriptDefault.ResClassInfo.Payload(
+                    payloadClassName,
+                    typescriptType
+            ));
         }
 
-        CodeGenUtil.writeFile(this.fileName.getResponseFileName(), codeStr.toString());
+        TypescriptDefault.ResClassInfo resClassInfo = new TypescriptDefault.ResClassInfo();
+        resClassInfo.setImportInfos(importInfos);
+        resClassInfo.setResClassInfos(resClassInfos);
+        resClassInfo.setPayloadClassInfos(payloadClassInfos);
+
+        try {
+            Velocity.init();
+            StringWriter sw = new StringWriter();
+            VelocityContext context = resClassInfo.getVelocityContext();
+            Template tem = Velocity.getTemplate(templatePath);
+            tem.merge(context, sw);
+
+            CodeGenUtil.writeFile(this.fileName.getResponseFileName(), sw.toString());
+        } catch (Exception ex) {
+            System.out.println("Failed to create " + this.fileName.getResponseFileName() + " file");
+            ex.printStackTrace();
+        } finally {
+            try {
+                Files.delete(Path.of(templatePath));
+            } catch (Exception ignore) {
+            }
+        }
     }
 
     public void genRequestModel(Method[] methods) {
         System.out.println("Typescript file name = " + this.fileName.getRequestFileName());
         System.out.println("Generating...");
 
-        StringBuilder codeStr = new StringBuilder();
-        codeStr.append(CodeGenUtil.GEN_COMMENT);
+        String templatePath = this.fileName.getRequestTsFileName() + ".vm";
+        String template = TypescriptDefault.STRUCTURE_REQ_MODEL_CLASS;
+        CodeGenUtil.writeFile(templatePath, template);
+
+        List<TypescriptDefault.ReqClassInfo.Request> reqClassInfos = new ArrayList<>();
+        List<String> payloadNames = new ArrayList<>();
+        List<TypescriptDefault.ImportInfo> importInfos = new ArrayList<>();
 
         for (Method method : methods) {
             String capitalizeMethodName = CodeGenUtil.capitalizeFirstLetter(method.getName());
-            String arrayPayloadType = "Array<" + capitalizeMethodName + "Payload>";
-
-            // Request Class
+            String payloadClassName = capitalizeMethodName + "Payload";
             Class<?>[] parameterTypes = method.getParameterTypes();
             boolean hasParameter = parameterTypes.length > 0;
 
-            codeStr.append("\n\nexport class " + capitalizeMethodName + "Request {");
-            codeStr.append("\n\tprivate constructor(payloads: " + arrayPayloadType + ") {");
-            codeStr.append("\n\t\tthis.payloads = payloads;");
-            codeStr.append("\n\t}");
-            codeStr.append("\n\tpayloads: " + arrayPayloadType + ";");
-            codeStr.append("\n\tpublic static createRequest(");
+            List<TypescriptDefault.ReqClassInfo.Request.Arg> args = new ArrayList<>();
             if (hasParameter) {
                 for (int i = 0; i < parameterTypes.length; i++) {
                     Class<?> parameterTypeClass = parameterTypes[i];
                     JavaType javaType = JavaType.findType(parameterTypeClass.getName());
                     String typescriptType = getTypescriptTypeStr(javaType, parameterTypeClass);
 
+                    args.add(new TypescriptDefault.ReqClassInfo.Request.Arg(
+                            "arg" + i,
+                            typescriptType,
+                            "payload" + i,
+                            parameterTypes[i].getName()
+                    ));
                     if (this.typeResolver.findType(typescriptType) == null) {
-                        codeStr.insert(CodeGenUtil.GEN_COMMENT.length(), "\n\nimport {" + typescriptType + "} from './" + this.fileName.getStructureTsFileName() + "'");
-                    }
-
-                    codeStr.append("arg" + i + ": " + typescriptType);
-                    if (i != parameterTypes.length-1) {
-                        codeStr.append(", ");
+                        importInfos.add(new TypescriptDefault.ImportInfo(
+                                typescriptType,
+                                this.fileName.getStructureTsFileName()
+                        ));
                     }
                 }
             }
-            codeStr.append(") {");
-            codeStr.append("\n\t\tconst payloads = new " + arrayPayloadType + "();");
-            if (hasParameter) {
-                for (int i = 0; i < parameterTypes.length; i++) {
-                    codeStr.append("\n\t\tconst payload" + i + " = new " + capitalizeMethodName + "Payload(");
-                    codeStr.append("'arg" + i + "', ");
-                    codeStr.append("arg" + i + ", ");
-                    codeStr.append("'" + parameterTypes[i].getName() + "')");
-                    codeStr.append("\n\t\tpayloads.push(payload" + i + ");");
 
-                }
-            }
-            codeStr.append("\n\t\treturn new " + capitalizeMethodName + "Request(payloads);");
-            codeStr.append("\n\t};");
-            codeStr.append("\n}");
-
-            // Request Payload Class
-            codeStr.append("\n\nexport class " + capitalizeMethodName + "Payload {");
-            codeStr.append("\n\tconstructor(keyName: string, value: any, classInfo: string) {");
-            codeStr.append("\n\t\tthis.keyName = keyName;");
-            codeStr.append("\n\t\tthis.value = value;");
-            codeStr.append("\n\t\tthis.classInfo = classInfo;");
-            codeStr.append("\n\t}");
-            codeStr.append("\n\tprivate keyName: string;");
-            codeStr.append("\n\tprivate value: any;");
-            codeStr.append("\n\tprivate classInfo: string;");
-            codeStr.append("\n}");
+            payloadNames.add(payloadClassName);
+            reqClassInfos.add(new TypescriptDefault.ReqClassInfo.Request(
+                    capitalizeMethodName + "Request",
+                    payloadClassName,
+                    args
+            ));
         }
 
-        CodeGenUtil.writeFile(this.fileName.getRequestFileName(), codeStr.toString());
+        TypescriptDefault.ReqClassInfo reqClassInfo = new TypescriptDefault.ReqClassInfo();
+        reqClassInfo.setReqClassInfos(reqClassInfos);
+        reqClassInfo.setPayloadNames(payloadNames);
+        reqClassInfo.setImportInfos(importInfos);
+
+        try {
+            Velocity.init();
+            StringWriter sw = new StringWriter();
+            VelocityContext context = reqClassInfo.getVelocityContext();
+            Template tem = Velocity.getTemplate(templatePath);
+            tem.merge(context, sw);
+
+            CodeGenUtil.writeFile(this.fileName.getRequestFileName(), sw.toString());
+        } catch (Exception ex) {
+            System.out.println("Failed to create " + this.fileName.getRequestFileName() + " file");
+            ex.printStackTrace();
+        } finally {
+            try {
+                Files.delete(Path.of(templatePath));
+            } catch (Exception ignore) {
+            }
+        }
     }
 }

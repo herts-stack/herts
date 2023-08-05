@@ -1,6 +1,15 @@
 package org.hertsstack.codegen;
 
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+
+import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 class TypescriptCodeGenClient extends TypescriptBase {
     private final String serviceName;
@@ -16,66 +25,66 @@ class TypescriptCodeGenClient extends TypescriptBase {
         System.out.println("Typescript file name = " + this.fileName.getClientFileName());
         System.out.println("Generating...");
 
-        StringBuilder codeStr = new StringBuilder();
-        codeStr.append(CodeGenUtil.GEN_COMMENT);
+        String templatePath = this.fileName.getClientTsFileName() + ".vm";
+        String template = TypescriptDefault.CLIENT_CLASS;
+        CodeGenUtil.writeFile(templatePath, template);
 
-        // Import definition
-        codeStr.append("\nimport axios, {AxiosError} from 'axios'");
-        codeStr.append("\nimport {RequestHeaders} from './" + this.fileName.getStructureTsFileName() + "'");
+        List<String> reqModelNames = new ArrayList<>();
+        List<String> resModelNames = new ArrayList<>();
+        List<String> customModelNames = new ArrayList<>();
+        List<TypescriptDefault.MethodInfo> methodInfos = new ArrayList<>();
         for (Method method : methods) {
             String capitalizeMethodName = CodeGenUtil.capitalizeFirstLetter(method.getName());
+            String reqClassName = capitalizeMethodName + "Request";
+            String resClassName = capitalizeMethodName + "Response";
 
-            codeStr.append("\nimport {" + capitalizeMethodName + "Request} from './" +
-                    this.fileName.getRequestTsFileName() + "';");
-
-            codeStr.append("\nimport {" + capitalizeMethodName + "Response} from './" +
-                    this.fileName.getResponseTsFileName() + "';");
-        }
-
-        // Client Class definition
-        codeStr.append("\n\nexport class " + this.serviceName + "Client {");
-        codeStr.append("\n\t/**\n" +
-                "\t * API endpoint information with protocol schema.\n" +
-                "\t * @param apiSchema http|https://hoge.com\n" +
-                "\t */");
-        codeStr.append("\n\tconstructor(private apiSchema: string) {}");
-
-        // Method definition
-        for (Method method : methods) {
-            String capitalizeMethodName = CodeGenUtil.capitalizeFirstLetter(method.getName());
+            reqModelNames.add(reqClassName);
+            resModelNames.add(resClassName);
 
             JavaType javaType = JavaType.findType(method.getReturnType().getName());
             String typescriptType = getTypescriptTypeStr(javaType, method.getReturnType());
             if (this.typeResolver.findType(typescriptType) == null) {
-                codeStr.insert(CodeGenUtil.GEN_COMMENT.length(), "\n\nimport {" + typescriptType + "} from './" + this.fileName.getStructureTsFileName() + "'");
+                customModelNames.add(typescriptType);
             }
 
-            if (method.getParameterTypes().length == 0) {
-                codeStr.append("\n\tpublic async " + method.getName() + "(headers: RequestHeaders): Promise<" + typescriptType + " | null> {");
-                codeStr.append("\n\t\tconst body = null;");
-            } else {
-                codeStr.append("\n\tpublic async " + method.getName() + "(headers: RequestHeaders, body: " + capitalizeMethodName + "Request): Promise<" + typescriptType +" | null> {");
-            }
-            codeStr.append("\n\t\treturn await axios.post<" + capitalizeMethodName + "Response>(");
-            codeStr.append("\n\t\t\t`${(this.apiSchema)}/api/" + this.serviceName + "/" + method.getName() + "`,");
-            codeStr.append("\n\t\t\tbody,");
-            codeStr.append("\n\t\t\t{");
-            codeStr.append("\n\t\t\t\theaders: headers,");
-            codeStr.append("\n\t\t\t})");
-            codeStr.append("\n\t\t\t.then(res => {");
-            codeStr.append("\n\t\t\t\tif (res.data.payload === undefined || res.data.payload === null) {");
-            codeStr.append("\n\t\t\t\t\treturn null;");
-            codeStr.append("\n\t\t\t\t}");
-            codeStr.append("\n\t\t\t\treturn res.data.payload.value;");
-            codeStr.append("\n\t\t\t})");
-            codeStr.append("\n\t\t\t.catch((e: AxiosError<any>) => {");
-            codeStr.append("\n\t\t\t\tthrow e;");
-            codeStr.append("\n\t\t\t})");
-            codeStr.append("\n\t}");
-            codeStr.append("\n");
+            methodInfos.add(new TypescriptDefault.MethodInfo(
+                    method.getName(),
+                    method.getParameterTypes().length > 0,
+                    reqClassName,
+                    resClassName,
+                    typescriptType
+            ));
         }
-        codeStr.append("\n\n}");
 
-        CodeGenUtil.writeFile(this.fileName.getClientFileName(), codeStr.toString());
+        TypescriptDefault.ClientClassInfo clientClassInfo = new TypescriptDefault.ClientClassInfo(
+                "$",
+                this.serviceName,
+                this.serviceName + "Client",
+                reqModelNames,
+                this.fileName.getRequestTsFileName(),
+                resModelNames,
+                this.fileName.getResponseTsFileName(),
+                customModelNames,
+                this.fileName.getStructureTsFileName(),
+                methodInfos
+        );
+
+        try {
+            Velocity.init();
+            StringWriter sw = new StringWriter();
+            VelocityContext context = clientClassInfo.getVelocityContext();
+            Template tem = Velocity.getTemplate(templatePath);
+            tem.merge(context, sw);
+
+            CodeGenUtil.writeFile(this.fileName.getClientFileName(), sw.toString());
+        } catch (Exception ex) {
+            System.out.println("Failed to create " + this.fileName.getClientFileName() + "file");
+            ex.printStackTrace();
+        } finally {
+            try {
+                Files.delete(Path.of(templatePath));
+            } catch (Exception ignore) {
+            }
+        }
     }
 }

@@ -12,6 +12,7 @@ herts-broker-redis/build/
 herts-broker-local/build/
 tools/build/
 example/build/
+example/*.ts
 e2e-test/build/
 benchmark-test/build/
 grpc-proto-example/build/

@@ -153,7 +153,11 @@ public class HttpCodegenTestServiceImpl extends HertsServiceHttp<HttpCodegenTest
 
     @Override
     public ArrayList<String> arrayListFunc() {
-        return null;
+        ArrayList<String> test = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            test.add("hello" + i);
+        }
+        return test;
     }
 
     @Override

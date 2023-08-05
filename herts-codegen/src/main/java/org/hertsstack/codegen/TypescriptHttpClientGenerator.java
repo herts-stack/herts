@@ -20,13 +20,11 @@ class TypescriptHttpClientGenerator implements CodeGenerator {
 
             TypescriptCodeGenStructure typescriptCodeGenStructure = new TypescriptCodeGenStructure(serviceName, this.typeResolver);
             TypescriptCodeGenClient typescriptCodeGenClient = new TypescriptCodeGenClient(serviceName, this.typeResolver);
-            TypescriptCodeGenMain typescriptCodeGenMain = new TypescriptCodeGenMain(serviceName, this.typeResolver);
 
             typescriptCodeGenStructure.genStructureModel(methods, commonStructureCode);
             typescriptCodeGenStructure.genRequestModel(methods);
             typescriptCodeGenStructure.genResponseModel(methods);
             typescriptCodeGenClient.genClient(methods);
-            typescriptCodeGenMain.genMain(methods);
         }
 
         CodeGenUtil.writeFile(TypescriptFileName.tsStructureFileName, commonStructureCode.toString());
