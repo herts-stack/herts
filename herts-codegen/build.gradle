@@ -1,7 +1,5 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
-    id 'org.graalvm.buildtools.native' version '0.9.21'
     id 'signing'
     id 'maven-publish'
 }
@@ -19,7 +17,6 @@ targetCompatibility = javaVersion
 
 repositories {
     mavenCentral()
-    gradlePluginPortal()
 }
 
 dependencies {
