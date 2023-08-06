@@ -10,8 +10,10 @@ herts-serializer/build/
 herts-broker/build/
 herts-broker-redis/build/
 herts-broker-local/build/
+herts-broker-pubsub/build/
 tools/build/
 example/build/
+example/*.ts
 e2e-test/build/
 benchmark-test/build/
 grpc-proto-example/build/
@@ -21,3 +23,4 @@ grpc-proto-example/build/
 firebase.json
 .firebase/
 gradle/
+tmp/

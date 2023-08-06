@@ -98,7 +98,6 @@ class HertsHttpCallerBase {
         payload.setValue(res);
         payload.setClassInfo(hertsMethod.getReturnType().getName());
         hertsResponse.setPayload(payload);
-        hertsResponse.setExceptionCauseMessage(null);
         setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(hertsResponse));
     }
 }

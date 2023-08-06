@@ -19,6 +19,10 @@ interface HertsBroadCaster {
      */
     <K> K broadcast(String clientId);
 
+    <K> K broadcast(String[] clientIds);
+
+    <K> K broadcastToGroup(String groupName);
+
     /**
      * Register receiver for internal processing.
      *

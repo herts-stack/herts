@@ -35,6 +35,16 @@ class HertsBroadCasterImpl implements HertsBroadCaster {
     }
 
     @Override
+    public <K> K broadcast(String[] clientIds) {
+        return null;
+    }
+
+    @Override
+    public <K> K broadcastToGroup(String groupName) {
+        return null;
+    }
+
+    @Override
     public void registerReceiver(StreamObserver<Object> objectStreamObservers) {
         ServerCallStreamObserver<Object> serverCallStreamObserver = (ServerCallStreamObserver<Object>) objectStreamObservers;
         serverCallStreamObserver.setOnCancelHandler(() -> {

@@ -35,7 +35,6 @@ kill() {
 }
 
 build() {
-    ./gradlew clean
     ./gradlew :e2e-test:clean :e2e-test:shadowJar -P javaVersion=$java_version
 }
 
