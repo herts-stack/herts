@@ -179,4 +179,17 @@ public class HttpCodegenTestServiceImpl extends HertsServiceHttp<HttpCodegenTest
     public Map<CustomModel, CustomModel> customModelMapFunc() {
         return null;
     }
+
+    @Override
+    public User createUser(User user) {
+        return user;
+    }
+
+    @Override
+    public List<User> getUsers() {
+        List<User> users = new ArrayList<>();
+        users.add(new User());
+        users.add(new User());
+        return users;
+    }
 }

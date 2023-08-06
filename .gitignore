@@ -22,3 +22,4 @@ grpc-proto-example/build/
 firebase.json
 .firebase/
 gradle/
+tmp/

@@ -1,10 +1,18 @@
 package org.hertsstack.codegen;
 
 import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
 
 import java.util.List;
 
 public class TypescriptDefault {
+
+    public static void initVelocity(String outDir) {
+        if (outDir != null && !outDir.isEmpty()) {
+            Velocity.setProperty("file.resource.loader.path", outDir);
+        }
+        Velocity.init();
+    }
 
     /**
      * Response class information
@@ -469,7 +477,7 @@ public class TypescriptDefault {
             export class $classInfo.name {
                 constructor(
                 #foreach($filed in $classInfo.filedInfos)
-                    $filed.keyName : $filed.typeName ,
+                    $filed.keyName : $filed.typeName,
                 #end
                 ) {
                 #foreach($filed in $classInfo.filedInfos)

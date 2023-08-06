@@ -15,11 +15,13 @@ import java.util.List;
 class TypescriptCodeGenStructure extends TypescriptBase {
     private final String serviceName;
     private final TypescriptFileName fileName;
+    private final String outDir;
 
-    public TypescriptCodeGenStructure(String serviceName, TypeResolver typeResolver) {
+    public TypescriptCodeGenStructure(String serviceName, TypeResolver typeResolver, String outDir) {
         super(typeResolver);
         this.serviceName = serviceName;
         this.fileName = new TypescriptFileName(this.serviceName);
+        this.outDir = outDir;
     }
 
     private void genNestedModel(List<TypescriptDefault.StructureClassInfo.Structure> structures, Class<?> targetClass)
@@ -89,9 +91,9 @@ class TypescriptCodeGenStructure extends TypescriptBase {
         System.out.println("Typescript file name = " + this.fileName.getStructureFileName());
         System.out.println("Generating...");
 
-        String templatePath = this.fileName.getStructureTsFileName() + ".vm";
+        String templateFileName = this.fileName.getStructureTsFileName() + ".vm";
         String template = TypescriptDefault.STRUCTURE_CUSTOM_MODEL_CLASS;
-        CodeGenUtil.writeFile(templatePath, template);
+        CodeGenUtil.writeFile(CodeGenUtil.getFullPath(this.outDir, templateFileName), template);
 
         List<TypescriptDefault.StructureClassInfo.Structure> structures = new ArrayList<>();
         boolean hasHeader = true;
@@ -103,10 +105,9 @@ class TypescriptCodeGenStructure extends TypescriptBase {
 
         TypescriptDefault.StructureClassInfo classInfo = new TypescriptDefault.StructureClassInfo(structures);
         try {
-            Velocity.init();
             StringWriter sw = new StringWriter();
             VelocityContext context = classInfo.getVelocityContext(hasHeader);
-            Template tem = Velocity.getTemplate(templatePath);
+            Template tem = Velocity.getTemplate(templateFileName);
             tem.merge(context, sw);
 
             codeStr.append(sw);
@@ -115,7 +116,7 @@ class TypescriptCodeGenStructure extends TypescriptBase {
             ex.printStackTrace();
         } finally {
             try {
-                Files.delete(Path.of(templatePath));
+                Files.delete(Path.of(CodeGenUtil.getFullPath(this.outDir, templateFileName)));
             } catch (Exception ignore) {
             }
         }
@@ -125,9 +126,9 @@ class TypescriptCodeGenStructure extends TypescriptBase {
         System.out.println("Typescript file name = " + this.fileName.getResponseFileName());
         System.out.println("Generating...");
 
-        String templatePath = this.fileName.getResponseTsFileName() + ".vm";
+        String templateFileName = this.fileName.getResponseTsFileName() + ".vm";
         String template = TypescriptDefault.STRUCTURE_RES_MODEL_CLASS;
-        CodeGenUtil.writeFile(templatePath, template);
+        CodeGenUtil.writeFile(CodeGenUtil.getFullPath(this.outDir, templateFileName), template);
 
         List<TypescriptDefault.ImportInfo> importInfos = new ArrayList<>();
         List<TypescriptDefault.ResClassInfo.Response> resClassInfos = new ArrayList<>();
@@ -162,19 +163,18 @@ class TypescriptCodeGenStructure extends TypescriptBase {
         resClassInfo.setPayloadClassInfos(payloadClassInfos);
 
         try {
-            Velocity.init();
             StringWriter sw = new StringWriter();
             VelocityContext context = resClassInfo.getVelocityContext();
-            Template tem = Velocity.getTemplate(templatePath);
+            Template tem = Velocity.getTemplate(templateFileName);
             tem.merge(context, sw);
 
-            CodeGenUtil.writeFile(this.fileName.getResponseFileName(), sw.toString());
+            CodeGenUtil.writeFile(CodeGenUtil.getFullPath(this.outDir, this.fileName.getResponseFileName()), sw.toString());
         } catch (Exception ex) {
             System.out.println("Failed to create " + this.fileName.getResponseFileName() + " file");
             ex.printStackTrace();
         } finally {
             try {
-                Files.delete(Path.of(templatePath));
+                Files.delete(Path.of(CodeGenUtil.getFullPath(this.outDir, templateFileName)));
             } catch (Exception ignore) {
             }
         }
@@ -184,9 +184,9 @@ class TypescriptCodeGenStructure extends TypescriptBase {
         System.out.println("Typescript file name = " + this.fileName.getRequestFileName());
         System.out.println("Generating...");
 
-        String templatePath = this.fileName.getRequestTsFileName() + ".vm";
+        String templateFileName = this.fileName.getRequestTsFileName() + ".vm";
         String template = TypescriptDefault.STRUCTURE_REQ_MODEL_CLASS;
-        CodeGenUtil.writeFile(templatePath, template);
+        CodeGenUtil.writeFile(CodeGenUtil.getFullPath(this.outDir, templateFileName), template);
 
         List<TypescriptDefault.ReqClassInfo.Request> reqClassInfos = new ArrayList<>();
         List<String> payloadNames = new ArrayList<>();
@@ -234,19 +234,18 @@ class TypescriptCodeGenStructure extends TypescriptBase {
         reqClassInfo.setImportInfos(importInfos);
 
         try {
-            Velocity.init();
             StringWriter sw = new StringWriter();
             VelocityContext context = reqClassInfo.getVelocityContext();
-            Template tem = Velocity.getTemplate(templatePath);
+            Template tem = Velocity.getTemplate(templateFileName);
             tem.merge(context, sw);
 
-            CodeGenUtil.writeFile(this.fileName.getRequestFileName(), sw.toString());
+            CodeGenUtil.writeFile(CodeGenUtil.getFullPath(this.outDir, this.fileName.getRequestFileName()), sw.toString());
         } catch (Exception ex) {
             System.out.println("Failed to create " + this.fileName.getRequestFileName() + " file");
             ex.printStackTrace();
         } finally {
             try {
-                Files.delete(Path.of(templatePath));
+                Files.delete(Path.of(CodeGenUtil.getFullPath(this.outDir, templateFileName)));
             } catch (Exception ignore) {
             }
         }

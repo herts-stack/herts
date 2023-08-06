@@ -15,12 +15,15 @@ class CodeGenEngineImpl implements CodeGenEngine {
 
     @Override
     public void generate() {
-        generateCode("./");
+        generateCode("");
     }
 
     @Override
-    public void generate(String outPath) {
-        generateCode(outPath);
+    public void generate(String absoluteOutDir) {
+        if (!absoluteOutDir.startsWith("/")) {
+            throw new RuntimeException("absoluteOutDir parameter is invalid. Please set start /");
+        }
+        generateCode(absoluteOutDir);
     }
 
     private void generateCode(String path) {

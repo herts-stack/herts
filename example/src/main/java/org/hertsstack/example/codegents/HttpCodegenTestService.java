@@ -46,4 +46,6 @@ public interface HttpCodegenTestService extends HertsService {
     Map<String, String> mapFunc();
     HashMap<String, String> hashMapFunc();
     Map<CustomModel, CustomModel> customModelMapFunc();
+    User createUser(User user);
+    List<User> getUsers();
 }

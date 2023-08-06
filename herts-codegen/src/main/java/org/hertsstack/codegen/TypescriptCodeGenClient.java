@@ -14,10 +14,12 @@ import java.util.List;
 class TypescriptCodeGenClient extends TypescriptBase {
     private final String serviceName;
     private final TypescriptFileName fileName;
+    private final String outDir;
 
-    public TypescriptCodeGenClient(String serviceName, TypeResolver typeResolver) {
+    public TypescriptCodeGenClient(String serviceName, TypeResolver typeResolver, String outDir) {
         super(typeResolver);
         this.serviceName = serviceName;
+        this.outDir = outDir;
         this.fileName = new TypescriptFileName(this.serviceName);
     }
 
@@ -25,9 +27,9 @@ class TypescriptCodeGenClient extends TypescriptBase {
         System.out.println("Typescript file name = " + this.fileName.getClientFileName());
         System.out.println("Generating...");
 
-        String templatePath = this.fileName.getClientTsFileName() + ".vm";
+        String templateFileName = this.fileName.getClientTsFileName() + ".vm";
         String template = TypescriptDefault.CLIENT_CLASS;
-        CodeGenUtil.writeFile(templatePath, template);
+        CodeGenUtil.writeFile(CodeGenUtil.getFullPath(this.outDir, templateFileName), template);
 
         List<String> reqModelNames = new ArrayList<>();
         List<String> resModelNames = new ArrayList<>();
@@ -70,19 +72,18 @@ class TypescriptCodeGenClient extends TypescriptBase {
         );
 
         try {
-            Velocity.init();
             StringWriter sw = new StringWriter();
             VelocityContext context = clientClassInfo.getVelocityContext();
-            Template tem = Velocity.getTemplate(templatePath);
+            Template tem = Velocity.getTemplate(templateFileName);
             tem.merge(context, sw);
 
-            CodeGenUtil.writeFile(this.fileName.getClientFileName(), sw.toString());
+            CodeGenUtil.writeFile(CodeGenUtil.getFullPath(this.outDir, this.fileName.getClientFileName()), sw.toString());
         } catch (Exception ex) {
-            System.out.println("Failed to create " + this.fileName.getClientFileName() + "file");
+            System.out.println("Failed to create " + this.fileName.getClientFileName() + " file");
             ex.printStackTrace();
         } finally {
             try {
-                Files.delete(Path.of(templatePath));
+                Files.delete(Path.of(CodeGenUtil.getFullPath(this.outDir, templateFileName)));
             } catch (Exception ignore) {
             }
         }

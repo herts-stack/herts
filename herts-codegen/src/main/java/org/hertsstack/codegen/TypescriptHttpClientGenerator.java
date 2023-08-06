@@ -11,15 +11,16 @@ class TypescriptHttpClientGenerator implements CodeGenerator {
     }
 
     @Override
-    public void run(String path, List<Class<?>> hertsServices) {
+    public void run(String outDir, List<Class<?>> hertsServices) {
+        TypescriptDefault.initVelocity(outDir);
         StringBuilder commonStructureCode = new StringBuilder();
 
         for (Class<?> hertsService : hertsServices) {
             String serviceName = hertsService.getSimpleName();
             Method[] methods = hertsService.getDeclaredMethods();
 
-            TypescriptCodeGenStructure typescriptCodeGenStructure = new TypescriptCodeGenStructure(serviceName, this.typeResolver);
-            TypescriptCodeGenClient typescriptCodeGenClient = new TypescriptCodeGenClient(serviceName, this.typeResolver);
+            TypescriptCodeGenStructure typescriptCodeGenStructure = new TypescriptCodeGenStructure(serviceName, this.typeResolver, outDir);
+            TypescriptCodeGenClient typescriptCodeGenClient = new TypescriptCodeGenClient(serviceName, this.typeResolver, outDir);
 
             typescriptCodeGenStructure.genStructureModel(methods, commonStructureCode);
             typescriptCodeGenStructure.genRequestModel(methods);
@@ -27,6 +28,6 @@ class TypescriptHttpClientGenerator implements CodeGenerator {
             typescriptCodeGenClient.genClient(methods);
         }
 
-        CodeGenUtil.writeFile(TypescriptFileName.tsStructureFileName, commonStructureCode.toString());
+        CodeGenUtil.writeFile(CodeGenUtil.getFullPath(outDir, TypescriptFileName.tsStructureFileName), commonStructureCode.toString());
     }
 }

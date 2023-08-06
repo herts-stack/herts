@@ -34,6 +34,14 @@ class CodeGenUtil {
         return false;
     }
 
+    public static String getFullPath(String outDir, String filename) {
+        if (outDir == null || outDir.isEmpty()) {
+            return filename;
+        } else {
+            return outDir + "/" + filename;
+        }
+    }
+
     public static void writeFile(String fileName, String rawData) {
         try {
             FileWriter fw = new FileWriter(fileName, false);
