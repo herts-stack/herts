@@ -93,5 +93,5 @@ jobs:
       - name: 'Build Herts project with Java11'
         run: |
           gradle wrapper
-          ./gradlew clean build -x :herts-codegen -P javaVersion=11
+          ./gradlew build -x :example:build -x :herts-codegen:build -P javaVersion=11
           cat herts-core/build/tmp/jar/MANIFEST.MF

@@ -10,6 +10,7 @@ herts-serializer/build/
 herts-broker/build/
 herts-broker-redis/build/
 herts-broker-local/build/
+herts-broker-pubsub/build/
 tools/build/
 example/build/
 example/*.ts
