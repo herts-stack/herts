@@ -133,9 +133,8 @@ public class HertsHttpClientTest {
     public void test12() {
         try {
             testHertsService.test12();
-            throw new RuntimeException("Invalid test");
         } catch (HttpErrorException ex) {
-            assertEquals(ex.getStatusCode(), HttpErrorException.StatusCode.Status400);
+            assertEquals(HttpErrorException.StatusCode.Status400, ex.getStatusCode());
         }
     }
 
@@ -145,7 +144,7 @@ public class HertsHttpClientTest {
             testHertsService.test13();
             throw new RuntimeException("Invalid test");
         } catch (HttpErrorException ex) {
-            assertEquals(ex.getStatusCode(), HttpErrorException.StatusCode.Status500);
+            assertEquals(HttpErrorException.StatusCode.Status500, ex.getStatusCode());
         }
     }
 }

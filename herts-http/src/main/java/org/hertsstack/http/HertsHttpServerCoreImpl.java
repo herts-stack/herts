@@ -92,25 +92,21 @@ class HertsHttpServerCoreImpl extends HttpServlet implements HertsHttpServerCore
     @Override
     public void doOptions(HttpServletRequest request, HttpServletResponse response) {
         if (isMetricsEndpoint(request.getRequestURI())) {
-            response.setHeader("Allow", "POST, HEAD, OPTIONS");
-        } else {
             response.setHeader("Allow", "GET, HEAD, OPTIONS");
+        } else {
+            response.setHeader("Allow", "POST, HEAD, OPTIONS");
         }
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
         String uri = request.getRequestURI();
         String serviceName = extractServiceName(uri);
         if (serviceName == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-        this.callers.get(serviceName).setHertsHeader(response);
 
         Method hertsMethod = this.methods.get(request.getRequestURI());
         if (hertsMethod == null) {
@@ -120,9 +116,11 @@ class HertsHttpServerCoreImpl extends HttpServlet implements HertsHttpServerCore
 
         try {
             this.callers.get(serviceName).post(hertsMethod, request, response);
+
         } catch (InvalidMessageException | MessageJsonParsingException ex) {
             InternalHttpErrorResponse err = genErrorResponse(HttpErrorException.StatusCode.Status400, ex.getMessage());
             setError(HttpServletResponse.SC_BAD_REQUEST, response, err);
+
         } catch (InvocationTargetException ex) {
             Throwable cause = ex.getCause();
             if (cause instanceof HttpErrorException) {
@@ -166,7 +164,7 @@ class HertsHttpServerCoreImpl extends HttpServlet implements HertsHttpServerCore
 
     public static InternalHttpErrorResponse genErrorResponse(HttpErrorException.StatusCode statusCodeEnum, String message) {
         InternalHttpErrorResponse hertsResponse = new InternalHttpErrorResponse();
-        hertsResponse.setStatusCode(statusCodeEnum);
+        hertsResponse.setStatusCodeEnum(statusCodeEnum);
         hertsResponse.setMessage(message);
         return hertsResponse;
     }
