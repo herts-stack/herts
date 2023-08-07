@@ -23,4 +23,6 @@ subprojects {
     test {
         useJUnitPlatform()
     }
+
+    tasks.withType(Javadoc).all { enabled = false }
 }
