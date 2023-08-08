@@ -44,6 +44,8 @@ public class InternalHttpErrorResponse implements Serializable {
 
     @JsonIgnore
     public void throwHertsHttpErrorException() throws HttpErrorException {
-        throw new HttpErrorException(this.statusCodeEnum, this.message);
+        String statusCode = this.statusCodeEnum.getStringCode();
+        String customMsg = "Http status is " + statusCode + ". Error message = " + this.message;
+        throw new HttpErrorException(this.statusCodeEnum, customMsg);
     }
 }

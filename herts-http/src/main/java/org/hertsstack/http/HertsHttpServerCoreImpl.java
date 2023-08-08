@@ -83,7 +83,8 @@ class HertsHttpServerCoreImpl extends HttpServlet implements HertsHttpServerCore
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String uri = request.getRequestURI();
         if (!isMetricsEndpoint(uri)) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            InternalHttpErrorResponse err = genErrorResponse(HttpErrorException.StatusCode.Status404, "Not found");
+            setError(HttpServletResponse.SC_NOT_FOUND, response, err);
             return;
         }
         this.callers.entrySet().iterator().next().getValue().setMetricsResponse(response);
@@ -104,13 +105,15 @@ class HertsHttpServerCoreImpl extends HttpServlet implements HertsHttpServerCore
         String uri = request.getRequestURI();
         String serviceName = extractServiceName(uri);
         if (serviceName == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            InternalHttpErrorResponse err = genErrorResponse(HttpErrorException.StatusCode.Status404, "Not found");
+            setError(HttpServletResponse.SC_NOT_FOUND, response, err);
             return;
         }
 
         Method hertsMethod = this.methods.get(request.getRequestURI());
         if (hertsMethod == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            InternalHttpErrorResponse err = genErrorResponse(HttpErrorException.StatusCode.Status404, "Not found");
+            setError(HttpServletResponse.SC_NOT_FOUND, response, err);
             return;
         }
 
