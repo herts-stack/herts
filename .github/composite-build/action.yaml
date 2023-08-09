@@ -23,5 +23,9 @@ runs:
         INPUT_JAVA_VERSION: ${{ inputs.JAVA_VERSION }}
       run: |
         gradle wrapper
-        ./gradlew clean build -P javaVersion=${INPUT_JAVA_VERSION}
+        if [ ${INPUT_JAVA_VERSION} -ge "15" ]; then
+          ./gradlew clean build -P javaVersion=${INPUT_JAVA_VERSION}
+        else
+          ./gradlew build -x :example:build -x :herts-codegen:build -P javaVersion=${INPUT_JAVA_VERSION}
+        fi
         cat herts-core/build/tmp/jar/MANIFEST.MF
