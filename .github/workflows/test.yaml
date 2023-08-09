@@ -1,85 +1,83 @@
-name: 'Build'
+name: 'End 2 end test'
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
 jobs:
-  build-java11:
+  end-2-end-java11:
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event.commits.*.message, '[skip ci]') }}
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v3
 
-      - uses: ./.github/composite-build
+      - uses: ./.github/composite-test
         with:
           JAVA_VERSION: 11
 
-  build-java12:
+  end-2-end-java12:
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event.commits.*.message, '[skip ci]') }}
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v3
 
-      - uses: ./.github/composite-build
+      - uses: ./.github/composite-test
         with:
           JAVA_VERSION: 12
 
-  build-java13:
+  end-2-end-java13:
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event.commits.*.message, '[skip ci]') }}
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v3
 
-      - uses: ./.github/composite-build
+      - uses: ./.github/composite-test
         with:
           JAVA_VERSION: 13
 
-  build-java14:
+  end-2-end-java14:
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event.commits.*.message, '[skip ci]') }}
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v3
 
-      - uses: ./.github/composite-build
+      - uses: ./.github/composite-test
         with:
           JAVA_VERSION: 14
 
-  build-java15:
+  end-2-end-java15:
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event.commits.*.message, '[skip ci]') }}
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v3
 
-      - uses: ./.github/composite-build
+      - uses: ./.github/composite-test
         with:
           JAVA_VERSION: 15
 
-  build-java16:
+  end-2-end-java16:
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event.commits.*.message, '[skip ci]') }}
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v3
 
-      - uses: ./.github/composite-build
+      - uses: ./.github/composite-test
         with:
           JAVA_VERSION: 16
 
-  build-java17:
+  end-2-end-java17:
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event.commits.*.message, '[skip ci]') }}
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v3
 
-      - uses: ./.github/composite-build
+      - uses: ./.github/composite-test
         with:
           JAVA_VERSION: 17
