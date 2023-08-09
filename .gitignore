@@ -24,3 +24,4 @@ firebase.json
 .firebase/
 gradle/
 tmp/
+secret.txt

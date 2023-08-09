@@ -1,0 +1,33 @@
+name: "Release"
+on:
+  push:
+    branches: [ main ]
+#    tags:
+#      - herts-core-v*.*.*
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+
+      - name: 'Set up Java'
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 11
+
+      - name: 'Setup Gradle'
+        uses: gradle/gradle-build-action@v2
+
+      - name: 'Publish'
+        shell: bash
+        env:
+          MAVEN_USER: ${{ secrets.MAVEN_USER }}
+          MAVEN_PASS: ${{ secrets.MAVEN_PASS }}
+        run: |
+          sed -i -e "s/username = \"\"/username = \"${MAVEN_USER}\"/g" herts-core/build.gradle
+          sed -i -e "s/password = \"\"/password = \"${MAVEN_PASS}\"/g" herts-core/build.gradle
+          gradle wrapper
+          ./gradlew :herts-core:clean :herts-core:publish
