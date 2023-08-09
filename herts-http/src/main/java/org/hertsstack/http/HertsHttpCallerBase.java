@@ -45,13 +45,15 @@ class HertsHttpCallerBase {
         out.flush();
     }
 
-    public void setMetricsResponse(HttpServletResponse response) throws IOException {
-        this.hertsMetricsServer.setMetricsResponse(response);
-    }
-
-    public void setHertsHeader(HttpServletResponse response) {
+    public static void setHertsHeader(HttpServletResponse response) {
         response.setHeader(SharedServiceContext.Header.HERTS_CONTEXT_VERSION, SharedServiceContext.Header.CODE_VERSION);
         response.setHeader(SharedServiceContext.Header.HERTS_SERVER_KEY, SharedServiceContext.Header.HERTS_SERVER_VAL);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+    }
+
+    public void setMetricsResponse(HttpServletResponse response) throws IOException {
+        this.hertsMetricsServer.setMetricsResponse(response);
     }
 
     protected void call(Method hertsMethod, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -59,13 +61,16 @@ class HertsHttpCallerBase {
         InternalHttpRequest hertsRequest;
 
         if (parameters.size() > 0) {
-            hertsRequest = this.hertsSerializer.deserialize(request.getReader(), InternalHttpRequest.class);
-
-            List<String> keyNames = hertsRequest.getKeyNames();
-            for (Parameter param : parameters) {
-                if (!keyNames.contains(param.getName())) {
-                    throw new InvalidMessageException("Invalid body");
+            try {
+                hertsRequest = this.hertsSerializer.deserialize(request.getReader(), InternalHttpRequest.class);
+                List<String> keyNames = hertsRequest.getKeyNames();
+                for (Parameter param : parameters) {
+                    if (!keyNames.contains(param.getName())) {
+                        throw new InvalidMessageException("Invalid request body");
+                    }
                 }
+            } catch (IOException | java.lang.NullPointerException ex) {
+                throw new InvalidMessageException("Invalid request body");
             }
         } else {
             hertsRequest = new InternalHttpRequest();

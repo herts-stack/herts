@@ -41,22 +41,25 @@ class HertsHttpInterceptHandler implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
         HttpServletRequest httpReq = (HttpServletRequest) request;
+        HttpServletResponse httpRes = (HttpServletResponse) response;
         String serviceName = parseUri(httpReq.getRequestURI());
+        HertsHttpCallerBase.setHertsHeader(httpRes);
+
         HertsHttpInterceptor intercept = this.interceptors.get(serviceName);
         if (intercept != null) {
             try {
                 intercept.beforeHandle(new HertsHttpRequestImpl(request, httpReq));
             } catch (HttpErrorException ex) {
-                setError(ex.getMessage(), ex.getStatusCode().getIntegerCode(), ex.getStatusCode(), (HttpServletResponse) response);
+                setError(ex.getMessage(), ex.getStatusCode().getIntegerCode(), ex.getStatusCode(), httpRes);
                 return;
             } catch (Exception ex) {
-                setError(ex.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, HttpErrorException.StatusCode.Status500, (HttpServletResponse) response);
+                setError(ex.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, HttpErrorException.StatusCode.Status500, httpRes);
                 return;
             }
         }
         chain.doFilter(request, response);
         if (intercept != null) {
-            intercept.afterHandle();
+            intercept.afterHandle(new HertsHttpResponseImpl(httpRes));
         }
     }
 

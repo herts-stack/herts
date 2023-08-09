@@ -15,16 +15,19 @@ import org.hertsstack.core.exception.http.HttpErrorException.StatusCode;
  */
 public class InternalHttpErrorResponse implements Serializable {
     @JsonProperty
-    private StatusCode statusCode;
+    private StatusCode statusCodeEnum;
+    @JsonProperty
+    private String statusCode;
     @JsonProperty
     private String message;
 
-    public StatusCode getStatusCode() {
-        return statusCode;
+    public StatusCode getStatusCodeEnum() {
+        return statusCodeEnum;
     }
 
-    public void setStatusCode(StatusCode statusCode) {
-        this.statusCode = statusCode;
+    public void setStatusCodeEnum(StatusCode statusCodeEnum) {
+        this.statusCodeEnum = statusCodeEnum;
+        this.statusCode = statusCodeEnum.getStringCode();
     }
 
     public String getMessage() {
@@ -35,8 +38,14 @@ public class InternalHttpErrorResponse implements Serializable {
         this.message = message;
     }
 
+    public String getStatusCode() {
+        return statusCode;
+    }
+
     @JsonIgnore
     public void throwHertsHttpErrorException() throws HttpErrorException {
-        throw new HttpErrorException(this.statusCode, this.message);
+        String statusCode = this.statusCodeEnum.getStringCode();
+        String customMsg = "Http status is " + statusCode + ". Error message = " + this.message;
+        throw new HttpErrorException(this.statusCodeEnum, customMsg);
     }
 }

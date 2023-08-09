@@ -31,11 +31,4 @@ interface HertsHttpCaller {
      * @throws IOException Get error
      */
     void setMetricsResponse(HttpServletResponse response) throws IOException;
-
-    /**
-     * Set herts http header
-     *
-     * @param response HttpServletResponse
-     */
-    void setHertsHeader(HttpServletResponse response);
 }

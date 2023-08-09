@@ -17,6 +17,8 @@ public interface HertsHttpInterceptor {
 
     /**
      * After handle intercept
+     *
+     * @param response Herts Response class
      */
-    void afterHandle();
+    void afterHandle(HertsHttpResponse response);
 }

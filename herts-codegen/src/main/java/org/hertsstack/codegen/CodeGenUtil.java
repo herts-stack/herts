@@ -1,5 +1,7 @@
 package org.hertsstack.codegen;
 
+import org.hertsstack.core.modelx.HertsMessage;
+
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -24,7 +26,7 @@ class CodeGenUtil {
         if (className == null) {
             return false;
         }
-        return className.contains("HertsMessage");
+        return className.contains(HertsMessage.class.getSimpleName());
     }
 
     public static boolean isCustomModelClass(Class<?> classInfo) {

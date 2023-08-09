@@ -3,6 +3,7 @@ package org.hertsstack.example.jwthttp;
 import org.hertsstack.core.exception.http.HttpErrorException;
 import org.hertsstack.http.HertsHttpInterceptor;
 import org.hertsstack.http.HertsHttpRequest;
+import org.hertsstack.http.HertsHttpResponse;
 
 public class JwtServerInterceptor implements HertsHttpInterceptor {
     private final JwtVerifier jwtProcessor;
@@ -23,6 +24,6 @@ public class JwtServerInterceptor implements HertsHttpInterceptor {
     }
 
     @Override
-    public void afterHandle() {
+    public void afterHandle(HertsHttpResponse response) {
     }
 }
