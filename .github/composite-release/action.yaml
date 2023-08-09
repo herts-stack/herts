@@ -1,0 +1,52 @@
+name: "Composite Release"
+description: "Composite release Action"
+inputs:
+  JAVA_VERSION:
+    required: true
+    description: "Java version"
+  HERTS_PKG_NAME:
+    required: true
+    description: "Herts package name"
+  MAVEN_USER:
+    required: true
+    description: "secrets.MAVEN_USER"
+  MAVEN_PASS:
+    required: true
+    description: "secrets.MAVEN_PASS"
+  KEY:
+    required: true
+    description: "secrets.KEY"
+  GRADLE_PROP:
+    required: true
+    description: "secrets.GRADLE_PROP"
+
+runs:
+  using: "composite"
+  steps:
+    - name: 'Set up Java'
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: ${{ inputs.JAVA_VERSION }}
+
+    - name: 'Setup Gradle'
+      uses: gradle/gradle-build-action@v2
+
+    - name: 'Publish'
+      shell: bash
+      env:
+        INPUT_JAVA_VERSION: ${{ inputs.JAVA_VERSION }}
+        INPUT_HERTS_PKG_NAME: ${{ inputs.HERTS_PKG_NAME }}
+        MAVEN_USER: ${{ inputs.MAVEN_USER }}
+        MAVEN_PASS: ${{ inputs.MAVEN_PASS }}
+        KEY: ${{ inputs.KEY }}
+        GRADLE_PROP: ${{ inputs.GRADLE_PROP }}
+      run: |
+        sed -i -e "s/username = \"\"/username = \"${MAVEN_USER}\"/g" ${INPUT_HERTS_PKG_NAME}/build.gradle
+        sed -i -e "s/password = \"\"/password = \"${MAVEN_PASS}\"/g" ${INPUT_HERTS_PKG_NAME}/build.gradle
+        gradle wrapper
+        pwd
+        echo ${KEY} | base64 -d > /tmp/secring.gpg
+        chmod 600 /tmp/secring.gpg
+        echo ${GRADLE_PROP} | base64 -d > ~/.gradle/gradle.properties
+        ./gradlew :${INPUT_HERTS_PKG_NAME}:clean :${INPUT_HERTS_PKG_NAME}:publish
