@@ -1,0 +1,27 @@
+name: "Composite Build"
+description: "Composite build Action"
+inputs:
+  JAVA_VERSION:
+    required: true
+    description: "Java version"
+
+runs:
+  using: "composite"
+  steps:
+    - name: 'Set up Java17'
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: ${{ inputs.JAVA_VERSION }}
+
+    - name: 'Setup Gradle'
+      uses: gradle/gradle-build-action@v2
+
+    - name: 'Build Herts project'
+      shell: bash
+      env:
+        INPUT_JAVA_VERSION: ${{ inputs.JAVA_VERSION }}
+      run: |
+        gradle wrapper
+        ./gradlew clean build -P javaVersion=${INPUT_JAVA_VERSION}
+        cat herts-core/build/tmp/jar/MANIFEST.MF

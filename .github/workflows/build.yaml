@@ -7,8 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-
-  end-2-end:
+  build-java11:
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event.commits.*.message, '[skip ci]') }}
     steps:
@@ -24,32 +23,10 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@v3
 
-      - name: 'End 2 End test with Java11'
-        shell: bash
+      - name: 'Build Herts project with Java11'
         run: |
           gradle wrapper
-          ./e2e-test/test.sh 11
-
-  build-java17:
-    runs-on: ubuntu-latest
-    if: ${{ !contains(github.event.commits.*.message, '[skip ci]') }}
-    steps:
-      - name: 'Set up Java17'
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: 'Setup Gradle'
-        uses: gradle/gradle-build-action@v2
-
-      - name: 'Checkout'
-        uses: actions/checkout@v3
-
-      - name: 'Build Herts project with Java17'
-        run: |
-          gradle wrapper
-          ./gradlew clean build -P javaVersion=17
+          ./gradlew build -x :example:build -x :herts-codegen:build -P javaVersion=11
           cat herts-core/build/tmp/jar/MANIFEST.MF
 
   build-java16:
@@ -74,15 +51,15 @@ jobs:
           ./gradlew clean build -P javaVersion=16
           cat herts-core/build/tmp/jar/MANIFEST.MF
 
-  build-java11:
+  build-java17:
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event.commits.*.message, '[skip ci]') }}
     steps:
-      - name: 'Set up Java11'
+      - name: 'Set up Java17'
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '11'
+          java-version: '17'
 
       - name: 'Setup Gradle'
         uses: gradle/gradle-build-action@v2
@@ -90,8 +67,8 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@v3
 
-      - name: 'Build Herts project with Java11'
+      - name: 'Build Herts project with Java17'
         run: |
           gradle wrapper
-          ./gradlew build -x :example:build -x :herts-codegen:build -P javaVersion=11
+          ./gradlew clean build -P javaVersion=17
           cat herts-core/build/tmp/jar/MANIFEST.MF

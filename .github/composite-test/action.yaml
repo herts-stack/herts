@@ -1,0 +1,26 @@
+name: "Composite Test"
+description: "Composite test Action"
+inputs:
+  JAVA_VERSION:
+    required: true
+    description: "Java version"
+
+runs:
+  using: "composite"
+  steps:
+    - name: 'Set up Java17'
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: ${{ inputs.JAVA_VERSION }}
+
+    - name: 'Setup Gradle'
+      uses: gradle/gradle-build-action@v2
+
+    - name: 'End 2 End test with'
+      shell: bash
+      env:
+        INPUT_JAVA_VERSION: ${{ inputs.JAVA_VERSION }}
+      run: |
+        gradle wrapper
+        ./e2e-test/test.sh ${INPUT_JAVA_VERSION}
