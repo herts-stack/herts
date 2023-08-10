@@ -13,4 +13,5 @@ include 'herts-broker'
 include 'herts-broker-redis'
 include 'herts-broker-local'
 include 'herts-broker-pubsub'
+include 'herts-gateway'
 
