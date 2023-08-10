@@ -4,11 +4,11 @@ import org.hertsstack.core.exception.CodeGenException;
 
 import java.util.List;
 
-class CodeGenEngineImpl implements CodeGenEngine {
+class CodeGenEngineImpl implements HertsCodeGenEngine {
     private final List<Class<?>> hertsServices;
-    private final CodeGenLang lang;
+    private final HertsCodeGenLang lang;
 
-    public CodeGenEngineImpl(List<Class<?>> hertsServices, CodeGenLang lang) {
+    public CodeGenEngineImpl(List<Class<?>> hertsServices, HertsCodeGenLang lang) {
         this.hertsServices = hertsServices;
         this.lang = lang;
     }

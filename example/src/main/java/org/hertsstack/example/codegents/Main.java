@@ -1,16 +1,16 @@
 package org.hertsstack.example.codegents;
 
-import org.hertsstack.codegen.CodeGenBuilder;
-import org.hertsstack.codegen.CodeGenEngine;
-import org.hertsstack.codegen.CodeGenLang;
+import org.hertsstack.codegen.HertsCodeGenBuilder;
+import org.hertsstack.codegen.HertsCodeGenEngine;
+import org.hertsstack.codegen.HertsCodeGenLang;
 import org.hertsstack.example.http.HttpService;
 
 public class Main {
     public static void main(String[] args) {
-        CodeGenEngine codeGenEngine = CodeGenBuilder.builder()
+        HertsCodeGenEngine codeGenEngine = HertsCodeGenBuilder.builder()
                 .hertsService(HttpCodegenTestService.class)
                 .hertsService(HttpService.class)
-                .lang(CodeGenLang.Typescript)
+                .lang(HertsCodeGenLang.Typescript)
                 .build();
 
         codeGenEngine.generate();
