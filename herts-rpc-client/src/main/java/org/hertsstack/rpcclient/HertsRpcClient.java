@@ -40,7 +40,7 @@ public interface HertsRpcClient {
      *
      * @return modelx.ClientConnection
      */
-    ClientConnection getClientConnection();
+    ClientRequestInfo getClientConnection();
 
     /**
      * Create herts core interface

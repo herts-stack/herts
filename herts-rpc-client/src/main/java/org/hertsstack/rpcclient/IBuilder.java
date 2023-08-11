@@ -25,7 +25,7 @@ public class IBuilder implements HertsRpcClientIBuilder {
     private final List<HertsReceiver> hertsRpcReceivers = new ArrayList<>();
     private final String connectedHost;
     private final int serverPort;
-    private final ClientConnection clientConnection;
+    private final ClientRequestInfo clientConnection;
 
     private HertsType hertsType;
     private boolean isSecureConnection;
@@ -37,7 +37,7 @@ public class IBuilder implements HertsRpcClientIBuilder {
     public IBuilder(String connectedHost, int serverPort) {
         this.connectedHost = connectedHost;
         this.serverPort = serverPort;
-        this.clientConnection = ClientConnection.create();
+        this.clientConnection = ClientRequestInfo.create();
     }
 
     @Override
@@ -214,7 +214,7 @@ public class IBuilder implements HertsRpcClientIBuilder {
         return option;
     }
 
-    public ClientConnection getClientConnection() {
+    public ClientRequestInfo getClientConnection() {
         return clientConnection;
     }
 }

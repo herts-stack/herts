@@ -25,14 +25,14 @@ import java.lang.reflect.Method;
 class InternalReactiveReceiver {
 
     private final HertsReceiver hertsReceiver;
-    private final ClientConnection clientConnection;
+    private final ClientRequestInfo clientConnection;
 
-    private InternalReactiveReceiver(HertsReceiver hertsReceiver, ClientConnection clientConnection) {
+    private InternalReactiveReceiver(HertsReceiver hertsReceiver, ClientRequestInfo clientConnection) {
         this.hertsReceiver = hertsReceiver;
         this.clientConnection = clientConnection;
     }
 
-    public static InternalReactiveReceiver create(HertsReceiver hertsReceiver, ClientConnection clientConnection) {
+    public static InternalReactiveReceiver create(HertsReceiver hertsReceiver, ClientRequestInfo clientConnection) {
         return new InternalReactiveReceiver(hertsReceiver, clientConnection);
     }
 

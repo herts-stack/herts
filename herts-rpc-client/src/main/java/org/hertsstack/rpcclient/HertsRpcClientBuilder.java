@@ -20,7 +20,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
     private final boolean isSecureConnection;
     private final List<Class<?>> registeredIfServices;
     private final Channel channel;
-    private final ClientConnection clientConnection;
+    private final ClientRequestInfo clientConnection;
 
     public HertsRpcClientBuilder(IBuilder builder) {
         this.connectedHost = builder.getConnectedHost();
@@ -70,7 +70,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
     }
 
     @Override
-    public ClientConnection getClientConnection() {
+    public ClientRequestInfo getClientConnection() {
         return this.clientConnection;
     }
 
@@ -145,7 +145,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
      * @return HertsRpcClientUMethodHandler
      */
     private static HertsRpcClientUMethodHandler newHertsBlockingService(
-            Channel channel, Class<?> hertsRpcService, ClientConnection clientConnection, CallCredentials credentials) {
+            Channel channel, Class<?> hertsRpcService, ClientRequestInfo clientConnection, CallCredentials credentials) {
 
         io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientUMethodHandler> factory =
                 new io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientUMethodHandler>() {
@@ -174,7 +174,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
      * @return HertsRpcClientBStreamingMethodHandler
      */
     private static HertsRpcClientBStreamingMethodHandler newHertsBidirectionalStreamingService(
-            Channel channel, Class<?> hertsRpcService, ClientConnection clientConnection, CallCredentials credentials) {
+            Channel channel, Class<?> hertsRpcService, ClientRequestInfo clientConnection, CallCredentials credentials) {
 
         io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientBStreamingMethodHandler> factory =
                 new io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientBStreamingMethodHandler>() {
@@ -203,7 +203,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
      * @return HertsRpcClientSStreamingMethodHandler
      */
     private static HertsRpcClientSStreamingMethodHandler newHertsServerStreamingService(
-            Channel channel, Class<?> hertsRpcService, ClientConnection clientConnection, CallCredentials credentials) {
+            Channel channel, Class<?> hertsRpcService, ClientRequestInfo clientConnection, CallCredentials credentials) {
 
         io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientSStreamingMethodHandler> factory =
                 new io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientSStreamingMethodHandler>() {
@@ -232,7 +232,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
      * @return HertsRpcClientRStreamingMethodHandler
      */
     private static HertsRpcClientCStreamingMethodHandler newHertsClientStreamingService(
-            Channel channel, Class<?> hertsRpcService, ClientConnection clientConnection, CallCredentials credentials) {
+            Channel channel, Class<?> hertsRpcService, ClientRequestInfo clientConnection, CallCredentials credentials) {
 
         io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientCStreamingMethodHandler> factory =
                 new io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientCStreamingMethodHandler>() {
@@ -261,7 +261,7 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
      * @return HertsRpcClientRStreamingMethodHandler
      */
     private static HertsRpcClientRStreamingMethodHandler newHertsReactiveStreamingService(
-            Channel channel, Class<?> hertsRpcService, ClientConnection clientConnection, CallCredentials credentials) {
+            Channel channel, Class<?> hertsRpcService, ClientRequestInfo clientConnection, CallCredentials credentials) {
 
         io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientRStreamingMethodHandler> factory =
                 new io.grpc.stub.AbstractStub.StubFactory<HertsRpcClientRStreamingMethodHandler>() {
