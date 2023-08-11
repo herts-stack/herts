@@ -29,6 +29,7 @@ public class IBuilder implements HertsRpcClientIBuilder {
 
     private HertsType hertsType;
     private boolean isSecureConnection;
+    private boolean isAutoReconnection;
     private Channel channel;
     private ClientInterceptor interceptor;
     private GrpcClientOption option;
@@ -57,6 +58,12 @@ public class IBuilder implements HertsRpcClientIBuilder {
     @Override
     public HertsRpcClientIBuilder registerHertsRpcReceiver(HertsReceiver hertsReceiver) {
         this.hertsRpcReceivers.add(hertsReceiver);
+        return this;
+    }
+
+    @Override
+    public HertsRpcClientIBuilder autoReconnection(boolean enableAutoReconnection) {
+        this.isAutoReconnection = enableAutoReconnection;
         return this;
     }
 
@@ -100,7 +107,9 @@ public class IBuilder implements HertsRpcClientIBuilder {
 
         if (this.channel == null) {
             ConnectionManager manager = new ConnectionManager(this.channel, this.option);
-            this.channel = manager.connect(this.connectedHost, this.serverPort, this.isSecureConnection, this.interceptor);
+            this.channel = manager.connect(
+                    this.connectedHost, this.serverPort,
+                    this.isSecureConnection, this.interceptor, this.isAutoReconnection);
             manager.reconnectListener(this::registerReceivers);
         }
 

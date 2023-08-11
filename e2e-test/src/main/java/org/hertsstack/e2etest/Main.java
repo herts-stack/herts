@@ -6,6 +6,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.hertsstack.e2etest.clientstreaming_rpc.client.AutoReconnectClientStreamingClient;
 import org.hertsstack.e2etest.http.client.HttpClient;
 import org.hertsstack.e2etest.reactivestreaming_rpc.client.IntegrationTestRsClient;
 import org.hertsstack.e2etest.reactivestreaming_rpc.client.QueueTestRsClient;
@@ -19,6 +20,7 @@ import org.hertsstack.core.context.HertsType;
 import org.hertsstack.e2etest.bidstreaming_rpc.server.BiStreamingServer;
 import org.hertsstack.e2etest.clientstreaming_rpc.server.ClientStreamingServer;
 import org.hertsstack.e2etest.http.server.HttpServer;
+import org.hertsstack.e2etest.unary_rpc.client.AutoReconnectUnaryClient;
 import org.hertsstack.e2etest.unary_rpc.client.UnaryClient;
 import org.hertsstack.e2etest.unary_rpc.server.UnaryServer;
 
@@ -127,9 +129,11 @@ public class Main {
             Thread thread = new Thread(() -> {
                 switch (coreType) {
                     case Unary:
+                        //AutoReconnectUnaryClient.run();
                         UnaryClient.run();
                         break;
                     case ClientStreaming:
+//                        AutoReconnectClientStreamingClient.run();
                         ClientStreamingClient.run();
                         break;
                     case ServerStreaming:

@@ -1,12 +1,12 @@
 package org.hertsstack.rpcclient;
 
-import io.grpc.CallCredentials;
 import org.hertsstack.core.context.HertsType;
 import org.hertsstack.core.exception.ChannelIsNullException;
 import org.hertsstack.core.exception.RpcClientBuildException;
 import org.hertsstack.core.exception.TypeInvalidException;
 import org.hertsstack.core.service.HertsService;
 
+import io.grpc.CallCredentials;
 import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 
@@ -31,11 +31,11 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
         this.clientConnection = builder.getClientConnection();
     }
 
-    public static IBuilder builder(String connectedHost, int serverPort) {
+    public static HertsRpcClientIBuilder builder(String connectedHost, int serverPort) {
         return new IBuilder(connectedHost, serverPort);
     }
 
-    public static IBuilder builder(String connectedHost) {
+    public static HertsRpcClientIBuilder builder(String connectedHost) {
         int defaultPort = 9000;
         return new IBuilder(connectedHost, defaultPort);
     }

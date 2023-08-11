@@ -19,6 +19,8 @@ import java.util.logging.Logger;
  */
 public class HertsRpcInterceptBuilder implements ServerInterceptor {
     private static final Logger logger = Logger.getLogger(HertsRpcInterceptBuilder.class.getName());
+    private static final Metadata.Key<String> sessionIdKey = SharedServiceContext.Header.HERTS_CONNECTION_ID;
+    private static final Context.Key<String> connectionIdCtxKey = SharedServiceContext.Header.HERTS_CONNECTION_ID_CTX;
 
     private final HertsRpcInterceptor interceptor;
 
@@ -52,8 +54,8 @@ public class HertsRpcInterceptBuilder implements ServerInterceptor {
             this.interceptor.beforeCallMethod(call, requestHeaders);
         }
 
-        String sessionId = requestHeaders.get(SharedServiceContext.Header.HERTS_CONNECTION_ID);
-        Context ctx = Context.current().withValue(SharedServiceContext.Header.HERTS_CONNECTION_ID_CTX, sessionId);
+        String sessionId = requestHeaders.get(sessionIdKey);
+        Context ctx = Context.current().withValue(connectionIdCtxKey, sessionId);
         return Contexts.interceptCall(ctx, call, requestHeaders, next);
     }
 }
