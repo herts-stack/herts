@@ -10,19 +10,20 @@ import java.lang.reflect.Method;
  * Herts http caller interface
  *
  * @author Herts Contributer
- * @version 1.0.0
+ * @version 1.0.2
  */
-interface HertsHttpCaller {
+public interface InternalHttpCaller {
 
     /**
      * POST
      *
+     * @param serviceName Herts service name
      * @param hertsMethod Method reflection
      * @param request     HttpServletRequest
      * @param response    HttpServletResponse
      * @throws Exception Get error
      */
-    void post(Method hertsMethod, HttpServletRequest request, HttpServletResponse response) throws Exception;
+    void post(String serviceName, Method hertsMethod, HttpServletRequest request, HttpServletResponse response) throws Exception;
 
     /**
      * Set metrics

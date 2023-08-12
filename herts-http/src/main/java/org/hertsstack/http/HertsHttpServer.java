@@ -1,6 +1,7 @@
 package org.hertsstack.http;
 
 import org.hertsstack.core.context.HertsMetricsSetting;
+import org.hertsstack.core.context.HertsType;
 import org.hertsstack.core.exception.HttpServerBuildException;
 import org.hertsstack.core.logger.Logging;
 import org.hertsstack.core.service.HertsService;
@@ -63,7 +64,7 @@ public class HertsHttpServer implements HertsHttpEngine {
             // Metrics
             HertsMetrics metrics;
             if (this.metricsSetting != null) {
-                metrics = HertsMetricsHandler.builder()
+                metrics = HertsMetricsHandler.builder(HertsType.Http)
                         .registerHertsServices(this.hertsRpcServices)
                         .isErrRateEnabled(this.metricsSetting.isErrRateEnabled())
                         .isJvmEnabled(this.metricsSetting.isJvmEnabled())
@@ -72,36 +73,36 @@ public class HertsHttpServer implements HertsHttpEngine {
                         .isRpsEnabled(this.metricsSetting.isRpsEnabled())
                         .build();
             } else {
-                metrics = HertsMetricsHandler.builder()
+                metrics = HertsMetricsHandler.builder(HertsType.Http)
                         .registerHertsServices(this.hertsRpcServices)
                         .build();
             }
 
-            HertsHttpServerCoreImpl hertsServer = new HertsHttpServerCoreImpl(
-                    this.hertsRpcServices, metrics, new HertsMetricsServer(metrics, server));
+            HertsMetricsServer hertsMetricsServer = new HertsMetricsServer(metrics, this.server);
+            InternalHttpServlet hertsServlet = InternalHttpServlet.createByHertsService(
+                    this.hertsRpcServices, metrics, hertsMetricsServer, null);
 
-            context.addServlet(new ServletHolder(hertsServer), "/*");
+            context.addServlet(new ServletHolder(hertsServlet), "/*");
 
             // Interceptor
-            if (this.interceptors != null && this.interceptors.size() > 0) {
-                context.addFilter(new FilterHolder(
-                        new HertsHttpInterceptHandler(this.interceptors)), "/*", EnumSet.of(DispatcherType.REQUEST));
-            }
+            context.addFilter(new FilterHolder(
+                    new InternalHttpInterceptHandler(this.interceptors, true)), "/*", EnumSet.of(DispatcherType.REQUEST));
 
             // TLS
             if (this.sslContextFactory != null) {
-                final ServerConnector httpsConnector = new ServerConnector(server, (SslContextFactory.Server) this.sslContextFactory);
+                final ServerConnector httpsConnector = new ServerConnector(this.server, (SslContextFactory.Server) this.sslContextFactory);
                 httpsConnector.setPort(this.port);
-                server.setConnectors(new Connector[]{httpsConnector});
+                this.server.setConnectors(new Connector[]{httpsConnector});
             }
 
-            for (String log : generateStartedLog(hertsServer)) {
+            for (String log : generateStartedLog(hertsServlet)) {
                 logger.info(log);
             }
-            server.setHandler(context);
-            server.start();
+            this.server.setHandler(context);
+            this.server.start();
             logger.info("Started Herts HTTP server. Port " + this.port);
-            server.join();
+            this.server.join();
+
         } catch (Exception ex) {
             throw new HttpServerBuildException(ex);
         }
@@ -114,7 +115,7 @@ public class HertsHttpServer implements HertsHttpEngine {
         }
     }
 
-    private List<String> generateStartedLog(HertsHttpServerCoreImpl hertsServer) {
+    private List<String> generateStartedLog(InternalHttpServlet hertsServer) {
         List<String> endpointLogs = new ArrayList<>();
         for (String endpoint : hertsServer.getEndpoints()) {
             for (String m : HETRS_HTTP_METHODS) {

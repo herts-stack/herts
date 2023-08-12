@@ -20,6 +20,8 @@ public interface HertsMetricsBuilder {
      */
     HertsMetricsBuilder registerHertsServices(List<HertsService> hertsRpcServices);
 
+    HertsMetricsBuilder registerHertsServicesByInterface(List<Class<?>> hertsRpcServices);
+
     /**
      * Metrics rps is enabled or not
      *
