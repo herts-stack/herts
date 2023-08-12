@@ -17,25 +17,25 @@ public class HttpServiceImpl01 extends HertsServiceHttp<HttpService01> implement
 
     @Override
     public Map<String, String> httpTest01(String id, String value) {
-        logger.info("------------ Http httpTest01");
+        logger.info("Http httpTest01");
         logger.info("Id = " + id + " value = " + value);
         return Collections.singletonMap("key", "value!!!");
     }
 
     @Override
     public boolean httpTest02() {
-        logger.info("------------ Http httpTest02");
+        logger.info("Http httpTest02");
         return false;
     }
 
     @Override
     public void httpTest03() {
-        logger.info("------------ Http httpTest03");
+        logger.info("Http httpTest03");
     }
 
     @Override
     public TestData httpTest04(TestData testData) {
-        logger.info("------------ Http httpTest04");
+        logger.info("Http httpTest04");
         return testData;
     }
 

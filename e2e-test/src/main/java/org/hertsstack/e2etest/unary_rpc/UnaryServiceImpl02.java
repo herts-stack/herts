@@ -11,7 +11,7 @@ public class UnaryServiceImpl02 extends HertsServiceUnary<UnaryRpcService02> imp
 
     @Override
     public String hello01(String id, String value) {
-        logger.info("------------ UnaryRpc hello01 RPC");
+        logger.info("UnaryRpc hello01 RPC");
         return "Helllo!!!";
     }
 }

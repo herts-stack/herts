@@ -11,7 +11,7 @@ public class HttpServiceImpl02 extends HertsServiceHttp<HttpService02> implement
 
     @Override
     public String httpTest10() {
-        logger.info("------------ Http httpTest10");
+        logger.info("Http httpTest10");
         return "Hello02";
     }
 }

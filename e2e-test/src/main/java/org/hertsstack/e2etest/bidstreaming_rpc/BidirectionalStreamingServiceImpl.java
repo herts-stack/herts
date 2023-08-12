@@ -14,7 +14,7 @@ public class BidirectionalStreamingServiceImpl extends HertsServiceBidirectional
     }
 
     public StreamObserver<HelloResponse01> test04(final StreamObserver<HelloResponse01> responseObserver) {
-        logger.info("------------ BidirectionalStreaming test04 RPC");
+        logger.info("BidirectionalStreaming test04 RPC");
         return new StreamObserver<HelloResponse01>() {
             @Override
             public void onNext(HelloResponse01 response) {
