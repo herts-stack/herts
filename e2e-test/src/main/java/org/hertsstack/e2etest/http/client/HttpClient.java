@@ -20,8 +20,8 @@ public class HttpClient {
     public static void run() {
         HertsHttpClient client = HertsHttpClient
                 .builder("localhost")
-                .registerHertService(HttpService01.class)
-                .registerHertService(HttpService02.class)
+                .registerHertsService(HttpService01.class)
+                .registerHertsService(HttpService02.class)
                 .secure(false)
                 .port(Constant.port)
                 .build();

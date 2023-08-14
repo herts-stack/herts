@@ -12,7 +12,7 @@ run_test() {
     java -jar e2e-test/build/libs/e2e-test-1.0.0-all.jar --exec_type='server' --herts_type="${herts_type}" &
 
     while sleep 5; do
-      ps aux | grep java | grep server | grep -v grep
+      ps aux | grep java | grep server | grep -v grep | wc -l
       is_up_server=$?
 
       if [ $is_up_server -ne 0 ]; then
@@ -25,6 +25,44 @@ run_test() {
     echo "  $herts_type Client"
     echo "==================================="
     java -jar e2e-test/build/libs/e2e-test-1.0.0-all.jar --exec_type='client' --herts_type="${herts_type}"
+    sleep 5
+}
+
+run_gateway_test() {
+    echo "==================================="
+    echo "  unary Server"
+    echo "==================================="
+    java -jar e2e-test/build/libs/e2e-test-1.0.0-all.jar --exec_type='server' --herts_type="unary" &
+
+    while sleep 5; do
+      ps aux | grep java | grep "exec_type=server" | grep -v grep | wc -l
+      is_up_server=$?
+
+      if [ $is_up_server -ne 0 ]; then
+        continue
+      fi
+      break
+    done
+
+    echo "==================================="
+    echo "  gateway Server"
+    echo "==================================="
+    java -jar e2e-test/build/libs/e2e-test-1.0.0-all.jar --exec_type='gateway' --herts_type="unary" &
+
+    while sleep 5; do
+      ps aux | grep java | grep "exec_type=gateway" | grep -v grep | wc -l
+      is_up_gateway=$?
+
+      if [ $is_up_gateway -ne 0 ]; then
+        continue
+      fi
+      break
+    done
+
+    echo "==================================="
+    echo "  gateway Client"
+    echo "==================================="
+    java -jar e2e-test/build/libs/e2e-test-1.0.0-all.jar --exec_type='gateway_client' --herts_type="unary"
     sleep 5
 }
 
@@ -61,4 +99,7 @@ run_test "bidirectional_streaming"
 kill
 
 run_test "reactive_streaming"
+kill
+
+run_gateway_test
 kill
