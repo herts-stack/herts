@@ -23,7 +23,6 @@ import java.util.concurrent.ConcurrentMap;
  * Herts http intercept
  *
  * @author Herts Contributer
- * @version 1.0.2
  */
 public class InternalHttpInterceptHandler implements Filter {
     private final ConcurrentMap<String, HertsHttpInterceptor> interceptors;

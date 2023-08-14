@@ -18,7 +18,6 @@ import java.util.List;
  * HertsRpcClientIBuilder implementation
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class IBuilder implements HertsRpcClientIBuilder {
     private final List<Class<?>> hertsRpcServices = new ArrayList<>();

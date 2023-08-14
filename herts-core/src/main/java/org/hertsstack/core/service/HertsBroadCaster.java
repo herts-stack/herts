@@ -7,7 +7,6 @@ import org.hertsstack.broker.ReactiveBroker;
  * HertsBroadCaster for internal reactive streaming.
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 interface HertsBroadCaster {
     /**

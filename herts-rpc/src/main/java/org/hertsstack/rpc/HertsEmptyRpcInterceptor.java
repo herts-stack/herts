@@ -7,7 +7,6 @@ import io.grpc.ServerCall;
  * Herts empty  interceptor
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class HertsEmptyRpcInterceptor implements HertsRpcInterceptor {
     private HertsEmptyRpcInterceptor() {

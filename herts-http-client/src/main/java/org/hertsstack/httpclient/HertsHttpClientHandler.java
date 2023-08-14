@@ -29,7 +29,6 @@ import java.util.stream.IntStream;
  * Herts http client handler
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class HertsHttpClientHandler implements InvocationHandler {
     private final MessageSerializer serializer = new MessageSerializer(MessageSerializeType.Json);

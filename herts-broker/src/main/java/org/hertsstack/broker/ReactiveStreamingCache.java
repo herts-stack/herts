@@ -7,7 +7,6 @@ import io.grpc.stub.StreamObserver;
  * This class is internal cache service.
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public interface ReactiveStreamingCache<T> {
 

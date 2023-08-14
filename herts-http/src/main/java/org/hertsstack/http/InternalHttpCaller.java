@@ -10,7 +10,6 @@ import java.lang.reflect.Method;
  * Herts http caller interface
  *
  * @author Herts Contributer
- * @version 1.0.2
  */
 public interface InternalHttpCaller {
 

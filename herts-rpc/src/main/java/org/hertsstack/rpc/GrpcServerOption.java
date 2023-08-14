@@ -11,7 +11,6 @@ package org.hertsstack.rpc;
  * - maxInboundMessageSize
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class GrpcServerOption {
     private int port = 9000;

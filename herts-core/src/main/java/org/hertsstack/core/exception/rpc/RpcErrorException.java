@@ -7,7 +7,6 @@ import io.grpc.StatusRuntimeException;
  * Herts prc error
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class RpcErrorException extends io.grpc.StatusRuntimeException {
     private final StatusCode statusCode;

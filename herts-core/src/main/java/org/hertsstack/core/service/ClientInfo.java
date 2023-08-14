@@ -6,7 +6,6 @@ import org.hertsstack.core.modelx.HertsMessage;
  * HertsClientInfo
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class ClientInfo extends HertsMessage {
     public String id;

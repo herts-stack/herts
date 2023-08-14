@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentMap;
  * Herts core metrics interface
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public interface HertsMetrics {
 

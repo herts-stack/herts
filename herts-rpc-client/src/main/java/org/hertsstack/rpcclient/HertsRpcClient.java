@@ -10,7 +10,6 @@ import io.grpc.ManagedChannel;
  * Herts core client
  *
  * @author Herts Contributer
- * @version 1.0.2
  */
 public interface HertsRpcClient {
 

@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
  * HertsReactive cache local implementation.
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class ReactiveStreamingCacheImpl<T> implements ReactiveStreamingCache<T> {
     private final Cache<String, T> receivers;

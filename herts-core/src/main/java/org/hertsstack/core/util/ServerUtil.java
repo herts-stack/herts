@@ -9,7 +9,6 @@ import java.util.List;
  * Herts server utility
  *
  * @author Herts Contributer
- * @version 1.0.1
  */
 public class ServerUtil {
     private static final String[] HETRS_HTTP_METHODS = new String[]{"POST", "OPTIONS"};

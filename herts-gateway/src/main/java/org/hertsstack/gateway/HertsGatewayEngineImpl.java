@@ -29,7 +29,6 @@ import java.util.Map;
  * Herts gateway engine implementation.
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class HertsGatewayEngineImpl implements HertsGatewayEngine {
     private static final java.util.logging.Logger logger = Logging.getLogger(HertsGatewayEngine.class.getSimpleName());

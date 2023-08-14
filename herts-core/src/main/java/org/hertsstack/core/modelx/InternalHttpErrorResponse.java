@@ -11,7 +11,6 @@ import org.hertsstack.core.exception.http.HttpErrorException.StatusCode;
  * Herts http error response for internal message
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class InternalHttpErrorResponse implements Serializable {
     @JsonProperty

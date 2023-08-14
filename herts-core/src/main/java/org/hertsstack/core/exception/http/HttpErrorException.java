@@ -6,7 +6,6 @@ import io.grpc.Status;
  * Herts http error
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class HttpErrorException extends RuntimeException {
     private final StatusCode statusCode;

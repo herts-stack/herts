@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
  * Herts gateway server builder interface.
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public interface HertsGatewayServer {
 

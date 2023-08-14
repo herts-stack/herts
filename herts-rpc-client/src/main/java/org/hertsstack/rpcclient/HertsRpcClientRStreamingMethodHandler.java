@@ -23,7 +23,6 @@ import java.util.concurrent.ConcurrentMap;
  * Reactive streaming Method Handler
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class HertsRpcClientRStreamingMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsRpcClientRStreamingMethodHandler> implements InvocationHandler {
     private final MessageSerializer serializer = new MessageSerializer();

@@ -11,7 +11,6 @@ import java.util.Map;
  * Herts http client
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class HertsHttpClient implements HertsHttpClientBase {
     private final List<Class<?>> hertsRpcServices;

@@ -4,7 +4,6 @@ package org.hertsstack.codegen;
  * Herts Code generation builder interface.
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public interface HertsCodeGen {
     /**

@@ -6,7 +6,6 @@ import java.util.List;
  * Code generator.
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 interface CodeGenerator {
 

@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
  * Herts http request for internal message
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class InternalHttpRequest implements Serializable {
     @JsonProperty

@@ -13,7 +13,6 @@ import java.io.IOException;
  * Herts metrics server builder
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class HertsMetricsServerBuilder {
     private Server server;

@@ -15,7 +15,6 @@ import java.util.Map;
  * Herts http server builder
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class ServerBuilder implements HertsHttpEngineBuilder {
     private final List<HertsService> hertsRpcServices = new ArrayList<>();

@@ -27,7 +27,6 @@ import java.util.concurrent.ConcurrentMap;
  * Herts http metrics
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class HertsMetricsHandler implements HertsMetrics {
     private final ConcurrentMap<String, Tag> tagNames = new ConcurrentHashMap<>();

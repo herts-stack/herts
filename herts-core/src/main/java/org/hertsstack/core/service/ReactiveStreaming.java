@@ -6,7 +6,6 @@ import io.grpc.stub.StreamObserver;
  * Herts reactive streaming internal interface
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public interface ReactiveStreaming {
 

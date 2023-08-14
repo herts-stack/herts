@@ -16,7 +16,6 @@ import javax.annotation.Nullable;
  * Herts server engine builder
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public interface RpcServer {
 

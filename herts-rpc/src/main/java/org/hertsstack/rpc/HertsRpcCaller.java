@@ -9,7 +9,6 @@ import java.lang.reflect.InvocationTargetException;
  * Herts caller interface
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 interface HertsRpcCaller {
 

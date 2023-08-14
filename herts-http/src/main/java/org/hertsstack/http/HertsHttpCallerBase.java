@@ -23,7 +23,6 @@ import java.util.concurrent.ConcurrentMap;
  * Herts http caller base class
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class HertsHttpCallerBase {
     private final Object coreObject;

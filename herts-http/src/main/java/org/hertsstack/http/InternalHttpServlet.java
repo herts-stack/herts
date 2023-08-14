@@ -30,8 +30,8 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Herts http server core
  *
- * @author Herts Contributer
- * @version 1.0.2
+* @author Herts Contributer
+
  */
 public class InternalHttpServlet extends HttpServlet {
     private static final java.util.logging.Logger logger = Logging.getLogger(InternalHttpServlet.class.getSimpleName());

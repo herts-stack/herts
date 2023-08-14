@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
  * Herts collection utility
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class CollectionUtil {
 

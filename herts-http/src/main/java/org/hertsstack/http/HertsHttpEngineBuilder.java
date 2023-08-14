@@ -11,7 +11,6 @@ import java.util.Map;
  * Herts http server engine builder
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public interface HertsHttpEngineBuilder {
 

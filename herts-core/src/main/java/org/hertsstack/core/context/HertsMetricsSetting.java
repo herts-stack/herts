@@ -4,7 +4,6 @@ package org.hertsstack.core.context;
  * HertsMetricsSetting
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class HertsMetricsSetting {
     private boolean isRpsEnabled;

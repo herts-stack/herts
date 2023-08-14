@@ -20,7 +20,6 @@ import java.lang.reflect.Method;
  * Internal reactive receiver
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class InternalReactiveReceiver {
 

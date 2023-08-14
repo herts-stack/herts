@@ -27,7 +27,6 @@ import java.util.Map;
  * Herts http server implementation
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class HertsHttpServer implements HertsHttpEngine {
     private static final java.util.logging.Logger logger = Logging.getLogger(HertsHttpEngine.class.getSimpleName());

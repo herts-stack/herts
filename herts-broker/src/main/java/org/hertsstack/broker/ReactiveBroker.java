@@ -4,7 +4,6 @@ package org.hertsstack.broker;
  * Herts message broker for load balancing grpc connection
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public interface ReactiveBroker {
 

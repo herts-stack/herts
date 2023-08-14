@@ -9,7 +9,6 @@ import redis.clients.jedis.JedisPool;
  * Redis producer
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class RedisProducer implements ReactiveProducer {
     private final JedisPool jedisPool;

@@ -7,7 +7,6 @@ import io.grpc.Metadata;
  * Herts shared context on server and client.
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class SharedServiceContext {
 

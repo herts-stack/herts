@@ -13,7 +13,6 @@ import java.io.Reader;
  * Herts message serializer
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class MessageSerializer {
     private static final ObjectMapper msgPackMapper = new ObjectMapper(new MessagePackFactory());

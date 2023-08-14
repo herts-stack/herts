@@ -8,7 +8,6 @@ import io.grpc.MethodDescriptor;
  * Herts service interface
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public interface HertsService {
 

@@ -8,7 +8,6 @@ import java.util.List;
  * Herts core metrics builder
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public interface HertsMetricsBuilder {
 

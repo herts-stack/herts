@@ -18,7 +18,6 @@ import java.util.concurrent.ConcurrentMap;
  * Herts http with measurer metrics class
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class HertsHttpMetricsCaller extends HertsHttpCallerBase implements InternalHttpCaller {
 

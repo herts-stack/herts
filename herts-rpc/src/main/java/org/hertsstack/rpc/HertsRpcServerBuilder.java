@@ -40,7 +40,6 @@ import java.util.Map;
  * Herts server builder
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class HertsRpcServerBuilder implements RpcServer {
     private final Map<BindableService, ServerInterceptor> services = new HashMap<>();

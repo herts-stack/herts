@@ -6,7 +6,6 @@ import java.util.List;
  * Herts http client builder interface
  *
  * @author Herts Contributer
- * @version 1.0.2
  */
 public interface HertsHttpClientBuilder {
 

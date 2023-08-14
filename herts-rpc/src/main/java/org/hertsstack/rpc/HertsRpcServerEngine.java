@@ -7,7 +7,6 @@ import io.grpc.Server;
 /**
  * Herts server engine
  * @author Herts Contributer
- * @version 1.0.0
  */
 public interface HertsRpcServerEngine {
 

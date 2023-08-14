@@ -19,7 +19,6 @@ import java.util.Map;
  * Herts Gateway builder.
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class HertsGatewayBuilder implements HertsGatewayServer {
     private final List<Class<?>> hertsServiceInterfaces = new ArrayList<>();

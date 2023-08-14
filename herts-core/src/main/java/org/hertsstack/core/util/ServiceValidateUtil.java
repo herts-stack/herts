@@ -14,7 +14,6 @@ import java.util.Set;
  * Herts service validation utility
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class ServiceValidateUtil {
     protected static final String voidReturnName = "void";

@@ -15,7 +15,6 @@ import java.util.concurrent.ConcurrentMap;
  * Herts http simple class
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class HertsHttpSimpleCaller extends HertsHttpCallerBase implements InternalHttpCaller {
 

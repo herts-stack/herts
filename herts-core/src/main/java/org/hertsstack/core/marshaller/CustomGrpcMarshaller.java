@@ -15,7 +15,6 @@ import java.io.InputStream;
  * Herts grpc marshaller
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class CustomGrpcMarshaller implements MethodDescriptor.Marshaller<byte[]> {
     private static final java.util.logging.Logger logger = Logging.getLogger(CustomGrpcMarshaller.class.getSimpleName());

@@ -7,7 +7,6 @@ import io.grpc.ServerCall;
  * Herts server interceptor
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public interface HertsRpcInterceptor {
 

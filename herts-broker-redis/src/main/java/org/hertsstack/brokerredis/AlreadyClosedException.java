@@ -5,7 +5,6 @@ package org.hertsstack.brokerredis;
  * Already closed redis connection when create connection pool
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class AlreadyClosedException extends RuntimeException {
     public AlreadyClosedException() {

@@ -4,7 +4,6 @@ package org.hertsstack.core.exception;
  * Herts channel null exception class.
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class ChannelIsNullException extends RuntimeException {
     public ChannelIsNullException() {

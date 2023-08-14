@@ -11,7 +11,6 @@ import java.util.List;
  * Concurrent local producer
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class ConcurrentLocalProducer implements ReactiveProducer {
     private final List<ReactiveConsumer> observers;

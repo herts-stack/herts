@@ -13,7 +13,6 @@ import java.util.UUID;
  * This class recommends single server structure.
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class ConcurrentLocalBroker implements ReactiveBroker {
 

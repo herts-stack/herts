@@ -6,7 +6,6 @@ import org.hertsstack.core.context.HertsType;
  * Herts rpc method for internal registration
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class RegisteredMethod {
     private HertsType hertsType;

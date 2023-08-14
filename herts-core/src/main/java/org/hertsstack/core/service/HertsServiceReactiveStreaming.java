@@ -10,7 +10,6 @@ import java.lang.reflect.Type;
  * Herts reactive streaming service
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class HertsServiceReactiveStreaming<T, K> extends ReactiveStreamingBase<T, K> implements ReactiveStreaming {
 

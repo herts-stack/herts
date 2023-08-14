@@ -9,7 +9,6 @@ import java.util.List;
  * Herts gRPC streaming descriptor.
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class CustomGrpcStreamingDescriptor {
     private ServiceDescriptor serviceDescriptor;

@@ -13,7 +13,6 @@ import java.util.Map;
  * Herts build info
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class ServerBuildInfo {
     private Map<BindableService, ServerInterceptor> services;

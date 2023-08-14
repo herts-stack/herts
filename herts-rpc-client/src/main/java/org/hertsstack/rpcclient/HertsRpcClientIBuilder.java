@@ -9,7 +9,6 @@ import org.hertsstack.core.service.HertsReceiver;
  * Herts core client builder interface
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public interface HertsRpcClientIBuilder {
 

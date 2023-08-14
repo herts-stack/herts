@@ -7,7 +7,6 @@ import java.lang.reflect.Method;
  * Parsed uri from definition endpoint. Also, include method info.
  *
  * @author Herts Contributer
- * @version 1.0.2
  */
 class ParedHttpRequestInfo {
     private final String serviceName;
