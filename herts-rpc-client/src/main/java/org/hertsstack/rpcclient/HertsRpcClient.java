@@ -61,6 +61,8 @@ public interface HertsRpcClient {
      */
     <T extends HertsService> T createHertsRpcService(Class<T> interfaceClass, CallCredentials credentials);
 
+    HertsService createUnknownHertsRpcService(Class<?> interfaceClass);
+
     /**
      * Get registered herts type
      *

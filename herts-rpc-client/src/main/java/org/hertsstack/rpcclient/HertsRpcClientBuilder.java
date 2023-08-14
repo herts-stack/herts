@@ -84,8 +84,24 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
         return hertsRpcService(interfaceClass, credentials);
     }
 
+    @Override
+    public HertsService createUnknownHertsRpcService(Class<?> interfaceClass) {
+        return create(interfaceClass, null);
+    }
+
     @SuppressWarnings("unchecked")
     private <T extends HertsService> T hertsRpcService(Class<T> interfaceType, CallCredentials credentials) {
+        return (T) create(interfaceType, credentials);
+    }
+
+    private HertsService generateService(InvocationHandler handler, Class<?> classType) {
+        return (HertsService) Proxy.newProxyInstance(
+                classType.getClassLoader(),
+                new Class<?>[]{classType},
+                handler);
+    }
+
+    private HertsService create(Class<?> interfaceType, CallCredentials credentials) {
         if (!interfaceType.isInterface()) {
             throw new RpcClientBuildException(interfaceType.getSimpleName() + " is not interface. You can create client by interface");
         }
@@ -106,34 +122,28 @@ public class HertsRpcClientBuilder implements HertsRpcClient {
         switch (this.hertsType) {
             case Unary:
                 HertsRpcClientUMethodHandler unary = newHertsBlockingService(this.channel, interfaceType, this.clientConnection, credentials);
-                return (T) generateService(unary, interfaceType);
+                return generateService(unary, interfaceType);
 
             case BidirectionalStreaming:
                 HertsRpcClientBStreamingMethodHandler streaming = newHertsBidirectionalStreamingService(this.channel, interfaceType, this.clientConnection, credentials);
-                return (T) generateService(streaming, interfaceType);
+                return generateService(streaming, interfaceType);
 
             case ServerStreaming:
                 HertsRpcClientSStreamingMethodHandler serverStreaming = newHertsServerStreamingService(this.channel, interfaceType, this.clientConnection, credentials);
-                return (T) generateService(serverStreaming, interfaceType);
+                return generateService(serverStreaming, interfaceType);
 
             case ClientStreaming:
                 HertsRpcClientCStreamingMethodHandler clientStreaming = newHertsClientStreamingService(this.channel, interfaceType, this.clientConnection, credentials);
-                return (T) generateService(clientStreaming, interfaceType);
+                return generateService(clientStreaming, interfaceType);
 
             case Reactive:
                 HertsRpcClientUMethodHandler reactiveStreaming = newHertsBlockingService(this.channel, interfaceType, this.clientConnection, credentials);
-                return (T) generateService(reactiveStreaming, interfaceType);
+                return generateService(reactiveStreaming, interfaceType);
 
             default:
                 throw new TypeInvalidException("Undefined Herts type. HertsType: " + this.hertsType);
         }
-    }
 
-    private HertsService generateService(InvocationHandler handler, Class<?> classType) {
-        return (HertsService) Proxy.newProxyInstance(
-                classType.getClassLoader(),
-                new Class<?>[]{classType},
-                handler);
     }
 
     /**

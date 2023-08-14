@@ -5,6 +5,7 @@ import org.hertsstack.core.context.HertsType;
 import org.hertsstack.core.exception.HttpServerBuildException;
 import org.hertsstack.core.logger.Logging;
 import org.hertsstack.core.service.HertsService;
+import org.hertsstack.core.util.ServerUtil;
 import org.hertsstack.metrics.HertsMetrics;
 import org.hertsstack.metrics.HertsMetricsHandler;
 import org.hertsstack.metrics.HertsMetricsServer;
@@ -18,7 +19,6 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 import javax.servlet.DispatcherType;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +31,6 @@ import java.util.Map;
  */
 public class HertsHttpServer implements HertsHttpEngine {
     private static final java.util.logging.Logger logger = Logging.getLogger(HertsHttpEngine.class.getSimpleName());
-    private static final String[] HETRS_HTTP_METHODS = new String[]{"POST", "OPTIONS"};
 
     private final List<HertsService> hertsRpcServices;
     private final Map<String, HertsHttpInterceptor> interceptors;
@@ -95,7 +94,7 @@ public class HertsHttpServer implements HertsHttpEngine {
                 this.server.setConnectors(new Connector[]{httpsConnector});
             }
 
-            for (String log : generateStartedLog(hertsServlet)) {
+            for (String log : ServerUtil.getEndpointLogs(hertsServlet.getEndpoints(), this.metricsSetting)) {
                 logger.info(log);
             }
             this.server.setHandler(context);
@@ -113,19 +112,5 @@ public class HertsHttpServer implements HertsHttpEngine {
         if (this.server != null) {
             this.server.stop();
         }
-    }
-
-    private List<String> generateStartedLog(InternalHttpServlet hertsServer) {
-        List<String> endpointLogs = new ArrayList<>();
-        for (String endpoint : hertsServer.getEndpoints()) {
-            for (String m : HETRS_HTTP_METHODS) {
-                String log = m.equals(HETRS_HTTP_METHODS[0]) ? "[" + m + "]    " : "[" + m + "] ";
-                endpointLogs.add(log + endpoint);
-            }
-        }
-        if (this.metricsSetting != null) {
-            endpointLogs.add("[GET]     /metricsz" );
-        }
-        return endpointLogs;
     }
 }

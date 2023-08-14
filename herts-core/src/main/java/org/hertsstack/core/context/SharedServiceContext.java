@@ -17,6 +17,7 @@ public class SharedServiceContext {
         public static final String HERTS_CONTEXT_CLIENT_ID = "x-client-id";
         public static final String HERTS_SERVER_KEY = "Server";
         public static final String HERTS_SERVER_VAL = "Herts HTTP Server";
+        public static final String HERTS_SERVER_GATEWAY_VAL = "Herts Gateway";
 
         public static final Context.Key<String> HERTS_CONNECTION_ID_CTX = Context.key(HERTS_CONTEXT_CLIENT_ID);
 

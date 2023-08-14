@@ -18,12 +18,14 @@ public class HertsHttpClient implements HertsHttpClientBase {
     private final String host;
     private final int serverPort;
     private final boolean isSecureConnection;
+    private final boolean isGateway;
     private final String schema;
 
     public HertsHttpClient(HertsHttpClientBuilder builder) {
         this.hertsRpcServices = builder.getHertsRpcServices();
         this.host = builder.getHost();
         this.serverPort = builder.getServerPort();
+        this.isGateway = builder.isGateway();
         this.isSecureConnection = builder.isSecureConnection();
         this.schema = this.isSecureConnection ?
                 "https://" + this.host + ":" + this.serverPort :
@@ -49,7 +51,7 @@ public class HertsHttpClient implements HertsHttpClientBase {
             throw new ServiceNotFoundException("Not found service on registered service");
         }
 
-        HertsHttpClientHandler handler = new HertsHttpClientHandler(schema, targetService);
+        HertsHttpClientHandler handler = new HertsHttpClientHandler(this.schema, targetService, this.isGateway);
         return (T) Proxy.newProxyInstance(
                 classType.getClassLoader(),
                 new Class<?>[]{classType},
@@ -63,7 +65,7 @@ public class HertsHttpClient implements HertsHttpClientBase {
         if (targetService == null) {
             throw new ServiceNotFoundException("Not found service on registered service");
         }
-        HertsHttpClientHandler handler = new HertsHttpClientHandler(schema, targetService, customHeaders);
+        HertsHttpClientHandler handler = new HertsHttpClientHandler(this.schema, targetService, customHeaders, this.isGateway);
         return (T) Proxy.newProxyInstance(
                 classType.getClassLoader(),
                 new Class<?>[]{classType},
