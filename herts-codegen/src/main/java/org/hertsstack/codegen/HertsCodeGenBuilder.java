@@ -15,12 +15,12 @@ public class HertsCodeGenBuilder implements HertsCodeGen {
         return new HertsCodeGenBuilder();
     }
 
-    public HertsCodeGenBuilder hertsService(Class<?> interfaceClass) {
+    public HertsCodeGen hertsService(Class<?> interfaceClass) {
         this.hertsServices.add(interfaceClass);
         return this;
     }
 
-    public HertsCodeGenBuilder lang(HertsCodeGenLang lang) {
+    public HertsCodeGen lang(HertsCodeGenLang lang) {
         this.lang = lang;
         return this;
     }

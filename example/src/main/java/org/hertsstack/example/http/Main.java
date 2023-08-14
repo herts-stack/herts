@@ -39,7 +39,7 @@ public class Main {
     private static void startClient() {
         HertsHttpClient client = HertsHttpClient
                 .builder("localhost")
-                .registerHertService(HttpService.class)
+                .registerHertsService(HttpService.class)
                 .secure(false)
                 .build();
 

@@ -27,8 +27,8 @@ public class Main {
     private static void startClient() {
         HertsHttpClient client = HertsHttpClient
                 .builder("localhost")
-                .registerHertService(HttpService.class)
-                .registerHertService(AuthHttpService.class)
+                .registerHertsService(HttpService.class)
+                .registerHertsService(AuthHttpService.class)
                 .secure(false)
                 .build();
 
