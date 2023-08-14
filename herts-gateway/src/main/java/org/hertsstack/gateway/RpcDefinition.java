@@ -1,5 +1,6 @@
 package org.hertsstack.gateway;
 
+import org.hertsstack.core.context.SharedServiceContext;
 import org.hertsstack.core.exception.ServiceMethodNotfoundException;
 import org.hertsstack.core.service.HertsService;
 
@@ -30,6 +31,10 @@ class RpcDefinition {
         Method[] defMethods = serviceInstance.getClass().getDeclaredMethods();
         try {
             for (Method method : defMethods) {
+                if (Arrays.asList(SharedServiceContext.Reflection.ignoreMethodNames).contains(method.getName())) {
+                    continue;
+                }
+
                 List<Parameter> parameters = Arrays.asList(serviceInstance.getClass()
                         .getMethod(method.getName(), method.getParameterTypes()).getParameters());
 

@@ -23,11 +23,12 @@ import org.hertsstack.e2etest.clientstreaming_rpc.server.ClientStreamingServer;
 import org.hertsstack.e2etest.http.server.HttpServer;
 import org.hertsstack.e2etest.unary_rpc.client.UnaryClient;
 import org.hertsstack.e2etest.unary_rpc.server.UnaryServer;
+import org.hertsstack.serializer.MessageJsonParsingException;
 
 public class Main {
     private static final String ExecTypeMsg = "`server` or `client` or `gateway` or `gateway_client`";
     private static final String HertsTypeMsg = "`unary` or `server_streaming` or `client_streaming` or `bidirectional_streaming` or `reactive_streaming`";
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Options options = new Options();
         options.addOption(Option.builder("e")
                 .longOpt("exec_type")
@@ -154,10 +155,13 @@ public class Main {
                         IntegrationTestRsClient.run();
                         break;
                     case Http:
-                        HttpClient.run();
+                        try {
+                            HttpClient.run();
+                        } catch (MessageJsonParsingException e) {
+                            throw new RuntimeException(e);
+                        }
                         break;
                 }
-
             });
             thread.start();
             try {

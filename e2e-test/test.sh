@@ -30,7 +30,7 @@ run_test() {
 
 run_gateway_test() {
     echo "==================================="
-    echo "  unary Server"
+    echo "  unary Server for Gateway Test"
     echo "==================================="
     java -jar e2e-test/build/libs/e2e-test-1.0.0-all.jar --exec_type='server' --herts_type="unary" &
 
@@ -45,7 +45,7 @@ run_gateway_test() {
     done
 
     echo "==================================="
-    echo "  gateway Server"
+    echo "  gateway Server for Gateway Test"
     echo "==================================="
     java -jar e2e-test/build/libs/e2e-test-1.0.0-all.jar --exec_type='gateway' --herts_type="unary" &
 
@@ -60,7 +60,7 @@ run_gateway_test() {
     done
 
     echo "==================================="
-    echo "  gateway Client"
+    echo "  gateway Client for Gateway Test"
     echo "==================================="
     java -jar e2e-test/build/libs/e2e-test-1.0.0-all.jar --exec_type='gateway_client' --herts_type="unary"
     sleep 5

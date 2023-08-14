@@ -5,6 +5,7 @@ import org.hertsstack.e2etest.http.HttpService01;
 import org.hertsstack.e2etest.http.HttpService02;
 import org.hertsstack.e2etest.common.Constant;
 import org.hertsstack.core.logger.Logging;
+import org.hertsstack.serializer.MessageJsonParsingException;
 import org.hertsstack.serializer.MessageSerializeType;
 import org.hertsstack.serializer.MessageSerializer;
 import org.hertsstack.e2etest.common.TestData;
@@ -17,7 +18,7 @@ public class HttpClient {
     private static final java.util.logging.Logger logger = Logging.getLogger(HttpClient.class.getSimpleName());
     private static final MessageSerializer serializer = new MessageSerializer(MessageSerializeType.Json);
 
-    public static void run() {
+    public static void run() throws MessageJsonParsingException {
         HertsHttpClient client = HertsHttpClient
                 .builder("localhost")
                 .registerHertsService(HttpService01.class)
@@ -28,45 +29,41 @@ public class HttpClient {
 
         HttpService01 service = client.createHertsService(HttpService01.class, Collections.singletonMap("Authorization", "Bearer XXXXXXX"));
 
+        for (int i = 0; i < 100; i++) {
+            Map<String, String> res01 = service.httpTest01("ID", "VALUE bu client");
+            logger.info(serializer.serializeAsStr(res01));
+
+            boolean res02 = service.httpTest02();
+            logger.info(serializer.serializeAsStr(res02));
+        }
+
+        service = client.recreateHertsService(HttpService01.class);
+        for (int i = 0; i < 100; i++) {
+            Map<String, String> res = service.httpTest01("ID", "Recreate!");
+            logger.info(serializer.serializeAsStr(res));
+        }
+        TestData testData = new TestData();
+        testData.setBar("bar");
+        testData.setFoo("foo");
+        TestData res04 = service.httpTest04(testData);
+        logger.info(serializer.serializeAsStr(res04));
+
+        String res05 = service.httpTest05(Collections.singletonList("hello"), Collections.singletonMap("test10", "value"));
+        logger.info(res05);
+
+        String res06 = service.httpTest06("hello", true, 100, 200, 1.4);
+        logger.info(res06);
+
         try {
-            for (int i = 0; i < 100; i++) {
-                Map<String, String> res01 = service.httpTest01("ID", "VALUE bu client");
-                logger.info(serializer.serializeAsStr(res01));
+            String res07 = service.httpTest07();
+        } catch (HttpErrorException ex) {
+            logger.info(ex.getStatusCode() + " " + ex.getMessage());
+        }
 
-                boolean res02 = service.httpTest02();
-                logger.info(serializer.serializeAsStr(res02));
-            }
-
-            service = client.recreateHertsService(HttpService01.class);
-            for (int i = 0; i < 100; i++) {
-                Map<String, String> res = service.httpTest01("ID", "Recreate!");
-                logger.info(serializer.serializeAsStr(res));
-            }
-            TestData testData = new TestData();
-            testData.setBar("bar");
-            testData.setFoo("foo");
-            TestData res04 = service.httpTest04(testData);
-            logger.info(serializer.serializeAsStr(res04));
-
-            String res05 = service.httpTest05(Collections.singletonList("hello"), Collections.singletonMap("test10", "value"));
-            logger.info(res05);
-
-            String res06 = service.httpTest06("hello", true, 100, 200, 1.4);
-            logger.info(res06);
-
-            try {
-                String res07 = service.httpTest07();
-            } catch (HttpErrorException ex) {
-                logger.info(ex.getStatusCode() + " " + ex.getMessage());
-            }
-
-            HttpService02 service02 = client.createHertsService(HttpService02.class);
-            for (int i = 0; i < 100; i++) {
-                String res = service02.httpTest10();
-                logger.info(serializer.serializeAsStr(res));
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        HttpService02 service02 = client.createHertsService(HttpService02.class);
+        for (int i = 0; i < 100; i++) {
+            String res = service02.httpTest10();
+            logger.info(serializer.serializeAsStr(res));
         }
     }
 }

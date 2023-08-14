@@ -10,7 +10,7 @@ import io.grpc.ManagedChannel;
  * Herts core client
  *
  * @author Herts Contributer
- * @version 1.0.0
+ * @version 1.0.2
  */
 public interface HertsRpcClient {
 
@@ -61,6 +61,12 @@ public interface HertsRpcClient {
      */
     <T extends HertsService> T createHertsRpcService(Class<T> interfaceClass, CallCredentials credentials);
 
+    /**
+     * Create unknown herts service.
+     *
+     * @param interfaceClass Herts service interface
+     * @return HertsService
+     */
     HertsService createUnknownHertsRpcService(Class<?> interfaceClass);
 
     /**

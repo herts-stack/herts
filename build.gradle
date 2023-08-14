@@ -4,13 +4,13 @@ allprojects {
 subprojects {
     apply plugin: 'java'
 
-    def grpcVersion = '1.53.0'
+    def grpcVersion = '1.57.0'
     dependencies {
         // gprc
         implementation "io.grpc:grpc-protobuf:${grpcVersion}"
         implementation "io.grpc:grpc-services:${grpcVersion}"
         implementation "io.grpc:grpc-stub:${grpcVersion}"
-        runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
+        implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
 
         implementation 'org.slf4j:slf4j-nop:2.0.5'
         implementation 'org.slf4j:slf4j-api:2.0.5'

@@ -30,4 +30,16 @@ public class SharedServiceContext {
         public static final String RECEIVER_METHOD_NAME = "registerReceiver";
         public static final String REGISTERED_METHOD_NAME = "registered";
     }
+
+    public static class Reflection {
+        public static final String[] ignoreMethodNames = new String[] {
+                "proxyClassLookup",
+                "equals",
+                "toString",
+                "hashCode",
+                "getConnection",
+                "getHertsType",
+                "getGrpcMethodType"
+        };
+    }
 }

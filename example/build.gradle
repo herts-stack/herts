@@ -17,7 +17,7 @@ repositories {
     gradlePluginPortal()
 }
 
-def grpcVersion = '1.53.0'
+def grpcVersion = '1.57.0'
 dependencies {
     implementation project(':herts-core')
     implementation project(':herts-codegen')
@@ -31,7 +31,7 @@ dependencies {
     implementation "io.grpc:grpc-protobuf:${grpcVersion}"
     implementation "io.grpc:grpc-services:${grpcVersion}"
     implementation "io.grpc:grpc-stub:${grpcVersion}"
-    runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
+    implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
 
     implementation 'redis.clients:jedis:4.3.1'
 
