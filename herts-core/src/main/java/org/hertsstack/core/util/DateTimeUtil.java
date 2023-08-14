@@ -6,7 +6,6 @@ import java.util.Date;
  * Herts Date utility
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class DateTimeUtil {
 

@@ -12,7 +12,6 @@ import java.util.logging.Logger;
  * HertsReactiveStreamingServiceBase
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class ReactiveStreamingBase<T, K> implements HertsReactiveService {
     private static final Logger logger = Logging.getLogger(ReactiveStreamingBase.class.getSimpleName());

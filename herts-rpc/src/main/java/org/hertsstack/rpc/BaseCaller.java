@@ -12,7 +12,6 @@ import java.lang.reflect.Method;
  * If implement caller, extends this
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class BaseCaller {
     private final Method reflectMethod;

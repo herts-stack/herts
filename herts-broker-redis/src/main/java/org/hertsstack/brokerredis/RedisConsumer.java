@@ -16,7 +16,6 @@ import java.util.UUID;
  * Redis consumer
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class RedisConsumer implements ReactiveConsumer {
     private final MessageSerializer serializer;

@@ -14,7 +14,7 @@ public class ClientStreamingServiceImpl extends HertsServiceClientStreaming<Clie
 
     @Override
     public StreamObserver<HelloRequest> test10(StreamObserver<HelloResponse01> responseObserver) {
-        logger.info("------------ ClientStreaming test10 RPC");
+        logger.info("ClientStreaming test10 RPC");
         return new StreamObserver<HelloRequest>() {
             @Override
             public void onNext(HelloRequest response) {

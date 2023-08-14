@@ -24,7 +24,6 @@ import java.util.concurrent.ConcurrentMap;
  * Bidirectional streaming Method Handler
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class HertsRpcClientBStreamingMethodHandler extends io.grpc.stub.AbstractBlockingStub<HertsRpcClientBStreamingMethodHandler> implements InvocationHandler {
     private final Map<String, Class<?>> methodTypes = new HashMap<>();

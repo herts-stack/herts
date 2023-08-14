@@ -8,7 +8,6 @@ import io.grpc.MethodDescriptor;
  * Herts support type
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public enum HertsType {
     Unary(1),

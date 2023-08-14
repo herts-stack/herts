@@ -23,7 +23,6 @@ import java.util.concurrent.ConcurrentMap;
  * Herts http caller base class
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class HertsHttpCallerBase {
     private final Object coreObject;
@@ -45,9 +44,13 @@ class HertsHttpCallerBase {
         out.flush();
     }
 
-    public static void setHertsHeader(HttpServletResponse response) {
+    public static void setHertsHeader(HttpServletResponse response, boolean isApiServer) {
+        if (isApiServer) {
+            response.setHeader(SharedServiceContext.Header.HERTS_SERVER_KEY, SharedServiceContext.Header.HERTS_SERVER_VAL);
+        } else {
+            response.setHeader(SharedServiceContext.Header.HERTS_SERVER_KEY, SharedServiceContext.Header.HERTS_SERVER_GATEWAY_VAL);
+        }
         response.setHeader(SharedServiceContext.Header.HERTS_CONTEXT_VERSION, SharedServiceContext.Header.CODE_VERSION);
-        response.setHeader(SharedServiceContext.Header.HERTS_SERVER_KEY, SharedServiceContext.Header.HERTS_SERVER_VAL);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
     }

@@ -4,7 +4,6 @@ package org.hertsstack.core.exception;
  * Herts grpc streaming invalid message failure exception class.
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class StreamBodyException extends RuntimeException {
     public StreamBodyException() {

@@ -1,7 +1,10 @@
 package org.hertsstack.httpclient;
 
 import org.hertsstack.core.annotation.HertsHttp;
+import org.hertsstack.core.annotation.HertsRpcService;
 import org.hertsstack.core.context.HertsType;
+import org.hertsstack.core.exception.CodeGenException;
+import org.hertsstack.core.exception.HttpClientBuildException;
 import org.hertsstack.core.exception.HttpServerBuildException;
 
 import java.util.ArrayList;
@@ -12,6 +15,7 @@ class IBuilder implements HertsHttpClientBuilder {
     private final String host;
     private int serverPort = 8080;
     private boolean isSecureConnection = false;
+    private boolean isGateway = false;
 
     private IBuilder(String connectedHost) {
         this.host = connectedHost;
@@ -34,11 +38,17 @@ class IBuilder implements HertsHttpClientBuilder {
     }
 
     @Override
-    public <T> HertsHttpClientBuilder registerHertService(Class<T> interfaceClass) {
+    public <T> HertsHttpClientBuilder registerHertsService(Class<T> interfaceClass) {
         if (!interfaceClass.isInterface()) {
             throw new HttpServerBuildException("Please register Interface with extends HertsRpcService");
         }
         this.hertsRpcServices.add(interfaceClass);
+        return this;
+    }
+
+    @Override
+    public HertsHttpClientBuilder gatewayApi(boolean isGateway) {
+        this.isGateway = isGateway;
         return this;
     }
 
@@ -63,6 +73,11 @@ class IBuilder implements HertsHttpClientBuilder {
     }
 
     @Override
+    public boolean isGateway() {
+        return this.isGateway;
+    }
+
+    @Override
     public HertsHttpClient build() {
         if (this.hertsRpcServices.size() == 0 || this.host == null || this.host.isEmpty()) {
             throw new HttpServerBuildException("Please register HertsService and host");
@@ -71,10 +86,20 @@ class IBuilder implements HertsHttpClientBuilder {
         List<HertsType> hertsTypes = new ArrayList<>();
         for (Class<?> c : this.hertsRpcServices) {
             try {
-                HertsHttp annotation = c.getAnnotation(HertsHttp.class);
-                hertsTypes.add(annotation.value());
+                if (!this.isGateway) {
+                    HertsHttp annotation = c.getAnnotation(HertsHttp.class);
+                    hertsTypes.add(annotation.value());
+                } else {
+                    HertsRpcService annotation = c.getAnnotation(HertsRpcService.class);
+                    if (annotation.value() != HertsType.Unary) {
+                        throw new HttpClientBuildException("Code generation supports " + HertsType.Unary + " only if use Gateway");
+                    }
+                    hertsTypes.add(HertsType.Http);
+                }
+            } catch (HttpClientBuildException ex) {
+                throw ex;
             } catch (Exception ex) {
-                throw new HttpServerBuildException("Could not find @HertsHttp annotation in " + c.getName(), ex);
+                throw new HttpClientBuildException("Could not find @HertsHttp annotation in " + c.getName(), ex);
             }
         }
 

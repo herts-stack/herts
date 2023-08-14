@@ -13,7 +13,6 @@ import java.lang.reflect.Method;
  * HertsRpcCaller implementation
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class HertsRpcSimpleCaller extends BaseCaller implements HertsRpcCaller {
     private final Method reflectMethod;

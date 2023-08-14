@@ -2,13 +2,13 @@ package org.hertsstack.rpcclient;
 
 import io.grpc.Channel;
 import io.grpc.ClientInterceptor;
+
 import org.hertsstack.core.service.HertsReceiver;
 
 /**
  * Herts core client builder interface
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public interface HertsRpcClientIBuilder {
 
@@ -37,6 +37,16 @@ public interface HertsRpcClientIBuilder {
      * @return HertsRpcClientIBuilder
      */
     HertsRpcClientIBuilder registerHertsRpcReceiver(HertsReceiver hertsReceiver);
+
+    /**
+     * Herts RPC automatic reconnection.
+     * Default false.
+     * If set true, you don't need to implement auto reconnect.
+     * Its try to reconnect to server when server is down/keepalive failure.
+     *
+     * @return HertsRpcClientIBuilder
+     */
+    HertsRpcClientIBuilder autoReconnection(boolean enableAutoReconnection);
 
     /**
      * Channel for gRPC

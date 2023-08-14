@@ -17,7 +17,6 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
  * Herts gRPC custom static descriptor.
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class CustomGrpcDescriptor {
     private static final MethodDescriptor.Marshaller<byte[]> reqMessageMarshaller = new CustomGrpcMarshaller();

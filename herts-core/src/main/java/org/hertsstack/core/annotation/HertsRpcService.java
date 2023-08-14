@@ -13,7 +13,6 @@ import java.lang.annotation.Target;
  * If you use HertsRpcService, please set this annotation to interface
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 @Inherited
 @Target(ElementType.TYPE)

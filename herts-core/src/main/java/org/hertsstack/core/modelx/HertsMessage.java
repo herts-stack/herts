@@ -8,7 +8,6 @@ import java.io.Serializable;
  * Herts rpc message of internal
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 @Message
 public class HertsMessage implements Serializable {

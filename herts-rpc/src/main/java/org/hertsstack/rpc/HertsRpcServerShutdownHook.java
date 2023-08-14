@@ -4,7 +4,6 @@ package org.hertsstack.rpc;
  * Herts rpc serevr shutdown hook trriger
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 interface HertsRpcServerShutdownHook {
 

@@ -9,7 +9,6 @@ import java.util.List;
  * Herts reactive payload for load balancing
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 @Message
 public class InternalReactivePayload implements Serializable {

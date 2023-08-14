@@ -15,7 +15,7 @@ public class ServerStreamingServiceImpl extends HertsServiceServerStreaming<Serv
 
     @Override
     public void test05(String id, HelloRequest req, StreamObserver<HelloResponse01> responseObserver) {
-        logger.info("------------ ServerStreaming test05 RPC");
+        logger.info("ServerStreaming test05 RPC");
         HelloResponse01 res = new HelloResponse01();
         res.setCode(9999);
         responseObserver.onNext(res);

@@ -7,7 +7,6 @@ import io.grpc.Metadata;
  * Herts shared context on server and client.
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class SharedServiceContext {
 
@@ -17,6 +16,7 @@ public class SharedServiceContext {
         public static final String HERTS_CONTEXT_CLIENT_ID = "x-client-id";
         public static final String HERTS_SERVER_KEY = "Server";
         public static final String HERTS_SERVER_VAL = "Herts HTTP Server";
+        public static final String HERTS_SERVER_GATEWAY_VAL = "Herts Gateway";
 
         public static final Context.Key<String> HERTS_CONNECTION_ID_CTX = Context.key(HERTS_CONTEXT_CLIENT_ID);
 
@@ -28,5 +28,17 @@ public class SharedServiceContext {
         public static final String METHOD_NAME = "MethodName";
         public static final String RECEIVER_METHOD_NAME = "registerReceiver";
         public static final String REGISTERED_METHOD_NAME = "registered";
+    }
+
+    public static class Reflection {
+        public static final String[] ignoreMethodNames = new String[] {
+                "proxyClassLookup",
+                "equals",
+                "toString",
+                "hashCode",
+                "getConnection",
+                "getHertsType",
+                "getGrpcMethodType"
+        };
     }
 }

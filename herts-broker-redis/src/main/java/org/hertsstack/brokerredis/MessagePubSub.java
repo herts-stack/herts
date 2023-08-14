@@ -7,7 +7,6 @@ import redis.clients.jedis.BinaryJedisPubSub;
  * BinaryJedisPubSub implementation
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class MessagePubSub extends BinaryJedisPubSub {
     private final RedisConsumer redisConsumer;

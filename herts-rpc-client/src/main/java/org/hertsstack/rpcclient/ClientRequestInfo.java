@@ -7,18 +7,18 @@ import org.hertsstack.core.context.SharedServiceContext;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 
-class ClientConnection extends CallCredentials {
+class ClientRequestInfo extends CallCredentials {
     private final String clientId;
 
-    public static ClientConnection create() {
-        return new ClientConnection();
+    public static ClientRequestInfo create() {
+        return new ClientRequestInfo();
     }
 
-    public ClientConnection() {
+    public ClientRequestInfo() {
         this.clientId = UUID.randomUUID().toString();
     }
 
-    public ClientConnection(String clientId) {
+    public ClientRequestInfo(String clientId) {
         this.clientId = clientId;
     }
 

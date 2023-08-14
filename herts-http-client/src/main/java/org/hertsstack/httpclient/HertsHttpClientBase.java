@@ -8,7 +8,6 @@ import java.util.Map;
  * Herts http client
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 interface HertsHttpClientBase {
 

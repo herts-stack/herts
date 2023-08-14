@@ -6,9 +6,8 @@ import java.util.List;
  * Code generator.
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
-public interface CodeGenerator {
+interface CodeGenerator {
 
     /**
      * Run code generator proceoss.

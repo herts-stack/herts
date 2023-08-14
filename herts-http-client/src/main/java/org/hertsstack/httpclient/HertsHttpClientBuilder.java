@@ -6,7 +6,6 @@ import java.util.List;
  * Herts http client builder interface
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public interface HertsHttpClientBuilder {
 
@@ -27,14 +26,22 @@ public interface HertsHttpClientBuilder {
     HertsHttpClientBuilder port(int port);
 
     /**
-     * Herts implementation service
+     * Herts interface service
      * Not implementation class. Required @HertsHttp annotation
      *
      * @param interfaceClass Interface class
      * @return HertsHttpClientBuilder
      * @param <T> HertsService interface
      */
-    <T> HertsHttpClientBuilder registerHertService(Class<T> interfaceClass);
+    <T> HertsHttpClientBuilder registerHertsService(Class<T> interfaceClass);
+
+    /**
+     * Gateway or not
+     *
+     * @param isGateway IsGateway
+     * @return HertsHttpClientBuilder
+     */
+    HertsHttpClientBuilder gatewayApi(boolean isGateway);
 
     /**
      * Get HertsRpcService of list
@@ -63,6 +70,13 @@ public interface HertsHttpClientBuilder {
      * @return Result
      */
     boolean isSecureConnection();
+
+    /**
+     * Get gateway or not
+     *
+     * @return Result
+     */
+    boolean isGateway();
 
     /**
      * Build

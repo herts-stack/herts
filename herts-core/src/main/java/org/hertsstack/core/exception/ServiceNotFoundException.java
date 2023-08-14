@@ -4,7 +4,6 @@ package org.hertsstack.core.exception;
  * Herts service is not found on registered service exception class.
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class ServiceNotFoundException extends RuntimeException {
     public ServiceNotFoundException() {

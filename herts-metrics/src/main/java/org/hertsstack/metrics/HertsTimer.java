@@ -6,7 +6,6 @@ import io.micrometer.core.instrument.Timer;
  * Herts timer entity
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class HertsTimer {
     public enum Type {

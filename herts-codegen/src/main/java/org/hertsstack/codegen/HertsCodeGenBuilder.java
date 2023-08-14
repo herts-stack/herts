@@ -7,25 +7,25 @@ import org.hertsstack.core.exception.CodeGenException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CodeGenBuilder {
+public class HertsCodeGenBuilder implements HertsCodeGen {
     private final List<Class<?>> hertsServices = new ArrayList<>();
-    private CodeGenLang lang = null;
+    private HertsCodeGenLang lang = null;
 
-    public static CodeGenBuilder builder() {
-        return new CodeGenBuilder();
+    public static HertsCodeGen builder() {
+        return new HertsCodeGenBuilder();
     }
 
-    public CodeGenBuilder hertsService(Class<?> interfaceClass) {
+    public HertsCodeGen hertsService(Class<?> interfaceClass) {
         this.hertsServices.add(interfaceClass);
         return this;
     }
 
-    public CodeGenBuilder lang(CodeGenLang lang) {
+    public HertsCodeGen lang(HertsCodeGenLang lang) {
         this.lang = lang;
         return this;
     }
 
-    public CodeGenEngine build() {
+    public HertsCodeGenEngine build() {
         if (this.hertsServices.size() == 0) {
             throw new CodeGenException("Please set HertsService");
         }

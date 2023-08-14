@@ -6,7 +6,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
  * Wrapped JsonProcessingException
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class MessageJsonParsingException extends JsonProcessingException {
     public MessageJsonParsingException(String msg) {

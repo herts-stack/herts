@@ -4,7 +4,6 @@ package org.hertsstack.metrics;
  * Herts metrics context
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class HertsMetricsContext {
     public enum Metric {

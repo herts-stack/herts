@@ -15,9 +15,8 @@ import java.util.concurrent.ConcurrentMap;
  * Herts http simple class
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
-class HertsHttpSimpleCaller extends HertsHttpCallerBase implements HertsHttpCaller {
+class HertsHttpSimpleCaller extends HertsHttpCallerBase implements InternalHttpCaller {
 
     public HertsHttpSimpleCaller(Object coreObject, HertsMetrics hertsHttpMetrics,
                                  MessageSerializer hertsSerializer, ConcurrentMap<String, List<Parameter>> parameters) {
@@ -25,7 +24,7 @@ class HertsHttpSimpleCaller extends HertsHttpCallerBase implements HertsHttpCall
     }
 
     @Override
-    public void post(Method hertsMethod, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void post(String serviceName, Method hertsMethod, HttpServletRequest request, HttpServletResponse response) throws Exception {
         call(hertsMethod, request, response);
     }
 }

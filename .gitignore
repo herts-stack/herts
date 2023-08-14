@@ -11,6 +11,7 @@ herts-broker/build/
 herts-broker-redis/build/
 herts-broker-local/build/
 herts-broker-pubsub/build/
+herts-gateway/build/
 tools/build/
 example/build/
 example/*.ts

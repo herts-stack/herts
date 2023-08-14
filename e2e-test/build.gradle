@@ -17,7 +17,7 @@ repositories {
     gradlePluginPortal()
 }
 
-def grpcVersion = '1.53.0'
+def grpcVersion = '1.57.0'
 dependencies {
 //    implementation project(':example')
     implementation project(':herts-core')
@@ -29,12 +29,23 @@ dependencies {
     implementation project(':herts-broker')
     implementation project(':herts-broker-local')
     implementation project(':herts-broker-redis')
+    implementation project(':herts-metrics')
+    implementation project(':herts-gateway')
 
     implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
+
+    implementation 'javax.servlet:servlet-api:3.0-alpha-1'
+    implementation ('org.eclipse.jetty:jetty-server:10.0.15') {
+        exclude group: "org.slf4j", module: "slf4j-api"
+    }
+    implementation ('org.eclipse.jetty:jetty-webapp:10.0.0') {
+        exclude group: "org.slf4j", module: "slf4j-api"
+    }
+
     implementation "io.grpc:grpc-protobuf:${grpcVersion}"
     implementation "io.grpc:grpc-services:${grpcVersion}"
     implementation "io.grpc:grpc-stub:${grpcVersion}"
-    runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
+    implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
 
     implementation 'commons-cli:commons-cli:1.5.0'
     implementation 'redis.clients:jedis:4.3.1'

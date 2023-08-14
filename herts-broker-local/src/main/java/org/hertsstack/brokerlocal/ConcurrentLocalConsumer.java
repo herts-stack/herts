@@ -16,7 +16,6 @@ import java.util.List;
  * Concurrent local consumer
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class ConcurrentLocalConsumer implements ReactiveConsumer {
     private final MessageSerializer serializer;

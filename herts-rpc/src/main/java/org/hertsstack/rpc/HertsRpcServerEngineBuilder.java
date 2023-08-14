@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * Herts server engine builder implementation
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class HertsRpcServerEngineBuilder implements HertsRpcServerEngine {
     private static final java.util.logging.Logger logger = Logging.getLogger(HertsRpcServerEngineBuilder.class.getSimpleName());

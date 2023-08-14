@@ -8,7 +8,6 @@ import java.io.Serializable;
  * Herts http response for internal message
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class InternalHttpResponse implements Serializable {
     @JsonProperty

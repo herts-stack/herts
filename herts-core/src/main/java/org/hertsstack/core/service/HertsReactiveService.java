@@ -7,7 +7,6 @@ import org.hertsstack.core.context.HertsType;
  * Herts reactive service interface
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public interface HertsReactiveService extends HertsService {
 

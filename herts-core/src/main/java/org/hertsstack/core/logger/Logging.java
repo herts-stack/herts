@@ -11,7 +11,6 @@ import java.util.logging.LogManager;
  * Wrapped java.util.logging.Logger
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class Logging {
     public static java.util.logging.Logger LOGGER;

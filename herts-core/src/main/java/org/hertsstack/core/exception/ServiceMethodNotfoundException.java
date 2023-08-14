@@ -4,7 +4,6 @@ package org.hertsstack.core.exception;
  * Herts failure instance exception class.
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class ServiceMethodNotfoundException extends RuntimeException {
     public ServiceMethodNotfoundException() {

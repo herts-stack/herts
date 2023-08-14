@@ -40,7 +40,6 @@ import java.util.Map;
  * Herts server builder
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class HertsRpcServerBuilder implements RpcServer {
     private final Map<BindableService, ServerInterceptor> services = new HashMap<>();
@@ -48,7 +47,6 @@ class HertsRpcServerBuilder implements RpcServer {
     private final List<HertsService> hertsRpcServices = new ArrayList<>();
 
     private ReactiveBroker reactiveBroker = ConcurrentLocalBroker.getInstance();
-    private String connectionInfo;
     private GrpcServerOption option;
     private ServerCredentials credentials;
     private HertsMetricsServer hertsMetricsServer;
@@ -66,7 +64,7 @@ class HertsRpcServerBuilder implements RpcServer {
     private static HertsMetrics getHertsMetrics(List<HertsService> coreServices, HertsMetricsSetting metricsSetting) {
         HertsMetrics hertsMetrics;
         if (metricsSetting != null) {
-            hertsMetrics = HertsMetricsHandler.builder()
+            hertsMetrics = HertsMetricsHandler.builder(coreServices.get(0).getHertsType())
                     .registerHertsServices(coreServices)
                     .isErrRateEnabled(metricsSetting.isErrRateEnabled())
                     .isJvmEnabled(metricsSetting.isJvmEnabled())
@@ -75,7 +73,7 @@ class HertsRpcServerBuilder implements RpcServer {
                     .isRpsEnabled(metricsSetting.isRpsEnabled())
                     .build();
         } else {
-            hertsMetrics = HertsMetricsHandler.builder().registerHertsServices(null).build();
+            hertsMetrics = HertsMetricsHandler.builder(coreServices.get(0).getHertsType()).registerHertsServices(null).build();
         }
         return hertsMetrics;
     }

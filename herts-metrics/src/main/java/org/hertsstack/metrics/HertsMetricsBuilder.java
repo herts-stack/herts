@@ -8,7 +8,6 @@ import java.util.List;
  * Herts core metrics builder
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public interface HertsMetricsBuilder {
 
@@ -19,6 +18,8 @@ public interface HertsMetricsBuilder {
      * @return Builder
      */
     HertsMetricsBuilder registerHertsServices(List<HertsService> hertsRpcServices);
+
+    HertsMetricsBuilder registerHertsServicesByInterface(List<Class<?>> hertsRpcServices);
 
     /**
      * Metrics rps is enabled or not

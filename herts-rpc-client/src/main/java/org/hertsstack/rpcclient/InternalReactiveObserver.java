@@ -14,7 +14,6 @@ import java.util.concurrent.ConcurrentMap;
  * Internal reactive observer
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class InternalReactiveObserver implements StreamObserver<Object> {
     private final ConcurrentMap<String, Method> reflectMethods = new ConcurrentHashMap<>();

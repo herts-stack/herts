@@ -10,7 +10,6 @@ import java.util.List;
 /**
  * Herts refection method
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class ReflectMethod {
     private static final java.util.logging.Logger logger = Logging.getLogger(ReflectMethod.class.getSimpleName());

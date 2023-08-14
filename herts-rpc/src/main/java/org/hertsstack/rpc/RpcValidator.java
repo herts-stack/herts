@@ -12,7 +12,6 @@ import java.util.List;
  * Herts rpc validator
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class RpcValidator extends ServiceValidateUtil {
     private static final String ioGrpcStreamPkgName = "io.grpc.stub.StreamObserver";

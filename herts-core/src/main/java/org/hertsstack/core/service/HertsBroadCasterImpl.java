@@ -15,7 +15,6 @@ import java.util.logging.Logger;
  * HertsBroadCaster implementation
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class HertsBroadCasterImpl implements HertsBroadCaster {
     private static final Logger logger = Logger.getLogger(HertsBroadCasterImpl.class.getName());

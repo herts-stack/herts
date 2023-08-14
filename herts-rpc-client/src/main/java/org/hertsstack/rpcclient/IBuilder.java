@@ -18,17 +18,17 @@ import java.util.List;
  * HertsRpcClientIBuilder implementation
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class IBuilder implements HertsRpcClientIBuilder {
     private final List<Class<?>> hertsRpcServices = new ArrayList<>();
     private final List<HertsReceiver> hertsRpcReceivers = new ArrayList<>();
     private final String connectedHost;
     private final int serverPort;
-    private final ClientConnection clientConnection;
+    private final ClientRequestInfo clientConnection;
 
     private HertsType hertsType;
     private boolean isSecureConnection;
+    private boolean isAutoReconnection;
     private Channel channel;
     private ClientInterceptor interceptor;
     private GrpcClientOption option;
@@ -36,7 +36,7 @@ public class IBuilder implements HertsRpcClientIBuilder {
     public IBuilder(String connectedHost, int serverPort) {
         this.connectedHost = connectedHost;
         this.serverPort = serverPort;
-        this.clientConnection = ClientConnection.create();
+        this.clientConnection = ClientRequestInfo.create();
     }
 
     @Override
@@ -57,6 +57,12 @@ public class IBuilder implements HertsRpcClientIBuilder {
     @Override
     public HertsRpcClientIBuilder registerHertsRpcReceiver(HertsReceiver hertsReceiver) {
         this.hertsRpcReceivers.add(hertsReceiver);
+        return this;
+    }
+
+    @Override
+    public HertsRpcClientIBuilder autoReconnection(boolean enableAutoReconnection) {
+        this.isAutoReconnection = enableAutoReconnection;
         return this;
     }
 
@@ -100,7 +106,9 @@ public class IBuilder implements HertsRpcClientIBuilder {
 
         if (this.channel == null) {
             ConnectionManager manager = new ConnectionManager(this.channel, this.option);
-            this.channel = manager.connect(this.connectedHost, this.serverPort, this.isSecureConnection, this.interceptor);
+            this.channel = manager.connect(
+                    this.connectedHost, this.serverPort,
+                    this.isSecureConnection, this.interceptor, this.isAutoReconnection);
             manager.reconnectListener(this::registerReceivers);
         }
 
@@ -205,7 +213,7 @@ public class IBuilder implements HertsRpcClientIBuilder {
         return option;
     }
 
-    public ClientConnection getClientConnection() {
+    public ClientRequestInfo getClientConnection() {
         return clientConnection;
     }
 }

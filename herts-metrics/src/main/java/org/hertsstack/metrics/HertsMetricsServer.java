@@ -11,7 +11,6 @@ import java.io.PrintWriter;
  * Herts metrics server
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class HertsMetricsServer {
     private static final java.util.logging.Logger logger = Logging.getLogger(HertsMetricsServer.class.getSimpleName());

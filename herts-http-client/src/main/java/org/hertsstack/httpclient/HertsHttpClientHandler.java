@@ -29,7 +29,6 @@ import java.util.stream.IntStream;
  * Herts http client handler
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class HertsHttpClientHandler implements InvocationHandler {
     private final MessageSerializer serializer = new MessageSerializer(MessageSerializeType.Json);
@@ -37,18 +36,21 @@ public class HertsHttpClientHandler implements InvocationHandler {
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final String url;
     private final String serviceName;
+    private final boolean isGateway;
 
     private ConcurrentMap<String, String> customHeaders;
 
-    public HertsHttpClientHandler(String url, Class<?> hertsRpcService) {
+    public HertsHttpClientHandler(String url, Class<?> hertsRpcService, boolean isGateway) {
         this.url = url;
         this.serviceName = hertsRpcService.getSimpleName();
+        this.isGateway = isGateway;
         init(hertsRpcService.getName());
     }
 
-    public HertsHttpClientHandler(String url, Class<?> hertsRpcService, Map<String, String> customHeaders) {
+    public HertsHttpClientHandler(String url, Class<?> hertsRpcService, Map<String, String> customHeaders, boolean isGateway) {
         this.url = url;
         this.serviceName = hertsRpcService.getSimpleName();
+        this.isGateway = isGateway;
         this.customHeaders = new ConcurrentHashMap<>();
         this.customHeaders.putAll(customHeaders);
         init(hertsRpcService.getName());
@@ -71,8 +73,9 @@ public class HertsHttpClientHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        String pref = !this.isGateway ? "api" : "gateway";
         HttpRequest.Builder builder = HttpRequest
-                .newBuilder(URI.create(url + "/api/" + this.serviceName + "/" + method.getName()))
+                .newBuilder(URI.create(url + "/" + pref + "/" + this.serviceName + "/" + method.getName()))
                 .header("Content-Type", "application/json");
 
         if (this.customHeaders != null) {

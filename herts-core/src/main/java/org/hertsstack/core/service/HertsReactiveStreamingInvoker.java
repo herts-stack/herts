@@ -15,7 +15,6 @@ import java.util.List;
  * Herts reactive invocation handler for server side
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 class HertsReactiveStreamingInvoker implements InvocationHandler {
     private final ReactiveBroker hertsMessageBroker;

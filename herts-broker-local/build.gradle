@@ -6,7 +6,7 @@ plugins {
 apply plugin: 'application'
 
 def pkgName = 'org.hertsstack'
-def pkgVersion = '1.0.0'
+def pkgVersion = '1.0.1'
 def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '11'
 def artifactId = 'broker-local'
 
@@ -20,7 +20,7 @@ repositories {
     gradlePluginPortal()
 }
 
-def grpcVersion = '1.53.0'
+def grpcVersion = '1.57.0'
 dependencies {
     implementation project(':herts-broker')
     implementation project(':herts-serializer')
@@ -28,7 +28,7 @@ dependencies {
     implementation "io.grpc:grpc-protobuf:${grpcVersion}"
     implementation "io.grpc:grpc-services:${grpcVersion}"
     implementation "io.grpc:grpc-stub:${grpcVersion}"
-    runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
+    implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
 
     implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
     implementation 'com.google.guava:guava:32.0.1-jre'

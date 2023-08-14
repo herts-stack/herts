@@ -6,6 +6,8 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.hertsstack.e2etest.gateway.GwClient;
+import org.hertsstack.e2etest.gateway.GwServer;
 import org.hertsstack.e2etest.http.client.HttpClient;
 import org.hertsstack.e2etest.reactivestreaming_rpc.client.IntegrationTestRsClient;
 import org.hertsstack.e2etest.reactivestreaming_rpc.client.QueueTestRsClient;
@@ -21,11 +23,12 @@ import org.hertsstack.e2etest.clientstreaming_rpc.server.ClientStreamingServer;
 import org.hertsstack.e2etest.http.server.HttpServer;
 import org.hertsstack.e2etest.unary_rpc.client.UnaryClient;
 import org.hertsstack.e2etest.unary_rpc.server.UnaryServer;
+import org.hertsstack.serializer.MessageJsonParsingException;
 
 public class Main {
-    private static final String ExecTypeMsg = "`server` or `client`";
+    private static final String ExecTypeMsg = "`server` or `client` or `gateway` or `gateway_client`";
     private static final String HertsTypeMsg = "`unary` or `server_streaming` or `client_streaming` or `bidirectional_streaming` or `reactive_streaming`";
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Options options = new Options();
         options.addOption(Option.builder("e")
                 .longOpt("exec_type")
@@ -96,6 +99,14 @@ public class Main {
         }
 
         HertsType coreType = ArgOperation.convert(herts_type);
+        if (exec_type.equals(ArgOperation.GATEWAY_SERVER)) {
+            GwServer.run();
+            return;
+        } else if (exec_type.equals(ArgOperation.GATEWAY_CLIENT)) {
+            GwClient.run();
+            return;
+        }
+
         if (exec_type.equals(ArgOperation.SERVER) && test_type.equals(ArgOperation.testTypes[0])) {
             switch (coreType) {
                 case Unary:
@@ -127,9 +138,11 @@ public class Main {
             Thread thread = new Thread(() -> {
                 switch (coreType) {
                     case Unary:
+                        //AutoReconnectUnaryClient.run();
                         UnaryClient.run();
                         break;
                     case ClientStreaming:
+//                        AutoReconnectClientStreamingClient.run();
                         ClientStreamingClient.run();
                         break;
                     case ServerStreaming:
@@ -142,10 +155,13 @@ public class Main {
                         IntegrationTestRsClient.run();
                         break;
                     case Http:
-                        HttpClient.run();
+                        try {
+                            HttpClient.run();
+                        } catch (MessageJsonParsingException e) {
+                            throw new RuntimeException(e);
+                        }
                         break;
                 }
-
             });
             thread.start();
             try {

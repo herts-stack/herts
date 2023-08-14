@@ -17,6 +17,7 @@ import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.prometheus.client.exporter.common.TextFormat;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,14 +27,13 @@ import java.util.concurrent.ConcurrentMap;
  * Herts http metrics
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class HertsMetricsHandler implements HertsMetrics {
     private final ConcurrentMap<String, Tag> tagNames = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Timer> latencyTimer = new ConcurrentHashMap<>();
     private final MetricsType metricsType;
     private final PrometheusMeterRegistry prometheusMeterRegistry;
-    private final List<HertsService> hertsRpcServices;
+    private final List<Class<?>> hertsRpcServices;
     private final HertsType hertsType;
     private final boolean isRpsEnabled;
     private final boolean isLatencyEnabled;
@@ -45,7 +45,7 @@ public class HertsMetricsHandler implements HertsMetrics {
 
     private HertsMetricsHandler(Builder builder) {
         this.hertsRpcServices = builder.hertsRpcServices;
-        this.hertsType = builder.hertsRpcServices.get(0).getHertsType();
+        this.hertsType = builder.hertsType;
         this.metricsType = MetricsType.Prometheus;
         this.isRpsEnabled = builder.isRpsEnabled;
         this.isLatencyEnabled = builder.isLatencyEnabled;
@@ -59,23 +59,35 @@ public class HertsMetricsHandler implements HertsMetrics {
         }
     }
 
-    public static HertsMetricsBuilder builder() {
-        return new Builder();
+    public static HertsMetricsBuilder builder(HertsType hertsType) {
+        return new Builder(hertsType);
     }
 
     public static class Builder implements HertsMetricsBuilder {
-        private List<HertsService> hertsRpcServices;
+        private List<Class<?>> hertsRpcServices;
+        private HertsType hertsType;
         private boolean isRpsEnabled = false;
         private boolean isLatencyEnabled = false;
         private boolean isErrRateEnabled = false;
         private boolean isServerResourceEnabled = false;
         private boolean isJvmEnabled = false;
 
-        private Builder() {
+        private Builder(HertsType hertsType) {
+            this.hertsType = hertsType;
         }
 
         @Override
         public HertsMetricsBuilder registerHertsServices(List<HertsService> hertsRpcServices) {
+            List<Class<?>> serviceClasses = new ArrayList<>();
+            for (HertsService service : hertsRpcServices) {
+                serviceClasses.add(service.getClass());
+            }
+            this.hertsRpcServices = serviceClasses;
+            return this;
+        }
+
+        @Override
+        public HertsMetricsBuilder registerHertsServicesByInterface(List<Class<?>> hertsRpcServices) {
             this.hertsRpcServices = hertsRpcServices;
             return this;
         }
@@ -126,10 +138,10 @@ public class HertsMetricsHandler implements HertsMetrics {
 
     @Override
     public void register() {
-        for (HertsService hertsRpcService : this.hertsRpcServices) {
+        for (Class<?> hertsRpcService : this.hertsRpcServices) {
             Method[] methods;
             try {
-                String serviceName = hertsRpcService.getClass().getName();
+                String serviceName = hertsRpcService.getName();
                 Class<?> thisClass = Class.forName(serviceName);
                 methods = thisClass.getDeclaredMethods();
             } catch (Exception ex) {

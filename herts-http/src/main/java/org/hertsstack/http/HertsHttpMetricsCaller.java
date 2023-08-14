@@ -18,9 +18,8 @@ import java.util.concurrent.ConcurrentMap;
  * Herts http with measurer metrics class
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
-class HertsHttpMetricsCaller extends HertsHttpCallerBase implements HertsHttpCaller {
+class HertsHttpMetricsCaller extends HertsHttpCallerBase implements InternalHttpCaller {
 
     private final Object coreObject;
     private final String serviceName;
@@ -39,7 +38,7 @@ class HertsHttpMetricsCaller extends HertsHttpCallerBase implements HertsHttpCal
     }
 
     @Override
-    public void post(Method hertsMethod, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void post(String serviceName, Method hertsMethod, HttpServletRequest request, HttpServletResponse response) throws Exception {
         HertsTimer timer = null;
         try {
             if (this.hertsMetrics.isLatencyEnabled()) {

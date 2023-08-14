@@ -35,14 +35,14 @@ public class HertsHttpClientTest {
             ex.printStackTrace();
         }
         Thread.sleep(1000);
-        HertsHttpClientBase clientBase = HertsHttpClient
+        HertsHttpClient client = HertsHttpClient
                 .builder("localhost")
-                .registerHertService(TestHertsService.class)
+                .registerHertsService(TestHertsService.class)
                 .secure(false)
                 .port(8080)
                 .build();
 
-        testHertsService = clientBase.createHertsService(TestHertsService.class);
+        testHertsService = client.createHertsService(TestHertsService.class);
     }
 
     @AfterAll

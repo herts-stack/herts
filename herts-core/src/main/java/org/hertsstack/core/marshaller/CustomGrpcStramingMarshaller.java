@@ -16,7 +16,6 @@ import java.io.ObjectOutputStream;
  * Herts grpc steaming marshaller
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
 public class CustomGrpcStramingMarshaller implements MethodDescriptor.Marshaller<Object> {
     private static final java.util.logging.Logger logger = Logging.getLogger(CustomGrpcStramingMarshaller.class.getSimpleName());

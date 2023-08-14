@@ -23,15 +23,20 @@ import java.util.concurrent.ConcurrentMap;
  * Herts http intercept
  *
  * @author Herts Contributer
- * @version 1.0.0
  */
-class HertsHttpInterceptHandler implements Filter {
+public class InternalHttpInterceptHandler implements Filter {
     private final ConcurrentMap<String, HertsHttpInterceptor> interceptors;
     private final MessageSerializer hertsSerializer;
+    private final boolean isApiServer;
 
-    public HertsHttpInterceptHandler(Map<String, HertsHttpInterceptor> interceptorMap) {
-        this.interceptors = new ConcurrentHashMap<>(interceptorMap);
+    public InternalHttpInterceptHandler(Map<String, HertsHttpInterceptor> interceptorMap, boolean isApiServer) {
+        if (interceptorMap == null) {
+            this.interceptors = new ConcurrentHashMap<>();
+        } else {
+            this.interceptors = new ConcurrentHashMap<>(interceptorMap);
+        }
         this.hertsSerializer = new MessageSerializer(MessageSerializeType.Json);
+        this.isApiServer = isApiServer;
     }
 
     @Override
@@ -43,7 +48,7 @@ class HertsHttpInterceptHandler implements Filter {
         HttpServletRequest httpReq = (HttpServletRequest) request;
         HttpServletResponse httpRes = (HttpServletResponse) response;
         String serviceName = parseUri(httpReq.getRequestURI());
-        HertsHttpCallerBase.setHertsHeader(httpRes);
+        HertsHttpCallerBase.setHertsHeader(httpRes, this.isApiServer);
 
         HertsHttpInterceptor intercept = this.interceptors.get(serviceName);
         if (intercept != null) {
@@ -64,7 +69,7 @@ class HertsHttpInterceptHandler implements Filter {
     }
 
     private void setError(String message, int statusCode, HttpErrorException.StatusCode statusCodeEnum, HttpServletResponse response) throws IOException {
-        InternalHttpErrorResponse errorResponse = HertsHttpServerCoreImpl.genErrorResponse(statusCodeEnum, message);
+        InternalHttpErrorResponse errorResponse = InternalHttpServlet.genErrorResponse(statusCodeEnum, message);
         response.setStatus(statusCode);
         HertsHttpCallerBase.setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(errorResponse));
     }

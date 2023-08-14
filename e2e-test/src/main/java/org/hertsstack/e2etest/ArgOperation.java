@@ -5,12 +5,14 @@ import org.hertsstack.core.context.HertsType;
 public class ArgOperation {
     public static final String SERVER = "server";
     public static final String CLIENT = "client";
+    public static final String GATEWAY_SERVER = "gateway";
+    public static final String GATEWAY_CLIENT = "gateway_client";
 
     public static boolean isExecuteTypeOk(String arg) {
         if (arg == null || arg.isEmpty()) {
             return false;
         }
-        if (!arg.equals(SERVER) && !arg.equals(CLIENT)) {
+        if (!arg.equals(SERVER) && !arg.equals(CLIENT) && !arg.equals(GATEWAY_SERVER) && !arg.equals(GATEWAY_CLIENT)) {
             return false;
         }
         return true;
