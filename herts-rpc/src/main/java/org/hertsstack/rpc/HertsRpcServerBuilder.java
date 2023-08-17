@@ -314,7 +314,7 @@ class HertsRpcServerBuilder implements RpcServer {
             hertsMethod.setCoreImplServiceName(serviceImplName);
             hertsMethod.setMethodName(method.getName());
             hertsMethod.setMethodReturnType(method.getReturnType());
-            hertsMethod.setParameters(method.getParameterTypes());
+            hertsMethod.setParameterClasses(method.getParameterTypes());
             hertsMethods.add(hertsMethod);
         }
         return hertsMethods;

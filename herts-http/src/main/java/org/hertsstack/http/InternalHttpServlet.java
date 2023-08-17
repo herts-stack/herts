@@ -1,10 +1,12 @@
 package org.hertsstack.http;
 
+import org.hertsstack.core.context.HertsType;
 import org.hertsstack.core.exception.HttpServerBuildException;
 import org.hertsstack.core.modelx.InternalHttpErrorResponse;
 import org.hertsstack.core.exception.InvalidMessageException;
 import org.hertsstack.core.exception.http.HttpErrorException;
 import org.hertsstack.core.logger.Logging;
+import org.hertsstack.core.modelx.RegisteredMethod;
 import org.hertsstack.core.service.HertsService;
 import org.hertsstack.serializer.MessageSerializeType;
 import org.hertsstack.serializer.MessageSerializer;
@@ -78,7 +80,6 @@ public class InternalHttpServlet extends HttpServlet {
                 Method[] defMethods = hertsServiceClass.getDeclaredMethods();
                 for (Method method : defMethods) {
                     String endpoint = baseEndpoint + "/" + method.getName();
-
                     methodMap.put(endpoint, method);
                 }
 
@@ -118,23 +119,33 @@ public class InternalHttpServlet extends HttpServlet {
             try {
                 Class<?> thisClass = Class.forName(hertsService.getClass().getName());
                 Method[] defMethods = thisClass.getDeclaredMethods();
-                ConcurrentMap<String, List<Parameter>> methodParameters = new ConcurrentHashMap<>();
-                for (Method method : defMethods) {
-                    List<Parameter> parameters = Arrays.asList(thisClass.getMethod(method.getName(), method.getParameterTypes()).getParameters());
-                    String endpoint = baseEndpoint + "/" + method.getName();
+                ConcurrentMap<String, RegisteredMethod> registeredMethods = new ConcurrentHashMap<>();
 
+                for (Method method : defMethods) {
+                    String endpoint = baseEndpoint + "/" + method.getName();
                     methodMap.put(endpoint, method);
-                    methodParameters.put(method.getName(), parameters);
+
+                    Parameter[] parameters = thisClass.getMethod(method.getName(), method.getParameterTypes()).getParameters();
+                    RegisteredMethod registeredMethod = new RegisteredMethod(
+                            HertsType.Http,
+                            hertsService.getClass().getSimpleName(),
+                            hertsService.getClass().getSimpleName(),
+                            method.getName(),
+                            method.getReturnType(),
+                            method.getParameterTypes()
+                    );
+                    registeredMethod.setParameters(parameters);
+                    registeredMethods.put(method.getName(), registeredMethod);
                 }
 
                 if (caller != null) {
                     callerMap.put(serviceName, caller);
                 } else if (hertsHttpMetrics.isMetricsEnabled()) {
                     callerMap.put(serviceName, new HertsHttpMetricsCaller(hertsService, hertsHttpMetrics,
-                            hertsSerializer, metricsServer, methodParameters, serviceName));
+                            hertsSerializer, metricsServer, registeredMethods, serviceName));
                 } else {
-                    callerMap.put(serviceName, new HertsHttpSimpleCaller(hertsService, hertsHttpMetrics,
-                            hertsSerializer, methodParameters));
+                    callerMap.put(serviceName, new HertsHttpSimpleCaller(
+                            hertsService, hertsSerializer, registeredMethods));
                 }
             } catch (Exception ex) {
                 throw new HttpServerBuildException("Failed to build http server", ex);

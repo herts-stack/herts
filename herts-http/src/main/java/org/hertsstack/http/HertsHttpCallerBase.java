@@ -5,6 +5,7 @@ import org.hertsstack.core.modelx.InternalHttpRequest;
 import org.hertsstack.core.modelx.InternalHttpResponse;
 import org.hertsstack.core.modelx.InternalHttpMsg;
 import org.hertsstack.core.exception.InvalidMessageException;
+import org.hertsstack.core.modelx.RegisteredMethod;
 import org.hertsstack.serializer.MessageSerializer;
 import org.hertsstack.metrics.HertsMetricsServer;
 
@@ -28,15 +29,15 @@ class HertsHttpCallerBase {
     private final Object coreObject;
     private final HertsMetricsServer hertsMetricsServer;
     private final MessageSerializer hertsSerializer;
-    private final ConcurrentMap<String, List<Parameter>> parameters;
+    private final ConcurrentMap<String, RegisteredMethod> registeredMethods;
 
     public HertsHttpCallerBase(Object coreObject, HertsMetricsServer hertsMetricsServer,
-                               MessageSerializer hertsSerializer, ConcurrentMap<String, List<Parameter>> parameters) {
+                               MessageSerializer hertsSerializer, ConcurrentMap<String, RegisteredMethod> methods) {
 
         this.coreObject = coreObject;
         this.hertsMetricsServer = hertsMetricsServer;
         this.hertsSerializer = hertsSerializer;
-        this.parameters = parameters;
+        this.registeredMethods = methods;
     }
 
     public static void setWriter(PrintWriter out, String msg) {
@@ -60,14 +61,18 @@ class HertsHttpCallerBase {
     }
 
     protected void call(Method hertsMethod, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        List<Parameter> parameters = this.parameters.get(hertsMethod.getName());
+        RegisteredMethod registeredMethod = this.registeredMethods.get(hertsMethod.getName());
         InternalHttpRequest hertsRequest;
 
-        if (parameters.size() > 0) {
+        if (registeredMethod == null) {
+            throw new InvalidMessageException("Invalid method name.");
+        }
+
+        if (registeredMethod.getParameters().length > 0) {
             try {
                 hertsRequest = this.hertsSerializer.deserialize(request.getReader(), InternalHttpRequest.class);
                 List<String> keyNames = hertsRequest.getKeyNames();
-                for (Parameter param : parameters) {
+                for (Parameter param : registeredMethod.getParameters()) {
                     if (!keyNames.contains(param.getName())) {
                         throw new InvalidMessageException("Invalid request body");
                     }
@@ -86,9 +91,9 @@ class HertsHttpCallerBase {
         for (InternalHttpMsg payload : payloads) {
             Object castedArg;
             try {
-                Class<?> aClass = Class.forName(payload.getClassInfo());
+                Class<?> aClass = registeredMethod.getParameterClasses()[idx];
                 castedArg = this.hertsSerializer.convertFromHertHttpPayload(payload.getValue(), aClass);
-            } catch (ClassNotFoundException ex) {
+            } catch (Exception ex) {
                 castedArg = payload.getValue();
             }
             args[idx] = castedArg;
@@ -104,7 +109,6 @@ class HertsHttpCallerBase {
         InternalHttpResponse hertsResponse = new InternalHttpResponse();
         InternalHttpMsg payload = new InternalHttpMsg();
         payload.setValue(res);
-        payload.setClassInfo(hertsMethod.getReturnType().getName());
         hertsResponse.setPayload(payload);
         setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(hertsResponse));
     }

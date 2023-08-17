@@ -208,8 +208,7 @@ class TypescriptCodeGenStructure extends TypescriptBase {
                     args.add(new TypescriptDefault.ReqClassInfo.Request.Arg(
                             "arg" + i,
                             typescriptType,
-                            "payload" + i,
-                            parameterTypes[i].getName()
+                            "payload" + i
                     ));
                     if (this.typeResolver.findType(typescriptType) == null) {
                         importInfos.add(new TypescriptDefault.ImportInfo(

@@ -1,5 +1,6 @@
 package org.hertsstack.http;
 
+import org.hertsstack.core.modelx.RegisteredMethod;
 import org.hertsstack.serializer.MessageSerializer;
 import org.hertsstack.metrics.HertsMetrics;
 import org.hertsstack.metrics.HertsMetricsContext;
@@ -10,8 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -28,9 +27,9 @@ class HertsHttpMetricsCaller extends HertsHttpCallerBase implements InternalHttp
 
     public HertsHttpMetricsCaller(Object coreObject, HertsMetrics hertsMetrics,
                                   MessageSerializer hertsSerializer, HertsMetricsServer hertsMetricsServer,
-                                  ConcurrentMap<String, List<Parameter>> parameters, String serviceName) {
+                                  ConcurrentMap<String, RegisteredMethod> registeredMethods, String serviceName) {
 
-        super(coreObject, hertsMetricsServer, hertsSerializer, parameters);
+        super(coreObject, hertsMetricsServer, hertsSerializer, registeredMethods);
         this.coreObject = coreObject;
         this.serviceName = serviceName;
         this.hertsMetrics = hertsMetrics;

@@ -31,13 +31,13 @@ class HertsRpcCStreamingMethodHandler<Req, Resp> implements
 
     public HertsRpcCStreamingMethodHandler(RegisteredMethod hertsMethod, HertsMetrics hertsMetrics, HertsService hertsService) {
         this.hertsMethod = hertsMethod;
-        this.requests = new Object[this.hertsMethod.getParameters().length];
+        this.requests = new Object[this.hertsMethod.getParameterClasses().length];
         this.coreObject = hertsService;
 
         Class<?> coreClass = hertsService.getClass();
         Method method;
         try {
-            method = coreClass.getDeclaredMethod(hertsMethod.getMethodName(), hertsMethod.getParameters());
+            method = coreClass.getDeclaredMethod(hertsMethod.getMethodName(), hertsMethod.getParameterClasses());
         } catch (NoSuchMethodException ex) {
             throw new ServiceMethodNotfoundException(ex);
         }

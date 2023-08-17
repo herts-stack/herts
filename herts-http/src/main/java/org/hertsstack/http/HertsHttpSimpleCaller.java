@@ -1,5 +1,6 @@
 package org.hertsstack.http;
 
+import org.hertsstack.core.modelx.RegisteredMethod;
 import org.hertsstack.serializer.MessageSerializer;
 import org.hertsstack.metrics.HertsMetrics;
 
@@ -18,9 +19,9 @@ import java.util.concurrent.ConcurrentMap;
  */
 class HertsHttpSimpleCaller extends HertsHttpCallerBase implements InternalHttpCaller {
 
-    public HertsHttpSimpleCaller(Object coreObject, HertsMetrics hertsHttpMetrics,
-                                 MessageSerializer hertsSerializer, ConcurrentMap<String, List<Parameter>> parameters) {
-        super(coreObject, null, hertsSerializer, parameters);
+    public HertsHttpSimpleCaller(Object coreObject, MessageSerializer hertsSerializer,
+                                 ConcurrentMap<String, RegisteredMethod> registeredMethods) {
+        super(coreObject, null, hertsSerializer, registeredMethods);
     }
 
     @Override

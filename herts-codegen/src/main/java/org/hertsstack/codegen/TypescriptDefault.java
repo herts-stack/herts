@@ -158,13 +158,11 @@ public class TypescriptDefault {
                 private final String keyName;
                 private final String typeName;
                 private final String payloadValName;
-                private final String classPkg;
 
-                public Arg(String keyName, String typeName, String payloadValName, String classPkg) {
+                public Arg(String keyName, String typeName, String payloadValName) {
                     this.keyName = keyName;
                     this.typeName = typeName;
                     this.payloadValName = payloadValName;
-                    this.classPkg = classPkg;
                 }
 
                 public String getKeyName() {
@@ -177,10 +175,6 @@ public class TypescriptDefault {
 
                 public String getPayloadValName() {
                     return payloadValName;
-                }
-
-                public String getClassPkg() {
-                    return classPkg;
                 }
             }
         }
@@ -528,7 +522,7 @@ public class TypescriptDefault {
                 ) {
                     const payloads = new Array<$classInfo.payloadName>();
                     #foreach($arg in $classInfo.args)
-                    const $arg.payloadValName = new $classInfo.payloadName ('$arg.keyName', $arg.keyName, '$arg.classPkg');
+                    const $arg.payloadValName = new $classInfo.payloadName ('$arg.keyName', $arg.keyName);
                     payloads.push($arg.payloadValName);
                     #end
                     return new $classInfo.name (payloads);
@@ -538,14 +532,12 @@ public class TypescriptDefault {
             
             #foreach($payloadName in $payloadNames)
             export class $payloadName {
-                constructor(keyName: string, value: any, classInfo: string) {
+                constructor(keyName: string, value: any) {
                     this.keyName = keyName;
                     this.value = value;
-                    this.classInfo = classInfo;
                 }
                 private keyName: string;
                 private value: any;
-                private classInfo: string;
             }
             #end
             """;
@@ -574,11 +566,9 @@ public class TypescriptDefault {
                 constructor() {
                     this.keyName = '';
                     this.value = null;
-                    this.classInfo = '';
                 }
                 private keyName: string;
                 value: $classInfo.valueType;
-                private classInfo: string;
             }
             #end
             """;
