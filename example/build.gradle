@@ -19,6 +19,7 @@ repositories {
 
 def grpcVersion = '1.57.0'
 dependencies {
+//    implementation project(':e2e-test')
     implementation project(':herts-core')
     implementation project(':herts-codegen')
     implementation project(':herts-rpc')
