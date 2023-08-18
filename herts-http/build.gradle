@@ -6,7 +6,7 @@ plugins {
 apply plugin: 'application'
 
 def pkgName = 'org.hertsstack'
-def pkgVersion = '1.1.0'
+def pkgVersion = '1.1.1'
 def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '11'
 def artifactId = 'http'
 
