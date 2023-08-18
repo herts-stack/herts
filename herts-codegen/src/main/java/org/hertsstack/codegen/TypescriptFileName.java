@@ -12,7 +12,7 @@ class TypescriptFileName {
         this.tsClientFileName = "herts-" + serviceName + "-client.gen.ts";
         this.tsRequestModelFileName = "herts-" + serviceName + "-request-model.gen.ts";
         this.tsResponseModelFileName = "herts-" + serviceName + "-response-model.gen.ts";
-        this.tsMainFileName = "herts-main-sample-" + serviceName + ".gen.ts";
+        this.tsMainFileName = "herts-usage-sample-" + serviceName + ".gen.ts";
     }
 
     public String getClientFileName() {

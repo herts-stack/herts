@@ -7,10 +7,12 @@ import org.apache.velocity.app.Velocity;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
 class TypescriptCodeGenStructure extends TypescriptBase {
     private final String serviceName;
@@ -133,15 +135,21 @@ class TypescriptCodeGenStructure extends TypescriptBase {
         List<TypescriptDefault.ImportInfo> importInfos = new ArrayList<>();
         List<TypescriptDefault.ResClassInfo.Response> resClassInfos = new ArrayList<>();
         List<TypescriptDefault.ResClassInfo.Payload> payloadClassInfos = new ArrayList<>();
+
         for (Method method : methods) {
             String capitalizeMethodName = CodeGenUtil.capitalizeFirstLetter(method.getName());
             String payloadClassName = capitalizeMethodName + "Payload";
 
             JavaType javaType = JavaType.findType(method.getReturnType().getName());
-            String typescriptType = getTypescriptTypeStr(javaType, method.getReturnType());
-            if (this.typeResolver.findType(typescriptType) == null) {
+            String defaultTypescriptType = getTypescriptTypeStr(javaType, method.getReturnType());
+
+            BiFunction<JavaType, Class<?>, String> generateTypescriptType = this::getTypescriptTypeStr;
+            String typescriptType = CodeGenUtil.getGeneticTypes(javaType, defaultTypescriptType,
+                    new Type[]{method.getGenericReturnType()}, generateTypescriptType);
+
+            if (this.typeResolver.findType(defaultTypescriptType) == null) {
                 importInfos.add(new TypescriptDefault.ImportInfo(
-                        typescriptType,
+                        defaultTypescriptType,
                         this.fileName.getStructureTsFileName()
                 ));
             }
@@ -203,16 +211,21 @@ class TypescriptCodeGenStructure extends TypescriptBase {
                 for (int i = 0; i < parameterTypes.length; i++) {
                     Class<?> parameterTypeClass = parameterTypes[i];
                     JavaType javaType = JavaType.findType(parameterTypeClass.getName());
-                    String typescriptType = getTypescriptTypeStr(javaType, parameterTypeClass);
+                    String defaultTypescriptType = getTypescriptTypeStr(javaType, parameterTypeClass);
+
+                    BiFunction<JavaType, Class<?>, String> generateTypescriptType = this::getTypescriptTypeStr;
+                    String typescriptType = CodeGenUtil.getGeneticTypes(javaType, defaultTypescriptType,
+                            method.getGenericParameterTypes(), generateTypescriptType);
 
                     args.add(new TypescriptDefault.ReqClassInfo.Request.Arg(
                             "arg" + i,
                             typescriptType,
                             "payload" + i
                     ));
-                    if (this.typeResolver.findType(typescriptType) == null) {
+
+                    if (this.typeResolver.findType(defaultTypescriptType) == null) {
                         importInfos.add(new TypescriptDefault.ImportInfo(
-                                typescriptType,
+                                defaultTypescriptType,
                                 this.fileName.getStructureTsFileName()
                         ));
                     }

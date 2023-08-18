@@ -44,6 +44,12 @@ class CacheGenCode {
         return this.customStructure.get(packageName);
     }
 
+    public void printCache() {
+        for (String name : this.generatedPackageNames) {
+            System.out.println(name);
+        }
+    }
+
     public static class CustomStructure {
         private List<String> parameterTypeNames;
         private String returnTypeName;

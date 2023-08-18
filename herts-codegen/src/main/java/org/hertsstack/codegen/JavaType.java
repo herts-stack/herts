@@ -37,6 +37,15 @@ enum JavaType {
         this.data = data;
     }
 
+    public boolean isCollection(JavaType javaType) {
+        if (javaType == ArrayList || javaType == List ||
+                javaType == Map || javaType == HashMap ||
+                javaType == Set || javaType == HashSet) {
+            return true;
+        }
+        return false;
+    }
+
     public java.lang.String getData() {
         return data;
     }
