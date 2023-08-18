@@ -1,6 +1,8 @@
 package org.hertsstack.e2etest.common;
 
-public class TestData {
+import org.hertsstack.core.modelx.HertsMessage;
+
+public class TestData extends HertsMessage {
     private String foo;
     private String bar;
 

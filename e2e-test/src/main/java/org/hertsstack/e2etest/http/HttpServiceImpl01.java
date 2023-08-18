@@ -53,4 +53,14 @@ public class HttpServiceImpl01 extends HertsServiceHttp<HttpService01> implement
     public String httpTest07() {
        throw new HttpErrorException(HttpErrorException.StatusCode.Status400, "badrequest") ;
     }
+
+    @Override
+    public List<TestData> httpTest08(List<TestData> dataList) {
+        return dataList;
+    }
+
+    @Override
+    public Map<String, TestData> httpTest09(Map<String, TestData> dataMap) {
+        return dataMap;
+    }
 }
