@@ -2,6 +2,8 @@ package org.hertsstack.core.modelx;
 
 import org.hertsstack.core.context.HertsType;
 
+import java.lang.reflect.Parameter;
+
 /**
  * Herts rpc method for internal registration
  *
@@ -13,14 +15,16 @@ public class RegisteredMethod {
     private String coreImplServiceName;
     private String methodName;
     private Class<?> methodReturnType;
-    private Class<?>[] parameters;
+    private Class<?>[] parameterClasses;
+    private Parameter[] parameters;
 
     public RegisteredMethod() {
     }
 
     public RegisteredMethod(HertsType methodType,
                             String coreServiceName,
-                            String coreImplServiceName, String methodName,
+                            String coreImplServiceName,
+                            String methodName,
                             Class<?> methodReturnType,
                             Class<?>[] parameters) {
 
@@ -29,7 +33,7 @@ public class RegisteredMethod {
         this.coreImplServiceName = coreImplServiceName;
         this.methodName = methodName;
         this.methodReturnType = methodReturnType;
-        this.parameters = parameters;
+        this.parameterClasses = parameters;
     }
 
     public HertsType getHertsCoreType() {
@@ -72,11 +76,19 @@ public class RegisteredMethod {
         this.methodReturnType = methodReturnType;
     }
 
-    public Class<?>[] getParameters() {
+    public Class<?>[] getParameterClasses() {
+        return parameterClasses;
+    }
+
+    public void setParameterClasses(Class<?>[] parameterClasses) {
+        this.parameterClasses = parameterClasses;
+    }
+
+    public Parameter[] getParameters() {
         return parameters;
     }
 
-    public void setParameters(Class<?>[] parameters) {
+    public void setParameters(Parameter[] parameters) {
         this.parameters = parameters;
     }
 

@@ -29,11 +29,11 @@ class TypeResolverImpl implements TypeResolver {
             put(JavaType.Date, TypescriptType.Date);
             put(JavaType.UUID, TypescriptType.String);
             put(JavaType.ArrayList, TypescriptType.Any);
-            put(JavaType.List, TypescriptType.Any);
-            put(JavaType.HashMap, TypescriptType.Any);
-            put(JavaType.Map, TypescriptType.Any);
-            put(JavaType.HashSet, TypescriptType.Any);
-            put(JavaType.Set, TypescriptType.Any);
+            put(JavaType.List, TypescriptType.Array);
+            put(JavaType.HashMap, TypescriptType.Map);
+            put(JavaType.Map, TypescriptType.Map);
+            put(JavaType.HashSet, TypescriptType.Array);
+            put(JavaType.Set, TypescriptType.Array);
         }
     };
 

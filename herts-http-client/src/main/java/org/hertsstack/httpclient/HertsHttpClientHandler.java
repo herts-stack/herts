@@ -1,11 +1,13 @@
 package org.hertsstack.httpclient;
 
+import org.hertsstack.core.context.HertsType;
 import org.hertsstack.core.exception.InvalidMessageException;
 import org.hertsstack.core.modelx.InternalHttpErrorResponse;
 import org.hertsstack.core.modelx.InternalHttpRequest;
 import org.hertsstack.core.modelx.InternalHttpResponse;
 import org.hertsstack.core.modelx.InternalHttpMsg;
 import org.hertsstack.core.exception.ServiceNotFoundException;
+import org.hertsstack.core.modelx.RegisteredMethod;
 import org.hertsstack.serializer.MessageSerializeType;
 import org.hertsstack.serializer.MessageSerializer;
 import org.hertsstack.core.service.HertsService;
@@ -18,7 +20,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,25 +33,25 @@ import java.util.stream.IntStream;
  */
 public class HertsHttpClientHandler implements InvocationHandler {
     private final MessageSerializer serializer = new MessageSerializer(MessageSerializeType.Json);
-    private final ConcurrentMap<String, List<Class<?>>> methodParameters = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, RegisteredMethod> registeredMethods = new ConcurrentHashMap<>();
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final String url;
     private final String serviceName;
-    private final boolean isGateway;
+    private final String endpointPref;
 
     private ConcurrentMap<String, String> customHeaders;
 
     public HertsHttpClientHandler(String url, Class<?> hertsRpcService, boolean isGateway) {
         this.url = url;
         this.serviceName = hertsRpcService.getSimpleName();
-        this.isGateway = isGateway;
+        this.endpointPref = !isGateway ? "api" : "gateway";
         init(hertsRpcService.getName());
     }
 
     public HertsHttpClientHandler(String url, Class<?> hertsRpcService, Map<String, String> customHeaders, boolean isGateway) {
         this.url = url;
         this.serviceName = hertsRpcService.getSimpleName();
-        this.isGateway = isGateway;
+        this.endpointPref = !isGateway ? "api" : "gateway";
         this.customHeaders = new ConcurrentHashMap<>();
         this.customHeaders.putAll(customHeaders);
         init(hertsRpcService.getName());
@@ -66,16 +67,27 @@ public class HertsHttpClientHandler implements InvocationHandler {
 
         Method[] methods = hertsServiceClass.getDeclaredMethods();
         for (Method method : methods) {
-            List<Class<?>> paramTypes = new ArrayList<>(Arrays.asList(method.getParameterTypes()));
-            this.methodParameters.put(method.getName(), paramTypes);
+            RegisteredMethod registeredMethod = new RegisteredMethod(
+                    HertsType.Http,
+                    instanceName,
+                    instanceName,
+                    method.getName(),
+                    method.getReturnType(),
+                    method.getParameterTypes()
+            );
+            this.registeredMethods.put(method.getName(), registeredMethod);
         }
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        String pref = !this.isGateway ? "api" : "gateway";
+        RegisteredMethod registeredMethod = this.registeredMethods.get(method.getName());
+        if (registeredMethod == null) {
+            throw new InvalidMessageException("Invalid herts method.");
+        }
+
         HttpRequest.Builder builder = HttpRequest
-                .newBuilder(URI.create(url + "/" + pref + "/" + this.serviceName + "/" + method.getName()))
+                .newBuilder(URI.create(url + "/" + endpointPref + "/" + this.serviceName + "/" + method.getName()))
                 .header("Content-Type", "application/json");
 
         if (this.customHeaders != null) {
@@ -87,19 +99,17 @@ public class HertsHttpClientHandler implements InvocationHandler {
         HttpRequest httpRequest;
         InternalHttpRequest body = new InternalHttpRequest();
         if (args != null) {
-            List<Class<?>> parameterTypes = this.methodParameters.get(method.getName());
-            if (parameterTypes == null || args.length != parameterTypes.size()) {
+            Class<?>[] parameterTypes = registeredMethod.getParameterClasses();
+            if (parameterTypes == null || args.length != parameterTypes.length) {
                 throw new InvalidMessageException("Invalid herts method.");
             }
 
             List<InternalHttpMsg> payloads = new ArrayList<>();
             IntStream.range(0, args.length).forEach(idx -> {
                 Object requestArg = args[idx];
-                Class<?> aClass = parameterTypes.get(idx);
                 InternalHttpMsg payload = new InternalHttpMsg();
                 payload.setKeyName("arg" + idx);
                 payload.setValue(requestArg);
-                payload.setClassInfo(aClass.getName());
                 payloads.add(payload);
             });
             body.setPayloads(payloads);
@@ -125,12 +135,7 @@ public class HertsHttpClientHandler implements InvocationHandler {
         }
 
         InternalHttpMsg payload = deserialize.getPayload();
-        try {
-            Class<?> aClass = Class.forName(payload.getClassInfo());
-            return serializer.convertFromHertHttpPayload(payload.getValue(), aClass);
-        } catch (ClassNotFoundException ex) {
-            return payload.getValue();
-        }
+        return this.serializer.convertFromHertHttpPayload(payload.getValue(), registeredMethod.getMethodReturnType());
     }
 
     private void throwHertsHttpError(HttpResponse<byte[]> httpResponse) throws IOException {

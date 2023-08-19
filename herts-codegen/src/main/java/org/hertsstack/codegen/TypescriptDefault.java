@@ -14,6 +14,85 @@ public class TypescriptDefault {
         Velocity.init();
     }
 
+    public static class ExampleUsage {
+        private final List<ImportInfo> importInfos;
+        private final ClientInfo clientInfo;
+
+        public ExampleUsage(List<ImportInfo> importInfos, ClientInfo clientInfo) {
+            this.importInfos = importInfos;
+            this.clientInfo = clientInfo;
+        }
+
+        public VelocityContext getVelocityContext() {
+            VelocityContext context = new VelocityContext();
+            context.put("importInfos", this.importInfos);
+            context.put("clientInfo", this.clientInfo);
+            return context;
+        }
+
+        public List<ImportInfo> getImportInfos() {
+            return importInfos;
+        }
+
+        public ClientInfo getClientInfo() {
+            return clientInfo;
+        }
+
+        public static class ClientInfo {
+            private final String name;
+            private final List<Method> methods;
+
+            public ClientInfo(String name, List<Method> methods) {
+                this.name = name;
+                this.methods = methods;
+            }
+
+            public String getName() {
+                return name;
+            }
+
+            public List<Method> getMethods() {
+                return methods;
+            }
+
+            public static class Method {
+                private final String name;
+                private final String reqClassName;
+                private final String reqValName;
+                private final String resValName;
+                private final String factoryParams;
+
+                public Method(String name, String reqClassName, String reqValName, String resValName, String factoryParams) {
+                    this.name = name;
+                    this.reqClassName = reqClassName;
+                    this.reqValName = reqValName;
+                    this.resValName = resValName;
+                    this.factoryParams = factoryParams;
+                }
+
+                public String getName() {
+                    return name;
+                }
+
+                public String getReqClassName() {
+                    return reqClassName;
+                }
+
+                public String getReqValName() {
+                    return reqValName;
+                }
+
+                public String getFactoryParams() {
+                    return factoryParams;
+                }
+
+                public String getResValName() {
+                    return resValName;
+                }
+            }
+        }
+    }
+
     /**
      * Response class information
      */
@@ -158,13 +237,11 @@ public class TypescriptDefault {
                 private final String keyName;
                 private final String typeName;
                 private final String payloadValName;
-                private final String classPkg;
 
-                public Arg(String keyName, String typeName, String payloadValName, String classPkg) {
+                public Arg(String keyName, String typeName, String payloadValName) {
                     this.keyName = keyName;
                     this.typeName = typeName;
                     this.payloadValName = payloadValName;
-                    this.classPkg = classPkg;
                 }
 
                 public String getKeyName() {
@@ -177,10 +254,6 @@ public class TypescriptDefault {
 
                 public String getPayloadValName() {
                     return payloadValName;
-                }
-
-                public String getClassPkg() {
-                    return classPkg;
                 }
             }
         }
@@ -528,7 +601,7 @@ public class TypescriptDefault {
                 ) {
                     const payloads = new Array<$classInfo.payloadName>();
                     #foreach($arg in $classInfo.args)
-                    const $arg.payloadValName = new $classInfo.payloadName ('$arg.keyName', $arg.keyName, '$arg.classPkg');
+                    const $arg.payloadValName = new $classInfo.payloadName ('$arg.keyName', $arg.keyName);
                     payloads.push($arg.payloadValName);
                     #end
                     return new $classInfo.name (payloads);
@@ -538,14 +611,12 @@ public class TypescriptDefault {
             
             #foreach($payloadName in $payloadNames)
             export class $payloadName {
-                constructor(keyName: string, value: any, classInfo: string) {
+                constructor(keyName: string, value: any) {
                     this.keyName = keyName;
                     this.value = value;
-                    this.classInfo = classInfo;
                 }
                 private keyName: string;
                 private value: any;
-                private classInfo: string;
             }
             #end
             """;
@@ -574,12 +645,36 @@ public class TypescriptDefault {
                 constructor() {
                     this.keyName = '';
                     this.value = null;
-                    this.classInfo = '';
                 }
                 private keyName: string;
                 value: $classInfo.valueType;
-                private classInfo: string;
             }
             #end
+            """;
+
+    /**
+     * Example usage.
+     */
+    public static final String EXAMPLE_USAGE =
+            """
+            // Don't edit this file because this file is generated by herts codegen.
+            import {RequestHeaders} from './herts-structure.gen'
+            #foreach($importInfo in $importInfos)
+            import {$importInfo.name} from './$importInfo.filePath'
+            #end
+            
+            async function main() {
+                const header: RequestHeaders = {'Content-Type': 'application/json'};
+            
+                const client$clientInfo.name = new $clientInfo.name ('http://localhost:9999');
+                
+                #foreach($method in $clientInfo.methods)
+                    const $method.reqValName = $method.reqClassName ( $method.factoryParams );
+                    const $method.resValName = await client$clientInfo.name$method.name (header, $method.reqValName );
+                    console.log($method.resValName);
+                    
+                #end
+            }
+            main();
             """;
 }

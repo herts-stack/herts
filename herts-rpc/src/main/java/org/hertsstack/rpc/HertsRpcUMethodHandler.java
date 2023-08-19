@@ -34,13 +34,13 @@ class HertsRpcUMethodHandler<Req, Resp> implements
 
     public HertsRpcUMethodHandler(RegisteredMethod hertsMethod, HertsMetrics hertsMetrics, HertsService hertsService) {
         this.hertsMethod = hertsMethod;
-        this.requests = new Object[this.hertsMethod.getParameters().length];
+        this.requests = new Object[this.hertsMethod.getParameterClasses().length];
 
         Class<?> coreClass = hertsService.getClass();
         this.coreObject = hertsService;
         Method method;
         try {
-            method = coreClass.getDeclaredMethod(hertsMethod.getMethodName(), hertsMethod.getParameters());
+            method = coreClass.getDeclaredMethod(hertsMethod.getMethodName(), hertsMethod.getParameterClasses());
         } catch (NoSuchMethodException ex) {
             throw new ServiceMethodNotfoundException(ex);
         }

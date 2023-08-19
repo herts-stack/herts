@@ -6,8 +6,8 @@ enum TypescriptType {
     Boolean("boolean"),
     String("string"),
     Date("Date"),
-    Array("Array"),
-    Map("Map");
+    Array("Array<$0>"),
+    Map("Map<$0, $1>");
 
     private final String data;
 

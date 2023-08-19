@@ -15,19 +15,24 @@ import java.util.concurrent.ConcurrentMap;
 class RpcDefinition {
     private final ConcurrentMap<String, Method> methods;
     private final ConcurrentMap<String, List<Parameter>> methodParameters;
+    private final ConcurrentMap<String, Class<?>> methodReturnTypes;
     private final HertsService hertsService;
 
     private RpcDefinition(HertsService serviceInstance,
                           ConcurrentMap<String, Method> methods,
-                          ConcurrentMap<String, List<Parameter>> methodParameters) {
+                          ConcurrentMap<String, List<Parameter>> methodParameters,
+                          ConcurrentMap<String, Class<?>> methodReturnTypes) {
         this.hertsService = serviceInstance;
         this.methods = methods;
         this.methodParameters = methodParameters;
+        this.methodReturnTypes = methodReturnTypes;
+
     }
 
     public static RpcDefinition create(HertsService serviceInstance) {
         ConcurrentMap<String, Method> methods = new ConcurrentHashMap<>();
         ConcurrentMap<String, List<Parameter>> methodParameters = new ConcurrentHashMap<>();
+        ConcurrentMap<String, Class<?>> methodReturnTypes = new ConcurrentHashMap<>();
         Method[] defMethods = serviceInstance.getClass().getDeclaredMethods();
         try {
             for (Method method : defMethods) {
@@ -38,6 +43,7 @@ class RpcDefinition {
                 List<Parameter> parameters = Arrays.asList(serviceInstance.getClass()
                         .getMethod(method.getName(), method.getParameterTypes()).getParameters());
 
+                methodReturnTypes.put(method.getName(), method.getReturnType());
                 methods.put(method.getName(), method);
                 methodParameters.put(method.getName(), parameters);
             }
@@ -45,7 +51,7 @@ class RpcDefinition {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         }
-        return new RpcDefinition(serviceInstance, methods, methodParameters);
+        return new RpcDefinition(serviceInstance, methods, methodParameters, methodReturnTypes);
     }
 
     public HertsService getHertsService() {
@@ -58,6 +64,10 @@ class RpcDefinition {
 
     public ConcurrentMap<String, List<Parameter>> getMethodParameters() {
         return methodParameters;
+    }
+
+    public ConcurrentMap<String, Class<?>> getMethodReturnTypes() {
+        return methodReturnTypes;
     }
 
     public Object callMethod(String methodName, Object... params) throws InvocationTargetException, IllegalAccessException {

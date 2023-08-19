@@ -60,9 +60,9 @@ class HttpServerCaller implements InternalHttpCaller {
         for (InternalHttpMsg payload : payloads) {
             Object castedArg;
             try {
-                Class<?> aClass = Class.forName(payload.getClassInfo());
+                Class<?> aClass = rpcDefinition.getMethodReturnTypes().get(hertsMethod.getName());
                 castedArg = this.hertsSerializer.convertFromHertHttpPayload(payload.getValue(), aClass);
-            } catch (ClassNotFoundException ex) {
+            } catch (Exception ex) {
                 castedArg = payload.getValue();
             }
             args[idx] = castedArg;
@@ -78,7 +78,6 @@ class HttpServerCaller implements InternalHttpCaller {
             InternalHttpResponse hertsResponse = new InternalHttpResponse();
             InternalHttpMsg payload = new InternalHttpMsg();
             payload.setValue(res);
-            payload.setClassInfo(hertsMethod.getReturnType().getName());
             hertsResponse.setPayload(payload);
             response.getWriter().print(this.hertsSerializer.serializeAsStr(hertsResponse));
             response.getWriter().flush();

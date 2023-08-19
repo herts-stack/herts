@@ -6,10 +6,12 @@ import org.apache.velocity.app.Velocity;
 
 import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
 class TypescriptCodeGenClient extends TypescriptBase {
     private final String serviceName;
@@ -44,9 +46,13 @@ class TypescriptCodeGenClient extends TypescriptBase {
             resModelNames.add(resClassName);
 
             JavaType javaType = JavaType.findType(method.getReturnType().getName());
-            String typescriptType = getTypescriptTypeStr(javaType, method.getReturnType());
-            if (this.typeResolver.findType(typescriptType) == null) {
-                customModelNames.add(typescriptType);
+            String defaultTypescriptType = getTypescriptTypeStr(javaType, method.getReturnType());
+            BiFunction<JavaType, Class<?>, String> generateTypescriptType = this::getTypescriptTypeStr;
+            String typescriptType = CodeGenUtil.getGeneticTypes(javaType, defaultTypescriptType,
+                    new Type[]{method.getGenericReturnType()}, generateTypescriptType);
+
+            if (this.typeResolver.findType(defaultTypescriptType) == null) {
+                customModelNames.add(defaultTypescriptType);
             }
 
             methodInfos.add(new TypescriptDefault.MethodInfo(
