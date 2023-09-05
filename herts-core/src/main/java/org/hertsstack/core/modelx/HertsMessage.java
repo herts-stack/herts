@@ -1,5 +1,6 @@
 package org.hertsstack.core.modelx;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.msgpack.annotation.Message;
 
 import java.io.Serializable;
@@ -11,7 +12,9 @@ import java.io.Serializable;
  */
 @Message
 public class HertsMessage implements Serializable {
+    @JsonIgnore
     private Object[] messageParameters;
+    @JsonIgnore
     private Class<?>[] classTypes;
 
     public HertsMessage() {

@@ -4,9 +4,10 @@ import org.hertsstack.core.modelx.HertsMessage;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiFunction;
 
 class CodeGenUtil {
@@ -26,15 +27,25 @@ class CodeGenUtil {
         }
     }
 
-    private static boolean isInheritHertsMessage(String className) {
-        if (className == null) {
+    private static boolean isInheritHertsMessage(List<String> inheritClassNames) {
+        if (inheritClassNames == null || inheritClassNames.size() == 0) {
             return false;
         }
-        return className.contains(HertsMessage.class.getSimpleName());
+        return inheritClassNames.contains(HertsMessage.class.getSimpleName());
+    }
+
+    public static void getAllInheritedClassNames(Class<?> targetClass, List<String> inheritClassNames) {
+        inheritClassNames.add(targetClass.getSimpleName());
+        Class<?> superClass = targetClass.getSuperclass();
+        if (superClass != null) {
+            getAllInheritedClassNames(superClass, inheritClassNames);
+        }
     }
 
     public static boolean isCustomModelClass(Class<?> classInfo) {
-        if (classInfo.getSuperclass() != null && isInheritHertsMessage(classInfo.getSuperclass().getName())) {
+        List<String> inheritClassNames = new ArrayList<>();
+        getAllInheritedClassNames(classInfo, inheritClassNames);
+        if (classInfo.getSuperclass() != null && isInheritHertsMessage(inheritClassNames)) {
             return true;
         }
         return false;
@@ -51,11 +62,16 @@ class CodeGenUtil {
     public static void writeFile(String fileName, String rawData) {
         try {
             FileWriter fw = new FileWriter(fileName, false);
-            fw.write(rawData);
-            fw.close();
+            write(fw, rawData);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    private static void write(FileWriter fw, String rawData) throws IOException {
+        fw.write(rawData);
+        fw.flush();
+        fw.close();
     }
 
     public static String getGeneticTypes(JavaType javaType, String defaultTypescriptType, Type[] types,

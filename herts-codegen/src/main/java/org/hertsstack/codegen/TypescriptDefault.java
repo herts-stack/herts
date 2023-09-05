@@ -264,20 +264,53 @@ public class TypescriptDefault {
      */
     public static class StructureClassInfo {
         private final List<Structure> classInfos;
+        private final List<EnumInfo> enumInfos;
 
-        public StructureClassInfo(List<Structure> classInfos) {
+        public StructureClassInfo(List<Structure> classInfos, List<EnumInfo> enumInfos) {
             this.classInfos = classInfos;
+            this.enumInfos = enumInfos;
         }
 
         public List<Structure> getClassInfos() {
             return classInfos;
         }
 
+        public List<EnumInfo> getEnumInfos() {
+            return enumInfos;
+        }
+
         public VelocityContext getVelocityContext(boolean hasHeader) {
             VelocityContext context = new VelocityContext();
             context.put("classInfos", this.classInfos);
+            context.put("enumInfos", this.enumInfos);
             context.put("hasHeaderModel", hasHeader);
             return context;
+        }
+
+        public static class EnumInfo {
+            private String name;
+            private List<String> values;
+
+            public EnumInfo(String name, List<String> values) {
+                this.name = name;
+                this.values = values;
+            }
+
+            public String getName() {
+                return name;
+            }
+
+            public void setName(String name) {
+                this.name = name;
+            }
+
+            public List<String> getValues() {
+                return values;
+            }
+
+            public void setValues(List<String> values) {
+                this.values = values;
+            }
         }
 
         public static class Structure {
@@ -347,7 +380,7 @@ public class TypescriptDefault {
 
         public ClientClassInfo(String dollarSign, String serviceName, String clientClassName,
                                List<String> reqModelNames, String reqModelFileName, List<String> resModelNames,
-                               String resModelFileName, List<String> costomModelNames, String customModelFileName,
+                               String resModelFileName, List<String> customModelNames, String customModelFileName,
                                List<MethodInfo> methodInfos) {
             this.dollarSign = dollarSign;
             this.serviceName = serviceName;
@@ -356,7 +389,7 @@ public class TypescriptDefault {
             this.reqModelFileName = reqModelFileName;
             this.resModelNames = resModelNames;
             this.resModelFileName = resModelFileName;
-            this.customModelNames = costomModelNames;
+            this.customModelNames = customModelNames;
             this.customModelFileName = customModelFileName;
             this.methodInfos = methodInfos;
         }
@@ -573,6 +606,14 @@ public class TypescriptDefault {
                 }
                 #foreach($filed in $classInfo.filedInfos)
                 $filed.keyName : $filed.typeName
+                #end
+            }
+            #end
+            
+            #foreach($enumInfo in $enumInfos)
+            enum $enumInfo.name {
+                #foreach($v in $enumInfo.values)
+                $v = "${v}",
                 #end
             }
             #end

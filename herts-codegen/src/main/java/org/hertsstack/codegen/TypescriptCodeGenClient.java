@@ -39,8 +39,8 @@ class TypescriptCodeGenClient extends TypescriptBase {
         List<TypescriptDefault.MethodInfo> methodInfos = new ArrayList<>();
         for (Method method : methods) {
             String capitalizeMethodName = CodeGenUtil.capitalizeFirstLetter(method.getName());
-            String reqClassName = capitalizeMethodName + "Request";
-            String resClassName = capitalizeMethodName + "Response";
+            String reqClassName = capitalizeMethodName + "MethodRequest";
+            String resClassName = capitalizeMethodName + "MethodResponse";
 
             reqModelNames.add(reqClassName);
             resModelNames.add(resClassName);
@@ -52,7 +52,16 @@ class TypescriptCodeGenClient extends TypescriptBase {
                     new Type[]{method.getGenericReturnType()}, generateTypescriptType);
 
             if (this.typeResolver.findType(defaultTypescriptType) == null) {
-                customModelNames.add(defaultTypescriptType);
+                boolean exist = false;
+                for (String s : customModelNames) {
+                    if (s.equals(defaultTypescriptType)) {
+                        exist = true;
+                        break;
+                    }
+                }
+                if (!exist) {
+                    customModelNames.add(defaultTypescriptType);
+                }
             }
 
             methodInfos.add(new TypescriptDefault.MethodInfo(

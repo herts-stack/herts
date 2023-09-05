@@ -6,7 +6,7 @@ plugins {
 apply plugin: 'application'
 
 def pkgName = 'org.hertsstack'
-def pkgVersion = '1.1.1'
+def pkgVersion = '1.1.2'
 def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '15'
 def artifactId = 'codegen'
 
@@ -22,6 +22,7 @@ repositories {
 dependencies {
     implementation project(':herts-core')
 
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
     implementation 'org.apache.velocity:velocity-engine-core:2.3'
     implementation 'commons-cli:commons-cli:1.5.0'
 }
