@@ -8,14 +8,13 @@ import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
 
 class TypescriptCodeGenStructure extends TypescriptBase {
+    private static final String REQUEST_HEADER_CLASS_NAME = "RequestHeaders";
     private final String serviceName;
     private final TypescriptFileName fileName;
     private final String outDir;
@@ -120,8 +119,8 @@ class TypescriptCodeGenStructure extends TypescriptBase {
         for (Field field : allFields) {
             String propertyName = field.getName();
             String propertyType = field.getType().getName();
-//            System.out.println("Name: " + propertyName);
-//            System.out.println("Type: " + propertyType);
+            // System.out.println("Name: " + propertyName);
+            //S ystem.out.println("Type: " + propertyType);
 
             JavaType javaType = JavaType.findType(propertyType);
             TypescriptType typescriptType = this.typeResolver.convertType(javaType);
@@ -200,9 +199,7 @@ class TypescriptCodeGenStructure extends TypescriptBase {
         }
     }
 
-    private static final String REQUEST_HEADER_CLASS_NAME = "RequestHeaders";
-
-    public String genStructureModel(Method[] methods) {
+    public String getGeneratedCode(Method[] methods) {
         System.out.println("Typescript file name = " + this.fileName.getStructureFileName());
         System.out.println("Generating...");
 
@@ -239,150 +236,7 @@ class TypescriptCodeGenStructure extends TypescriptBase {
         return null;
     }
 
-    public void genResponseModel(Method[] methods) {
-        System.out.println("Typescript file name = " + this.fileName.getResponseFileName());
-        System.out.println("Generating...");
-
-        String templateFileName = this.fileName.getResponseTsFileName() + ".vm";
-        String template = TypescriptDefault.STRUCTURE_RES_MODEL_CLASS;
-        CodeGenUtil.writeFile(CodeGenUtil.getFullPath(this.outDir, templateFileName), template);
-
-        List<TypescriptDefault.ImportInfo> importInfos = new ArrayList<>();
-        List<TypescriptDefault.ResClassInfo.Response> resClassInfos = new ArrayList<>();
-        List<TypescriptDefault.ResClassInfo.Payload> payloadClassInfos = new ArrayList<>();
-
-        for (Method method : methods) {
-            String capitalizeMethodName = CodeGenUtil.capitalizeFirstLetter(method.getName());
-            String payloadClassName = capitalizeMethodName + "Payload";
-
-            JavaType javaType = JavaType.findType(method.getReturnType().getName());
-            String defaultTypescriptType = getTypescriptTypeStr(javaType, method.getReturnType());
-
-            BiFunction<JavaType, Class<?>, String> generateTypescriptType = this::getTypescriptTypeStr;
-            String typescriptType = CodeGenUtil.getGeneticTypes(javaType, defaultTypescriptType,
-                    new Type[]{method.getGenericReturnType()}, generateTypescriptType);
-
-            addImportSentenceIfNotExist(defaultTypescriptType, importInfos);
-
-            resClassInfos.add(new TypescriptDefault.ResClassInfo.Response(
-                    capitalizeMethodName + CodeGenUtil.getResponseName(),
-                    payloadClassName
-            ));
-
-            payloadClassInfos.add(new TypescriptDefault.ResClassInfo.Payload(
-                    payloadClassName,
-                    typescriptType
-            ));
-        }
-
-        TypescriptDefault.ResClassInfo resClassInfo = new TypescriptDefault.ResClassInfo();
-        resClassInfo.setImportInfos(importInfos);
-        resClassInfo.setResClassInfos(resClassInfos);
-        resClassInfo.setPayloadClassInfos(payloadClassInfos);
-
-        try {
-            StringWriter sw = new StringWriter();
-            VelocityContext context = resClassInfo.getVelocityContext();
-            Template tem = Velocity.getTemplate(templateFileName);
-            tem.merge(context, sw);
-
-            CodeGenUtil.writeFile(CodeGenUtil.getFullPath(this.outDir, this.fileName.getResponseFileName()), sw.toString());
-        } catch (Exception ex) {
-            System.out.println("Failed to create " + this.fileName.getResponseFileName() + " file");
-            ex.printStackTrace();
-        } finally {
-            try {
-                Files.delete(Path.of(CodeGenUtil.getFullPath(this.outDir, templateFileName)));
-            } catch (Exception ignore) {
-            }
-        }
-    }
-
-    public void genRequestModel(Method[] methods) {
-        System.out.println("Typescript file name = " + this.fileName.getRequestFileName());
-        System.out.println("Generating...");
-
-        String templateFileName = this.fileName.getRequestTsFileName() + ".vm";
-        String template = TypescriptDefault.STRUCTURE_REQ_MODEL_CLASS;
-        CodeGenUtil.writeFile(CodeGenUtil.getFullPath(this.outDir, templateFileName), template);
-
-        List<TypescriptDefault.ReqClassInfo.Request> reqClassInfos = new ArrayList<>();
-        List<String> payloadNames = new ArrayList<>();
-        List<TypescriptDefault.ImportInfo> importInfos = new ArrayList<>();
-
-        for (Method method : methods) {
-            String capitalizeMethodName = CodeGenUtil.capitalizeFirstLetter(method.getName());
-            String payloadClassName = capitalizeMethodName + "Payload";
-            Class<?>[] parameterTypes = method.getParameterTypes();
-            boolean hasParameter = parameterTypes.length > 0;
-
-            List<TypescriptDefault.ReqClassInfo.Request.Arg> args = new ArrayList<>();
-            if (hasParameter) {
-                for (int i = 0; i < parameterTypes.length; i++) {
-                    Class<?> parameterTypeClass = parameterTypes[i];
-                    JavaType javaType = JavaType.findType(parameterTypeClass.getName());
-                    String defaultTypescriptType = getTypescriptTypeStr(javaType, parameterTypeClass);
-
-                    BiFunction<JavaType, Class<?>, String> generateTypescriptType = this::getTypescriptTypeStr;
-                    String typescriptType = CodeGenUtil.getGeneticTypes(javaType, defaultTypescriptType,
-                            method.getGenericParameterTypes(), generateTypescriptType);
-
-                    args.add(new TypescriptDefault.ReqClassInfo.Request.Arg(
-                            "arg" + i,
-                            typescriptType,
-                            "payload" + i
-                    ));
-
-                    addImportSentenceIfNotExist(defaultTypescriptType, importInfos);
-                }
-            }
-
-            payloadNames.add(payloadClassName);
-            reqClassInfos.add(new TypescriptDefault.ReqClassInfo.Request(
-                    capitalizeMethodName + CodeGenUtil.getRequestName(),
-                    payloadClassName,
-                    args
-            ));
-        }
-
-        TypescriptDefault.ReqClassInfo reqClassInfo = new TypescriptDefault.ReqClassInfo();
-        reqClassInfo.setReqClassInfos(reqClassInfos);
-        reqClassInfo.setPayloadNames(payloadNames);
-        reqClassInfo.setImportInfos(importInfos);
-
-        try {
-            StringWriter sw = new StringWriter();
-            VelocityContext context = reqClassInfo.getVelocityContext();
-            Template tem = Velocity.getTemplate(templateFileName);
-            tem.merge(context, sw);
-
-            CodeGenUtil.writeFile(CodeGenUtil.getFullPath(this.outDir, this.fileName.getRequestFileName()), sw.toString());
-        } catch (Exception ex) {
-            System.out.println("Failed to create " + this.fileName.getRequestFileName() + " file");
-            ex.printStackTrace();
-        } finally {
-            try {
-                Files.delete(Path.of(CodeGenUtil.getFullPath(this.outDir, templateFileName)));
-            } catch (Exception ignore) {
-            }
-        }
-    }
-
-    private void addImportSentenceIfNotExist(String tsType, List<TypescriptDefault.ImportInfo> importInfos) {
-        if (this.typeResolver.findType(tsType) == null) {
-            boolean isImported = false;
-            for (TypescriptDefault.ImportInfo importInfo : importInfos) {
-                if (importInfo.getName().equals(tsType)) {
-                    isImported = true;
-                    break;
-                }
-            }
-            if (!isImported) {
-                importInfos.add(new TypescriptDefault.ImportInfo(
-                        tsType,
-                        this.fileName.getStructureTsFileName()
-                ));
-            }
-        }
+    public static void generate(String outDir, String code) {
+        CodeGenUtil.writeFile(CodeGenUtil.getFullPath(outDir, TypescriptFileName.tsStructureFileName), code);
     }
 }
