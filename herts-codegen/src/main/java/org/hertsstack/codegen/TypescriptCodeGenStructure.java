@@ -265,7 +265,7 @@ class TypescriptCodeGenStructure extends TypescriptBase {
             addImportSentenceIfNotExist(defaultTypescriptType, importInfos);
 
             resClassInfos.add(new TypescriptDefault.ResClassInfo.Response(
-                    capitalizeMethodName + "MethodResponse",
+                    capitalizeMethodName + CodeGenUtil.getResponseName(),
                     payloadClassName
             ));
 
@@ -339,7 +339,7 @@ class TypescriptCodeGenStructure extends TypescriptBase {
 
             payloadNames.add(payloadClassName);
             reqClassInfos.add(new TypescriptDefault.ReqClassInfo.Request(
-                    capitalizeMethodName + "MethodRequest",
+                    capitalizeMethodName + CodeGenUtil.getRequestName(),
                     payloadClassName,
                     args
             ));

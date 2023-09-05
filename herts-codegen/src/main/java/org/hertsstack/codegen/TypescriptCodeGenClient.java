@@ -39,8 +39,8 @@ class TypescriptCodeGenClient extends TypescriptBase {
         List<TypescriptDefault.MethodInfo> methodInfos = new ArrayList<>();
         for (Method method : methods) {
             String capitalizeMethodName = CodeGenUtil.capitalizeFirstLetter(method.getName());
-            String reqClassName = capitalizeMethodName + "MethodRequest";
-            String resClassName = capitalizeMethodName + "MethodResponse";
+            String reqClassName = capitalizeMethodName + CodeGenUtil.getRequestName();
+            String resClassName = capitalizeMethodName + CodeGenUtil.getResponseName();
 
             reqModelNames.add(reqClassName);
             resModelNames.add(resClassName);

@@ -27,6 +27,7 @@ class TypescriptHttpClientGenerator implements CodeGenerator {
             typescriptCodeGenStructure.genRequestModel(methods);
             typescriptCodeGenStructure.genResponseModel(methods);
             typescriptCodeGenClient.genClient(methods);
+            typescriptCodeGenMain.genMain(methods);
         }
 
         String code = commonStructureCode.toString();

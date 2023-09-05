@@ -1,6 +1,7 @@
 package org.hertsstack.example.http;
 
 import org.hertsstack.core.context.HertsMetricsSetting;
+import org.hertsstack.example.codegents.HttpCodegenTestServiceImpl;
 import org.hertsstack.http.HertsHttpEngine;
 import org.hertsstack.http.HertsHttpServer;
 import org.hertsstack.httpclient.HertsHttpClient;
@@ -27,6 +28,7 @@ public class Main {
 
         HertsHttpEngine engine = HertsHttpServer.builder()
                 .registerHertsHttpService(new HttpServiceImpl())
+                .registerHertsHttpService(new HttpCodegenTestServiceImpl())
                 .setMetricsSetting(metrics)
                 .build();
 

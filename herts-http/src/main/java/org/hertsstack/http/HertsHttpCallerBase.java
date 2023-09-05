@@ -86,6 +86,7 @@ class HertsHttpCallerBase {
         }
 
         List<InternalHttpMsg> payloads = hertsRequest.getPayloads();
+        System.out.println(hertsSerializer.serializeAsStr(payloads));
         Object[] args = new Object[payloads.size()];
         int idx = 0;
         for (InternalHttpMsg payload : payloads) {
@@ -100,6 +101,7 @@ class HertsHttpCallerBase {
             idx++;
         }
 
+        System.out.println(hertsSerializer.serializeAsStr(args));
         Object res = hertsMethod.invoke(this.coreObject, args);
         response.setStatus(HttpServletResponse.SC_OK);
         if (res == null) {
