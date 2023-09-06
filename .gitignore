@@ -15,6 +15,7 @@ herts-gateway/build/
 tools/build/
 example/build/
 example/*.ts
+example/typescript-build/node_modules/
 e2e-test/build/
 benchmark-test/build/
 grpc-proto-example/build/

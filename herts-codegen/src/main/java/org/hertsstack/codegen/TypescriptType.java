@@ -6,6 +6,10 @@ enum TypescriptType {
     Boolean("boolean"),
     String("string"),
     Date("Date"),
+    ArrayString("Array<string>"),
+    ArrayNumber("Array<number>"),
+    ArrayBoolean("Array<boolean>"),
+    ArrayDate("Array<Date>"),
     Array("Array<$0>"),
     Map("Map<$0, $1>");
 

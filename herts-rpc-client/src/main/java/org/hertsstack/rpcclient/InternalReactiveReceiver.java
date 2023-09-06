@@ -7,6 +7,7 @@ import io.grpc.stub.AbstractStub;
 import io.grpc.stub.ClientCalls;
 import io.grpc.stub.StreamObserver;
 
+import org.hertsstack.core.modelx.InternalRpcMsg;
 import org.hertsstack.serializer.MessageJsonParsingException;
 import org.hertsstack.core.modelx.HertsMessage;
 import org.hertsstack.core.context.HertsType;
@@ -89,7 +90,7 @@ class InternalReactiveReceiver {
             Class<?>[] parameterTypes = new Class<?>[1];
             parameterTypes[0] = method.getParameterTypes()[0];
 
-            byte[] requestBytes = this.serializer.serialize(new HertsMessage(methodParameters, parameterTypes));
+            byte[] requestBytes = this.serializer.serialize(new InternalRpcMsg(methodParameters, parameterTypes));
 
             ClientCalls.asyncServerStreamingCall(this.channel.newCall(methodDescriptor, this.callOptions), requestBytes, responseObserver);
         }

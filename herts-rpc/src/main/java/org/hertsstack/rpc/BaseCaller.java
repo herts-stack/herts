@@ -1,6 +1,6 @@
 package org.hertsstack.rpc;
 
-import org.hertsstack.core.modelx.HertsMessage;
+import org.hertsstack.core.modelx.InternalRpcMsg;
 import org.hertsstack.serializer.MessageSerializer;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ class BaseCaller {
      */
     protected <T> void setMethodRequests(T request) throws IOException {
         if (((byte[]) request).length > 0) {
-            HertsMessage deserialized = this.hertsSerializer.deserialize((byte[]) request, HertsMessage.class);
+            InternalRpcMsg deserialized = this.hertsSerializer.deserialize((byte[]) request, InternalRpcMsg.class);
             int index = 0;
             if (deserialized.getMessageParameters() != null) {
                 for (Object obj : deserialized.getMessageParameters()) {

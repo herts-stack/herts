@@ -108,6 +108,7 @@ class HertsHttpCallerBase {
 
         InternalHttpResponse hertsResponse = new InternalHttpResponse();
         InternalHttpMsg payload = new InternalHttpMsg();
+        payload.setKeyName("response");
         payload.setValue(res);
         hertsResponse.setPayload(payload);
         setWriter(response.getWriter(), this.hertsSerializer.serializeAsStr(hertsResponse));

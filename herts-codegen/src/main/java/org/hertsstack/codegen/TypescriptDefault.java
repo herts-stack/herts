@@ -235,17 +235,23 @@ public class TypescriptDefault {
 
             public static class Arg {
                 private final String keyName;
+                private final String actualKeyName;
                 private final String typeName;
                 private final String payloadValName;
 
-                public Arg(String keyName, String typeName, String payloadValName) {
+                public Arg(String keyName, String actualKeyName, String typeName, String payloadValName) {
                     this.keyName = keyName;
+                    this.actualKeyName = actualKeyName;
                     this.typeName = typeName;
                     this.payloadValName = payloadValName;
                 }
 
                 public String getKeyName() {
                     return keyName;
+                }
+
+                public String getActualKeyName() {
+                    return actualKeyName;
                 }
 
                 public String getTypeName() {
@@ -264,20 +270,53 @@ public class TypescriptDefault {
      */
     public static class StructureClassInfo {
         private final List<Structure> classInfos;
+        private final List<EnumInfo> enumInfos;
 
-        public StructureClassInfo(List<Structure> classInfos) {
+        public StructureClassInfo(List<Structure> classInfos, List<EnumInfo> enumInfos) {
             this.classInfos = classInfos;
+            this.enumInfos = enumInfos;
         }
 
         public List<Structure> getClassInfos() {
             return classInfos;
         }
 
+        public List<EnumInfo> getEnumInfos() {
+            return enumInfos;
+        }
+
         public VelocityContext getVelocityContext(boolean hasHeader) {
             VelocityContext context = new VelocityContext();
             context.put("classInfos", this.classInfos);
+            context.put("enumInfos", this.enumInfos);
             context.put("hasHeaderModel", hasHeader);
             return context;
+        }
+
+        public static class EnumInfo {
+            private String name;
+            private List<String> values;
+
+            public EnumInfo(String name, List<String> values) {
+                this.name = name;
+                this.values = values;
+            }
+
+            public String getName() {
+                return name;
+            }
+
+            public void setName(String name) {
+                this.name = name;
+            }
+
+            public List<String> getValues() {
+                return values;
+            }
+
+            public void setValues(List<String> values) {
+                this.values = values;
+            }
         }
 
         public static class Structure {
@@ -347,7 +386,7 @@ public class TypescriptDefault {
 
         public ClientClassInfo(String dollarSign, String serviceName, String clientClassName,
                                List<String> reqModelNames, String reqModelFileName, List<String> resModelNames,
-                               String resModelFileName, List<String> costomModelNames, String customModelFileName,
+                               String resModelFileName, List<String> customModelNames, String customModelFileName,
                                List<MethodInfo> methodInfos) {
             this.dollarSign = dollarSign;
             this.serviceName = serviceName;
@@ -356,7 +395,7 @@ public class TypescriptDefault {
             this.reqModelFileName = reqModelFileName;
             this.resModelNames = resModelNames;
             this.resModelFileName = resModelFileName;
-            this.customModelNames = costomModelNames;
+            this.customModelNames = customModelNames;
             this.customModelFileName = customModelFileName;
             this.methodInfos = methodInfos;
         }
@@ -575,6 +614,16 @@ public class TypescriptDefault {
                 $filed.keyName : $filed.typeName
                 #end
             }
+            
+            #end
+            
+            #foreach($enumInfo in $enumInfos)
+            export enum $enumInfo.name {
+                #foreach($v in $enumInfo.values)
+                $v = "${v}",
+                #end
+            }
+            
             #end
             """;
 
@@ -596,17 +645,18 @@ public class TypescriptDefault {
                 payloads: Array<$classInfo.payloadName>;
                 public static createRequest(
                 #foreach($arg in $classInfo.args)
-                    $arg.keyName : $arg.typeName,
+                    $arg.actualKeyName : $arg.typeName,
                 #end
                 ) {
                     const payloads = new Array<$classInfo.payloadName>();
                     #foreach($arg in $classInfo.args)
-                    const $arg.payloadValName = new $classInfo.payloadName ('$arg.keyName', $arg.keyName);
+                    const $arg.payloadValName = new $classInfo.payloadName ('$arg.keyName', $arg.actualKeyName);
                     payloads.push($arg.payloadValName);
                     #end
                     return new $classInfo.name (payloads);
                 };
             }
+            
             #end
             
             #foreach($payloadName in $payloadNames)
@@ -618,6 +668,7 @@ public class TypescriptDefault {
                 private keyName: string;
                 private value: any;
             }
+            
             #end
             """;
 
@@ -638,17 +689,20 @@ public class TypescriptDefault {
                 }
                 payload: $classInfo.payloadClassName;
             }
+            
             #end
             
             #foreach($classInfo in $payloadClassInfos)
             export class $classInfo.name {
                 constructor() {
                     this.keyName = '';
+                    // @ts-ignore
                     this.value = null;
                 }
                 private keyName: string;
                 value: $classInfo.valueType;
             }
+            
             #end
             """;
 

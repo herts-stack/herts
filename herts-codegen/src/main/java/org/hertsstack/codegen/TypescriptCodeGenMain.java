@@ -52,7 +52,7 @@ class TypescriptCodeGenMain extends TypescriptBase {
             }
 
             String capitalizeMethodName = CodeGenUtil.capitalizeFirstLetter(method.getName());
-            String reqClassName = capitalizeMethodName + "Request";
+            String reqClassName = capitalizeMethodName + CodeGenUtil.getRequestName();
             String reqClassNameWithFunc = reqClassName + ".createRequest";
             String reqValName = "req" + idx;
             String resValName = "res" + idx;
