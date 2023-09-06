@@ -1,34 +1,28 @@
 package org.hertsstack.core.modelx;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.msgpack.annotation.Message;
-
 import java.io.Serializable;
 
 /**
- * Herts message definition
+ * Herts rpc message of internal
  *
  * @author Herts Contributer
  */
-@Message
-public class HertsMessage implements Serializable {
-    @JsonIgnore
+public class InternalRpcMsg implements Serializable {
     private Object[] messageParameters;
-    @JsonIgnore
     private Class<?>[] classTypes;
 
-    public HertsMessage() {
+    public InternalRpcMsg() {
     }
 
-    public HertsMessage(Object[] messageParameters) {
+    public InternalRpcMsg(Object[] messageParameters) {
         this.messageParameters = messageParameters;
     }
 
-    public HertsMessage(Class<?>[] classTypes) {
+    public InternalRpcMsg(Class<?>[] classTypes) {
         this.classTypes = classTypes;
     }
 
-    public HertsMessage(Object[] messageParameters, Class<?>[] classTypes) {
+    public InternalRpcMsg(Object[] messageParameters, Class<?>[] classTypes) {
         this.messageParameters = messageParameters;
         this.classTypes = classTypes;
     }

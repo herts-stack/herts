@@ -13,8 +13,8 @@ class TypescriptBase {
 
     protected String getTypescriptTypeStr(JavaType javaType, Class<?> typeClass) {
         if (javaType == null
-                && CodeGenUtil.isCustomModelClass(typeClass)
-                && this.cacheGenCode.getGeneratedPackageNames().contains(typeClass.getSimpleName())) {
+                && (CodeGenUtil.isCustomModelClass(typeClass)
+                || this.cacheGenCode.getGeneratedPackageNames().contains(typeClass.getSimpleName()))) {
             return typeClass.getSimpleName();
         } else {
             return this.typeResolver.convertType(javaType).getData();

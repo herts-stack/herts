@@ -120,16 +120,18 @@ class TypescriptCodeGenStructure extends TypescriptBase {
             String propertyName = field.getName();
             String propertyType = field.getType().getName();
             // System.out.println("Name: " + propertyName);
-            //S ystem.out.println("Type: " + propertyType);
+            // System.out.println("Type: " + propertyType);
 
             JavaType javaType = JavaType.findType(propertyType);
             TypescriptType typescriptType = this.typeResolver.convertType(javaType);
+            this.cacheGenCode.addGeneratedPackageNames(targetClass.getSimpleName());
 
             Class<?> classObj = null;
             try {
                 classObj = Class.forName(propertyType);
                 if (classObj.isEnum()) {
                     setEnumInfo(propertyName, classObj, constructorInfos, enumInfos);
+                    this.cacheGenCode.addGeneratedPackageNames(classObj.getSimpleName());
                     continue;
                 }
             } catch (java.lang.ClassNotFoundException ignore) {
@@ -158,8 +160,6 @@ class TypescriptCodeGenStructure extends TypescriptBase {
         }
         structure.setConstructors(constructorInfos);
         structures.add(structure);
-
-        this.cacheGenCode.addGeneratedPackageNames(targetClass.getSimpleName());
 
         // Recursive generate model
         for (String nestedModelPkg : nestedModelPackages) {

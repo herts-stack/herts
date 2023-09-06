@@ -3,8 +3,10 @@ package org.hertsstack.codegen;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.hertsstack.core.annotation.HertsParam;
 
 import java.io.StringWriter;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,6 +47,20 @@ class TypescriptCodeGenRequest extends TypescriptBase {
             List<TypescriptDefault.ReqClassInfo.Request.Arg> args = new ArrayList<>();
             if (hasParameter) {
                 for (int i = 0; i < parameterTypes.length; i++) {
+
+                    // Find actual arg name
+                    String actualArgName = null;
+                    if (method.getParameters()[i].getAnnotations() != null && method.getParameters()[i].getAnnotations().length > 0) {
+                        Annotation annotation = method.getParameters()[i].getAnnotations()[0];
+                        if (annotation instanceof HertsParam) {
+                            HertsParam parameterNameAnnotation = (HertsParam) annotation;
+                            actualArgName = parameterNameAnnotation.value();
+                        }
+                    } else {
+                        actualArgName = "arg" + i;
+                    }
+
+                    // Find typescript type
                     Class<?> parameterTypeClass = parameterTypes[i];
                     JavaType javaType = JavaType.findType(parameterTypeClass.getName());
                     String defaultTypescriptType = getTypescriptTypeStr(javaType, parameterTypeClass);
@@ -55,6 +71,7 @@ class TypescriptCodeGenRequest extends TypescriptBase {
 
                     args.add(new TypescriptDefault.ReqClassInfo.Request.Arg(
                             "arg" + i,
+                            actualArgName,
                             typescriptType,
                             "payload" + i
                     ));

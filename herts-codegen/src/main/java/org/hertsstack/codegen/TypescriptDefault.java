@@ -235,17 +235,23 @@ public class TypescriptDefault {
 
             public static class Arg {
                 private final String keyName;
+                private final String actualKeyName;
                 private final String typeName;
                 private final String payloadValName;
 
-                public Arg(String keyName, String typeName, String payloadValName) {
+                public Arg(String keyName, String actualKeyName, String typeName, String payloadValName) {
                     this.keyName = keyName;
+                    this.actualKeyName = actualKeyName;
                     this.typeName = typeName;
                     this.payloadValName = payloadValName;
                 }
 
                 public String getKeyName() {
                     return keyName;
+                }
+
+                public String getActualKeyName() {
+                    return actualKeyName;
                 }
 
                 public String getTypeName() {
@@ -608,14 +614,16 @@ public class TypescriptDefault {
                 $filed.keyName : $filed.typeName
                 #end
             }
+            
             #end
             
             #foreach($enumInfo in $enumInfos)
-            enum $enumInfo.name {
+            export enum $enumInfo.name {
                 #foreach($v in $enumInfo.values)
                 $v = "${v}",
                 #end
             }
+            
             #end
             """;
 
@@ -637,17 +645,18 @@ public class TypescriptDefault {
                 payloads: Array<$classInfo.payloadName>;
                 public static createRequest(
                 #foreach($arg in $classInfo.args)
-                    $arg.keyName : $arg.typeName,
+                    $arg.actualKeyName : $arg.typeName,
                 #end
                 ) {
                     const payloads = new Array<$classInfo.payloadName>();
                     #foreach($arg in $classInfo.args)
-                    const $arg.payloadValName = new $classInfo.payloadName ('$arg.keyName', $arg.keyName);
+                    const $arg.payloadValName = new $classInfo.payloadName ('$arg.keyName', $arg.actualKeyName);
                     payloads.push($arg.payloadValName);
                     #end
                     return new $classInfo.name (payloads);
                 };
             }
+            
             #end
             
             #foreach($payloadName in $payloadNames)
@@ -659,6 +668,7 @@ public class TypescriptDefault {
                 private keyName: string;
                 private value: any;
             }
+            
             #end
             """;
 
@@ -679,17 +689,20 @@ public class TypescriptDefault {
                 }
                 payload: $classInfo.payloadClassName;
             }
+            
             #end
             
             #foreach($classInfo in $payloadClassInfos)
             export class $classInfo.name {
                 constructor() {
                     this.keyName = '';
+                    // @ts-ignore
                     this.value = null;
                 }
                 private keyName: string;
                 value: $classInfo.valueType;
             }
+            
             #end
             """;
 

@@ -3,7 +3,6 @@ package org.hertsstack.httpclient;
 import org.hertsstack.core.annotation.HertsHttp;
 import org.hertsstack.core.annotation.HertsRpcService;
 import org.hertsstack.core.context.HertsType;
-import org.hertsstack.core.exception.CodeGenException;
 import org.hertsstack.core.exception.HttpClientBuildException;
 import org.hertsstack.core.exception.HttpServerBuildException;
 
