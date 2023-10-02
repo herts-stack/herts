@@ -25,7 +25,7 @@ public class IntegrationTestRsServiceImpl extends HertsServiceReactiveStreaming<
 
     @Override
     public void hello02(String id) {
-        logger.info("ReactiveStreamingService hello02 RPC broadcast onReceivedHello02");
+        logger.info("ReactiveStreamingService hello02 RPC broadcast onReceivedHello02 " + id);
         String clientId = getClientId();
         try {
             broadcast(clientId).onReceivedHello02(null, 1);
