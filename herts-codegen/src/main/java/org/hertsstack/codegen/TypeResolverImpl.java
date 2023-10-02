@@ -6,6 +6,7 @@ import java.util.Map;
 class TypeResolverImpl implements TypeResolver {
     private final static Map<JavaType, TypescriptType> MAPPING = new HashMap<>() {
         {
+            put(JavaType.Void, TypescriptType.Void);
             put(JavaType.Object, TypescriptType.Any);
             put(JavaType.ByteClass, TypescriptType.Number);
             put(JavaType.ByteClassArray, TypescriptType.ArrayNumber);

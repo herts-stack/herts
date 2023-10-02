@@ -96,7 +96,7 @@ class TypescriptCodeGenStructure extends TypescriptBase {
         for (Object o : enumObjects) {
             enumValues.add(o.toString());
         }
-        String enumName = CodeGenUtil.capitalizeFirstLetter(propertyName);
+        String enumName = enumClass.getSimpleName();
         enumInfos.add(new TypescriptDefault.StructureClassInfo.EnumInfo(enumName, enumValues));
         constructorInfos.add(new TypescriptDefault.ConstructorInfo(propertyName, enumName));
     }
