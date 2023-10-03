@@ -117,6 +117,9 @@ class TypescriptCodeGenStructure extends TypescriptBase {
 
         List<TypescriptDefault.ConstructorInfo> constructorInfos = new ArrayList<>();
         for (Field field : allFields) {
+            if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
+                continue;
+            }
             String propertyName = field.getName();
             String propertyType = field.getType().getName();
             // System.out.println("Name: " + propertyName);
