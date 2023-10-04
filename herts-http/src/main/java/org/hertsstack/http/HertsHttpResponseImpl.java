@@ -6,6 +6,7 @@ class HertsHttpResponseImpl implements HertsHttpResponse {
     private ServletResponse response;
 
     public HertsHttpResponseImpl(ServletResponse response) {
+        this.response = response;
     }
 
     @Override
