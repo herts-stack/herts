@@ -1,6 +1,7 @@
 package org.hertsstack.codegen;
 
 enum JavaType {
+    Void(void.class.getName()),
     Object(java.lang.Object.class.getName()),
     ObjectArray("[L" + java.lang.Object.class.getName() + ";"),
     ByteClass(java.lang.Byte.class.getName()),

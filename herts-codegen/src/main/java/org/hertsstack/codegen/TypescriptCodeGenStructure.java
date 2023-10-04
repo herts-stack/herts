@@ -96,7 +96,7 @@ class TypescriptCodeGenStructure extends TypescriptBase {
         for (Object o : enumObjects) {
             enumValues.add(o.toString());
         }
-        String enumName = CodeGenUtil.capitalizeFirstLetter(propertyName);
+        String enumName = enumClass.getSimpleName();
         enumInfos.add(new TypescriptDefault.StructureClassInfo.EnumInfo(enumName, enumValues));
         constructorInfos.add(new TypescriptDefault.ConstructorInfo(propertyName, enumName));
     }
@@ -117,6 +117,9 @@ class TypescriptCodeGenStructure extends TypescriptBase {
 
         List<TypescriptDefault.ConstructorInfo> constructorInfos = new ArrayList<>();
         for (Field field : allFields) {
+            if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
+                continue;
+            }
             String propertyName = field.getName();
             String propertyType = field.getType().getName();
             // System.out.println("Name: " + propertyName);

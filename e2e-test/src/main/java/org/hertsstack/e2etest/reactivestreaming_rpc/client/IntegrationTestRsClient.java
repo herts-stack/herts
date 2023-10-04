@@ -27,7 +27,7 @@ public class IntegrationTestRsClient {
 
         IntegrationTestRsService service = client.createHertsRpcService(IntegrationTestRsService.class);
         service.hello01();
-        service.hello02(null);
+        service.hello02("id!!!!!");
         service.hello03(genRq());
         service.hello04("id", Collections.singletonMap("key", "val"));
         client.getChannel().notifyWhenStateChanged(ConnectivityState.READY, () -> {

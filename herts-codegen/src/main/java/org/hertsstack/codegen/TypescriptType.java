@@ -1,6 +1,7 @@
 package org.hertsstack.codegen;
 
 enum TypescriptType {
+    Void("void"),
     Any("any"),
     Number("number"),
     Boolean("boolean"),
