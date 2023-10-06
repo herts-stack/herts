@@ -10,7 +10,7 @@ import io.grpc.BindableService;
 import io.grpc.ServerCredentials;
 import io.grpc.ServerInterceptor;
 
-import javax.annotation.Nullable;
+
 
 /**
  * Herts server engine builder
@@ -26,7 +26,7 @@ public interface RpcServer {
      * @param interceptor          Interceptor
      * @return HertsCoreEngineBuilder
      */
-    RpcServer registerHertsReactiveRpcService(HertsReactiveService hertsReactiveService, @Nullable ServerInterceptor interceptor);
+    RpcServer registerHertsReactiveRpcService(HertsReactiveService hertsReactiveService,  ServerInterceptor interceptor);
 
     /**
      * Register HertsReactiveService with Interceptor.
@@ -43,7 +43,7 @@ public interface RpcServer {
      * @param interceptor     Interceptor
      * @return HertsCoreEngineBuilder
      */
-    RpcServer registerHertsRpcService(HertsService hertsRpcService, @Nullable ServerInterceptor interceptor);
+    RpcServer registerHertsRpcService(HertsService hertsRpcService,  ServerInterceptor interceptor);
 
     /**
      * Register Herts service
@@ -94,7 +94,7 @@ public interface RpcServer {
      * @param interceptor Interceptor
      * @return HertsCoreEngineBuilder
      */
-    RpcServer addCustomService(BindableService grpcService, HertsType hertsType, @Nullable ServerInterceptor interceptor);
+    RpcServer addCustomService(BindableService grpcService, HertsType hertsType,  ServerInterceptor interceptor);
 
     /**
      * Build HertsCoreEngine

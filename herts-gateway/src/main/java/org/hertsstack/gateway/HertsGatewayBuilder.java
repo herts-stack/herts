@@ -9,7 +9,7 @@ import org.hertsstack.core.context.HertsType;
 import org.hertsstack.core.exception.CodeGenException;
 import org.hertsstack.http.HertsHttpInterceptor;
 
-import javax.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +37,7 @@ public class HertsGatewayBuilder implements HertsGatewayServer {
         return new HertsGatewayBuilder();
     }
 
-    public HertsGatewayServer registerHertsRpcService(Class<?> hertsServiceInterface, @Nullable HertsHttpInterceptor interceptor) {
+    public HertsGatewayServer registerHertsRpcService(Class<?> hertsServiceInterface,  HertsHttpInterceptor interceptor) {
         if (!hertsServiceInterface.isInterface()) {
             throw new GatewayServerBuildException("Please implemented interface with @HertsRpcService Unary");
         }

@@ -1,6 +1,6 @@
 package org.hertsstack.http;
 
-import javax.annotation.Nullable;
+
 import javax.servlet.ServletRequest;
 
 /**
@@ -24,7 +24,7 @@ public interface HertsHttpRequest {
      * @param headerName Header name
      * @return Value
      */
-    @Nullable
+    
     String getHeader(String headerName);
 
     /**

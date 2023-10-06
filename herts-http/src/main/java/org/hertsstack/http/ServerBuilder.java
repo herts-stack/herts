@@ -5,7 +5,7 @@ import org.hertsstack.core.context.HertsMetricsSetting;
 import org.hertsstack.core.exception.HttpServerBuildException;
 import org.hertsstack.core.service.HertsService;
 
-import javax.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +27,7 @@ class ServerBuilder implements HertsHttpEngineBuilder {
     }
 
     @Override
-    public HertsHttpEngineBuilder registerHertsHttpService(HertsService hertsRpcService, @Nullable HertsHttpInterceptor interceptor) {
+    public HertsHttpEngineBuilder registerHertsHttpService(HertsService hertsRpcService, HertsHttpInterceptor interceptor) {
         if (hertsRpcService.getClass().getInterfaces().length == 0) {
             throw new HttpServerBuildException("Please implemented interface with @HertsHttp");
         }

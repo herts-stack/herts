@@ -3,7 +3,7 @@ package org.hertsstack.gateway;
 import org.hertsstack.core.context.HertsMetricsSetting;
 import org.hertsstack.http.HertsHttpInterceptor;
 
-import javax.annotation.Nullable;
+
 
 /**
  * Herts gateway server builder interface.
@@ -20,7 +20,7 @@ public interface HertsGatewayServer {
      * @param interceptor HertsHttpInterceptor
      * @return HertsGatewayServer
      */
-    HertsGatewayServer registerHertsRpcService(Class<?> hertsServiceInterface, @Nullable HertsHttpInterceptor interceptor);
+    HertsGatewayServer registerHertsRpcService(Class<?> hertsServiceInterface,  HertsHttpInterceptor interceptor);
 
     /**
      * Gateway server port.
