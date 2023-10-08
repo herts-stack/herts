@@ -14,7 +14,7 @@ import org.hertsstack.serializer.MessageJsonParsingException;
 import org.hertsstack.metrics.HertsMetrics;
 import org.hertsstack.metrics.HertsMetricsServer;
 
-import javax.annotation.Nullable;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -105,7 +105,7 @@ public class InternalHttpServlet extends HttpServlet {
     public static InternalHttpServlet createByHertsService(List<HertsService> hertsRpcServices,
                                                            HertsMetrics hertsHttpMetrics,
                                                            HertsMetricsServer metricsServer,
-                                                           @Nullable InternalHttpCaller caller)  {
+                                                            InternalHttpCaller caller)  {
 
         List<String> baseEndpoints = new ArrayList<>();
         ConcurrentMap<String, InternalHttpCaller> callerMap = new ConcurrentHashMap<>();

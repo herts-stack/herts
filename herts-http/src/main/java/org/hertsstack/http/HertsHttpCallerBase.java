@@ -45,13 +45,16 @@ class HertsHttpCallerBase {
         out.flush();
     }
 
-    public static void setHertsHeader(HttpServletResponse response, boolean isApiServer) {
+    public static void setHertsServerDefaultHeader(HttpServletResponse response, boolean isApiServer) {
         if (isApiServer) {
-            response.setHeader(SharedServiceContext.Header.HERTS_SERVER_KEY, SharedServiceContext.Header.HERTS_SERVER_VAL);
+            response.addHeader(SharedServiceContext.Header.HERTS_SERVER_KEY, SharedServiceContext.Header.HERTS_SERVER_VAL);
         } else {
-            response.setHeader(SharedServiceContext.Header.HERTS_SERVER_KEY, SharedServiceContext.Header.HERTS_SERVER_GATEWAY_VAL);
+            response.addHeader(SharedServiceContext.Header.HERTS_SERVER_KEY, SharedServiceContext.Header.HERTS_SERVER_GATEWAY_VAL);
         }
-        response.setHeader(SharedServiceContext.Header.HERTS_CONTEXT_VERSION, SharedServiceContext.Header.CODE_VERSION);
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Headers", "*");
+        response.addHeader("Access-Control-Allow-Methods", "OPTIONS, POST");
+        response.addHeader(SharedServiceContext.Header.HERTS_CONTEXT_VERSION, SharedServiceContext.Header.CODE_VERSION);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
     }
@@ -94,6 +97,7 @@ class HertsHttpCallerBase {
                 Class<?> aClass = registeredMethod.getParameterClasses()[idx];
                 castedArg = this.hertsSerializer.convertFromHertHttpPayload(payload.getValue(), aClass);
             } catch (Exception ex) {
+                ex.printStackTrace();
                 castedArg = payload.getValue();
             }
             args[idx] = castedArg;

@@ -3,7 +3,7 @@ package org.hertsstack.http;
 import org.hertsstack.core.context.HertsMetricsSetting;
 import org.hertsstack.core.service.HertsService;
 
-import javax.annotation.Nullable;
+
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +22,7 @@ public interface HertsHttpEngineBuilder {
      * @param interceptor Interceptor
      * @return HertHttpEngineBuilder
      */
-    HertsHttpEngineBuilder registerHertsHttpService(HertsService hertsRpcService, @Nullable HertsHttpInterceptor interceptor);
+    HertsHttpEngineBuilder registerHertsHttpService(HertsService hertsRpcService,  HertsHttpInterceptor interceptor);
 
     /**
      * Add implementation service

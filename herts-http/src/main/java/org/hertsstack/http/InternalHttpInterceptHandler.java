@@ -48,7 +48,7 @@ public class InternalHttpInterceptHandler implements Filter {
         HttpServletRequest httpReq = (HttpServletRequest) request;
         HttpServletResponse httpRes = (HttpServletResponse) response;
         String serviceName = parseUri(httpReq.getRequestURI());
-        HertsHttpCallerBase.setHertsHeader(httpRes, this.isApiServer);
+        HertsHttpCallerBase.setHertsServerDefaultHeader(httpRes, this.isApiServer);
 
         HertsHttpInterceptor intercept = this.interceptors.get(serviceName);
         if (intercept != null) {
@@ -64,7 +64,11 @@ public class InternalHttpInterceptHandler implements Filter {
         }
         chain.doFilter(request, response);
         if (intercept != null) {
-            intercept.afterHandle(new HertsHttpResponseImpl(httpRes));
+            try {
+                intercept.afterHandle(new HertsHttpResponseImpl(httpRes));
+            } catch (Exception ex) {
+                setError(ex.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, HttpErrorException.StatusCode.Status500, httpRes);
+            }
         }
     }
 

@@ -29,7 +29,7 @@ import io.grpc.ServerInterceptor;
 import io.grpc.ServerServiceDefinition;
 import io.grpc.stub.ServerCalls;
 
-import javax.annotation.Nullable;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,7 +79,7 @@ class HertsRpcServerBuilder implements RpcServer {
     }
 
     @Override
-    public RpcServer registerHertsReactiveRpcService(HertsReactiveService hertsReactiveService, @Nullable ServerInterceptor interceptor) {
+    public RpcServer registerHertsReactiveRpcService(HertsReactiveService hertsReactiveService,  ServerInterceptor interceptor) {
         if (hertsReactiveService.getClass().getInterfaces().length == 0) {
             throw new RpcServerBuildException("You need to define interface on " + hertsReactiveService.getClass().getName());
         }
@@ -111,7 +111,7 @@ class HertsRpcServerBuilder implements RpcServer {
     }
 
     @Override
-    public RpcServer registerHertsRpcService(HertsService hertsRpcService, @Nullable ServerInterceptor interceptor) {
+    public RpcServer registerHertsRpcService(HertsService hertsRpcService,  ServerInterceptor interceptor) {
         this.hertsRpcServices.add(hertsRpcService);
         BindableService bindableService = createBindableService(hertsRpcService);
         if (interceptor == null) {
@@ -160,7 +160,7 @@ class HertsRpcServerBuilder implements RpcServer {
     }
 
     @Override
-    public RpcServer addCustomService(BindableService grpcService, HertsType hertsType, @Nullable ServerInterceptor interceptor) {
+    public RpcServer addCustomService(BindableService grpcService, HertsType hertsType,  ServerInterceptor interceptor) {
         if (grpcService == null) {
             throw new RpcServerBuildException("HertsService arg is null");
         }
