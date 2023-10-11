@@ -78,6 +78,9 @@ class HertsRpcClientUMethodHandler extends io.grpc.stub.AbstractBlockingStub<Her
         if (returnType.getName().equals("void")) {
             return null;
         }
+        if (res == null || res.length == 0) {
+            return null;
+        }
         return this.serializer.deserialize(res, returnType);
     }
 

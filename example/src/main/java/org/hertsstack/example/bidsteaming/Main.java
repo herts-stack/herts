@@ -1,6 +1,7 @@
 package org.hertsstack.example.bidsteaming;
 
 import io.grpc.stub.StreamObserver;
+import org.hertsstack.example.commonmodel.Hoo;
 import org.hertsstack.rpc.HertsRpcServerEngine;
 import org.hertsstack.rpc.HertsRpcServerEngineBuilder;
 import org.hertsstack.rpcclient.HertsRpcClient;
@@ -10,7 +11,7 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         startServer();
         startClient();
-        Thread.sleep(2000);
+        Thread.sleep(5000);
         System.exit(0);
     }
 
@@ -31,7 +32,7 @@ public class Main {
                 .connect();
 
         BidStreamingService service = client.createHertsRpcService(BidStreamingService.class);
-        var res = service.helloWorld(new StreamObserver<String>() {
+        var res01 = service.helloWorld(new StreamObserver<String>() {
             @Override
             public void onNext(String value) {
                 System.out.println("Received data on client: " + value);
@@ -47,7 +48,28 @@ public class Main {
         });
 
         for (var i = 0;i < 10; i++) {
-            res.onNext("hello from client " + i);
+            res01.onNext("hello from client " + i);
         }
+        res01.onCompleted();
+
+        var res02 = service.hoo(new StreamObserver<Hoo>() {
+            @Override
+            public void onNext(Hoo value) {
+                System.out.println("Received hoo data on client: " + value);
+            }
+
+            @Override
+            public void onError(Throwable t) {
+            }
+
+            @Override
+            public void onCompleted() {
+            }
+        });
+
+        for (var i = 0;i < 10; i++) {
+            res02.onNext(new Hoo());
+        }
+        res02.onCompleted();
     }
 }

@@ -76,6 +76,9 @@ class HertsRpcClientRStreamingMethodHandler extends io.grpc.stub.AbstractBlockin
         if (returnType.getName().equals("void")) {
             return null;
         }
+        if (res == null || res.length == 0) {
+            return null;
+        }
         return this.serializer.deserialize(res, returnType);
     }
 
