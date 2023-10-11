@@ -1,6 +1,7 @@
 package org.hertsstack.example.reactivesteaming;
 
 import org.hertsstack.core.service.HertsServiceReactiveStreaming;
+import org.hertsstack.example.commonmodel.Hoo;
 
 public class ReactiveServiceImpl extends HertsServiceReactiveStreaming<ReactiveService, ReactiveReceiver> implements ReactiveService {
     @Override
@@ -11,5 +12,10 @@ public class ReactiveServiceImpl extends HertsServiceReactiveStreaming<ReactiveS
             broadcast(clientId).onReceived("send to receiver " + i);
         }
         return "hello";
+    }
+
+    @Override
+    public Hoo getHoo() {
+        return null;
     }
 }

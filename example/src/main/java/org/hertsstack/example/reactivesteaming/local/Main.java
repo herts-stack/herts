@@ -1,5 +1,6 @@
 package org.hertsstack.example.reactivesteaming.local;
 
+import org.hertsstack.example.commonmodel.Hoo;
 import org.hertsstack.example.reactivesteaming.ReactiveReceiverImpl;
 import org.hertsstack.example.reactivesteaming.ReactiveService;
 import org.hertsstack.example.reactivesteaming.ReactiveServiceImpl;
@@ -36,5 +37,8 @@ public class Main {
         ReactiveService service = client.createHertsRpcService(ReactiveService.class);
         var res = service.helloWorld("hello");
         System.out.println("Received data on client: " + res);
+
+        Hoo hoo = service.getHoo();
+        System.out.println(hoo);
     }
 }
